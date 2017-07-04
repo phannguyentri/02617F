@@ -3512,3 +3512,31 @@ $lang['tax_add_edit_name']='Tên thuế';
 $lang['currency_list_name']='Tiền tệ';
 $lang['payment_modes_dt_name']='Phương thức thanh toán';
 $lang['payment_mode_add_edit_name']='Phương thức thanh toán';
+
+
+#tuan_anh
+$lang['source_from'] = 'Nguồn tiếp cận';
+$lang['client-type'] = 'Loại khách hàng';
+
+
+$lang['client-personal'] = 'Cá nhân';
+$lang['client_shortname'] = 'Tên ngắn gọn';
+$lang['client_name_title'] = 'Danh xưng';
+$lang['id_card'] = 'Số chứng minh nhân dân';
+$lang['type_of_organization'] = 'Loại hình tổ chức';
+$lang['bussiness_registration_number'] = 'Số DKKD';
+$lang['legal_representative'] = 'Đại diện pháp luật';
+$lang['email'] = 'Email';
+
+// $lang['cumulative_sales'] = 'Doanh số tích lũy';
+// $lang['last_date_buy'] = 'Ngày mua hàng gần nhất';
+// $lang['average_sales_per_month'] = 'Doanh số trung bình/tháng';
+$lang['cooperative_day'] = 'Ngày hợp tác';
+$lang['level'] = 'Mức độ';
+// $lang['debt'] = 'Công nợ';
+
+$lang['client-name'] = 'Tên';
+$lang['client-company'] = 'Công ty';
+$lang['client-mobilephone'] = 'Số điện thoại di động';
+$lang['client-company-birthday'] = "Ngày thành lập công ty";
+$lang['client_type'] = 'Loại khách hàng';

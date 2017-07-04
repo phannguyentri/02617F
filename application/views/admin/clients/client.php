@@ -74,13 +74,80 @@
 </div>
 </div>
 <?php init_tail(); ?>
+<script type="text/javascript">
+  // others script write here
+  var client_type = $('#client_type option:selected').val();
+  var switchMode = () => {
+    var name_title                    = $('#name_title');
+    var cooperative_day               = $('#cooperative_day');
+    var legal_representative          = $('#legal_representative');
+    var bussiness_registration_number = $('#bussiness_registration_number');
+    var id_card                       = $('#id_card');
+    var birthday                      = $('label[for="birthday"]');
+    var mobilephone_number            = $('#mobilephone_number,#phonenumber');
+    var type_of_organization          = $('#type_of_organization');
+    var vat                           = $('#vat');
+    var short_name                    = $('#short_name');
+    var billing_col                   = $('#col-billing');
+    if(client_type == 1) {
+      $('label[for="company"]').html('<small class="req text-danger">* </small> <?=_l('client-name')?> <?=_l('client-personal')?>');
+      
+      // Company
+      birthday.html('<?=_l('date_birth')?>');
+      type_of_organization.parent().parent().hide();
+      vat.parent().hide();
+      bussiness_registration_number.parent().hide();
+      legal_representative.parent().hide();
+      cooperative_day.parent().parent().hide();
+      billing_col.hide();
+
+      // Personal
+      id_card.parent().show();
+      mobilephone_number.parent().show();
+      short_name.parent().show();
+    }
+    else {
+      $('label[for="company"]').html('<small class="req text-danger">* </small> <?=_l('client-name')?> <?=_l('client-company')?>');
+      // Company
+      birthday.html('<?=_l('client-company-birthday')?>');
+      type_of_organization.parent().parent().show();
+      vat.parent().show();
+      bussiness_registration_number.parent().show();
+      legal_representative.parent().show();
+      cooperative_day.parent().parent().show();
+      billing_col.show();
+
+      // Personal
+      id_card.parent().hide();
+      mobilephone_number.parent().hide();
+      short_name.parent().hide();
+    }
+  };
+  $(document).ready(()=>{
+
+    $('#client_type').change((e)=>{
+      client_type = $(e.currentTarget).find('option:selected').val();
+      console.log(client_type);
+      switchMode();
+    });
+  });
+  
+  
+
+  
+
+</script>
 <?php if(isset($client)){ ?>
 <script>
  init_rel_tasks_table(<?php echo $client->userid; ?>,'customer');
+ 
+    
+
 </script>
 <?php } ?>
 <?php if(!empty($google_api_key) && !empty($client->latitude) && !empty($client->longitude)){ ?>
 <script>
+
  var latitude = '<?php echo $client->latitude; ?>';
  var longitude = '<?php echo $client->longitude; ?>';
  var marker = '<?php echo $client->company; ?>';
