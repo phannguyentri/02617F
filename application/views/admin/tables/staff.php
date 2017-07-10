@@ -4,6 +4,7 @@ $custom_fields = get_custom_fields('staff', array(
     'show_on_table' => 1
     ));
 $aColumns      = array(
+    'profile_image',
     'fullname',
     'email',
     'passport_id',
@@ -78,6 +79,9 @@ foreach ($rResult as $aRow) {
             $_data .= ' <a href="' . admin_url('staff/member/' . $aRow['staffid']) . '">' . $aRow['firstname'] . ' ' . $aRow['lastname'] . '</a>';
         } else if ($aColumns[$i] == 'email') {
             $_data = '<a href="mailto:' . $_data . '">' . $_data . '</a>';
+        }
+        else if($aColumns[$i] == 'profile_image') {
+            $_data = staff_profile_image($aRow['staffid'],array('img','img-responsive','staff-profile-image-thumb'),'thumb', array('style' => 'width: 50px !important;height: 50px !important;'));
         } else{
             if(strpos($aColumns[$i],'date_picker_') !== false){
                  $_data = _d($_data);

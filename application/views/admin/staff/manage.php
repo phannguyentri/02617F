@@ -15,6 +15,7 @@
 						<div class="clearfix"></div>
 						<?php
 						$table_data = array(
+							_l('item_avatar'),
 							_l('staff_dt_name'),
 							_l('staff_dt_email'),
 							_l('CMND'),

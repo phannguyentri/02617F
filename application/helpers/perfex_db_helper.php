@@ -1486,3 +1486,23 @@ function get_tasks_where_string()
     $_tasks_where .= ' OR is_public = 1)';
     return $_tasks_where;
 }
+/**
+ * Show all units exists in database
+ * 
+ * @return array
+ */
+function get_units() {
+    $CI =& get_instance();
+    $units = $CI->db->get('tblunits')->result_array();
+    return $units;
+}
+/**
+ * Get all groups of item in database
+ *
+ * @return array
+ */
+function get_item_groups() {
+    $CI =& get_instance();
+    $groups = $CI->db->get('tblitems_groups')->result_array();
+    return $groups;
+}

@@ -2,15 +2,17 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $aColumns     = array(
-    'description',
-    'long_description',
-    // '(SELECT name FROM tblitems WHERE tblitems.district_id=() )',
-    // 'tblitems.district_id',
-    'tblitems.rate',
-    'tax',
-    'unit',
+    'tblitems.id',
+    'tblitems.avatar',
+    'tblitems.code',
+    'tblitems.name',
+    'tblitems.short_name',
+    'tblitems.description',
+    'tblitems.price',
+    'tblitems.unit',
     'tblitems_groups.name',
-
+    'tblitems.minimum_quantity',
+    'tblitems.maximum_quantity',
     );
 // var_dump($aColumns);die;
 $sIndexColumn = "id";
@@ -37,26 +39,18 @@ foreach ($rResult as $aRow) {
     for ($i = 0; $i < count($aColumns); $i++) {
         $_data = $aRow[$aColumns[$i]];
 
-        if ($aColumns[$i] == 'tax') {
-            if (!$aRow['taxrate']) {
-                $aRow['taxrate'] = 0;
-            }
-            $_data = '<span data-toggle="tooltip" data-unit="'.$aRow['unit'].'" title="' . $aRow['name'] . '" data-taxid="' . $aRow['tax'] . '">' . $aRow['taxrate'] . '%' . '</span>';
-        } else if($aColumns[$i] == 'description'){
-            $_data = '<a href="#" data-toggle="modal" data-group-id="'.$aRow['group_id'].'" data-target="#sales_item_modal" data-id="'.$aRow['id'].'">'.$_data.'</a>';
+        $array_link = ['tblitems.code', 'tblitems.name'];
+        if(in_array($aColumns[$i],$array_link)){
+            $_data = '<a href="'.admin_url('invoice_items/item/').$aRow['id'].'">'.$_data.'</a>';
         }
-
+        if($aColumns[$i] == 'tblitems.avatar' && file_exists($_data)) {
+            $_data = '<img src="'.base_url($_data).'" width="50px" />';
+        }
         $row[] = $_data;
     }
     $options = '';
     if(has_permission('items','','edit')){
-        $options .= icon_btn('#' . $aRow['id'], 'pencil-square-o', 'btn-default', array(
-            'data-toggle' => 'modal',
-            'data-target' => '#sales_item_modal',
-            'data-id' => $aRow['id'],
-            'data-group-id' => $aRow['group_id'],
-            'data-unit' => $aRow['unit']
-            ));
+        $options .= icon_btn('invoice_items/item/' . $aRow['id'], 'pencil-square-o', 'btn-default');
     }
     if(has_permission('items','','delete')){
        $options .= icon_btn('invoice_items/delete/' . $aRow['id'], 'remove', 'btn-danger _delete');

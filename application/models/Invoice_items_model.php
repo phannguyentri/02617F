@@ -17,7 +17,19 @@ class Invoice_items_model extends CRM_Model
         $this->db->from('tblitems');
         $this->db->join('tbltaxes', 'tbltaxes.id = tblitems.tax', 'left');
         $this->db->join('tblitems_groups', 'tblitems_groups.id = tblitems.group_id', 'left');
-        $this->db->order_by('description', 'asc');
+        $this->db->order_by('id', 'desc');
+        if (is_numeric($id)) {
+            $this->db->where('tblitems.id', $id);
+            return $this->db->get()->row();
+        }
+        return $this->db->get()->result_array();
+    }
+
+    public function get_full($id = '')
+    {
+        
+        $this->db->from('tblitems');
+        $this->db->order_by('id', 'desc');
         if (is_numeric($id)) {
             $this->db->where('tblitems.id', $id);
             return $this->db->get()->row();
@@ -25,8 +37,14 @@ class Invoice_items_model extends CRM_Model
         return $this->db->get()->result_array();
 
     }
-
-     public function getProvince($id = '')
+    public function getPriceHistory($id = '') {
+        $this->db->from('item_price_history');
+        $this->db->where('id_item', $id);
+        $this->db->order_by('id', 'desc');
+        
+        return $this->db->get()->result_array();
+    }
+    public function getProvince($id = '')
     {
 
         $this->db->select('provinceid,name');
@@ -133,11 +151,20 @@ class Invoice_items_model extends CRM_Model
      * @param  array $data Invoice data to update
      * @return boolean
      */
-    public function edit($data)
+    public function edit($data ,$item = null)
     {
         $itemid = $data['itemid'];
         unset($data['itemid']);
+        
+        if(isset($data['price']) && isset($item) && $data['price'] != $item->price) {
+            $price_history_data = array(
+                'item_id' => $item->id,
+                'price' => $item->price,
+                'new_price' => $data['price']
+            );
 
+            $this->db->insert('tblitem_price_history', $price_history_data);
+        }
         if (isset($data['group_id']) && $data['group_id'] == '') {
             $data['group_id'] = 0;
         }

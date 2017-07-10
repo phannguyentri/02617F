@@ -252,8 +252,8 @@ $lang['invoice_item_add_edit_rate']        = 'Số tiền';
 $lang['invoice_item_add_edit_tax']         = 'Thuế';
 $lang['invoice_item_add_edit_tax_select']  = 'Chọn thuế';
 
-$lang['invoice_item_edit_heading'] = 'Chỉnh sửa sản phẩm/Dịch vụ';
-$lang['invoice_item_add_heading']  = 'Thêm sản phẩm/Dịch vụ mới';
+$lang['invoice_item_edit_heading'] = 'Chỉnh sửa sản phẩm';
+$lang['invoice_item_add_heading']  = 'Thêm sản phẩm';
 
 # Invoices
 
@@ -3540,3 +3540,50 @@ $lang['client-company'] = 'Công ty';
 $lang['client-mobilephone'] = 'Số điện thoại di động';
 $lang['client-company-birthday'] = "Ngày thành lập công ty";
 $lang['client_type'] = 'Loại khách hàng';
+## invoice items
+$lang['item_detail'] = 'Chi tiết sản phẩm';
+$lang['item_date'] = 'Date sản phẩm';
+$lang['item_price_history'] = 'Lịch sử thay đổi giá';
+$lang['item_price_date'] = 'Ngày sửa';
+$lang['item_files'] = 'Tài liệu liên quan';
+$lang['item_duty'] = 'Công việc, nhiệm vụ';
+$lang['item_campaign'] = 'Chiến dịch';
+$lang['item_opportunity'] = 'Cơ hội bán hàng';
+
+$lang['item_code']             = 'Mã sản phẩm';
+$lang['item_short_name']       = "Tên ngắn";
+$lang['item_name']             = "Tên đầy đủ";
+$lang['item_description']      = "Mô tả chức năng";
+$lang['item_long_description'] = "Thông số kỹ thuật";
+$lang['item_price']            = "Giá";
+$lang['item_old_price']        = "Giá cũ";
+$lang['item_new_price']        = "Giá mới";
+$lang['item_unit']             = "Đơn vị";
+$lang['item_group_id']         = "Nhóm";
+$lang['item_release_date']     = "Ngày công bố";
+$lang['item_date_of_removal_of_sample'] = "Ngày bỏ mẫu";
+$lang['item_country_id']       = "Xuất xứ";
+$lang['item_specification']    = "Quy cách";
+$lang['item_size']             = "Kích thước";
+$lang['item_weight']           = "Trọng lượng";
+$lang['item_product_features'] = "Đặc tính sản phẩm";
+$lang['minimum_quantity']      = "Số lượng tối thiểu";
+$lang['maximum_quantity']      = "Số lượng tối đa";
+
+$lang['als_purchase']           = "Mua hàng";
+$lang['als_purchase_plan']      = "Kế hoạch mua";
+$lang['als_suggested_purchase'] = "Đề xuất mua";
+$lang['als_orders_ordered']     = "Đơn hàng đặt mua";
+$lang['als_purchase_contract']  = "Hợp đồng mua";
+$lang['als_purchase_sale_slip'] = "Phiếu nhập mua/nhập khẩu";
+$lang['als_purchase_costs_slip']= "Phiếu chi phí mua hàng";
+$lang['als_payment_slip_debit_note']       = "Phiếu chi / báo nợ";
+//$lang['als_report']                   = "Báo cáo";
+
+//$lang['als_sale']               = "Bán hàng";
+$lang['als_orders']             = "Đơn đặt hàng";
+$lang['als_receipts']           = "Phiếu thu";
+$lang['als_report']             = "Báo cáo";
+$lang['item_date_item']         = "Date sản phẩm";
+
+$lang['item_avatar']            = "Ảnh đại diện";

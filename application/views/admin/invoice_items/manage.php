@@ -6,7 +6,8 @@
         <?php if(has_permission('items','','create')){ ?>
         <div class="panel_s">
           <div class="panel-body _buttons">
-            <a href="#" class="btn btn-info pull-left" data-toggle="modal" data-target="#sales_item_modal"><?php echo _l('new_invoice_item'); ?></a>
+            <!--<a href="#" class="btn btn-info pull-left" data-toggle="modal" data-target="#sales_item_modal"><?php echo _l('new_invoice_item'); ?></a>-->
+            <a href="<?php echo admin_url('invoice_items/item') ?>" class="btn btn-info pull-left"><?php echo _l('new_invoice_item'); ?></a>
             <a href="#" class="btn btn-info pull-left mleft5" data-toggle="modal" data-target="#groups"><?php echo _l('item_groups'); ?></a>
             <!-- <a href="#" class="btn btn-info pull-left mleft5" data-toggle="modal" data-target="#landtype">Loại nhà đất</a> -->
           </div>
@@ -17,13 +18,18 @@
           <div class="panel-body">
             <div class="clearfix"></div>
             <?php render_datatable(array(
-              _l('invoice_items_list_description'),
-              _l('invoice_item_long_description'),
-              _l('invoice_items_list_rate'),
-              _l('invoice_items_list_tax'),
-              _l('unit'),
-              _l('item_group_name'),
-              _l('options'),
+              "ID",
+              _l('item_avatar'),
+              _l('item_code'),
+              _l('item_name'),
+              _l('item_short_name'),
+              _l('item_description'),
+              _l('item_price'),
+              _l('item_unit'),
+              _l('item_group_id'),
+              _l('minimum_quantity'),
+              _l('maximum_quantity'),  
+              _l('actions'),              
               ),
               'invoice-items'); ?>
             </div>
@@ -172,7 +178,7 @@
 <script>
   $(function(){
 
-    initDataTable('.table-invoice-items', window.location.href, [4], [4],'undefined',[0,'ASC']);
+    initDataTable('.table-invoice-items', window.location.href, [4], [4],'undefined',[0,'DESC']);
 
     if(get_url_param('groups_modal')){
       // Set time out user to see the message
