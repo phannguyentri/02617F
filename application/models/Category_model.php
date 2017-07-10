@@ -12,6 +12,16 @@ class Category_model extends CRM_Model
      * @param  mixed $id task id
      * @return object
      */
+    public function get_all($except = []) {
+        if(is_admin()) {
+            $where = [];
+            foreach($except as $value) {
+                $where["id !="] = $value;
+            }
+            $this->db->where($where);
+            return $this->db->get('tblcategories')->result_array();
+        }
+    }
     public function get_roles()
     {
         $is_admin = is_admin();

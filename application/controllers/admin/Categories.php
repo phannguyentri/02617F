@@ -25,6 +25,7 @@ class Categories extends Admin_controller
             $this->perfex_base->get_table_data('categories');
         }
         $data['roles']=$this->category_model->get_roles();
+        $data['categories'] = $this->category_model->get_all();
         // var_dump($data['roles']);die();
         $data['title'] = _l('Danh mục sản phẩm');
         $this->load->view('admin/categories/manage', $data);

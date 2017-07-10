@@ -3,17 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 $aColumns     = array(
-    'id',
-    'category',
-
+    'tblcategories.id',
+    'tblcategories.category',
+    'a.category',
 );
-$sIndexColumn = "id";
+$sIndexColumn = "tblcategories.id";
 $sTable       = 'tblcategories';
 $where        = array(
 //    'AND id_lead="' . $rel_id . '"'
 );
 $join         = array(
-    // 'LEFT JOIN tblroles  ON tblroles.roleid=tbldepartment.id_role'
+    'LEFT JOIN tblcategories a ON a.id=tblcategories.category_parent'
 );
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where, array(
     // 'tblroles.name',
@@ -36,8 +36,8 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     if ($aRow['creator'] == get_staff_user_id() || is_admin()) {
-        $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_department(' . $aRow['id'] . '); return false;"><i class="fa fa-eye"></i></a>';
-        $row[] =$_data.icon_btn('categories/delete_category/'. $aRow['id'] , 'remove', 'btn-danger delete-reminder');
+        $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_department(' . $aRow['tblcategories.id'] . '); return false;"><i class="fa fa-eye"></i></a>';
+        $row[] =$_data.icon_btn('categories/delete_category/'. $aRow['tblcategories.id'] , 'remove', 'btn-danger delete-reminder');
     } else {
         $row[] = '';
     }

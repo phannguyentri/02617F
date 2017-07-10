@@ -14,6 +14,7 @@
                         <?php render_datatable(array(
                             _l('id'),
                             _l('Tên danh mục'),
+                            _l('Danh mục cha'),
                             _l('options')
                         ),'categories'); ?>
                     </div>
@@ -38,6 +39,7 @@
                     <div class="col-md-12">
                         <div id="additional"></div>
                         <?php echo render_input('category','Tên'); ?>
+                        <?php echo render_select('category_parent', $categories, array('id', 'category'), 'Danh mục cha'); ?>
                     </div>
                 </div>
             </div>
