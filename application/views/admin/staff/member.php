@@ -68,18 +68,7 @@
   </div>
 </div>
 <?php } ?>
-<div class="checkbox checkbox-primary">
-  <?php
-  $checked = '';
-  if(isset($member)) {
-    if($member->is_not_staff == 1){
-      $checked = ' checked';
-    }
-  }
-  ?>
-  <input type="checkbox" value="1" name="is_not_staff" id="is_not_staff" <?php echo $checked; ?>>
-  <label for="is_not_staff" data-toggle="tooltip"><?php echo _l('is_not_staff_member'); ?></label>
-</div>
+
 <?php $value = (isset($member) ? $member->staff_code : get_option('prefix_staff').$maxid); ?>
 <?php $attrs = (isset($member) ? array() : array('readonly'=>true)); ?>
 <?php echo render_input('staff_code','Mã nhân viên',$value,'text',$attrs); ?>
@@ -264,22 +253,7 @@ $selected=(isset($member) ? $member->gender : '');
 <!--    <label for="administrator">--><?php //echo _l('staff_add_edit_administrator'); ?><!--</label>-->
   </div>
 </div>
-    <div class="col-md-12">
-<!--        <input type="radio" name="rule" value="1">-->
-<!--        <label for="administrator">--><?php //echo _l('rule_super_admin'); ?><!--</label>-->
-        <div class="radio radio-primary radio-inline">
-        <input type="radio" name="rule" value="2" <?php if($member->rule==2) echo "checked";?>>
-        <label for="administrator"><?php echo _l('rule_admin'); ?></label>
-        </div>
-        <div class="radio radio-primary radio-inline">
-        <input type="radio" name="rule" value="3" <?php if($member->rule==3) echo "checked";?>>
-        <label for="administrator"><?php echo _l('rule_staff'); ?></label>
-        </div>
-        <div class="radio radio-primary radio-inline">
-        <input type="radio" name="rule" value="4" <?php if($member->rule==4) echo "checked";?>>
-        <label for="administrator"><?php echo _l('rule_not_staff'); ?></label>
-        </div>
-    </div>
+    
 </div>
 <?php } ?>
 <?php if(!isset($member)){ ?>
@@ -313,7 +287,32 @@ $selected=(isset($member) ? $member->gender : '');
     if($member->staffid!=$_userid) {
     ?>
         <div role="tabpanel" class="tab-pane" id="tab_staff_permissions">
-
+              <div class="checkbox checkbox-primary">
+                <?php
+                $checked = '';
+                if(isset($member)) {
+                  if($member->is_not_staff == 1){
+                    $checked = ' checked';
+                  }
+                }
+                ?>
+                <input type="checkbox" value="1" name="is_not_staff" id="is_not_staff" <?php echo $checked; ?>>
+                <label for="is_not_staff" data-toggle="tooltip"><?php echo _l('is_not_staff_member'); ?></label>
+              </div>
+              <div class="form-group">
+                <div class="radio radio-primary radio-inline">
+                <input type="radio" name="rule" value="2" onchange="review_nhanvien(this.value)" <?php if($member->rule==2) echo "checked";?>>
+                <label for="administrator"><?php echo _l('rule_admin'); ?></label>
+                </div>
+                <div class="radio radio-primary radio-inline">
+                <input type="radio" name="rule" value="3" onchange="review_nhanvien(this.value)" <?php if($member->rule==3) echo "checked";?>>
+                <label for="administrator"><?php echo _l('rule_staff'); ?></label>
+                </div>
+                <div class="radio radio-primary radio-inline">
+                <input type="radio" name="rule" value="4" onchange="review_nhanvien(this.value)" <?php if($member->rule==4) echo "checked";?>>
+                <label for="administrator"><?php echo _l('rule_not_staff'); ?></label>
+                </div>
+            </div>
               <?php
               do_action('staff_render_permissions');
               $selected = '';
@@ -330,7 +329,10 @@ $selected=(isset($member) ? $member->gender : '');
                }
              }
              ?>
-             <?php echo render_select('role',$roles,array('roleid','name'),'staff_add_edit_role',$selected); ?>
+             <?php echo render_select('role',$roles,array('roleid','name'),'staff_add_edit_role',$selected,array('onchange'=>'get_code_staff(this.value,'.$member->staffid.')')); ?>
+             <?php $selected_staff_manager = (isset($member) ? $member->staff_manager : ''); ?>
+            <?php echo render_select('staff_manager[]',$staff_manager,array('staffid','name'),'Nhân viên quản lý',$selected_staff_manager,array('multiple'=>true),array()); ?>
+
              <hr />
              <h4 class="font-medium mbot15 bold"><?php echo _l('staff_add_edit_permissions'); ?></h4>
              <div class="table-responsive">
@@ -689,6 +691,43 @@ $selected=(isset($member) ? $member->gender : '');
      }
    }
  });
+ function get_code_staff(id,staff_id="")
+      {
+          rule=$('input[name="rule"]:checked').val();
+          role=$('#role').val();
+          if(role!="")
+          {
+              jQuery.ajax({
+                  type: "post",
+                  url: "<?=admin_url()?>staff/get_staff_role/"+role+'/'+rule,
+                  data: '',
+                  cache: false,
+                  success: function (data) {
+                      $('select[name=staff_manager\\[\\]]').html(data).selectpicker('refresh');
+                  }
+              });
+          }
+
+
+      }
+
+  function review_nhanvien(code_check)
+            {
+                role=$('#role').val();
+                if(role!="")
+                {
+                    jQuery.ajax({
+                        type: "post",
+                        url: "<?=admin_url()?>staff/get_staff_role/"+role+'/'+code_check,
+                        data: '',
+                        cache: false,
+                        success: function (data) {
+                          $('select[name=staff_manager\\[\\]]').html(data).selectpicker('refresh');
+
+                        }
+                    });
+                }
+            }
 </script>
 </body>
 </html>

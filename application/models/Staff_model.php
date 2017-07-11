@@ -7,6 +7,30 @@ class Staff_model extends CRM_Model
     {
         parent::__construct();
     }
+    public function load_rule_manager($rule,$role)
+    {
+        $this->db->select('fullname as name,staffid');
+        $this->db->where('role=' . $role);
+        $this->db->where('rule', ($rule - 1));
+        return $this->db->get('tblstaff')->result_array();
+    }
+    public function get_staff_role($idrole="",$idrule="")
+    {
+        $this->db->select('fullname as name,staffid');
+        if($idrule>2) {
+            $this->db->where('role=' . $idrole);
+            $this->db->where('rule', ($idrule - 1));
+            $staff = $this->db->get('tblstaff')->result_array();
+// var_dump($staff);die();
+
+        }
+        else
+        {
+            $this->db->where('rule', ($idrule - 1));
+            $staff = $this->db->get('tblstaff')->result_array();
+        }
+        return $staff;
+    }
     public function delete($id, $transfer_data_to)
     {
 
@@ -467,6 +491,9 @@ class Staff_model extends CRM_Model
      */
     public function update($data, $id)
     {
+                
+                $data['staff_manager']=json_encode($data['staff_manager']);
+// var_dump($data);die();
         $hook_data['data']   = $data;
         $hook_data['userid'] = $id;
         $hook_data           = do_action('before_update_staff_member', $hook_data);

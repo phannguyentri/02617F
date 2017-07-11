@@ -80,11 +80,14 @@ class Staff extends Admin_controller
             if(!$member){
                 blank_page('Staff Member Not Found','danger');
             }
+            $member->staff_manager=json_decode($member->staff_manager);
+
             $data['member']            = $member;
             $title                     = $member->firstname . ' ' . $member->lastname;
             $data['staff_permissions'] = $this->roles_model->get_staff_permissions($id);
             $data['staff_departments'] = $this->departments_model->get_staff_departments($member->staffid);
-
+            $data['staff_manager']=$this->staff_model->get_staff_role($member->role,$member->rule);
+            // var_dump($data['staff_manager']);die();
             $ts_filter_data = array();
             if($this->input->get('filter')){
                 if($this->input->get('range') != 'period'){
@@ -114,6 +117,27 @@ class Staff extends Admin_controller
         $data['title']       = $title;
         $this->load->view('admin/staff/member', $data);
     }
+
+    public function get_staff_role($idrole="",$idrule="")
+    {
+
+        if($idrule>2) {
+            $this->db->where('role=' . $idrole);
+            $this->db->where('rule', ($idrule - 1));
+            $staff = $this->db->get('tblstaff')->result_array();
+        }
+        else
+        {
+            $this->db->where('rule', ($idrule - 1));
+            $staff = $this->db->get('tblstaff')->result_array();
+        }
+        $option = "<option></option>";
+        foreach ($staff as $rom) {
+            $option = $option . "<option value='" . $rom['staffid'] . "'>" . $rom['fullname'] . "</option>";
+        }
+        echo $option;
+    }
+
     public function change_language($lang = ''){
         $lang = do_action('before_staff_change_language',$lang);
         $this->db->where('staffid',get_staff_user_id());

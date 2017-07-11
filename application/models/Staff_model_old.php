@@ -464,7 +464,7 @@ class Staff_model extends CRM_Model
      */
     public function update($data, $id)
     {
-        // var_dump($data);die();
+        var_dump($data);die();
         $hook_data['data']   = $data;
         $hook_data['userid'] = $id;
         $hook_data           = do_action('before_update_staff_member', $hook_data);
