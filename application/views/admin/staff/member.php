@@ -267,12 +267,18 @@ $selected=(isset($member) ? $member->gender : '');
     <div class="col-md-12">
 <!--        <input type="radio" name="rule" value="1">-->
 <!--        <label for="administrator">--><?php //echo _l('rule_super_admin'); ?><!--</label>-->
+        <div class="radio radio-primary radio-inline">
         <input type="radio" name="rule" value="2" <?php if($member->rule==2) echo "checked";?>>
         <label for="administrator"><?php echo _l('rule_admin'); ?></label>
+        </div>
+        <div class="radio radio-primary radio-inline">
         <input type="radio" name="rule" value="3" <?php if($member->rule==3) echo "checked";?>>
         <label for="administrator"><?php echo _l('rule_staff'); ?></label>
+        </div>
+        <div class="radio radio-primary radio-inline">
         <input type="radio" name="rule" value="4" <?php if($member->rule==4) echo "checked";?>>
         <label for="administrator"><?php echo _l('rule_not_staff'); ?></label>
+        </div>
     </div>
 </div>
 <?php } ?>

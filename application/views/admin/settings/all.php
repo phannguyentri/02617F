@@ -70,6 +70,10 @@
                         <a href="<?php echo admin_url('settings?group=misc'); ?>" data-group="misc">
                         <?php echo _l('settings_group_misc'); ?></a>
                      </li>
+                     <li>
+                        <a href="<?php echo admin_url('settings?group=prefix'); ?>" data-group="prefix">
+                        <?php echo _l('Tiền tố'); ?></a>
+                     </li>
                      <?php if(is_admin()){ ?>
                      <li>
                         <a href="<?php echo admin_url('settings?group=update'); ?>" data-group="update">

@@ -38,6 +38,7 @@ class Settings extends Admin_controller
             if ($logo_uploaded || $favicon_uploaded) {
                 set_debug_alert(_l('logo_favicon_changed_notice'));
             }
+            
 
             // Do hard refresh on general for the logo
             if ($this->input->get('group') == 'general') {
