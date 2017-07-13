@@ -3578,7 +3578,8 @@ $lang['als_purchase_contract']  = "Hợp đồng mua";
 $lang['als_purchase_sale_slip'] = "Phiếu nhập mua/nhập khẩu";
 $lang['als_purchase_costs_slip']= "Phiếu chi phí mua hàng";
 $lang['als_payment_slip_debit_note']       = "Phiếu chi / báo nợ";
-//$lang['als_report']                   = "Báo cáo";
+
+$lang['als_import_goods']                   = "Nhập hàng";
 
 //$lang['als_sale']               = "Bán hàng";
 $lang['als_orders']             = "Đơn đặt hàng";

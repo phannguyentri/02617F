@@ -17,10 +17,13 @@ class Invoice_items_model extends CRM_Model
         $this->db->from('tblitems');
         $this->db->join('tbltaxes', 'tbltaxes.id = tblitems.tax', 'left');
         $this->db->join('tblitems_groups', 'tblitems_groups.id = tblitems.group_id', 'left');
-        $this->db->order_by('id', 'desc');
+        $this->db->order_by('tblitems.id', 'desc');
+        
         if (is_numeric($id)) {
             $this->db->where('tblitems.id', $id);
-            return $this->db->get()->row();
+            $result=$this->db->get()->row();
+            echo $this->db->last_query(); die;
+            return $result;
         }
         return $this->db->get()->result_array();
     }

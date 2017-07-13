@@ -268,6 +268,37 @@ function mutiple_taxes_found_for_item($taxes)
     }
     return true;
 }
+
+/**
+ * Format purchase status
+ * @param  integer  $status
+ * @param  string  $classes additional classes
+ * @param  boolean $label   To include in html label or not
+ * @return mixed
+ */
+function format_purchase_status($status, $classes = '', $label = true)
+{
+    $id          = $status;
+    if($status==0)
+    {
+        $label_class = 'warning';
+    }
+    else
+    {
+        $label_class = 'success';
+    }
+    if ($status == 0) {
+        $status = _l('Chưa duyệt');
+    } else if ($status == 1) {
+        $status = _l('Đã duyệt');
+    }
+    if ($label == true) {
+        return '<span class="label label-' . $label_class . ' ' . $classes . ' s-status invoice-status-' . $id . '">' . $status . '</span>';
+    } else {
+        return $status;
+    }
+}
+
 /**
  * Format invoice status
  * @param  integer  $status

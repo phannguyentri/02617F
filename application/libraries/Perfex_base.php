@@ -111,6 +111,22 @@ class Perfex_Base
     {
         return $this->options;
     }
+
+    /**
+     * Function that gets option based on passed name
+     * @param  string $name
+     * @return string
+     */
+    public function getMaxID($id,$table)
+    {
+        $table = trim($table);
+        
+        if (isset($id)) {
+            $this->_instance->db->select_max($id);
+            return $this->_instance->db->get($table)->row()->{$id};
+        }
+        return '';
+    }
     /**
      * Function that gets option based on passed name
      * @param  string $name

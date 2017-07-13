@@ -1,0 +1,1 @@
+ALTER TABLE `tblstaff` ADD `test` `staff_manager` varchar(255) DEFAULT NULL AFTER `staff_code`;

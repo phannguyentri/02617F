@@ -1,4 +1,3 @@
-
 <div class="panel_s<?php if(!isset($invoice) || (isset($invoice) && count($invoices_to_merge) == 0 && (isset($invoice) && !isset($invoice_from_project) && count($expenses_to_bill) == 0))){echo ' hide';} ?>" id="invoice_top_info">
  <div class="panel-body">
   <div class="row">
@@ -32,9 +31,9 @@
  }
  ?>
  <div class="row">
-   <div class="col-md-6 border-right">
+   <div class="col-md-6">
     <h4 class="bold no-margin font-medium">
-     <?php echo _l('invoice_estimate_general_options'); ?>
+     <?php echo _l('Thông tin kế hoạch'); ?>
    </h4>
    <hr />
    <?php
@@ -43,11 +42,11 @@
      $selected = (isset($customer_id) ? $customer_id: '');
    }
    ?>
-   <?php $auto_toggle_class = (isset($invoice) || isset($do_not_auto_toggle) ? '' : 'auto-toggle'); ?>
+   <!-- <?php $auto_toggle_class = (isset($invoice) || isset($do_not_auto_toggle) ? '' : 'auto-toggle'); ?>
    <div class="f_client_id">
      <?php echo render_select('clientid',$clients,array('userid','company'),'invoice_select_customer',$selected,array(),array(),'',$auto_toggle_class); ?>
-   </div>
-   <?php
+   </div> -->
+   <!-- <?php
    if(!isset($invoice_from_project)){ ?>
    <div class="form-group projects-wrapper<?php if(!isset($invoice) && !isset($customer_id)){ echo ' hide';} ?>">
      <label for="project_id"><?php echo _l('project'); ?></label>
@@ -68,13 +67,13 @@
       ?>
     </select>
   </div>
-  <?php } ?>
+  <?php } ?> -->
   <div class="row">
-   <div class="col-md-12">
+   <!-- <div class="col-md-12">
     <a href="#" class="edit_shipping_billing_info" data-toggle="modal" data-target="#billing_and_shipping_details"><i class="fa fa-pencil-square-o"></i></a>
     <?php include_once(APPPATH .'views/admin/invoices/billing_and_shipping_template.php'); ?>
-  </div>
-  <div class="col-md-6">
+  </div> -->
+  <!-- <div class="col-md-6">
     <p class="bold"><?php echo _l('invoice_bill_to'); ?></p>
     <address>
      <span class="billing_street">
@@ -99,8 +98,8 @@
                <?php $billing_zip = ($billing_zip == '' ? '--' :$billing_zip); ?>
                <?php echo $billing_zip; ?></span>
              </address>
-           </div>
-           <div class="col-md-6">
+           </div> -->
+           <!-- <div class="col-md-6">
             <p class="bold"><?php echo _l('ship_to'); ?></p>
             <address>
              <span class="shipping_street">
@@ -125,7 +124,7 @@
                        <?php $shipping_zip = ($shipping_zip == '' ? '--' :$shipping_zip); ?>
                        <?php echo $shipping_zip; ?></span>
                      </address>
-                   </div>
+                   </div> -->
                  </div>
                  <?php
                  $next_invoice_number = get_option('next_invoice_number');
@@ -163,7 +162,7 @@
                  <div class="input-group">
                   <span class="input-group-addon">
                     <?php if(isset($invoice)){ ?>
-                    <a href="#" onclick="return false;" data-toggle="popover" data-container='._transaction_form' data-html="true" data-content="<label class='control-label'><?php echo _l('settings_sales_invoice_prefix'); ?></label><div class='input-group'><input name='s_prefix' type='text' class='form-control' value='<?php echo $invoice->prefix; ?>'></div><button type='button' onclick='save_sales_number_settings(this); return false;' data-url='<?php echo admin_url('invoices/update_number_settings/'.$invoice->id); ?>' class='btn btn-info btn-block mtop15'><?php echo _l('submit'); ?></button>"><i class="fa fa-cog"></i></a>
+                    
                     <?php } ?>
                     <?php echo $prefix; ?></span>
                     <input type="text" name="number" class="form-control" value="<?php echo $_invoice_number; ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>">
@@ -179,10 +178,8 @@
                   <?php echo render_date_input('duedate','invoice_add_edit_duedate',$value); ?>
                 </div>
               </div>
-              <?php $rel_id = (isset($invoice) ? $invoice->id : false); ?>
-              <?php echo render_custom_fields('invoice',$rel_id); ?>
             </div>
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
               <div class="panel_s">
                <h4 class="bold no-margin font-medium"><?php echo _l('invoice_add_edit_advanced_options'); ?></h4>
                <hr />
@@ -331,7 +328,7 @@
 <?php $value = (isset($invoice) ? $invoice->adminnote : ''); ?>
 <?php echo render_textarea('adminnote','invoice_add_edit_admin_note',$value); ?>
 </div>
-</div>
+</div> -->
 <?php // Check if any recuring invoices are made from this invoice
 if(isset($invoice) && ($invoice->recurring !== 0 && $invoice->last_recurring_date != NULL)){ ?>
 <?php if(count($invoice_recurring_invoices)){ ?>
@@ -386,7 +383,7 @@ if(isset($invoice) && ($invoice->recurring !== 0 && $invoice->last_recurring_dat
 </div>
 <?php } ?>
 <div class="col-md-<?php if(!isset($invoice_from_project)){ echo 5; }else {echo 8;} ?> text-right show_quantity_as_wrapper">
-  <div class="mtop10">
+  <!-- <div class="mtop10">
    <span><?php echo _l('show_quantity_as'); ?> </span>
    <div class="radio radio-primary radio-inline">
     <input type="radio" value="1" id="sq_1" name="show_quantity_as" data-text="<?php echo _l('invoice_table_quantity_heading'); ?>" <?php if(isset($invoice) && $invoice->show_quantity_as == 1){echo 'checked';}else if(!isset($hours_quantity) && !isset($qty_hrs_quantity)){echo'checked';} ?>>
@@ -400,7 +397,7 @@ if(isset($invoice) && ($invoice->recurring !== 0 && $invoice->last_recurring_dat
     <input type="radio" value="3" id="sq_3" name="show_quantity_as" data-text="<?php echo _l('invoice_table_quantity_heading'); ?>/<?php echo _l('invoice_table_hours_heading'); ?>" <?php if(isset($invoice) && $invoice->show_quantity_as == 3 || isset($qty_hrs_quantity)){echo 'checked';} ?>>
     <label for="sq_3"><?php echo _l('invoice_table_quantity_heading'); ?>/<?php echo _l('invoice_table_hours_heading'); ?></label>
   </div>
-</div>
+</div> -->
 </div>
 </div>
 <?php if(isset($invoice_from_project)){ echo '<hr />'; } ?>

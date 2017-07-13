@@ -1,4 +1,3 @@
-
 <div class="panel_s<?php if(!isset($invoice) || (isset($invoice) && count($invoices_to_merge) == 0 && (isset($invoice) && !isset($invoice_from_project) && count($expenses_to_bill) == 0))){echo ' hide';} ?>" id="invoice_top_info">
  <div class="panel-body">
   <div class="row">

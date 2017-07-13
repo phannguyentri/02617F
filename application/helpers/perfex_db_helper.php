@@ -234,6 +234,21 @@ function get_primary_contact_user_id($userid)
  * @param  string $name Option name
  * @return mixed
  */
+function getMaxID($id,$table)
+{
+   
+    $CI =& get_instance();
+    if (!class_exists('perfex_base')) {
+        $CI->load->library('perfex_base');
+    }
+    return $CI->perfex_base->getMaxID($id,$table);
+}
+
+/**
+ * Get option value
+ * @param  string $name Option name
+ * @return mixed
+ */
 function get_option($name)
 {
    
