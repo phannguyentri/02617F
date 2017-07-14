@@ -1049,7 +1049,9 @@ function invoice_pdf($invoice, $tag = '')
     $CI->load->library('numberword', array(
         'clientid' => $invoice->clientid
     ));
+
     $invoice = do_action('invoice_html_pdf_data', $invoice);
+
     if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_invoicepdf.php')) {
         include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_invoicepdf.php');
     } else {

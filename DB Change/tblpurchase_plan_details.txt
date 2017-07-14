@@ -1,0 +1,1 @@
+ALTER TABLE `tblpurchase_plan_details` ADD `minimum_quantity` INT NULL DEFAULT '0' AFTER `quantity_current`;

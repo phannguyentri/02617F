@@ -88,11 +88,44 @@ class Purchases extends Admin_controller
         $data['items_groups'] = $this->invoice_items_model->get_groups();
         $data['items_units'] = $this->invoice_items_model->get_units();
         // $data['items']        = $this->invoice_items_model->get_grouped();
-        $data['items']        = $this->invoice_items_model->get_full();
+               $items= $this->invoice_items_model->get_full();
+               for ($i=0; $i < count($items); $i++) { 
+                // var_dump($items[$i]);die();
+                   $items[$i]['quantity_required']=$item->quantity-$item->minimum_quantity;
+                   $items[$i]['quantity_min']=$item->quantity-$item->minimum_quantity;
+               }
+               $data['items'] =$items;
+        // echo "<pre>";
+        //     var_dump($data['items']);die();
+
 
 
         $data['title'] = $title;
         $this->load->view('admin/purchases/purchase', $data);
+    }
+
+    /* Delete purchase */
+    public function delete($id)
+    {
+        if (!has_permission('invoices', '', 'delete')) {
+            access_denied('invoices');
+        }
+        if (!$id) {
+            redirect(admin_url('purchases/list_invoices'));
+        }
+
+        $success = $this->purchases_model->delete($id);
+
+        if ($success) {
+            set_alert('success', _l('deleted', _l('Kế hoạch mua')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('kế hoạch mua')));
+        }
+        if (strpos($_SERVER['HTTP_REFERER'], 'list_invoices') !== false) {
+            redirect(admin_url('invoices/list_invoices'));
+        } else {
+            redirect($_SERVER['HTTP_REFERER']);
+        }
     }
     
 }

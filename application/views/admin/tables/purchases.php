@@ -41,8 +41,8 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     if ($aRow['creator'] == get_staff_user_id() || is_admin()) {
-        $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_department(' . $aRow['id'] . '); return false;"><i class="fa fa-eye"></i></a>';
-        $row[] =$_data.icon_btn('units/delete_unit/'. $aRow['id'] , 'remove', 'btn-danger delete-reminder');
+        $_data = '<a href="purchases/purchase/'.$aRow['id'].'" class="btn btn-default btn-icon" ><i class="fa fa-eye"></i></a>';
+        $row[] =$_data.icon_btn('purchases/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-reminders');
     } else {
         $row[] = '';
     }

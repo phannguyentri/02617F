@@ -22,7 +22,6 @@ class Invoice_items_model extends CRM_Model
         if (is_numeric($id)) {
             $this->db->where('tblitems.id', $id);
             $result=$this->db->get()->row();
-            echo $this->db->last_query(); die;
             return $result;
         }
         return $this->db->get()->result_array();
@@ -40,6 +39,18 @@ class Invoice_items_model extends CRM_Model
         return $this->db->get()->result_array();
 
     }
+    public function getItemByID($id = '')
+    {
+        
+        $this->db->from('tblitems');
+        $this->db->order_by('id', 'desc');
+        if (is_numeric($id)) {
+            $this->db->where('tblitems.id', $id);
+            return $this->db->get()->row();
+        }
+        return $this->db->get()->result();
+
+    }
     public function getPriceHistory($id = '') {
         $this->db->from('item_price_history');
         $this->db->where('id_item', $id);
@@ -53,14 +64,10 @@ class Invoice_items_model extends CRM_Model
         $this->db->select('provinceid,name');
         $this->db->from('province');
         $this->db->order_by('name', 'asc');
-        // $re=$this->db->get()->result_array();
-        // var_dump($id);die();
         if (isset($id) && $id!='') {
-            // var_dump('dvsd');die();
             $this->db->where('provinceid', $id);
             return $this->db->get()->row();
         }
-        // var_dump('dvsd1');die();
         return $this->db->get()->result_array();
     }
 
@@ -70,14 +77,10 @@ class Invoice_items_model extends CRM_Model
         $this->db->select('*');
         $this->db->from('district');
         $this->db->order_by('name', 'asc');
-        // $re=$this->db->get()->result_array();
-        // var_dump($provinceid);die();
         if (isset($provinceid) && $provinceid!='') {
-            // var_dump('dvsd');die();
             $this->db->where('provinceid', $provinceid);
             return $this->db->get()->result_array();
         }
-        // var_dump('dvsd1');die();
         return $this->db->get()->result_array();
     }
 
@@ -87,14 +90,10 @@ class Invoice_items_model extends CRM_Model
         $this->db->select('*');
         $this->db->from('landtype');
         $this->db->order_by('name', 'asc');
-        // $re=$this->db->get()->result_array();
-        // var_dump($id);die();
         if (isset($id) && $id!='') {
-            // var_dump('dvsd');die();
             $this->db->where('id', $id);
             return $this->db->get()->row();
         }
-        // var_dump('dvsd1');die();
         return $this->db->get()->result_array();
     }
 

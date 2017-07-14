@@ -1,7 +1,7 @@
 <?php init_head(); ?>
 <style type="text/css">
   .item-purchase .ui-sortable tr td input {
-    width: 110px;
+    width: 80px;
   }
 </style>
 <div id="wrapper">
@@ -61,7 +61,7 @@
 		                        $value = (isset($purchase) ? $purchase->status : "0");
 		                        echo render_select('status', $status, array('id','text'), 'Trạng thái', $value, array(), array(), '', '', false);
 		                    ?>
-		                    <button class="btn-tr btn btn-info mleft10 text-right pull-right invoice-form-submit">
+		                    <button class="btn-tr btn btn-info mleft10 text-right pull-right purchase-form-submit">
 						      <?php echo _l('submit'); ?>
 						    </button>
 				 		</div>
@@ -86,21 +86,30 @@
                                 </select>
 						   </div>
 						 </div>
+						 <div class="col-md-8" style="display: none;">
+						 	<div class="form-group mbot25">
+						    <a href="<?php echo admin_url('purchase/pdf/'.$invoice->id.'?print=true'); ?>" target="_self" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('print'); ?>" data-placement="bottom"><i class="fa fa-print"></i></a>
+						    <a href="<?php echo admin_url('purchase/pdf/'.$invoice->id); ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('view_pdf'); ?>" data-placement="bottom"><i class="fa fa-file-pdf-o"></i></a>
+						    <!-- <a href="#" class="invoice-send-to-client btn-with-tooltip btn btn-default" data-toggle="tooltip" title="<?php echo $_tooltip; ?>" data-placement="bottom"><span data-toggle="tooltip" data-title="<?php echo $_tooltip_already_send; ?>"><i class="fa fa-envelope"></i></span></a> -->
+						 </div>
+						 </div>
 
 						</div>
 						<div class="row">
 							<div class="col-md-12">
 								<div class="table-responsive">
-								 <table class="table item-purchase items table-main-invoice-edit no-mtop">
+								 <table class="table item-purchase items table-main-purchase-edit no-mtop">
 								  <thead>
 								   <tr>
 								    <th></th>
-								    <th  class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('invoice_table_item_heading'); ?></th>
-								    <th  class="text-left"><?php echo _l('invoice_table_item_description'); ?></th>
-								   <th class="text-left qty"><?php echo _l('Số lượng yêu cầu'); ?></th>
-								   <th class="text-left"><?php echo _l('Số lượng hiện tại'); ?></th>
-								   <th class="text-left"><?php echo _l('Số lượng an toàn'); ?></th>
-								   <th class="text-left"><?php echo _l('Mức mua tối thiểu'); ?></th>
+								    <th class="text-center"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('invoice_table_item_heading'); ?></th>
+								    <th  class="text-center"><?php echo _l('invoice_table_item_description'); ?></th>
+								   <th class="text-center qty"><?php echo _l('Số lượng yêu cầu'); ?></th>
+								   <th class="text-center"><?php echo _l('Số lượng hiện tại'); ?></th>
+								   <th class="text-center"><?php echo _l('Số lượng an toàn'); ?></th>
+								   <th class="text-center"><?php echo _l('Mức mua tối thiểu'); ?></th>
+								   <!-- <th class="text-center"><?php echo _l('Đơn giá'); ?></th>
+								   <th class="text-center"><?php echo _l('Thành tiền'); ?></th> -->
 								   <th></th>
 								 </tr>
 								</thead>
@@ -114,46 +123,42 @@
 								   <textarea name="description" class="form-control" placeholder="<?php echo _l('Mô tả'); ?>" readonly></textarea>
 								 </td>
 								 <td>
-								   <input type="number"  name="quantity" min="0" value="1" class="form-control" placeholder="<?php echo _l('Số lượng yêu cầu'); ?>">
+								   <input type="number"  name="quantity1" min="0" value="1" class="form-control" placeholder="<?php echo _l('Số lượng yêu cầu'); ?>">
 								 </td>
 								 <td>
-								   <input type="number"  name="rate" class="form-control" placeholder="<?php echo _l('Số lượng hiện tại'); ?>" readonly>
+								   <input type="number"  name="quantity2" class="form-control" placeholder="<?php echo _l('Số lượng hiện tại'); ?>" readonly>
 								 </td>
 								 <td>
-								   <input type="number"  name="rate" class="form-control" placeholder="<?php echo _l('Số lượng an toàn'); ?>" readonly>
+								   <input type="number"  name="quantity3" class="form-control" placeholder="<?php echo _l('Số lượng an toàn'); ?>" readonly>
 								 </td>
 								 <td>
-								   <input type="number"  name="rate" class="form-control" placeholder="<?php echo _l('Mức mua tối thiểu'); ?>" readonly>
+								   <input type="number"  name="quantity4" class="form-control" placeholder="<?php echo _l('Mức mua tối thiểu'); ?>" readonly>
 								 </td>
+								 <!-- <td>
+								   <input type="number"  name="quantity4" class="form-control" placeholder="<?php echo _l('Đơn giá'); ?>" readonly>
+								 </td>
+								 <td>
+								   <input type="number"  name="quantity4" class="form-control" placeholder="<?php echo _l('Thành tiền'); ?>" readonly>
+								 </td> -->
 								<td>
 								<button type="button" id="btnAdd" onclick="createTrItem(); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
 								</td>
 								</tr>
 								<?php if (isset($purchase) || isset($purchase->items)) {
 								  foreach ($purchase->items as $item) {
-								    $manual    = false;
 								    $table_row = '<tr class="sortable item">';
-								    $table_row .= '<td class="dragger">';
-								    $table_row .= form_hidden('' . $items_indicator . '[' . $i . '][itemid]', $item['id']);
-								    $amount = $item['rate'] * $item['qty'];
-								    $amount = _format_number($amount);
-								                                      // order input
-								    $table_row .= '<input type="hidden" class="order" name="' . $items_indicator . '[' . $i . '][order]">';
+								    $table_row .= '<td>';
+								    $table_row .= form_hidden('id[]',$item['id']);
+								    $table_row .= '<input type="hidden" name="item[id][]" value="'.$item['product_id'].'" />';
 								    $table_row .= '</td>';
-								    $table_row .= '<td class="bold description"><textarea name="' . $items_indicator . '[' . $i . '][description]" class="form-control" >' . clear_textarea_breaks($item['description']) . '</textarea></td>';
-								    $table_row .= '<td><textarea name="' . $items_indicator . '[' . $i . '][long_description]" class="form-control" >' . clear_textarea_breaks($item['long_description']) . '</textarea></td>';
-								    $table_row .= '<td><input type="number" min="0" onblur="calculate_total();" onchange="calculate_total();" data-quantity name="' . $items_indicator . '[' . $i . '][qty]" value="' . $item['qty'] . '" class="form-control">';
-								    $unit_placeholder = '';
-								    if(!$item['unit']){
-								      $unit_placeholder = _l('unit');
-								      $item['unit'] = '';
-								    }
-								    $table_row .= '<input type="text" placeholder="'.$unit_placeholder.'" name="'.$items_indicator.'['.$i.'][unit]" class="form-control input-transparent text-right" value="'.$item['unit'].'">';
+								    $table_row .= '<td class="dragger">'.$item['name'].'</td>';
+								    $table_row .= '<td class="dragger">'.$item['description'].'</td>';
+								    $table_row .= '<td><input type="number" name="item[quantity_required][]" value="'.$item['quantity_required'].'" />';
 								    $table_row .= '</td>';
-								    $table_row .= '<td class="rate"><input type="text" data-toggle="tooltip" title="' . _l('numbers_not_formated_while_editing') . '" onblur="calculate_total();" onchange="calculate_total();" name="' . $items_indicator . '[' . $i . '][rate]" value="' . $item['rate'] . '" class="form-control"></td>';
-								    $table_row .= '<td class="taxrate">' . $this->misc_model->get_taxes_dropdown_template('' . $items_indicator . '[' . $i . '][taxname][]', $invoice_item_taxes, 'invoice', $item['id'], true, $manual) . '</td>';
-								    $table_row .= '<td class="amount">' . $amount . '</td>';
-								    $table_row .= '<td><a href="#" class="btn btn-danger pull-left" onclick="delete_item(this,' . $item['id'] . '); return false;"><i class="fa fa-times"></i></a></td>';
+								    $table_row .= '<td><input type="number" name="item[quantity_current][]" value="'.$item['quantity_current'].'" readonly/></td>';
+								    $table_row .= '<td><input type="number" name="item[minimum_quantity][]" value="'.$item['minimum_quantity'].'" readonly/></td>';
+								    $table_row .= '<td><input type="number" name="item[quantity_min][]" value="'.$item['quantity_min'].'" readonly/></td>';
+								    $table_row .= '<td><a href="#" class="btn btn-danger pull-left" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>';
 								    $table_row .= '</tr>';
 								    if (isset($item['task_id'])) {
 								      if (!is_array($item['task_id'])) {
@@ -185,7 +190,14 @@
                                     <td><span class="bold"><?php echo _l('Số sản phẩm'); ?> :</span>
                                     </td>
                                     <td class="total">
-                                        0
+                                        <?=count($purchase->items)?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><span class="bold"><?php echo _l('Tổng tiền'); ?> :</span>
+                                    </td>
+                                    <td class="grand_total">
+                                        <?=count($purchase->grand_total)?>
                                     </td>
                                 </tr>
                             </tbody>
@@ -233,7 +245,9 @@
         });
         return itemResult;
     };
-    var total = 0;
+
+    var total = <?=count($purchase->items)?>;
+
     var uniqueArray = 0;
     var isNew = false;
     var createTrItem = () => {
@@ -253,6 +267,8 @@
         var td5 = $('<td><input type="number" name="item[quantity_current][]" value="" readonly/></td>');
         var td6 = $('<td><input type="number" name="item[minimum_quantity][]" value="" readonly/></td>');
         var td7 = $('<td><input type="number" name="item[quantity_min][]" value="" readonly/></td>');
+        // var td8 = $('<td><input type="number" name="item[minimum_quantity][]" value="" readonly/></td>');
+        // var td9 = $('<td><input type="number" name="item[quantity_min][]" value="" readonly/></td>');
 
         td1.find('input').val($('tr.main').find('td:nth-child(1) > input').val());
         td2.text($('tr.main').find('td:nth-child(2) > textarea').val());
@@ -261,6 +277,8 @@
         td5.find('input').val($('tr.main').find('td:nth-child(5) > input').val());
         td6.find('input').val($('tr.main').find('td:nth-child(6) > input').val());
         td7.find('input').val($('tr.main').find('td:nth-child(7) > input').val());
+        // td8.find('input').val($('tr.main').find('td:nth-child(8) > input').val());
+        // td9.find('input').val($('tr.main').find('td:nth-child(9) > input').val());
         
         newTr.append(td1);
         newTr.append(td2);
@@ -269,6 +287,8 @@
         newTr.append(td5);
         newTr.append(td6);
         newTr.append(td7);
+        // newTr.append(td8);
+        // newTr.append(td9);
 
         newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td');
         $('table.item-purchase tbody').append(newTr);
@@ -286,11 +306,14 @@
         //console.log(trBar.find('td:nth-child(2) > input'));
         
         trBar.find('td:first > input').val("");
-        trBar.find('td:nth-child(2) > input').val('');
-        trBar.find('td:nth-child(3) > input').val(1);
+        trBar.find('td:nth-child(2) > textarea').text('');
+        trBar.find('td:nth-child(3) > textarea').text();
         trBar.find('td:nth-child(4) > input').val('');
-        trBar.find('td:nth-child(5) > textarea').text('');
-
+        trBar.find('td:nth-child(5) > input').val('');
+        trBar.find('td:nth-child(6) > input').val('');
+        trBar.find('td:nth-child(7) > input').val('');
+        // trBar.find('td:nth-child(8) > input').val('');
+        // trBar.find('td:nth-child(9) > input').val('');
 
     };
     var deleteTrItem = (trItem) => {
@@ -311,10 +334,10 @@
             trBar.find('td:first > input').val(itemFound.id);
             trBar.find('td:nth-child(2) > textarea').text(itemFound.name);
             trBar.find('td:nth-child(3) > textarea').text(itemFound.description);
-            trBar.find('td:nth-child(4) > input').val(1);
-            trBar.find('td:nth-child(5) > input').val(0);
-            trBar.find('td:nth-child(6) > input').val(0);
-            trBar.find('td:nth-child(7) > input').val(0);
+            trBar.find('td:nth-child(4) > input').val(itemFound.quantity_required);
+            trBar.find('td:nth-child(5) > input').val(itemFound.quantity);
+            trBar.find('td:nth-child(6) > input').val(itemFound.minimum_quantity);
+            trBar.find('td:nth-child(7) > input').val(itemFound.quantity_min);
 
             isNew = true;
             $('#btnAdd').show();

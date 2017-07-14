@@ -1,0 +1,1 @@
+ALTER TABLE `tblitems` ADD `quantity` INT NULL DEFAULT '0' AFTER `maximum_quantity`;
