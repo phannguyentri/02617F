@@ -127,5 +127,24 @@ class Purchases extends Admin_controller
             redirect($_SERVER['HTTP_REFERER']);
         }
     }
+
+    /* Generates invoice PDF and senting to email of $send_to_email = true is passed */
+    public function pdf($id)
+    {
+        if (!has_permission('invoices', '', 'view') && !has_permission('invoices', '', 'view_own')) {
+            access_denied('invoices');
+        }
+        if (!$id) {
+            redirect(admin_url('purchases/list_invoices'));
+        }
+        $invoice        = $this->purchases_model->getPurchaseByID($id);
+        $invoice_number = $invoice->code;
+        $pdf            = purchase_plan_pdf($invoice);
+        $type           = 'D';
+        if ($this->input->get('print')) {
+            $type = 'I';
+        }
+        $pdf->Output(mb_strtoupper(slug_it($invoice_number)) . '.pdf', $type);
+    }
     
 }

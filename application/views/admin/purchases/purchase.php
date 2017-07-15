@@ -86,10 +86,11 @@
                                 </select>
 						   </div>
 						 </div>
-						 <div class="col-md-8" style="display: none;">
-						 	<div class="form-group mbot25">
-						    <a href="<?php echo admin_url('purchase/pdf/'.$invoice->id.'?print=true'); ?>" target="_self" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('print'); ?>" data-placement="bottom"><i class="fa fa-print"></i></a>
-						    <a href="<?php echo admin_url('purchase/pdf/'.$invoice->id); ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('view_pdf'); ?>" data-placement="bottom"><i class="fa fa-file-pdf-o"></i></a>
+						 <div class="col-md-8">
+						 	<div class="form-group" style="margin-top: 25px">
+
+						    <a href="<?php echo admin_url('purchases/pdf/'.$purchase->id.'?print=true'); ?>" target="_self" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('print'); ?>" data-placement="bottom"><i class="fa fa-print"></i></a>
+						    <a href="<?php echo admin_url('purchases/pdf/'.$purchase->id); ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('view_pdf'); ?>" data-placement="bottom"><i class="fa fa-file-pdf-o"></i></a>
 						    <!-- <a href="#" class="invoice-send-to-client btn-with-tooltip btn btn-default" data-toggle="tooltip" title="<?php echo $_tooltip; ?>" data-placement="bottom"><span data-toggle="tooltip" data-title="<?php echo $_tooltip_already_send; ?>"><i class="fa fa-envelope"></i></span></a> -->
 						 </div>
 						 </div>

@@ -994,6 +994,73 @@ function get_pdf_format($option_name)
     }
     return $data;
 }
+
+/**
+ * Prepare general invoice pdf
+ * @param  object $invoice Invoice as object with all necessary fields
+ * @return mixed object
+ */
+function purchase_plan_pdf($invoice, $tag = '')
+{
+    $CI =& get_instance();
+    load_pdf_language($invoice->clientid);
+    $CI->load->library('pdf');
+    $invoice_number = $invoice->code;
+    $font_name      = get_option('pdf_font');
+    $font_size      = get_option('pdf_font_size');
+
+    if ($font_size == '') {
+        $font_size = 10;
+    }
+
+    $CI->load->model('payment_modes_model');
+    $payment_modes = $CI->payment_modes_model->get();
+
+    $i = 0;
+    // In case user want to include {invoice_number} in PDF offline mode description
+    // foreach ($payment_modes as $mode) {
+    //     if(isset($mode['description'])){
+    //       $payment_modes[$i]['description'] = str_replace('{invoice_number}',format_invoice_number($invoice->id),$mode['description']);
+    //     }
+    //     $i++;
+    // }
+
+    $formatArray = get_pdf_format('pdf_format_invoice');
+    $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false,false,'invoice');
+
+    $pdf->SetTitle($invoice_number);
+    $CI->pdf->SetMargins(PDF_MARGIN_LEFT, 25, PDF_MARGIN_RIGHT);
+
+    $CI->pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    $pdf->SetAuthor(get_option('company'));
+    $pdf->SetFont($font_name, '', $font_size);
+    $pdf->setImageScale(1.53);
+    $pdf->setJPEGQuality(100);
+    $pdf->AddPage($formatArray['orientation'], $formatArray['format']);
+
+    if ($CI->input->get('print') == 'true') {
+        // force print dialog
+        $js = 'print(true);';
+        $pdf->IncludeJS($js);
+    }
+
+    $status = $invoice->status;
+    $swap   = get_option('swap_pdf_info');
+    
+    $CI->load->library('numberword', array(
+        'clientid' => $invoice->clientid
+    ));
+    $invoice = do_action('invoice_html_pdf_data', $invoice);
+
+    if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_purchase_plan_pdf.php')) {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_purchase_plan_pdf.php');
+    } else {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/purchase_plan_pdf.php');
+    }
+
+    return $pdf;
+}
 /**
  * Prepare general invoice pdf
  * @param  object $invoice Invoice as object with all necessary fields
@@ -1024,6 +1091,7 @@ function invoice_pdf($invoice, $tag = '')
         $i++;
     }
 
+
     $formatArray = get_pdf_format('pdf_format_invoice');
     $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false,false,'invoice');
 
@@ -1037,6 +1105,7 @@ function invoice_pdf($invoice, $tag = '')
     $pdf->setImageScale(1.53);
     $pdf->setJPEGQuality(100);
     $pdf->AddPage($formatArray['orientation'], $formatArray['format']);
+    
 
     if ($CI->input->get('print') == 'true') {
         // force print dialog

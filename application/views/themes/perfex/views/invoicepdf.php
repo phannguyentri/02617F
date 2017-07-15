@@ -25,7 +25,6 @@ if (is_array($pdf_text_color_array) && count($pdf_text_color_array) == 3) {
 
 $info_right_column = '';
 $info_left_column  = '';
-
 if (get_option('show_status_on_pdf_ei') == 1) {
     $status_name = format_invoice_status($status, '', false);
     if ($status == 1) {
@@ -39,7 +38,7 @@ if (get_option('show_status_on_pdf_ei') == 1) {
     } else if ($status == 5 || $status == 6) {
         $bg_status = '114, 123, 144';
     }
-
+    
     $info_right_column .= '
     <table style="text-align:center;border-spacing:3px 3px;padding:3px 4px 3px 4px;">
     <tbody>
