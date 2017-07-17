@@ -1,0 +1,2 @@
+ALTER TABLE `tblitems` ADD `price_buy` INT NOT NULL AFTER `price`;
+ALTER TABLE `tblpurchase_suggested_details` ADD `product_price_buy` INT NOT NULL AFTER `product_unit`;

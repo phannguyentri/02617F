@@ -47,7 +47,6 @@ class Categories extends Admin_controller
             'alert_type' => $alert_type,
             'message' => $message
         ));
-
     }
      public function add_category()
     {

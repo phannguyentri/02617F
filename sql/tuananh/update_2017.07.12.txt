@@ -1,0 +1,1 @@
+ALTER TABLE `tblpurchase_suggested` ADD `purchase_plan_id` INT NOT NULL AFTER `user_admin_date`;
