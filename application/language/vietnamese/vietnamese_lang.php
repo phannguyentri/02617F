@@ -3555,7 +3555,8 @@ $lang['item_short_name']       = "Tên ngắn";
 $lang['item_name']             = "Tên đầy đủ";
 $lang['item_description']      = "Mô tả chức năng";
 $lang['item_long_description'] = "Thông số kỹ thuật";
-$lang['item_price']            = "Giá";
+$lang['item_price']            = "Giá bán";
+$lang['item_price_buy']        = "Giá nhập";
 $lang['item_old_price']        = "Giá cũ";
 $lang['item_new_price']        = "Giá mới";
 $lang['item_unit']             = "Đơn vị";
@@ -3567,6 +3568,9 @@ $lang['item_specification']    = "Quy cách";
 $lang['item_size']             = "Kích thước";
 $lang['item_weight']           = "Trọng lượng";
 $lang['item_product_features'] = "Đặc tính sản phẩm";
+$lang['item_category']         = "Danh mục sản phẩm";
+$lang['item_category_level']   = "Danh mục cấp ";
+$lang['item_quantity']         = "Số lượng";
 $lang['minimum_quantity']      = "Số lượng tối thiểu";
 $lang['maximum_quantity']      = "Số lượng tối đa";
 
@@ -3588,3 +3592,22 @@ $lang['als_report']             = "Báo cáo";
 $lang['item_date_item']         = "Date sản phẩm";
 
 $lang['item_avatar']            = "Ảnh đại diện";
+
+// Purchase suggested
+$lang['purchase_suggested']              = "Đề xuất mua hàng";
+$lang['purchase_suggested_edit_heading'] = "Sửa đề xuất mua hàng";
+$lang['purchase_suggested_add_heading']  = "Tạo đề xuất mua hàng";
+$lang['purchase_suggested_information']  = "Thông tin";
+$lang['remarks_for_approval']            = "Ý kiến phê duyệt";
+$lang['purchase_suggested_reason']       = "Ý kiến giải trình";
+$lang['purchase_suggested_code']         = "Mã đề xuất";
+$lang['purchase_suggested_name']         = "Tên đề xuất";
+$lang['purchase_suggested_date']         = "Ngày đề xuất";
+$lang['purchase_suggested_status']       = "Trạng thái";
+$lang['purchase_total_items']            = "Tổng số sản phẩm";
+$lang['purchase_total_price']            = "Tổng giá";
+$lang['purchase_user']                   = "Người đề xuất";
+$lang['user_head']                       = "Trưởng bộ phận";
+$lang['user_admin']                      = "Lãnh đạo";
+$lang['abc'] = "abc";
+$lang['abc'] = "abc";
