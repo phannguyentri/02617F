@@ -22,9 +22,32 @@ class Category_model extends CRM_Model
             return $this->db->get('tblcategories')->result_array();
         }
     }
-    public function get_by_id($id) {
-        if(is_admin() && is_numeric($id)) {
+    public function get_by_id($id_parent=0,&$array_category=[], $level=0) {
+        if(is_admin() && is_numeric($level)) {
+            $this->db->where(array('category_parent' => $id_parent));
+            $current_level = $this->db->get('tblcategories')->result_array();
             
+            foreach($current_level as $key=>$value) {
+                $sub = "";
+                for($i=0;$i<$level;$i++){
+                    $sub.= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
+                switch($level) {
+                    case 1:
+                        $sub.= "&rarr;";
+                        break;
+                    case 2:
+                        $sub.= "&#8649;";
+                        break;
+                    case 3:
+                        $sub.= "&#8667;";
+                        break;
+                }
+                $current_level[$key]['category'] = $sub . " " .$current_level[$key]['category'];
+                array_push($array_category, $current_level[$key]);
+                if($level< 3)
+                    $this->get_by_id($value['id'], $array_category, $level+1);
+            }
         }
     }
     public function get_roles()

@@ -63,4 +63,5 @@ class Purchase_suggested extends Admin_controller
         }
         $pdf->Output(mb_strtoupper(slug_it($purchase_suggested_name)) . '.pdf', $type);
     }
+    
 }

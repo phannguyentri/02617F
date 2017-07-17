@@ -964,6 +964,8 @@ class Leads extends Admin_controller
                             $rows[] = $row;
                         }
                         fclose($fd);
+                        print_r($rows);
+                        exit();
                         $data['total_rows_post'] = count($rows);
                         if (count($rows) <= 1) {
                             set_alert('warning', 'Not enought rows for importing');
