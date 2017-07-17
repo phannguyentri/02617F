@@ -5350,3 +5350,40 @@ function delete_sale_activity(id) {
         });
     }
 }
+
+function validate_purchase_form(selector) {
+    if (typeof(selector) == 'undefined') {
+        selector = '#purchase-form';
+    }
+    _validate_form($(selector), {
+        clientid: 'required',
+        date: 'required',
+        currency: 'required',
+        number: {
+            required: true,
+        }
+    });
+    $('body').find('input[name="number"]').rules('add', {
+        remote: {
+            url: admin_url + "invoices/validate_invoice_number",
+            type: 'post',
+            data: {
+                number: function() {
+                    return $('input[name="number"]').val();
+                },
+                isedit: function() {
+                    return $('input[name="number"]').data('isedit');
+                },
+                original_number: function() {
+                    return $('input[name="number"]').data('original-number');
+                },
+                date: function() {
+                    return $('input[name="date"]').val();
+                },
+            }
+        },
+        messages: {
+            remote: invoice_number_exists,
+        }
+    });
+}

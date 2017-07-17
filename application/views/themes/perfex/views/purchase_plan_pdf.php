@@ -46,7 +46,7 @@ if (get_option('show_status_on_pdf_ei') == 1) {
         <tr>
             <td></td>
             <td></td>
-            <td style="background-color:rgb(' . $bg_status . ');color:#fff;">' . mb_strtoupper($status_name, 'UTF-8') . '</td>
+            <td style="color:#fff;">' . '' . '</td>
         </tr>
     </tbody>
     </table>';
@@ -65,16 +65,19 @@ $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_colum
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
 $pdf->ln(10);
 // Set Head
+$plan_name=($invoice->name)? $invoice->name:_l('Kế Hoạch Mua');
 $pdf->SetFont($font_name, 'B', 20);
-$pdf->Cell(0, 0, _l('Kế Hoạch Mua') , 0, 1, 'C', 0, '', 0);
+$pdf->Cell(0, 0, mb_strtoupper($plan_name, 'UTF-8') , 0, 1, 'C', 0, '', 0);
 $pdf->ln(4);
 //Set purchase no
+// var_dump($pdf->get_fonts_list());die();
 $pdf->SetFont($font_name, 'B', $font_size);
 $pdf->MultiCell(0, 0, '<b>Kế hoạch: #' . $invoice_number . '</b>' , 0, 'C', 0, 0, '', '', true, 0, true, false, 0);
 $pdf->ln(4);
 //Set date
-$pdf->Cell(0, 0, _l('Ngày:')._d($invoice->date) , 0, 1, 'C', 0, '', 0);
+$pdf->Cell(0, 0, _l('Ngày: ')._d($invoice->date) , 0, 1, 'C', 0, '', 0);
 $pdf->ln(4);
+
 
 
 
@@ -96,15 +99,23 @@ $pdf->ln(4);
 //     $invoice_info .= '<br />'.get_option('company_vat');
 // }
 // check for company custom fields
-$custom_company_fields = get_company_custom_fields();
-if (count($custom_company_fields) > 0) {
-    $invoice_info .= '<br />';
-}
-foreach ($custom_company_fields as $field) {
-    $invoice_info .= $field['label'] . ': ' . $field['value'] . '<br />';
-}
+// $custom_company_fields = get_company_custom_fields();
+// if (count($custom_company_fields) > 0) {
+//     $invoice_info .= '<br />';
+// }
+// foreach ($custom_company_fields as $field) {
+//     $invoice_info .= $field['label'] . ': ' . $field['value'] . '<br />';
+// }
 
-$pdf->writeHTMLCell(($swap == '1' ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+// $pdf->writeHTMLCell(($swap == '1' ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+
+//Set detail
+$pdf->SetFont($font_name, '', $font_size);
+$pdf->Cell(0, 0, _l('Người tạo: ').$invoice->fullname , 0, 1, 'L', 0, '', 0);
+$pdf->ln(4);
+
+$pdf->Cell(0, 0, _l('Lý do: ').clear_textarea_breaks($invoice->reason) , 0, 1, 'L', 0, '', 0);
+$pdf->ln(4);
 
 // Bill to
 // $client_details = '<b>' . _l('invoice_bill_to') . '</b><br />';
@@ -179,30 +190,24 @@ $pdf->writeHTMLCell(($swap == '1' ? ($dimensions['wk']) - ($dimensions['lm'] * 2
 // }
 // The Table
 $pdf->Ln(5);
-// Header
-// $qty_heading = _l('invoice_table_quantity_heading');
-// if ($invoice->show_quantity_as == 2) {
-//     $qty_heading = _l('invoice_table_hours_heading');
-// } else if ($invoice->show_quantity_as == 3) {
-//     $qty_heading = _l('invoice_table_quantity_heading') . '/' . _l('invoice_table_hours_heading');
-// }
 $tblhtml = '
-<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="0">
+<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1px">
     <tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">
-        <th align="center">#</th>
-        <th align="left">' . _l('Sản phẩm') . '</th>
-        <th align="right">' . _l('Mô tả') . '</th>
-        <th align="right">' . _l('Số lượng yêu cầu') . '</th>
-        <th align="left">' . _l('Số lượng hiện tại') . '</th>
-        <th align="right">' . _l('Số lượng an toàn') . '</th>
-        <th align="right">' . _l('Số lượng tối thiểu') . '</th>';
-$tblhtml .='<th align="right">' . _l('Đơn giá') . '</th>
-            <th align="right">' . _l('Thành tiền') . '</th>';
+        <th scope="col"  width="5%" align="center">#</th>
+        <th scope="col"  width="20%" align="center">' . _l('Sản phẩm') . '</th>
+        <th scope="col"  width="15%" align="center">' . _l('Mô tả') . '</th>
+        <th scope="col"  width="10%" align="center">' . _l('Số lượng yêu cầu') . '</th>
+        <th scope="col"  width="10%" align="center">' . _l('Số lượng hiện tại') . '</th>
+        <th scope="col"  width="10%" align="center">' . _l('Số lượng an toàn') . '</th>
+        <th scope="col"  width="10%" align="center">' . _l('Số lượng tối thiểu') . '</th>';
+$tblhtml .='<th  width="10%" align="center">' . _l('Đơn giá') . '</th>
+            <th  width="10%" align="center">' . _l('Thành tiền') . '</th>';
 $tblhtml .= '</tr>';
 // Items
 $tblhtml .= '<tbody>';
-
+$grand_total=0;
 for ($i=0; $i < count($invoice->items) ; $i++) { 
+    $grand_total+=$invoice->items[$i]['sub_total'];
     $tblhtml.='<tr>';
     $tblhtml.='<td align="center">'.($i+1).'</td>';
     $tblhtml.='<td>'.$invoice->items[$i]['name'].'</td>';
@@ -215,27 +220,28 @@ for ($i=0; $i < count($invoice->items) ; $i++) {
     $tblhtml.='<td align="right">'.$invoice->items[$i]['sub_total'].'</td>';
     $tblhtml.='</tr>';
 }
-
+    $tblhtml.='<tr>';
+    $tblhtml.='<td colspan="8" align="right">Tổng tiền</td>';
+    $tblhtml.='<td align="right">'.format_money($grand_total).'</td>';
+    $tblhtml.='</tr>';
 $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
 
 
-$pdf->Ln(8);
-$tbltotal = '';
-$tbltotal .= '<table cellpadding="6">';
-$tbltotal .= '
-<tr>
-    <td align="right" width="80%">' . _l('Sản phẩm') . '</td>
-    <td align="right" width="20%">' . format_money($invoice->subtotal, $invoice->symbol) . '</td>
-</tr>';
-if ($invoice->discount_percent != 0) {
-    $tbltotal .= '
-    <tr>
-        <td align="right" width="80%">' . _l('invoice_discount') . '(' . _format_number($invoice->discount_percent, true) . '%)' . '</td>
-        <td align="right" width="20%">-' . format_money($invoice->discount_total, $invoice->symbol) . '</td>
-    </tr>';
-}
+// $pdf->Ln(8);
+// $tbltotal = '';
+// $tbltotal .= '<table cellpadding="6">';
+// $tbltotal .= '
+// <tr>
+//     <td align="right" width="80%">' . _l('Sản phẩm') . '</td>
+//     <td align="right" width="20%">' . count($invoice->items) . '</td>
+// </tr>';
+//     $tbltotal .= '
+//     <tr>
+//         <td align="right" width="80%">' . _l('Tổng tiền') . '</td>
+//         <td align="right" width="20%">' . format_money($grand_total) . '</td>
+//     </tr>';
 // foreach ($taxes as $tax) {
 //     $total = array_sum($tax['total']);
 //     if ($invoice->discount_percent != 0 && $invoice->discount_type == 'before_tax') {
@@ -277,8 +283,8 @@ if ($invoice->discount_percent != 0) {
 //        <td align="right" width="20%">' . format_money(get_invoice_total_left_to_pay($invoice->id, $invoice->total), $invoice->symbol) . '</td>
 //    </tr>';
 // }
-$tbltotal .= '</table>';
-$pdf->writeHTML($tbltotal, true, false, false, false, '');
+// $tbltotal .= '</table>';
+// $pdf->writeHTML($tbltotal, true, false, false, false, '');
 
 // if (get_option('total_to_words_enabled') == 1) {
 //     // Set the font bold

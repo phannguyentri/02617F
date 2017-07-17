@@ -1,0 +1,1 @@
+ALTER TABLE `tblpurchase_plan_details` ADD `unit_cost` DECIMAL(15,0) NULL AFTER `quantity_min`, ADD `sub_total` DECIMAL(15,0) NULL AFTER `unit_cost`;

@@ -8,7 +8,7 @@
 	<div class="content">
 		<div class="row">
 			<?php
-			echo form_open($this->uri->uri_string(),array('id'=>'invoice-form','class'=>'_transaction_form invoice-form'));
+			echo form_open($this->uri->uri_string(),array('id'=>'purchase-form','class'=>'_transaction_form invoice-form'));
 			if(isset($invoice)){
 				echo form_hidden('isedit');
 			}
@@ -17,6 +17,19 @@
 				<div class="panel_s">
 				 	<div class="additional"></div>
 				 	<div class="panel-body">
+				 		<div class="ribbon <?=(!isset($purchase))?'warning':(($purchase->status==0) ? 'info' : 'success') ?>" project-status-ribbon-2="">
+				 			<?php 
+				 				if(isset($purchase))
+				 				{
+				 					$status=format_purchase_status($purchase->status,'',false);
+				 				}
+				 				else
+				 				{
+				 					$status=format_purchase_status(-1,'',false);
+				 				}
+				 			?>
+				 			<span><?=$status?></span>
+				 		</div>
 				 		<div class="col-md-4">
 				 			<h4 class="bold no-margin font-medium">
 						     <?php echo _l('Thông tin kế hoạch'); ?>
@@ -86,14 +99,19 @@
                                 </select>
 						   </div>
 						 </div>
-						 <div class="col-md-8">
+						 <?php 
+						 if(isset($purchase))
+						 {?>
+						 	<div class="col-md-8">
 						 	<div class="form-group" style="margin-top: 25px">
 
-						    <a href="<?php echo admin_url('purchases/pdf/'.$purchase->id.'?print=true'); ?>" target="_self" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('print'); ?>" data-placement="bottom"><i class="fa fa-print"></i></a>
+						    <a href="<?php echo admin_url('purchases/pdf/'.$purchase->id.'?print=true'); ?>" target = '_blank' class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('print'); ?>" data-placement="bottom"><i class="fa fa-print"></i></a>
 						    <a href="<?php echo admin_url('purchases/pdf/'.$purchase->id); ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('view_pdf'); ?>" data-placement="bottom"><i class="fa fa-file-pdf-o"></i></a>
 						    <!-- <a href="#" class="invoice-send-to-client btn-with-tooltip btn btn-default" data-toggle="tooltip" title="<?php echo $_tooltip; ?>" data-placement="bottom"><span data-toggle="tooltip" data-title="<?php echo $_tooltip_already_send; ?>"><i class="fa fa-envelope"></i></span></a> -->
 						 </div>
 						 </div>
+						<?php }
+						 ?>
 
 						</div>
 						<div class="row">

@@ -23,7 +23,9 @@ class Purchases_model extends CRM_Model
      */
     public function getPurchaseByID($id = '')
     {
+        $this->db->select('tblpurchase_plan.*,tblstaff.fullname');
         $this->db->from('tblpurchase_plan');
+        $this->db->join('tblstaff','tblstaff.staffid=tblpurchase_plan.create_by','left');
         if (is_numeric($id)) {
             $this->db->where('id', $id);
             $invoice = $this->db->get()->row();

@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 $aColumns     = array(
-    'id',
+    '1',
     'code',
     'date',
     'fullname',
@@ -21,7 +21,7 @@ $join         = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblpurchase_plan.create_by'
 );
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where, array(
-    // 'tblroles.name',
+    'id',
     // 'tblroles.roleid'
 ));
 $output       = $result['output'];
@@ -38,10 +38,17 @@ foreach ($rResult as $aRow) {
         if ($aColumns[$i] == 'status') {
             $_data=format_purchase_status($aRow['status']);
         }
+        if ($aColumns[$i] == '1') {
+            $_data=$j;
+        }
+        if ($aColumns[$i] == 'date') {
+            $_data=_d($aRow['date']);
+        }
         $row[] = $_data;
+
     }
     if ($aRow['creator'] == get_staff_user_id() || is_admin()) {
-        $_data = '<a href="purchases/purchase/'.$aRow['id'].'" class="btn btn-default btn-icon" ><i class="fa fa-eye"></i></a>';
+        $_data = '<a href="'.admin_url('purchases/purchase/'.$aRow['id']).'" class="btn btn-default btn-icon" ><i class="fa fa-eye"></i></a>';
         $row[] =$_data.icon_btn('purchases/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-reminders');
     } else {
         $row[] = '';

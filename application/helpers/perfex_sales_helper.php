@@ -279,6 +279,7 @@ function mutiple_taxes_found_for_item($taxes)
 function format_purchase_status($status, $classes = '', $label = true)
 {
     $id          = $status;
+    
     if($status==0)
     {
         $label_class = 'warning';
@@ -291,6 +292,12 @@ function format_purchase_status($status, $classes = '', $label = true)
         $status = _l('Chưa duyệt');
     } else if ($status == 1) {
         $status = _l('Đã duyệt');
+    }
+    else if ($status == 2) {
+        $status = _l('Khác');
+    }
+    else if ($status == -1) {
+        $status = _l('Kế hoạch mới');
     }
     if ($label == true) {
         return '<span class="label label-' . $label_class . ' ' . $classes . ' s-status invoice-status-' . $id . '">' . $status . '</span>';
