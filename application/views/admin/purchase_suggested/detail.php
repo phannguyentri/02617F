@@ -200,7 +200,7 @@
                 <!-- End Customize from invoice -->
                 </div>
                 
-                <?php if(isset($item) && $item->status != 1) { ?>
+                <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter">
                     <?php echo _l('submit'); ?>
                 </button>

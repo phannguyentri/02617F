@@ -22,6 +22,11 @@ class Category_model extends CRM_Model
             return $this->db->get('tblcategories')->result_array();
         }
     }
+    public function get_by_id($id) {
+        if(is_admin() && is_numeric($id)) {
+            
+        }
+    }
     public function get_roles()
     {
         $is_admin = is_admin();
