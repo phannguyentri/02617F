@@ -28,9 +28,55 @@
                         
                         </div>
                         <?php } ?>
+
+                        <?php if($this->session->userdata('query_array')) { ?>
                         
+                        <div class="panel-body" style="margin-bottom: 20px">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <h3>Xem trước cây danh mục chuẩn bị nhập</h3> <br />
+
+                                <?php
+                                    if(count($this->session->userdata('query_duplicate')) > 0) {
+                                ?>
+                                <div class="alert alert-danger">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <strong>Có <?php echo count($this->session->userdata('query_duplicate')) ?> danh mục đã có:</strong> <br /> 
+                                    <?php
+                                        echo implode(", ", $this->session->userdata('query_duplicate'));
+                                    ?>
+                                </div>
+                                
+                                <?php
+                                }
+                                ?>
+                                <?php foreach($this->session->userdata('query_array') as $value) : ?>
+                                    <?php echo ($value['duplicate'] == true ? "<b>" : "") ?> <?php echo $value['sub'].$value['name'];?> <?php echo ($value['duplicate'] == true ? "(Đã có) </b>" : "") ?> <br />
+                                <?php endforeach; ?>
+                                <br />
+
+                                <?php
+                                    if(count($this->session->userdata('query_duplicate')) == 0) {
+                                ?>
+                                <br />
+                                <br />
+                                <?php echo form_open($this->uri->uri_string(),array('id'=>'')) ;?>
+                                <div class="form-group">
+                                    <?php echo form_hidden("confirm", "1"); ?>
+                                    <button type="submit" class="btn btn-info import btn-import-confirm"><?php echo _l('copy_task_confirm'); ?></button>
+                                </div>
+                                <?php echo form_close();
+                                } // end form ?>
+                            </div>
+                        </div>
+                        <?php } ?>
                         <div class="row">
                             <div class="col-md-4">
+                                <?php if(isset($row_imported)) : ?>
+                                <div class="alert alert-success">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                    <strong><?php echo _l('category_import_success') . $row_imported; ?></strong>
+                                </div>
+                                <?php endif; ?>
                                 <?php echo form_open_multipart($this->uri->uri_string(),array('id'=>'import_form')) ;?>
                                 <?php echo form_hidden('leads_import','true'); ?>
                                 <?php echo render_input('file_csv','choose_csv_file','','file'); ?>

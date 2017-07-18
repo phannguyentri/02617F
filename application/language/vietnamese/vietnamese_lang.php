@@ -3611,3 +3611,7 @@ $lang['user_head']                       = "Trưởng bộ phận";
 $lang['user_admin']                      = "Lãnh đạo";
 $lang['abc'] = "abc";
 $lang['abc'] = "abc";
+
+$lang['import_categories']               = "Nhập danh mục";
+$lang['load_import_success']             = "Tải dữ liệu nhập thành công";
+$lang['category_import_success']         = "Đã nhập ";
