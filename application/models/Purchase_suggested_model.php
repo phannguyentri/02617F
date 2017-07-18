@@ -42,7 +42,18 @@ class Purchase_suggested_model extends CRM_Model
             $this->db->insert('tblpurchase_suggested', $data);
             $insert_id = $this->db->insert_id();
             if($insert_id) {
-                logActivity('Purchase suggested Insert [ID: ' . $insert_id . ']');
+                $this->db->update('tblpurchase_plan',array('converted'=>1),array('id'=>
+                    $data['purchase_plan_id']));
+                // var_dump($this->db->affected_rows());die();
+                if($this->db->affected_rows() && $data['purchase_plan_id'])
+                {
+                    logActivity('Purchase suggested Insert From Purchase Plan [ID: ' . $insert_id .'Purchase Plan ID:'.$data['purchase_plan_id']. ']');
+                }
+                else
+                {
+                    logActivity('Purchase suggested Insert [ID: ' . $insert_id . ']');
+                }
+                
                 foreach($items as $value) {
                     $this->add_detail_item($insert_id, $value['id'], $value['quantity']);
                 }       
@@ -162,6 +173,16 @@ class Purchase_suggested_model extends CRM_Model
         if ($this->db->affected_rows() > 0) {
             $this->delete_detail($id);
             logActivity('Purchase suggested Deleted [ID: ' . $id . ']');
+            return true;
+        }
+        return false;
+    }
+
+    public function update_status($id,$data)
+    {
+        $this->db->where('id',$id);
+        $this->db->update('tblpurchase_suggested',$data);
+        if ($this->db->affected_rows() > 0) {
             return true;
         }
         return false;

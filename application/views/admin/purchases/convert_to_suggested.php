@@ -8,38 +8,19 @@
      <div class="panel-body">
         <?php if (isset($item)) { ?>
         <?php echo form_hidden('isedit'); ?>
-        <?php echo form_hidden('itemid', $item->id); ?>
       <div class="clearfix"></div>
         <?php 
     } ?>
         <!-- Product information -->
         
 
-          <h4 class="bold no-margin"><?php echo (isset($item) ? _l('purchase_suggested_edit_heading') : _l('purchase_suggested_add_heading')); ?></h4>
+          <h4 class="bold no-margin"><?php echo _l('purchase_suggested_add_heading'); ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
     <div class="col-md-12">
         <?php
          if(isset($item))
-            {
-                if($item->status==0)
-                {
-                    $type='warning';
-                    $status='Chưa duyệt';
-                }
-                elseif($item->status==1)
-                {
-                    $type='info';
-                    $status='Đã xác nhận';
-                }
-                else
-                {
-                    $type='success';
-                    $status='Đã duyệt';
-                }
-            }
-            else
             {
                 $type='warning';
                 $status='Đề xuất mới';
@@ -72,7 +53,7 @@
                 </div>
             </div>
             
-            <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'client-form', 'autocomplete' => 'off')); ?>
+            <?php echo form_open_multipart(admin_url('purchase_suggested/detail'), array('class' => 'client-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
                   <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">            
                     <?php
@@ -85,26 +66,26 @@
                     echo render_input('code', _l('purchase_suggested_code'), $default_code);
                     ?> -->
                     <div class="form-group">
-                                 <label for="number"><?php echo _l('Mã đề xuất'); ?></label>
-                                 <div class="input-group">
-                                  <span class="input-group-addon">
-                                    <?php echo get_option('prefix_purchase_suggested') ?></span>
-                                    <?php 
-                                        // var_dump($purchase);
-                                        if($item)
-                                        {
+                         <label for="number"><?php echo _l('Mã đề xuất'); ?></label>
+                         <div class="input-group">
+                          <span class="input-group-addon">
+                            <?php echo get_option('prefix_purchase_suggested') ?></span>
+                            <?php 
+                                // var_dump($purchase);
+                                if($item)
+                                {
 
-                                            $number=$item->code;
-                                        }
-                                        else
-                                        {
-                                            $number=sprintf('%05d',getMaxID('id','tblpurchase_suggested')+1);
-                                        }
-                                    ?>
-                                    <input type="text" name="code" class="form-control" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
-                                  </div>
-                            </div>
-                    
+                                    $number=$item->code;
+                                }
+                                else
+                                {
+                                    $number=sprintf('%05d',getMaxID('id','tblpurchase_suggested')+1);
+                                }
+                            ?>
+                            <input type="text" name="code" class="form-control" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
+                          </div>
+                    </div>
+                    <?php echo form_hidden('purchase_plan_id', $item->id); ?>
                     <?php
                     $default_name = (isset($item) ? $item->name : "");
                     echo render_input('name', _l('purchase_suggested_name'), $default_name);
@@ -202,17 +183,17 @@
                                         <td>
                                             <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
                                         </td>
-                                        <td class="dragger"><?php echo $value->product_name; ?></td>
-                                        <td><?php echo $value->product_unit; ?></td>
-                                        <td><input class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->product_quantity; ?>"></td>
+                                        <td class="dragger"><?php echo $value['name']; ?></td>
+                                        <td><?php echo $value['unit_name']; ?></td>
+                                        <td><input class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value['quantity_required']; ?>"></td>
                                             
-                                        <td><?php echo number_format($value->product_price_buy); ?></td>
-                                        <td><?php echo number_format($value->product_quantity*$value->product_price_buy); ?></td>
-                                        <td><?php echo $value->product_specifications	; ?></td>
+                                        <td><?php echo number_format($value['unit_cost']); ?></td>
+                                        <td><?php echo number_format($value['unit_cost']*$value['quantity_required']); ?></td>
+                                        <td><?php echo $value->description	; ?></td>
                                         <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php
-                                            $totalPrice += $value->product_quantity*$value->product_price_buy;
+                                            $totalPrice += $value['unit_cost']*$value['quantity_required'];
                                             $i++;
                                         }
                                     }
@@ -245,7 +226,7 @@
                 </div>
                 
                 <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
-                  <button class="btn btn-info mtop20 only-save customer-form-submiter">
+                  <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l('submit'); ?>
                 </button>
                 <?php } ?>

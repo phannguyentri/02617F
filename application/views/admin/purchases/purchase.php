@@ -17,7 +17,19 @@
 				<div class="panel_s">
 				 	<div class="additional"></div>
 				 	<div class="panel-body">
-				 		<div class="ribbon <?=(!isset($purchase))?'warning':(($purchase->status==0) ? 'info' : 'success') ?>" project-status-ribbon-2="">
+				 	<?php 
+				 		$type='';
+				 		if(!isset($purchase))
+				 			$type='warning';
+				 		elseif($purchase->status==0)
+				 			$type='warning';
+				 		elseif($purchase->status==1)
+				 			$type='info';
+				 		elseif($purchase->status==2)
+				 			$type='success';
+				 		
+				 	?>
+				 		<div class="ribbon <?=$type ?>" project-status-ribbon-2="">
 				 			<?php 
 				 				if(isset($purchase))
 				 				{
@@ -45,7 +57,7 @@
 				                    	if($purchase)
 				                    	{
 
-				                    		$number=substr($purchase->code, strlen(get_option('prefix_purchase_plan')));
+				                    		$number=$purchase->code;
 				                    	}
 				                    	else
 				                    	{
@@ -69,11 +81,11 @@
 		                        echo render_textarea('reason','Lý do',$value,array(),array(),'','tinymce'); 
 		                    ?>
 
-		                    <?php
-		                    	$status=array(array('id'=>'0','text'=>'Chưa duyệt'),array('id'=>'1','text'=>'Đã duyệt'));
+		                    <!-- <?php
+		                    	$status=array(array('id'=>0,'text'=>'Chưa duyệt'),array('id'=>1,'text'=>'Đã duyệt'));
 		                        $value = (isset($purchase) ? $purchase->status : "0");
 		                        echo render_select('status', $status, array('id','text'), 'Trạng thái', $value, array(), array(), '', '', false);
-		                    ?>
+		                    ?> -->
 		                    <button class="btn-tr btn btn-info mleft10 text-right pull-right purchase-form-submit">
 						      <?php echo _l('submit'); ?>
 						    </button>

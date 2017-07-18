@@ -1,1 +1,5 @@
 ALTER TABLE `tblpurchase_plan_details` ADD `minimum_quantity` INT NULL DEFAULT '0' AFTER `quantity_current`;
+
+
+#18/7
+ALTER TABLE `tblpurchase_plan` ADD `converted` INT NULL DEFAULT '0' ;

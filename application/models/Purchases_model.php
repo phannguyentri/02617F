@@ -44,9 +44,10 @@ class Purchases_model extends CRM_Model
      */
     public function get_invoice_items($id)
     {
-        $this->db->select('tblpurchase_plan_details.*,tblitems.name,,tblitems.description');
+        $this->db->select('tblpurchase_plan_details.*,tblitems.name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id');
         $this->db->from('tblpurchase_plan_details');
         $this->db->join('tblitems','tblitems.id=tblpurchase_plan_details.product_id','left');
+        $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
         $this->db->where('purchase_plan_id', $id);
         $items = $this->db->get()->result_array();
         return $items;
@@ -201,14 +202,12 @@ class Purchases_model extends CRM_Model
      */
     public function add($data, $expense = false)
     {
-        $data['prefix']        = get_option('prefix_purchase_plan');
         $purchase = array(
-            'code'=>$data['prefix'].$data['number'],
+            'code'=>$data['number'],
             'name'=>$data['name'],
             'reason'=>$data['reason'],
             'date'=>to_sql_date($data['date']),
             'create_by'=>get_staff_user_id(),
-            'status'=>$data['status']
         );
         if($this->db->insert('tblpurchase_plan',$purchase))
         {
@@ -440,8 +439,6 @@ class Purchases_model extends CRM_Model
      */
     public function update($data, $id)
     {
-
-        $data['prefix']        = get_option('prefix_purchase_plan');
         $purchase = array(
             'name'=>$data['name'],
             'reason'=>$data['reason'],
@@ -513,12 +510,20 @@ class Purchases_model extends CRM_Model
                 $this->db->delete('tblpurchase_plan_details');
             }
             
-
-            
         }
         
         
         if ($count > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function update_status($id,$data)
+    {
+        $this->db->where('id',$id);
+        $this->db->update('tblpurchase_plan',$data);
+        if ($this->db->affected_rows() > 0) {
             return true;
         }
         return false;

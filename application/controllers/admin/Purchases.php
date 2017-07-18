@@ -6,6 +6,7 @@ class Purchases extends Admin_controller
     {
         parent::__construct();
         $this->load->model('purchases_model');
+        $this->load->model('invoice_items_model');
     }
     /* Get all invoices in case user go on index page */
     public function index($id = false)
@@ -104,6 +105,16 @@ class Purchases extends Admin_controller
         $this->load->view('admin/purchases/purchase', $data);
     }
 
+    /* Convert to Suggested */
+    public function convert_to_suggested($id)
+    {   
+        $data['items'] = $this->invoice_items_model->get_full();
+        $data['item'] = $this->purchases_model->getPurchaseByID($id);
+        // var_dump($data['item']);die();
+        
+        $this->load->view('admin/purchases/convert_to_suggested', $data);
+    }
+
     /* Delete purchase */
     public function delete($id)
     {
@@ -145,6 +156,29 @@ class Purchases extends Admin_controller
             $type = 'I';
         }
         $pdf->Output(mb_strtoupper(slug_it($invoice_number)) . '.pdf', $type);
+    }
+
+    public function update_status()
+    {
+        $id=$this->input->post('id');
+        $status=$this->input->post('status');
+        $status=$status+1;
+        $data=array('status'=>$status);
+        $success=$this->purchases_model->update_status($id,$data);
+        if($success) {
+            echo json_encode(array(
+                'success' => $success,
+                'message' => _l('Xác nhận kế hoạch thành công')
+            ));
+        }
+        else
+        {
+            echo json_encode(array(
+                'success' => $success,
+                'message' => _l('Không thể cập nhật dữ liệu')
+            ));
+        }
+        die;
     }
     
 }

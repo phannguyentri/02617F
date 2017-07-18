@@ -9,7 +9,7 @@ class Purchase_suggested extends Admin_controller
         $this->load->model('invoice_items_model');
     }
     public function index() {
-        
+
         if ($this->input->is_ajax_request()) {
             $this->perfex_base->get_table_data('purchase_suggested');
         }
@@ -22,7 +22,7 @@ class Purchase_suggested extends Admin_controller
         if($this->input->post()) {
             if( $id == '' ) {
                 $data_post = $this->input->post();
-                
+                // var_dump($data_post);die();
                 if(isset($data_post['items']) && count($data_post['items']) > 0) {
                     $data_post['create_by'] = get_staff_user_id();
 
@@ -44,6 +44,7 @@ class Purchase_suggested extends Admin_controller
         else {
             $data['title'] = _l('purchase_suggested_edit_heading');
             $data['item'] = $this->purchase_suggested_model->get($id);
+            // var_dump($data['item']);die();
             
         }
         
@@ -62,5 +63,53 @@ class Purchase_suggested extends Admin_controller
             $type = 'I';
         }
         $pdf->Output(mb_strtoupper(slug_it($purchase_suggested_name)) . '.pdf', $type);
+    }
+
+    /* Delete purchase */
+    public function delete($id)
+    {
+        if (!has_permission('invoices', '', 'delete')) {
+            access_denied('invoices');
+        }
+        if (!$id) {
+            redirect(admin_url('purchase_suggested'));
+        }
+
+        $success = $this->purchase_suggested_model->delete($id);
+
+        if ($success) {
+            set_alert('success', _l('deleted', _l('purchase_suggested')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('purchase_suggested')));
+        }
+        if (strpos($_SERVER['HTTP_REFERER'], 'list_invoices') !== false) {
+            redirect(admin_url('purchase_suggested'));
+        } else {
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+    public function update_status()
+    {
+        $id=$this->input->post('id');
+        $status=$this->input->post('status');
+        $status=$status+1;
+        $data=array('status'=>$status);
+        // date('Y-m-d H:i:s'),get_staff_user_id()
+        $success=$this->purchase_suggested_model->update_status($id,$data);
+        if($success) {
+            echo json_encode(array(
+                'success' => $success,
+                'message' => _l('Xác nhận đề xuất thành công')
+            ));
+        }
+        else
+        {
+            echo json_encode(array(
+                'success' => $success,
+                'message' => _l('Không thể cập nhật dữ liệu')
+            ));
+        }
+        die;
     }
 }

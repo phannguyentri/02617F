@@ -1,7 +1,10 @@
 <?php
 $dimensions = $pdf->getPageDimensions();
 
-
+function mb_ucfirst($string, $encoding)
+{
+    return mb_convert_case($string, MB_CASE_TITLE, $encoding);
+}
 // Tag - used in BULK pdf exporter
 if ($tag != '') {
     $pdf->SetFillColor(240, 240, 240);
@@ -26,31 +29,32 @@ if (is_array($pdf_text_color_array) && count($pdf_text_color_array) == 3) {
 
 $info_right_column = '';
 $info_left_column  = '';
-if (get_option('show_status_on_pdf_ei') == 1) {
-    $status_name = format_purchase_status($status, '', false);
-    if ($status == 0) {
-        $bg_status = '252, 45, 66';
-    } else if ($status == 1) {
-        $bg_status = '0, 191, 54';
-    } else if ($status == 2) {
-        $bg_status = '255, 111, 0';
-    } else if ($status == 3) {
-        $bg_status = '255, 111, 0';
-    } else if ($status == 4 || $status == 6) {
-        $bg_status = '114, 123, 144';
-    }
+// if (get_option('show_status_on_pdf_ei') == 1) {
+//     $status_name = format_purchase_status($status, '', false);
+//     if ($status == 0) {
+//         $bg_status = '252, 45, 66';
+//     } else if ($status == 1) {
+//         $bg_status = '0, 191, 54';
+//     } else if ($status == 2) {
+//         $bg_status = '255, 111, 0';
+//     } else if ($status == 3) {
+//         $bg_status = '255, 111, 0';
+//     } else if ($status == 4 || $status == 6) {
+//         $bg_status = '114, 123, 144';
+//     }
 
-    $info_right_column .= '
-    <table style="text-align:center;border-spacing:3px 3px;padding:3px 4px 3px 4px;">
-    <tbody>
-        <tr>
-            <td></td>
-            <td></td>
-            <td style="color:#fff;">' . '' . '</td>
-        </tr>
-    </tbody>
-    </table>';
-}
+//     $info_right_column .= '
+//     <table style="text-align:center;border-spacing:3px 3px;padding:3px 4px 3px 4px;">
+//     <tbody>
+//         <tr>
+//             <td></td>
+//             <td></td>
+//             <td style="color:#fff;">' . '' . '</td>
+//         </tr>
+//     </tbody>
+//     </table>';
+// }
+$info_right_column=$info_right_column .= '<a href="' . admin_url('purchase_suggested/detail/' . $purchase_suggested->name) . '" style="color:#4e4e4e;text-decoration:none;"><b> ' . date('Y-m-d H:i:s') . '</b></a>';
 
 // if ($status != 2 && $status != 5 && get_option('show_pay_link_to_invoice_pdf') == 1) {
 //     $info_right_column .= '<a style="color:#84c529;text-decoration:none;" href="' . site_url('viewinvoice/' . $invoice->id . '/' . $invoice->hash) . '">' . _l('view_invoice_pdf_link_pay') . '</a><br />';
@@ -66,17 +70,18 @@ $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_colu
 $pdf->ln(10);
 // Set Head
 $plan_name=($invoice->name)? $invoice->name:_l('Kế Hoạch Mua');
+$plan_name=_l('Kế Hoạch Mua');
 $pdf->SetFont($font_name, 'B', 20);
 $pdf->Cell(0, 0, mb_strtoupper($plan_name, 'UTF-8') , 0, 1, 'C', 0, '', 0);
-$pdf->ln(4);
+$pdf->ln(20);
 //Set purchase no
 // var_dump($pdf->get_fonts_list());die();
-$pdf->SetFont($font_name, 'B', $font_size);
-$pdf->MultiCell(0, 0, '<b>Kế hoạch: #' . $invoice_number . '</b>' , 0, 'C', 0, 0, '', '', true, 0, true, false, 0);
-$pdf->ln(4);
-//Set date
-$pdf->Cell(0, 0, _l('Ngày: ')._d($invoice->date) , 0, 1, 'C', 0, '', 0);
-$pdf->ln(4);
+// $pdf->SetFont($font_name, 'B', $font_size);
+// $pdf->MultiCell(0, 0, '<b>Kế hoạch: #' . $invoice_number . '</b>' , 0, 'L', 0, 0, '', '', true, 0, true, false, 0);
+// $pdf->ln(4);
+// //Set date
+// $pdf->Cell(0, 0, _l('Ngày: ')._d($invoice->date) , 0, 1, 'L', 0, '', 0);
+// $pdf->ln(4);
 
 
 
@@ -110,6 +115,14 @@ $pdf->ln(4);
 // $pdf->writeHTMLCell(($swap == '1' ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 
 //Set detail
+$pdf->SetFont($font_name, '', $font_size);
+$pdf->Cell(0, 0, _l('Mã kế hoạch: ').$invoice_number , 0, 1, 'L', 0, '', 0);
+$pdf->ln(4);
+
+$pdf->SetFont($font_name, '', $font_size);
+$pdf->Cell(0, 0, _l('Ngày kế hoạch: ')._d($invoice->date) , 0, 1, 'L', 0, '', 0);
+$pdf->ln(4);
+
 $pdf->SetFont($font_name, '', $font_size);
 $pdf->Cell(0, 0, _l('Người tạo: ').$invoice->fullname , 0, 1, 'L', 0, '', 0);
 $pdf->ln(4);
@@ -221,12 +234,35 @@ for ($i=0; $i < count($invoice->items) ; $i++) {
     $tblhtml.='</tr>';
 }
     $tblhtml.='<tr>';
-    $tblhtml.='<td colspan="8" align="right">Tổng tiền</td>';
-    $tblhtml.='<td align="right">'.format_money($grand_total).'</td>';
+    $tblhtml.='<td colspan="7" align="right">Tổng tiền</td>';
+    $tblhtml.='<td colspan="2" align="right">'.format_money($grand_total).'</td>';
     $tblhtml.='</tr>';
 $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
+
+$pdf->Ln(20);
+$table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
+        <tr>
+            <td>" . mb_ucfirst(_l('purchase_user'), "UTF-8") . "</td>
+            <td>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</td>
+            <td>" . mb_ucfirst(_l('user_admin'), "UTF-8") . "</td>
+        </tr>
+        <tr>
+            <td style=\"height: 100px\" colspan=\"3\"></td>
+        </tr>
+        <tr>
+            <td>" . $invoice->user_name . "</td>
+            <td>" . $invoice->user_head_name . "</td>
+            <td>" . $invoice->user_admin_name . "</td>
+        </tr>
+        <tr>
+            <td>(ký, ghi rõ họ tên)</td>
+            <td>(ký, ghi rõ họ tên)</td>
+            <td>(ký, ghi rõ họ tên)</td>
+        </tr>
+</table>";
+$pdf->writeHTML($table, true, false, false, false, '');
 
 
 // $pdf->Ln(8);
@@ -366,3 +402,4 @@ $pdf->writeHTML($tblhtml, true, false, false, false, '');
 //     $pdf->Ln(2);
 //     $pdf->MultiCell(0, 0, clear_textarea_breaks($invoice->terms), 0, 'L');
 // }
+

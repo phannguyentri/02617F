@@ -1,0 +1,1 @@
+ALTER TABLE `tblpurchase_plan` ADD `converted` INT NULL DEFAULT '0' ;

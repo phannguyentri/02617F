@@ -291,10 +291,10 @@ function format_purchase_status($status, $classes = '', $label = true)
     if ($status == 0) {
         $status = _l('Chưa duyệt');
     } else if ($status == 1) {
-        $status = _l('Đã duyệt');
+        $status = _l('Đã xác nhận');
     }
     else if ($status == 2) {
-        $status = _l('Khác');
+        $status = _l('Đã duyệt');
     }
     else if ($status == -1) {
         $status = _l('Kế hoạch mới');

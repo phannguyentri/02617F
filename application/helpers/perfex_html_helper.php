@@ -1209,6 +1209,25 @@ function get_status_label($id)
     $label = $hook_data['label'];
     return $label;
 }
+
+function format_status_purchase_plan($id)
+{
+
+        $label = get_status_label($id);
+        if ($id == 2) {
+            $label = 'light-green';
+            $status_name="Kế hoạch mua đã duyệt";
+        }
+        else if ($id == 1) {
+                $label = 'info';
+                $status_name="Kế hoạch mua được xác nhận";
+            } else if ($id == 0) {
+                $label = 'warning';
+                $status_name="Kế hoạch mua chưa được xác nhận";
+            }
+            $class = 'label label-' . $label;
+            return '<span class="inline-block ' . $class . '">' . $status_name . '</span>';
+}
 /**
  * Function that format task status for the final user
  * @param  string  $id    status id

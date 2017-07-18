@@ -93,8 +93,30 @@
 </div>
 <?php init_tail(); ?>
 <script>
+  function var_status(status,id)
+    {
+        dataString={id:id,status:status};
+        jQuery.ajax({
+            type: "post",
+            url:"<?=admin_url()?>purchase_suggested/update_status",
+            data: dataString,
+            cache: false,
+            success: function (response) {
+              
+                response = JSON.parse(response);
+                if (response.success == true) {
+                    $('.table-purchase-suggested').DataTable().ajax.reload();
+                    alert_float('success', response.message);
+                }
+
+                return false;
+            }
+        });
+
+    }
   $(function(){
     initDataTable('.table-purchase-suggested', '<?=admin_url('purchase_suggested')?>', [], [],'undefined',[0,'DESC']);
+
   });
 </script>
 </body>

@@ -58,7 +58,7 @@ $info_left_column .= pdf_logo_url();
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_column, 0, 'J', 0, 0, '', '', true, 0, true, true, 0);
 // write the second column
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
-
+$pdf->ln(10);
 $title = _l('purchase_suggested');
 $title = mb_strtoupper($title, "UTF-8");
 $info_center_column = '<span style="font-weight:bold;font-size:30px;">' . $title . '</span><br />';
@@ -72,7 +72,7 @@ $detail  = _l('purchase_suggested_code').': <b>' . $purchase_suggested->code . '
 $detail .= _l('purchase_suggested_name').': <b>' . $purchase_suggested->name . '</b> <br /> <br />';
 $detail .= _l('purchase_suggested_date').': <b>' . $purchase_suggested->date . '</b> <br /> <br />';
 $detail .= _l('purchase_suggested_reason').': <br /> <b>' . $purchase_suggested->reason . '</b> <br /> <br />';
-$detail .= _l('purchase_suggested_status').': <b>' . ($purchase_suggested->status == 1 ? "Đã duyệt" : "Chưa duyệt") . '</b> <br /> <br /> <br />';
+// $detail .= _l('purchase_suggested_status').': <b>' . ($purchase_suggested->status == 1 ? "Đã duyệt" : "Chưa duyệt") . '</b> <br /> <br /> <br />';
 
 $pdf->writeHTMLCell($dimensions['wk'] - $dimensions['lm'] - 20, '', '', $y, $detail, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 

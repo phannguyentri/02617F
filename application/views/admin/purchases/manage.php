@@ -3,11 +3,13 @@
     <div class="content">
         <div class="row">
             <div class="col-md-12">
+            <?php if(has_permission('items','','create')){ ?>
                 <div class="panel_s">
                     <div class="panel-body _buttons">
                         <a href="<?=admin_url('purchases/purchase/'.$client->userid)?>"  class="btn btn-info pull-left display-block"><?php echo _l('Thêm kế hoạch mua'); ?></a>
                     </div>
                 </div>
+            <?php } ?>
                 <div class="panel_s">
                     <div class="panel-body">
                         <div class="clearfix"></div>
@@ -30,6 +32,25 @@
 
 <?php init_tail(); ?>
 <script>
+    function var_status(status,id)
+    {
+        dataString={id:id,status:status};
+        jQuery.ajax({
+            type: "post",
+            url:"<?=admin_url()?>purchases/update_status",
+            data: dataString,
+            cache: false,
+            success: function (response) {
+                response = JSON.parse(response);
+                if (response.success == true) {
+                    $('.table-purchases').DataTable().ajax.reload();
+                    alert_float('success', response.message);
+                }
+                return false;
+            }
+        });
+
+    }
 
     function view_init_department(id)
     {

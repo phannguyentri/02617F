@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+$plan_status=array(
+    "2"=>"Đề xuất mua",
+    "1"=>"Đề xuất mua được xác nhận chọn để duyệt Đề xuất mua",
+    "0"=>"Đề xuất mua chưa được xác nhận chọn để xác nhận"
+);
 $aColumns     = array(
     'tblpurchase_suggested.id',
     'tblpurchase_suggested.code',
@@ -16,7 +20,7 @@ $sIndexColumn = "id";
 $sTable       = 'tblpurchase_suggested';
 
 $where = array();
-$order_by = '';
+$order_by = 'tblpurchase_suggested.id ASC';
 
 $join             = array(
 
@@ -44,20 +48,54 @@ foreach ($rResult as $aRow) {
         if(in_array($aColumns[$i],$array_link)){
             $_data = '<a href="'.admin_url('purchase_suggested/detail/').$aRow['tblpurchase_suggested.id'].'">'.$_data.'</a>';
         }
+        if($aColumns[$i] == 'tblpurchase_suggested.code') {
+            $_data = '<a href="'.admin_url('purchase_suggested/detail/').$aRow['tblpurchase_suggested.id'].'">'.get_option('prefix_purchase_suggested').$aRow['tblpurchase_suggested.code'].'</a>';
+        }
         if($aColumns[$i] == 'tblpurchase_suggested.status') {
-            if($_data == 0) {
-                $_data = "Chưa được duyệt hết";
+            if($aRow['tblpurchase_suggested.status']==0)
+                {
+                    $type='warning';
+                    $status='Chưa duyệt';
+                }
+                elseif($aRow['tblpurchase_suggested.status']==1)
+                {
+                    $type='info';
+                    $status='Đã xác nhận';
+                }
+                else
+                {
+                    $type='success';
+                    $status='Đã duyệt';
+                }
+            $_data='<span class="inline-block label label-'.$type.'" task-status-table="'.$aRow['tblpurchase_suggested.status'].'">' . $status.'';
+            if(has_permission('invoices', '', 'view') && has_permission('invoices', '', 'view_own'))
+            {
+                if($aRow['tblpurchase_suggested.status']!=2){
+                    $_data.='<a href="javacript:void(0)" onclick="var_status('.$aRow['tblpurchase_suggested.status'].','.$aRow['tblpurchase_suggested.id'].')">';
+                }
+                else
+                {
+                    $_data.='<a href="javacript:void(0)">';
+                }
             }
             else {
-                $_data = "Đã duyệt";
-                $approval = true;
+                if($aRow['tblpurchase_suggested.status']==0) {
+                    $_data .= '<a href="javacript:void(0)" onclick="var_status(' . $aRow['tblpurchase_suggested.status'] . ',' . $aRow['tblpurchase_suggested.id'] . ')">';
+                }
+                else
+                {
+                    $_data .= '<a href="javacript:void(0)">';
+                }
             }
+                $_data.='<i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>
+                    </a>
+                </span>';
         }
         $row[] = $_data;
     }
     $options = '';
     // if(has_permission('items','','edit')){
-        $options .= icon_btn('purchase_suggested/detail_pdf/' . $aRow['tblpurchase_suggested.id'], 'file-pdf-o', 'btn-default');
+        $options .= icon_btn('purchase_suggested/detail_pdf/' . $aRow['tblpurchase_suggested.id'].'?print=true', 'print', 'btn-default',array('target' => '_blank'));
         if(!$approval)
             $options .= icon_btn('purchase_suggested/detail/' . $aRow['tblpurchase_suggested.id'], 'pencil-square-o', 'btn-default');
 
