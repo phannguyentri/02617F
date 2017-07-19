@@ -94,8 +94,12 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     $options = '';
+    if(is_admin() && $aRow['tblpurchase_suggested.status']==2 && $aRow['converted']==0)
+    {
+        $options=icon_btn('purchase_suggested/convert_to_order/'. $aRow['tblpurchase_suggested.id'] , 'exchange', 'btn-default');
+    }
     // if(has_permission('items','','edit')){
-        $options .= icon_btn('purchase_suggested/detail_pdf/' . $aRow['tblpurchase_suggested.id'], 'print', 'btn-default',array('target' => '_blank'));
+        $options .= icon_btn('purchase_suggested/detail_pdf/' . $aRow['tblpurchase_suggested.id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
         if(!$approval)
             $options .= icon_btn('purchase_suggested/detail/' . $aRow['tblpurchase_suggested.id'], 'pencil-square-o', 'btn-default');
 

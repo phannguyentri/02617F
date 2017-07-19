@@ -81,7 +81,7 @@ class Purchases extends Admin_controller
 
         } else {
             $data['purchase'] = $this->purchases_model->getPurchaseByID($id);
-            // var_dump($data['purchase']);die();
+
             if (!$data['purchase']) {
                 blank_page('Purchase Not Found');
             }
@@ -168,7 +168,38 @@ class Purchases extends Admin_controller
         $id=$this->input->post('id');
         $status=$this->input->post('status');
         $status=$status+1;
+        $staff_id=get_staff_user_id();
+        $date=date('Y-m-d H:i:s');
         $data=array('status'=>$status);
+        if(is_admin() && $status==0)
+        {
+            $data['user_head_id']=$staff_id;
+            $data['user_head_date']=$date;
+
+            $data['user_admin_id']=$staff_id;
+            $data['user_admin_date']=$date;
+
+            $data['status']=2;
+        }
+        elseif(is_admin() && $status==1)
+        {
+            $inv=$this->purchases_model->getPurchaseByID($id);
+            if($inv->user_head_id==NULL || $inv->user_head_id=='')
+            {
+                $data['user_head_id']=$staff_id;
+                $data['user_head_date']=$date;
+            }
+            if($inv->user_admin_id==NULL || $inv->user_admin_id=='')
+            {
+                $data['user_admin_id']=$staff_id;
+                $data['user_admin_date']=$date;
+            }
+        }
+        elseif(is_head($inv->create_by))
+        {
+            $data['user_head_id']=$staff_id;
+            $data['user_head_date']=$date;
+        }
         $success=$this->purchases_model->update_status($id,$data);
         if($success) {
             echo json_encode(array(

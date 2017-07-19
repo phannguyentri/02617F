@@ -68,10 +68,10 @@ $pdf->ln(20);
 // Get Y position for the separation
 $y            = $pdf->getY();
 
-$detail  = _l('purchase_suggested_code').': <b>' . $purchase_suggested->code . '</b> <br /> <br />';
-$detail .= _l('purchase_suggested_name').': <b>' . $purchase_suggested->name . '</b> <br /> <br />';
-$detail .= _l('purchase_suggested_date').': <b>' . $purchase_suggested->date . '</b> <br /> <br />';
-$detail .= _l('purchase_suggested_reason').': <br /> <b>' . $purchase_suggested->reason . '</b> <br /> <br />';
+$detail  = _l('purchase_suggested_code').': ' . get_option('prefix_purchase_suggested').$purchase_suggested->code . '</b> <br /> <br />';
+$detail .= _l('purchase_suggested_name').': ' . $purchase_suggested->name . '<br /> <br />';
+$detail .= _l('purchase_suggested_date').': ' . $purchase_suggested->date . '<br /> <br />';
+$detail .= _l('purchase_suggested_reason').': ' . $purchase_suggested->reason . '<br /> <br />';
 // $detail .= _l('purchase_suggested_status').': <b>' . ($purchase_suggested->status == 1 ? "Đã duyệt" : "Chưa duyệt") . '</b> <br /> <br /> <br />';
 
 $pdf->writeHTMLCell($dimensions['wk'] - $dimensions['lm'] - 20, '', '', $y, $detail, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
