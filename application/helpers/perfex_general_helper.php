@@ -156,6 +156,26 @@ function is_admin($staffid = '')
     return false;
 }
 
+/**
+ * Check if user head of staff is head
+ * @param  mixed $staffid
+ * @return boolean if user is not head
+ */
+function is_head($staffid = '')
+{
+    $user_head_id = get_staff_user_id();
+
+    $CI =& get_instance();
+    $CI->db->select('staff_manager');
+    $CI->db->where('staffid', $staffid);
+    $head = $CI->db->get('tblstaff')->row()->staff_manager;
+    $index=array_search($user_head_id,json_decode($head));
+    if ($head && array_search($user_head_id,json_decode($head))!==false) {
+        return true;
+    }
+    return false;
+}
+
 function is_admin_two($staffid = '')
 {
     $_staffid = get_staff_user_id();
