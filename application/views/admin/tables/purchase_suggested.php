@@ -94,6 +94,10 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     $options = '';
+    if(is_admin() && $aRow['tblpurchase_suggested.status']==2 && $aRow['converted']==0)
+    {
+        $options=icon_btn('purchases/convert_to_suggested/'. $aRow['id'] , 'exchange', 'btn-default');
+    }
     // if(has_permission('items','','edit')){
         $options .= icon_btn('purchase_suggested/detail_pdf/' . $aRow['tblpurchase_suggested.id'], 'print', 'btn-default',array('target' => '_blank'));
         if(!$approval)
