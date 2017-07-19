@@ -268,7 +268,6 @@ function mutiple_taxes_found_for_item($taxes)
     }
     return true;
 }
-<<<<<<< HEAD
 
 /**
  * Format purchase status
@@ -307,8 +306,6 @@ function format_purchase_status($status, $classes = '', $label = true)
     }
 }
 
-=======
->>>>>>> bf63b875e7bf82f507150711594a80c6ddb03b5c
 /**
  * Format invoice status
  * @param  integer  $status

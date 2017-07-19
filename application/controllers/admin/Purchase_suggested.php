@@ -64,7 +64,6 @@ class Purchase_suggested extends Admin_controller
         }
         $pdf->Output(mb_strtoupper(slug_it($purchase_suggested_name)) . '.pdf', $type);
     }
-<<<<<<< HEAD
 
     /* Delete purchase */
     public function delete($id)
@@ -113,7 +112,4 @@ class Purchase_suggested extends Admin_controller
         }
         die;
     }
-=======
-    
->>>>>>> bf63b875e7bf82f507150711594a80c6ddb03b5c
 }
