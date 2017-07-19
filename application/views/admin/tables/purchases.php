@@ -85,7 +85,7 @@ foreach ($rResult as $aRow) {
     {
         $_data='';
     }
-    $_data.=icon_btn('purchases/pdf/' . $aRow['id'], 'print', 'btn-default',array('target' => '_blank'));
+    $_data.=icon_btn('purchases/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
     if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
         if($aRow['status']!=2)
         {

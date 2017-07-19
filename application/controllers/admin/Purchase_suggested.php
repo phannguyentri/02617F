@@ -55,7 +55,7 @@ class Purchase_suggested extends Admin_controller
             redirect(admin_url('purchase_suggested'));
         }
         $purchase_suggested        = $this->purchase_suggested_model->get($id);
-        $purchase_suggested_name = $purchase_suggested->name;
+        $purchase_suggested_name = ($purchase_suggested->name) ? $purchase_suggested->name : get_option('prefix_purchase_suggested').$purchase_suggested->code;
 
         $pdf            = purchase_suggested_pdf($purchase_suggested);
         $type           = 'D';
