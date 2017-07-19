@@ -2420,7 +2420,7 @@ $lang['zip_estimates'] = 'Ước tính Zip';
 $lang['zip_payments'] = 'Thanh toán bằng Zip';
 $lang['setup_help'] = 'Cứu giúp';
 $lang['clients_list_company'] = 'Công ty';
-$lang['dt_button_export'] = 'Xuất khẩu';
+$lang['dt_button_export'] = 'Xuất tập tin';
 
 $lang['dt_entries'] = 'mục';
 $lang['invoice_total_paid'] = 'Tổng số chi trả';

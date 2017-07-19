@@ -5,7 +5,7 @@
             <div class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body _buttons">
-                        <a href="#" onclick="new_category(); return false;" class="btn btn-info pull-left display-block"><?php echo _l('Thêm danh mục mới'); ?></a>
+                        <a href="#" onclick="new_category(); return false;" class="btn mright5 btn-info pull-left display-block"><?php echo _l('Thêm danh mục mới'); ?></a>
                         
                         <?php if(is_admin()){ ?>
                         <a href="<?php echo admin_url('categories/import'); ?>" class="btn btn-info pull-left display-block">

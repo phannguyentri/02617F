@@ -158,6 +158,8 @@ class Categories extends Admin_controller
                             }
                         }
                         else {
+                            fclose($fd);
+                            unlink($newFilePath);
                             redirect('/');
                         }
 
@@ -190,7 +192,7 @@ class Categories extends Admin_controller
                                     'duplicate' => $duplicate,
                                 );
                             }
-                            else if(trim($value[1]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[2]) || trim($value[2]) == '')  && (!isset($value[3]) || trim($value[3]) == '')) {
+                            else if(isset($result_array[$current_level_1]) && trim($value[1]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[2]) || trim($value[2]) == '')  && (!isset($value[3]) || trim($value[3]) == '')) {
                                 $result_array[$current_level_1]['children'][]['name']  = trim($value[1]);
                                 $current_level_2 = count($result_array[$current_level_1]['children']) - 1;
                                 $result_array[$current_level_1]['children'][$current_level_2]['children']  = [];
@@ -204,7 +206,7 @@ class Categories extends Admin_controller
                                     'duplicate' => $duplicate,
                                 );
                             }
-                            else if(trim($value[2]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[1]) || trim($value[1]) == '')  && (!isset($value[3]) || trim($value[3]) == '')) {
+                            else if(isset($result_array[$current_level_1]['children'][$current_level_2]) && trim($value[2]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[1]) || trim($value[1]) == '')  && (!isset($value[3]) || trim($value[3]) == '')) {
                                 $result_array[$current_level_1]['children'][$current_level_2]['children'][]['name']  = trim($value[2]);
                                 $current_level_3 = count($result_array[$current_level_1]['children'][$current_level_2]['children']) - 1;
                                 $result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['children']  = [];
@@ -218,7 +220,7 @@ class Categories extends Admin_controller
                                     'duplicate' => $duplicate,
                                 );
                             }
-                            else if(trim($value[3]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[1]) || trim($value[1]) == '')  && (!isset($value[2]) || trim($value[2]) == '')) {
+                            else if(isset($result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]) && trim($value[3]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[1]) || trim($value[1]) == '')  && (!isset($value[2]) || trim($value[2]) == '')) {
                                 $result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['children'][]['name']  = trim($value[3]);
                                 $current_level_4 = count($result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['children']) - 1;
                                 $result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['children'][$current_level_4]['children']  = [];

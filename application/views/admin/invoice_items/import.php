@@ -20,9 +20,8 @@
                         <?php } ?>
                         <?php
 
-                            if(!isset($simulate) > 0) { ?>
-                        <p>Khi nhập sẽ bỏ qua hàng đầu tiên(vì có thể là tiêu đề). <br />
-                        Danh mục nhập bắt buộc không được trùng với danh mục đã có.
+                        if(!isset($simulate) > 0) { ?>
+                        <p>
                         </p>
                         
                         </div>
