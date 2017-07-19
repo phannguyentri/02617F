@@ -244,6 +244,66 @@ function handle_lead_attachments($leadid,$index_name = 'file', $form_activity = 
     }
     return false;
 }
+
+/**
+ * Handle invoice attachments if any
+ * @param  mixed $leadid
+ * @return boolean
+ */
+function handle_invoice_attachments($invoice_item_id,$index_name = 'file', $form_activity = false)
+{
+
+   if(isset($_FILES[$index_name]) && empty($_FILES[$index_name]['name']) && $form_activity){return;}
+
+    if(isset($_FILES[$index_name]) && _perfex_upload_error($_FILES[$index_name]['error'])){
+        header('HTTP/1.0 400 Bad error');
+        echo _perfex_upload_error($_FILES[$index_name]['error']);
+        die;
+    }
+
+    $CI =& get_instance();
+    if (isset($_FILES[$index_name]['name']) && $_FILES[$index_name]['name'] != '') {
+        // do_action('before_upload_lead_attachment',$invoice_item_id);
+        $path        = get_upload_path_by_type('invoice') . $invoice_item_id . '/';
+        // Get the temp file path
+        $tmpFilePath = $_FILES[$index_name]['tmp_name'];
+        // Make sure we have a filepath
+        if (!empty($tmpFilePath) && $tmpFilePath != '') {
+            // Setup our new file path
+            if (!file_exists($path)) {
+                mkdir($path);
+                fopen($path . 'index.html', 'w');
+            }
+
+            $path_parts         = pathinfo($_FILES[$index_name]["name"]);
+            $extension          = $path_parts['extension'];
+            $extension = strtolower($extension);
+            $allowed_extensions = explode(',', get_option('allowed_files'));
+                // Check for all cases if this extension is allowed
+            if (!in_array('.'.$extension, $allowed_extensions)) {
+                return false;
+            }
+
+            $filename    = unique_filename($path, $_FILES[$index_name]["name"]);
+            $newFilePath = $path . $filename;
+            // Upload the file into the company uploads dir
+            if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                $CI =& get_instance();
+                $CI->load->model('Invoice_items_model');
+                $data = array();
+                $data[] = array(
+                    'file_name' => $filename,
+                    'filetype' => $_FILES[$index_name]["type"],
+                    );
+                $CI->Invoice_items_model->add_attachment_to_database($invoice_item_id,$data,false,$form_activity);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
 /**
  * Check for task attachment
  * @since Version 1.0.1

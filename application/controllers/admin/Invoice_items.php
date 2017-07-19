@@ -43,6 +43,16 @@ class Invoice_items extends Admin_controller
                 }
                 $data                 = $this->input->post();
                 $save_and_add_contact = false;
+                // Category 3rd level
+                if(is_array($data['category_id'])) {
+                    for ($i=count($data['category_id'])-1; $i >= 0 ; $i--) { 
+                        if( $data['category_id'][$i] != 0 ) {
+                            $data['category_id'] = $data['category_id'][$i];
+                            break;
+                        }
+                    }
+                }
+                // End
                 if (isset($data['save_and_add_contact'])) {
                     unset($data['save_and_add_contact']);
                     $save_and_add_contact = true;
@@ -68,6 +78,15 @@ class Invoice_items extends Admin_controller
                 $data = $this->input->post();
                 $data['itemid'] = $id;
                 $item = $this->invoice_items_model->get_full($id);
+                if(is_array($data['category_id'])) {
+                    for ($i=count($data['category_id'])-1; $i >= 0 ; $i--) { 
+                        if( $data['category_id'][$i] != 0 ) {
+                            $data['category_id'] = $data['category_id'][$i];
+                            break;
+                        }
+                    }
+                }
+                
                 $success = $this->invoice_items_model->edit($data, $item);
                 $success_avatar = handle_item_avatar_image_upload($id);
                 if ($success == true || $success_avatar == true) {
@@ -81,18 +100,70 @@ class Invoice_items extends Admin_controller
         }
         if ($id == '') {
             $title = _l('add_new', _l('als_products'));
+            $array_categories[] = array(0, $this->invoice_items_model->get_same_level_categories(0));
+            $array_categories[1] = array(0, array());
+            $array_categories[2] = array(0, array());
+            $data['array_categories'] = $array_categories;
+            
         } else {
             $title = _l('invoice_item_edit_heading');
             $item = $this->invoice_items_model->get_full($id);
+            $array_categories = [];
+
+            $array_categories[] = array($item->category_id, $this->invoice_items_model->get_same_level_categories($item->category_id));
+            $this->invoice_items_model->get_category_parent_id($item->category_id, $array_categories);
+            
+            if(count($array_categories) < 3) {
+                if(!isset($array_categories[1])) {
+                    $array_categories[1] = array(0, array());
+                }
+                if(!isset($array_categories[2])) {
+                    $array_categories[2] = array(0, array());
+                }
+            }
             if (!$item) {
                 blank_page('Client Not Found');
             }
+            $data['array_categories'] = $array_categories;
             $data['item'] = $item;
         }
 
 
         $data['title'] = $title;
         $this->load->view('admin/invoice_items/item_details', $data);
+    }
+    public function get_categories($id='') {
+        if (!has_permission('items', '', 'view')) {
+            if ($id != '' && !is_customer_admin($id)) {
+                access_denied('customers');
+            }
+        }
+        echo json_encode($this->invoice_items_model->get_categories($id));
+    }
+    public function get_invoice_item_attachment($id) {
+        if (!has_permission('items', '', 'view')) {
+            if ($id != '' && !is_customer_admin($id)) {
+                access_denied('customers');
+            }
+        }
+        if(is_numeric($id)) {
+            $item = $this->invoice_items_model->get_full($id);
+            if($item) {
+                $this->load->view('admin/invoice_items/item_attachments_template', array('attachments'=>$item->attachments));
+            }
+        }
+        
+    }
+    public function delete_attachment($id)
+    {
+        echo json_encode(array(
+            'success' => $this->invoice_items_model->delete_invoice_item_attachment($id)
+        ));
+    }
+    public function add_item_attachment()
+    {
+        $item_id = $this->input->post('leadid');
+        echo json_encode(handle_invoice_attachments($item_id));
     }
     public function price_history($id = '') {
         if (!has_permission('items', '', 'view')) {
@@ -103,6 +174,21 @@ class Invoice_items extends Admin_controller
         if($id!='') {
             if($this->input->is_ajax_request()) {
                 $this->perfex_base->get_table_data('item_price_history', array(
+                    'rel_id' => $id,
+                )); 
+            }
+        }
+    }
+    public function price_buy_history($id = '') {
+        if (!has_permission('items', '', 'view')) {
+            if ($id != '' && !is_customer_admin($id)) {
+                access_denied('customers');
+            }
+        }
+        if($id!='') {
+            
+            if($this->input->is_ajax_request()) {
+                $this->perfex_base->get_table_data('item_price_buy_history', array(
                     'rel_id' => $id,
                 )); 
             }
@@ -227,7 +313,8 @@ class Invoice_items extends Admin_controller
     public function get_item_by_id($id)
     {
         if ($this->input->is_ajax_request()) {
-            $item                   = $this->invoice_items_model->get($id);
+            
+            $item                   = $this->invoice_items_model->get_full($id);
             $item->long_description = nl2br($item->long_description);
             echo json_encode($item);
         }

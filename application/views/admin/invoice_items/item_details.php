@@ -63,7 +63,7 @@
             <div role="tabpanel" class="tab-pane active" id="item_detail">
             <?php echo form_open_multipart($this->uri->uri_string(), array('class'=>'client-form','autocomplete'=>'off')); ?>
                 <div class="row">    
-                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">            
                     <?php
                       // config
                       $attrs_not_select = array('data-none-selected-text'=>_l('system_default_string'));
@@ -106,6 +106,10 @@
                       $default_price = (isset($item) ? $item->price : 0);
                       echo render_input('price', _l('item_price'), $default_price);
                     ?>
+                    <?php
+                      $default_price_buy = (isset($item) ? $item->price_buy : 0);
+                      echo render_input('price_buy', _l('item_price_buy'), $default_price_buy);
+                    ?>
 
                     <?php 
                         $contents_description = (isset($item) ? $item->description : "");
@@ -118,6 +122,21 @@
                     ?>
                   </div>
                   <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <?php
+                        $i=0;
+                        if(count($array_categories) > 0) {
+                            
+                            foreach($array_categories as $value)
+                            {
+                                $i++;
+                                echo render_select('category_id[]', $value[1], array('id','category'), _l('item_category_level') . $i, $value[0], array(), array(), '', '');
+                            }
+                        }
+                        else {
+                            echo render_select('category_id[]', "", array('id','category'), 'item_category', "", array(), array(), '', '');
+                        }
+                      ?>
+                    
                     <?php
                       $units = get_units();
                       $default_unit = (isset($item) ? $item->unit : "");
@@ -135,11 +154,6 @@
                       $groups = get_item_groups();
                       $default_group = (isset($item) ? $item->group_id : "");
                       echo render_select('group_id', $groups, array('id','name'), 'item_group_id', $default_group, array(), array(), '', '', false);
-                    ?>
-
-                    <?php
-                        $date_item = ( isset($item) ? ( $item->date_item != "" ? _d(date('Y-m-d')) : _d($item->date_item)) : _d(date('Y-m-d')));
-                        echo render_date_input( 'date_item', 'item_date_item' , $date_item, 'date'); 
                     ?>
 
                     <?php
@@ -195,6 +209,7 @@
             <div role="tabpanel" class="tab-pane" id="item_price_history">
                 <div class="row">
                     <div class="col-md-12">
+                        <h3><?php echo _l('item_price') ?></h3>
                         <?php render_datatable(array(
                             _l('item_price_date'),
                             _l('item_old_price'),
@@ -203,10 +218,20 @@
                             'invoice-item-price-history'); ?>
                     </div>
                 </div>
-                
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3><?php echo _l('item_price_buy') ?></h3>
+                        <?php render_datatable(array(
+                            _l('item_price_date'),
+                            _l('item_old_price'),
+                            _l('item_new_price'),
+                            ),
+                            'invoice-item-price-buy-history'); ?>
+                    </div>
+                </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="item_files">
-                <?php echo form_open('admin/leads/add_lead_attachment',array('class'=>'dropzone mtop30','id'=>'lead-attachment-upload')); ?>
+                <?php echo form_open('admin/invoice_items/add_item_attachment',array('class'=>'dropzone mtop30','id'=>'invoice-item-attachment-upload')); ?>
                 <?php echo form_close(); ?>
                 <?php if(get_option('dropbox_app_key') != ''){ ?>
                 <hr />
@@ -215,8 +240,8 @@
                 </div>
                 <?php } ?>
                 <hr />
-                <div class="mtop30" id="lead_attachments">
-                <?php //$this->load->view('admin/leads/leads_attachments_template', array('attachments'=>$lead->attachments)); ?>
+                <div class="mtop30" id="invoice_item_attachments">
+                
                 </div>
             </div>
             <?php } ?>
@@ -233,8 +258,11 @@
 </div>
 <?php init_tail(); ?>
 <script>
+    init_invoice_item_data(<?php echo $item->id; ?>, '<?php echo admin_url('invoice_items/get_invoice_item_attachment/'); ?>');
     $(function(){
     initDataTable('.table-invoice-item-price-history', '<?=admin_url('invoice_items/price_history/' . $item->id)?>', [], [],'undefined',[0,'DESC']);
+    
+    initDataTable('.table-invoice-item-price-buy-history', '<?=admin_url('invoice_items/price_buy_history/' . $item->id)?>', [], [],'undefined',[0,'DESC']);
   });
 </script>
 <?php $this->load->view('admin/invoice_items/item_details_js'); ?>

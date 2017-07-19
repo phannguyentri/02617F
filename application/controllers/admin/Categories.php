@@ -25,7 +25,9 @@ class Categories extends Admin_controller
             $this->perfex_base->get_table_data('categories');
         }
         $data['roles']=$this->category_model->get_roles();
-        $data['categories'] = $this->category_model->get_all();
+        
+        $data['categories'] = [];
+        $this->category_model->get_by_id(0,$data['categories']);
         // var_dump($data['roles']);die();
         $data['title'] = _l('Danh mục sản phẩm');
         $this->load->view('admin/categories/manage', $data);
@@ -103,6 +105,144 @@ class Categories extends Admin_controller
     {
         echo json_encode($this->category_model->get_row_category($id));
     }
+    public function import()
+    {
+        $simulate_data  = array();
+        $total_imported = 0;
+        $load_result = false;
+        if ($this->input->post()) {
+            if (isset($_FILES['file_csv']['name']) && $_FILES['file_csv']['name'] != '') {
+                // Get the temp file path
+                $tmpFilePath = $_FILES['file_csv']['tmp_name'];
+                // Make sure we have a filepath
+                if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                    // Setup our new file path
+                    $newFilePath = TEMP_FOLDER . $_FILES['file_csv']['name'];
+                    if (!file_exists(TEMP_FOLDER)) {
+                        mkdir(TEMP_FOLDER, 777);
+                    }
+                    if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                        $load_result = true;
+                        $fd            = fopen($newFilePath, 'r');
+                        $rows          = array();
+                        while ($row = fgetcsv($fd)) {
+                            $rows[] = $row;
+                        }
+                        fclose($fd);
+                        $data['total_rows_post'] = count($rows);
+                        unlink($newFilePath);
 
+                        // Works with difficulty
+                        $query_array = [];
+                        $backup_rows = $rows;
+                        unset($rows[0]);
+                        $result_array = [];
+                        $current_level_1 =  0;
+                        $current_level_2 =  0;
+                        $current_level_3 =  0;
+                        $current_level_4 =  0;
+                        $had_item = [];
+                        foreach($rows as $key=>$value) {
+                            if(trim($value[0]) != '' && (!isset($value[1]) || trim($value[1]) == '')  && (!isset($value[2]) || trim($value[2]) == '')  && (!isset($value[3]) || trim($value[3]) == '')) {
+                                $result_array[]['name']  = trim($value[0]);
+                                $current_level_1 = count($result_array) - 1;
+                                $result_array[$current_level_1]['children']  = [];
+                                $duplicate = ($this->category_model->get_single_by_name(trim($value[0])) != false);
+                                if($duplicate)
+                                    $had_item[] = trim($value[0]);
+                                $query_array[] = array(
+                                    'name' => trim($value[0]),
+                                    'sub'  => ' ',
+                                    'parent' => '',
+                                    'duplicate' => $duplicate,
+                                );
+                            }
+                            else if(trim($value[1]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[2]) || trim($value[2]) == '')  && (!isset($value[3]) || trim($value[3]) == '')) {
+                                $result_array[$current_level_1]['children'][]['name']  = trim($value[1]);
+                                $current_level_2 = count($result_array[$current_level_1]['children']) - 1;
+                                $result_array[$current_level_1]['children'][$current_level_2]['children']  = [];
+                                $duplicate = ($this->category_model->get_single_by_name(trim($value[1])) != false);
+                                if($duplicate)
+                                    $had_item[] = trim($value[1]);
+                                $query_array[] = array(
+                                    'name' => trim($value[1]),
+                                    'sub'  => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;> ',
+                                    'parent' => $result_array[$current_level_1]['name'],
+                                    'duplicate' => $duplicate,
+                                );
+                            }
+                            else if(trim($value[2]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[1]) || trim($value[1]) == '')  && (!isset($value[3]) || trim($value[3]) == '')) {
+                                $result_array[$current_level_1]['children'][$current_level_2]['children'][]['name']  = trim($value[2]);
+                                $current_level_3 = count($result_array[$current_level_1]['children'][$current_level_2]['children']) - 1;
+                                $result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['children']  = [];
+                                $duplicate = ($this->category_model->get_single_by_name(trim($value[2])) != false);
+                                if($duplicate)
+                                    $had_item[] = trim($value[2]);
+                                $query_array[] = array(
+                                    'name' => trim($value[2]),
+                                    'sub'  => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;> ',
+                                    'parent' => $result_array[$current_level_1]['children'][$current_level_2]['name'],
+                                    'duplicate' => $duplicate,
+                                );
+                            }
+                            else if(trim($value[3]) != '' && (!isset($value[0]) || trim($value[0]) == '')  && (!isset($value[1]) || trim($value[1]) == '')  && (!isset($value[2]) || trim($value[2]) == '')) {
+                                $result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['children'][]['name']  = trim($value[3]);
+                                $current_level_4 = count($result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['children']) - 1;
+                                $result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['children'][$current_level_4]['children']  = [];
+                                $duplicate = ($this->category_model->get_single_by_name(trim($value[3])) != false);
+                                if($duplicate)
+                                    $had_item[] = trim($value[3]);
+                                $query_array[] = array(
+                                    'name' => trim($value[3]),
+                                    'sub'  => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;> ',
+                                    'parent' => $result_array[$current_level_1]['children'][$current_level_2]['children'][$current_level_3]['name'],
+                                    'duplicate' => $duplicate,
+                                );
+                            }
+                        }
+                        $this->session->set_userdata('query_array', $query_array);
+                        $this->session->set_userdata('query_duplicate', $had_item);
+                    }
+                } else {
+                    set_alert('warning', _l('import_upload_failed'));
+                }
+            }
+            if($this->input->post('confirm') && $this->input->post('confirm')==1) {
+            
+                $row_imported = 0;
+                foreach($this->session->userdata('query_array') as $value) {
+                    $parent = 0;
+                    if($value['parent'] != '') {
+                        $parent = $this->category_model->get_single_by_name($value['parent']);
+                        if($parent) 
+                            $parent = $parent->id;
+                        else
+                            $parent = 0;
+                    }
+                    $data = array(
+                        'category' => $value['name'],
+                        'category_parent' => $parent,
+                    );
+                    $this->category_model->add_category($data);
+                    $row_imported++;
+                }
+                $this->session->unset_userdata('query_array');
+            }
+        }
+        
+        // print_r($this->session->userdata('query_array'));
+        // exit();
+
+        if (isset($load_result) && $load_result == true) {
+            set_alert('success', _l('load_import_success'));
+        }
+        if(isset($row_imported)) {
+            $data['row_imported'] = $row_imported;
+            set_alert('success', _l('category_import_success') . $row_imported);
+        }
+
+        $data['title']          = 'Import';
+        $this->load->view('admin/categories/import', $data);
+    }
 
 }
