@@ -95,7 +95,7 @@ foreach ($rResult as $aRow) {
     }
     $options = '';
     // if(has_permission('items','','edit')){
-        $options .= icon_btn('purchase_suggested/detail_pdf/' . $aRow['tblpurchase_suggested.id'].'?print=true', 'print', 'btn-default',array('target' => '_blank'));
+        $options .= icon_btn('purchase_suggested/detail_pdf/' . $aRow['tblpurchase_suggested.id'], 'print', 'btn-default',array('target' => '_blank'));
         if(!$approval)
             $options .= icon_btn('purchase_suggested/detail/' . $aRow['tblpurchase_suggested.id'], 'pencil-square-o', 'btn-default');
 

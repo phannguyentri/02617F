@@ -53,7 +53,7 @@ class Purchase_suggested_model extends CRM_Model
                 {
                     logActivity('Purchase suggested Insert [ID: ' . $insert_id . ']');
                 }
-                
+                // var_dump($items);die();
                 foreach($items as $value) {
                     $this->add_detail_item($insert_id, $value['id'], $value['quantity']);
                 }       

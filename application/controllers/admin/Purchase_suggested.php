@@ -22,7 +22,7 @@ class Purchase_suggested extends Admin_controller
         if($this->input->post()) {
             if( $id == '' ) {
                 $data_post = $this->input->post();
-                // var_dump($data_post);die();
+                
                 if(isset($data_post['items']) && count($data_post['items']) > 0) {
                     $data_post['create_by'] = get_staff_user_id();
 

@@ -85,9 +85,13 @@ foreach ($rResult as $aRow) {
     {
         $_data='';
     }
+    $_data.=icon_btn('purchases/pdf/' . $aRow['id'], 'print', 'btn-default',array('target' => '_blank'));
     if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
+        if($aRow['status']!=2)
+        {
 
-        $_data .= '<a href="'.admin_url('purchases/purchase/'.$aRow['id']).'" class="btn btn-default btn-icon" ><i class="fa fa-eye"></i></a>';
+            $_data .= '<a href="'.admin_url('purchases/purchase/'.$aRow['id']).'" class="btn btn-default btn-icon" ><i class="fa fa-eye"></i></a>';
+        }
         $row[] =$_data.icon_btn('purchases/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-reminders');
     } else {
         $row[] = '';

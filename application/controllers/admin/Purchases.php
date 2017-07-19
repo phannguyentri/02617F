@@ -52,8 +52,13 @@ class Purchases extends Admin_controller
                 if (!has_permission('customers', '', 'create')) {
                     access_denied('customers');
                 }
+
                 $data                 = $this->input->post();
-                $id = $this->purchases_model->add($data);
+                if(isset($data['item']) && count($data['item']) > 0)
+                {
+                    $id = $this->purchases_model->add($data);
+                }
+                
                 if ($id) {
                     set_alert('success', _l('added_successfuly', _l('Kế hoạch')));
                     redirect(admin_url('purchases/purchase/' . $id));
@@ -111,7 +116,7 @@ class Purchases extends Admin_controller
         $data['items'] = $this->invoice_items_model->get_full();
         $data['item'] = $this->purchases_model->getPurchaseByID($id);
         // var_dump($data['item']);die();
-        
+
         $this->load->view('admin/purchases/convert_to_suggested', $data);
     }
 
@@ -149,7 +154,7 @@ class Purchases extends Admin_controller
             redirect(admin_url('purchases/list_invoices'));
         }
         $invoice        = $this->purchases_model->getPurchaseByID($id);
-        $invoice_number = $invoice->code;
+        $invoice_number = get_option('prefix_purchase_suggested').$invoice->code;
         $pdf            = purchase_plan_pdf($invoice);
         $type           = 'D';
         if ($this->input->get('print')) {

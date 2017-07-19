@@ -71,13 +71,7 @@
                           <span class="input-group-addon">
                             <?php echo get_option('prefix_purchase_suggested') ?></span>
                             <?php 
-                                // var_dump($purchase);
-                                if($item)
-                                {
-
-                                    $number=$item->code;
-                                }
-                                else
+                                
                                 {
                                     $number=sprintf('%05d',getMaxID('id','tblpurchase_suggested')+1);
                                 }
@@ -181,7 +175,7 @@
                                         ?>
                                     <tr class="sortable item">
                                         <td>
-                                            <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
+                                            <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value['product_id']; ?>">
                                         </td>
                                         <td class="dragger"><?php echo $value['name']; ?></td>
                                         <td><?php echo $value['unit_name']; ?></td>
