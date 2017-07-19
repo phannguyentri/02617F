@@ -59,7 +59,7 @@ class Purchase_suggested extends Admin_controller
 
         $pdf            = purchase_suggested_pdf($purchase_suggested);
         $type           = 'D';
-        if ($this->input->get('print')) {
+        if ($this->input->get('pdf') || $this->input->get('print')) {
             $type = 'I';
         }
         $pdf->Output(mb_strtoupper(slug_it($purchase_suggested_name)) . '.pdf', $type);

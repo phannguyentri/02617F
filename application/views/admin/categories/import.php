@@ -65,7 +65,11 @@
                                     <button type="submit" class="btn btn-info import btn-import-confirm"><?php echo _l('copy_task_confirm'); ?></button>
                                 </div>
                                 <?php echo form_close();
-                                } // end form ?>
+                                } else {
+                                    $this->session->unset_userdata('query_array');
+                                    $this->session->unset_userdata('query_duplicate');
+                                }
+                                 // end form ?>
                             </div>
                         </div>
                         <?php } ?>
@@ -79,7 +83,7 @@
                                 <?php endif; ?>
                                 <?php echo form_open_multipart($this->uri->uri_string(),array('id'=>'import_form')) ;?>
                                 <?php echo form_hidden('leads_import','true'); ?>
-                                <?php echo render_input('file_csv','choose_csv_file','','file'); ?>
+                                <?php echo render_input('file_import','choose_csv_file','','file'); ?>
                                 <div class="form-group">
                                     <button type="button" class="btn btn-info import btn-import-submit"><?php echo _l('import'); ?></button>
                                     <button type="button" class="btn btn-info simulate btn-import-submit"><?php echo _l('simulate_import'); ?></button>

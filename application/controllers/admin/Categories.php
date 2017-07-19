@@ -50,7 +50,7 @@ class Categories extends Admin_controller
             'message' => $message
         ));
     }
-     public function add_category()
+    public function add_category()
     {
         if ($this->input->post()) {
             $message = '';
@@ -99,8 +99,6 @@ class Categories extends Admin_controller
         die;
     }
 
-
-
     public function get_row_category($id)
     {
         echo json_encode($this->category_model->get_row_category($id));
@@ -111,13 +109,15 @@ class Categories extends Admin_controller
         $total_imported = 0;
         $load_result = false;
         if ($this->input->post()) {
-            if (isset($_FILES['file_csv']['name']) && $_FILES['file_csv']['name'] != '') {
+            if (isset($_FILES['file_import']['name']) && $_FILES['file_import']['name'] != '') {
                 // Get the temp file path
-                $tmpFilePath = $_FILES['file_csv']['tmp_name'];
+                $tmpFilePath = $_FILES['file_import']['tmp_name'];
+                $ext = strtolower(pathinfo($_FILES['file_import']['name'], PATHINFO_EXTENSION));
+                $type = $_FILES["file_import"]["type"];
                 // Make sure we have a filepath
                 if (!empty($tmpFilePath) && $tmpFilePath != '') {
                     // Setup our new file path
-                    $newFilePath = TEMP_FOLDER . $_FILES['file_csv']['name'];
+                    $newFilePath = TEMP_FOLDER . $_FILES['file_import']['name'];
                     if (!file_exists(TEMP_FOLDER)) {
                         mkdir(TEMP_FOLDER, 777);
                     }
@@ -125,9 +125,42 @@ class Categories extends Admin_controller
                         $load_result = true;
                         $fd            = fopen($newFilePath, 'r');
                         $rows          = array();
-                        while ($row = fgetcsv($fd)) {
-                            $rows[] = $row;
+                        if($ext == 'csv') {
+                            while ($row = fgetcsv($fd)) {
+                                $rows[] = $row;
+                            }
                         }
+                        else if($ext == 'xlsx' || $ext == 'xls') {
+                            if($type == "application/octet-stream" || $type == "application/vnd.ms-excel" || $type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                                require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . 'PHPExcel' . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+
+                                $inputFileType = PHPExcel_IOFactory::identify($newFilePath);
+                                
+                                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                                
+                                $objReader->setReadDataOnly(true);
+                                
+                                /**  Load $inputFileName to a PHPExcel Object  **/
+                            $objPHPExcel =           $objReader->load($newFilePath);
+                                $allSheetName       = $objPHPExcel->getSheetNames();
+                                $objWorksheet       = $objPHPExcel->setActiveSheetIndex(0);
+                                $highestRow         = $objWorksheet->getHighestRow();
+                                $highestColumn      = $objWorksheet->getHighestColumn();
+                                
+                                $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+                                
+                                for ($row = 2; $row <= $highestRow; ++$row) {
+                                    for ($col = 0; $col < $highestColumnIndex; ++$col) {
+                                        $value                     = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+                                        $rows[$row - 2][$col] = $value;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            redirect('/');
+                        }
+
                         fclose($fd);
                         $data['total_rows_post'] = count($rows);
                         unlink($newFilePath);
@@ -230,9 +263,6 @@ class Categories extends Admin_controller
             }
         }
         
-        // print_r($this->session->userdata('query_array'));
-        // exit();
-
         if (isset($load_result) && $load_result == true) {
             set_alert('success', _l('load_import_success'));
         }

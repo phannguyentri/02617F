@@ -157,7 +157,7 @@ class Purchases extends Admin_controller
         $invoice_number = get_option('prefix_purchase_suggested').$invoice->code;
         $pdf            = purchase_plan_pdf($invoice);
         $type           = 'D';
-        if ($this->input->get('print')) {
+        if ($this->input->get('pdf') || $this->input->get('print')) {
             $type = 'I';
         }
         $pdf->Output(mb_strtoupper(slug_it($invoice_number)) . '.pdf', $type);

@@ -1100,6 +1100,7 @@ function purchase_suggested_pdf($purchase_suggested, $tag = '') {
 
     if ($CI->input->get('print') == 'true') {
         // force print dialog
+        $js="";
         $js = 'print(true);';
         $pdf->IncludeJS($js);
     }
