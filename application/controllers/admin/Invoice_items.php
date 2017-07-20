@@ -6,7 +6,7 @@ class Invoice_items extends Admin_controller
     {
         parent::__construct();
         $this->load->model('invoice_items_model');
-
+        $this->load->model('category_model');
     }
     /* List all available items */
     public function index()
@@ -327,5 +327,224 @@ class Invoice_items extends Admin_controller
         if ($this->input->is_ajax_request()) {
             echo json_encode($this->invoice_items_model->get_all_items_ajax());
         }
+    }
+    public function import()
+    {
+        $total_imported = 0;
+        $load_result = false;
+        $alert = [
+            'success' => 0,
+            'fail'    => [],
+        ];
+        if ($this->input->post()) {
+            if (isset($_FILES['file_import']['name']) && $_FILES['file_import']['name'] != '') {
+                // Get the temp file path
+                $tmpFilePath = $_FILES['file_import']['tmp_name'];
+                $ext = strtolower(pathinfo($_FILES['file_import']['name'], PATHINFO_EXTENSION));
+                $type = $_FILES["file_import"]["type"];
+                // Make sure we have a filepath
+                if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                    // Setup our new file path
+                    $newFilePath = TEMP_FOLDER . $_FILES['file_import']['name'];
+                    if (!file_exists(TEMP_FOLDER)) {
+                        mkdir(TEMP_FOLDER, 777);
+                    }
+                    if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                        $load_result = true;
+                        $fd            = fopen($newFilePath, 'r');
+                        $rows          = array();
+                        if($ext == 'csv') {
+                            while ($row = fgetcsv($fd)) {
+                                $rows[] = $row;
+                            }
+                        }
+                        else if($ext == 'xlsx' || $ext == 'xls') {
+                            if($type == "application/octet-stream" || $type == "application/vnd.ms-excel" || $type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                                require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . 'PHPExcel' . DIRECTORY_SEPARATOR . 'PHPExcel.php');
+
+                                $inputFileType = PHPExcel_IOFactory::identify($newFilePath);
+                                
+                                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                                
+                                $objReader->setReadDataOnly(true);
+                                
+                                /**  Load $inputFileName to a PHPExcel Object  **/
+                            $objPHPExcel =           $objReader->load($newFilePath);
+                                $allSheetName       = $objPHPExcel->getSheetNames();
+                                $objWorksheet       = $objPHPExcel->setActiveSheetIndex(0);
+                                $highestRow         = $objWorksheet->getHighestRow();
+                                $highestColumn      = $objWorksheet->getHighestColumn();
+                                
+                                $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+                                
+                                for ($row = 2; $row <= $highestRow; ++$row) {
+                                    for ($col = 0; $col < $highestColumnIndex; ++$col) {
+                                        $value                     = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+                                        $rows[$row - 2][$col] = $value;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            fclose($fd);
+                            unlink($newFilePath);
+                            redirect('/');
+                        }
+
+                        fclose($fd);
+                        $data['total_rows_post'] = count($rows);
+                        unlink($newFilePath);
+
+                        // Works with difficulty
+                        $query_array = [];
+                        $backup_rows = $rows;
+                        unset($rows[0]);
+                        $result_array = [];
+                        $important_columns = array(
+                            'code'                      => array('Mã',                  -1),
+                            'name'                      => array('Tên',                 -1),
+                            'short_name'                => array('Tên ngắn',            -1),
+                            'description'               => array('Miêu tả',             -1),
+                            'long_description'          => array('Miêu tả dài',         -1),
+                            'unit'                      => array('Đơn vị',              -1),
+                            'group_id'                  => array('Nhóm',                -1),
+                            'release_date'              => array('Ngày công bố',        -1),
+                            'date_of_removal_of_sample' => array('Ngày bỏ mẫu',         -1),
+                            'country_id'                => array('Xuất xứ',             -1),
+                            'specification'             => array('Quy cách',            -1),
+                            'size'                      => array('Kích thước',          -1),
+                            'weight'                    => array('Trọng lượng',         -1),
+                            'product_features'          => array('Đặc tính sản phẩm',   -1),
+                            'price'                     => array('Giá bán',             -1),
+                            'price_buy'                 => array('Giá nhập',            -1),
+                            'minimum_quantity'          => array('Số lượng tối thiểu',  -1),
+                            'maximum_quantity'          => array('Số lượng tối đa',     -1),
+                            'quantity'                  => array('Số lượng',            -1),
+                            'category_id'               => array('Danh mục',            -1),
+                        );
+                        $fetch_columns_step = true;
+                        $fetch_product_step = false;
+                        $columns_found = 0;
+                        $product_count = 0;
+                        foreach($rows as $row) {
+                            if($fetch_columns_step) {
+                                $stt=0;
+                                foreach($important_columns as $column_key=>$column_value) {
+                                    // Nếu bảng tính không có cột để xét thì thoát, kết quả sẽ không thể nhập
+                                    if(!isset($row[$stt]))
+                                        break;
+                                    // Kiểm tra nếu nội dung của ô bằng với nội dung cột cần nhập
+                                    if(trim($row[$stt]) == trim($column_value[0])) {
+                                        $columns_found++;
+                                    }
+                                    // Nếu tìm được đủ cột không tìm nữa và bắt đầu chạy thêm sản phẩm
+                                    if($columns_found >= count($important_columns)) {
+                                        $fetch_columns_step = false;
+                                        $fetch_product_step = true;
+                                        break;
+                                    }
+                                    $stt++;
+                                }
+                                continue;
+                            }
+                            if($fetch_product_step) {
+                                $product_count++;
+                                $data = [];
+                                $stt = 0;
+                                $data_ok = true;
+                                $reason = "";
+                                // Gán từng ô là field tương ứng trong csdl
+                                foreach($important_columns as $column_key=>$column_value) {
+                                    if($column_key == 'group_id') {
+                                        $all_groups = get_item_groups();
+                                        $result_search = false;
+                                        
+                                        foreach($all_groups as $key=>$group) {
+                                            if(trim($group['name']) == trim($row[$stt])) {
+                                                $result_search = $key;
+                                                break;
+                                            }
+                                        }
+                                        if($result_search !== false) {
+                                            $data[$column_key] = $all_groups[$result_search]['name'];
+                                        }
+                                        else {
+                                            $reason .= "Không tìm thấy " . $column_value[0] . " ".$row[$stt] ."<br />";
+                                            $data_ok = false;
+                                        }
+                                    }
+                                    if($column_key == 'country_id') {
+                                        $all_countries = get_all_countries();
+                                        $result_search = false;
+                                        foreach($all_countries as $key=>$country) {
+                                            if(trim($country['short_name']) == trim($row[$stt])) {
+                                                $result_search = $key;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        if($result_search !== false) {
+                                            $data[$column_key] = $all_countries[$result_search]['country_id'];
+                                        }
+                                        else {
+                                            $reason .= "Không tìm thấy " . $column_value[0] . " ".$row[$stt] ."<br />";
+                                            $data_ok = false;
+                                        }
+                                    }
+                                    if($column_key == 'category_id') {
+                                        $category_name = trim($row[$stt]);
+                                        $category = $this->category_model->get_single_by_name($category_name);
+                                        if($category)
+                                            $data[$column_key] = $category->id;
+                                        else {
+                                            $reason .= "Không tìm thấy " . $column_value[0] . " ".$category_name ."<br />";
+                                            $data_ok = false;
+                                        }
+                                    }
+                                    if($data[$column_key] == '') {
+                                        $data[$column_key] = $row[$stt];
+                                    }
+                                    $stt++;
+                                }
+                                if($data_ok) {
+                                    $this->db->insert('tblitems',$data);
+                                    if($this->db->affected_rows() > 0) {
+                                        $alert['success']++;
+                                    }
+                                    else {
+                                        $alert['fail'][] = [$product_count, array_values($data)[0], $reason];
+                                    }
+                                }
+                                else {
+                                    $alert['fail'][] = [$product_count, array_values($data)[0], $reason];
+                                }
+                            }
+                        }
+                        // var_dump($fetch_columns_step, $fetch_product_step, $columns_found, $alert);
+                        // exit();
+                        $data['message'] = "
+                            Nhập thành công " . $alert['success'] . " sản phẩm.
+                        ";
+                        if(count($alert['fail']) > 0) {
+                            foreach($alert['fail'] as $item) {
+                                $data['message'] .= "Dòng ".$item[0]." gặp lỗi ".$item[2];
+                            }
+                        }
+                        // $this->session->set_userdata('query_array', $query_array);
+                        // $this->session->set_userdata('query_duplicate', $had_item);
+                    }
+                } else {
+                    set_alert('warning', _l('import_upload_failed'));
+                }
+            }
+            
+        }
+        
+        if (isset($load_result) && $load_result == true) {
+            set_alert('success', _l('load_import_success'));
+        }
+
+        $data['title']          = 'Import';
+        $this->load->view('admin/invoice_items/import', $data);
     }
 }

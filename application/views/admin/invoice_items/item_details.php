@@ -179,7 +179,7 @@
                       $countries = get_all_countries();
                       $default_contry = (isset($item) ? $item->country_id : "");
                       
-                      echo render_select('country_id', $countries, array('country_id','long_name'), 'item_country_id', $default_contry, array(), array(), '', '', false);
+                      echo render_select('country_id', $countries, array('country_id','short_name'), 'item_country_id', $default_contry, array(), array(), '', '', false);
                     ?>
                     <?php
                       $default_specification = (isset($item) ? $item->specification : "");

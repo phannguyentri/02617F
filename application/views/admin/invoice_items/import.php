@@ -20,55 +20,20 @@
                         <?php } ?>
                         <?php
 
-                            if(!isset($simulate) > 0) { ?>
-                        <p>Khi nhập sẽ bỏ qua hàng đầu tiên(vì có thể là tiêu đề). <br />
-                        Danh mục nhập bắt buộc không được trùng với danh mục đã có.
+                        if(!isset($simulate) > 0) { ?>
+                        <p>
                         </p>
                         
                         </div>
                         <?php } ?>
 
-                        <?php if($this->session->userdata('query_array')) { ?>
+                        <?php if(isset($message)) { ?>
                         
                         <div class="panel-body" style="margin-bottom: 20px">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <h3>Xem trước cây danh mục chuẩn bị nhập</h3> <br />
-
-                                <?php
-                                    if(count($this->session->userdata('query_duplicate')) > 0) {
-                                ?>
-                                <div class="alert alert-danger">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                    <strong>Có <?php echo count($this->session->userdata('query_duplicate')) ?> danh mục đã có:</strong> <br /> 
-                                    <?php
-                                        echo implode(", ", $this->session->userdata('query_duplicate'));
-                                    ?>
-                                </div>
+                                <h3>Kết quả nhập</h3> <br />
+                                <?php echo $message?>
                                 
-                                <?php
-                                }
-                                ?>
-                                <?php foreach($this->session->userdata('query_array') as $value) : ?>
-                                    <?php echo ($value['duplicate'] == true ? "<b>" : "") ?> <?php echo $value['sub'].$value['name'];?> <?php echo ($value['duplicate'] == true ? "(Đã có) </b>" : "") ?> <br />
-                                <?php endforeach; ?>
-                                <br />
-
-                                <?php
-                                    if(count($this->session->userdata('query_duplicate')) == 0) {
-                                ?>
-                                <br />
-                                <br />
-                                <?php echo form_open($this->uri->uri_string(),array('id'=>'')) ;?>
-                                <div class="form-group">
-                                    <?php echo form_hidden("confirm", "1"); ?>
-                                    <button type="submit" class="btn btn-info import btn-import-confirm"><?php echo _l('copy_task_confirm'); ?></button>
-                                </div>
-                                <?php echo form_close();
-                                } else {
-                                    $this->session->unset_userdata('query_array');
-                                    $this->session->unset_userdata('query_duplicate');
-                                }
-                                 // end form ?>
                             </div>
                         </div>
                         <?php } ?>
@@ -85,7 +50,7 @@
                                 <?php echo render_input('file_import','import_choose_file','','file'); ?>
                                 <div class="form-group">
                                     <button type="button" class="btn btn-info import btn-import-submit"><?php echo _l('import'); ?></button>
-                                    <button type="button" class="btn btn-info simulate btn-import-submit"><?php echo _l('simulate_import'); ?></button>
+                                    <!-- <button type="button" class="btn btn-info simulate btn-import-submit"><?php echo _l('simulate_import'); ?></button> -->
                                 </div>
                                 <?php echo form_close(); ?>
                             </div>
