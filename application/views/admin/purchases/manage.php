@@ -16,11 +16,12 @@
                         <?php render_datatable(array(
                             _l('#'),
                             _l('Mã kế hoạch'),
-                            _l('Ngày'),
+                            _l('Ngày'),                            
                             _l('Người đề nghị'),
                             _l('Kế hoạch'),
                             _l('Lý do'),
                             _l('Trạng thái'),
+                            _l('Được duyệt bởi'),
                             _l('options'),
                         ),'purchases'); ?>
                     </div>

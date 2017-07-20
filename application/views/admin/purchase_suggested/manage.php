@@ -18,10 +18,10 @@
               "ID",
               _l('purchase_suggested_code'),
               _l('purchase_suggested_name'),
-              _l('user_head'),
-              _l('user_admin'),
+              _l('Người đề nghị'),
               _l('purchase_suggested_status'),
               _l('purchase_total_items'),
+              _l('user_admin'),              
               _l('purchase_suggested_date'),
               _l('actions'),              
               ),
@@ -102,18 +102,18 @@
             data: dataString,
             cache: false,
             success: function (response) {
-              
                 response = JSON.parse(response);
                 if (response.success == true) {
                     $('.table-purchase-suggested').DataTable().ajax.reload();
                     alert_float('success', response.message);
                 }
-
                 return false;
             }
         });
 
     }
+
+
   $(function(){
     initDataTable('.table-purchase-suggested', '<?=admin_url('purchase_suggested')?>', [], [],'undefined',[0,'DESC']);
 

@@ -10,9 +10,9 @@ $aColumns     = array(
     'tblpurchase_suggested.code',
     'tblpurchase_suggested.name',
     'tblpurchase_suggested.user_head_id',
-    'tblpurchase_suggested.user_admin_id',
     'tblpurchase_suggested.status',
     '(select count(*) from tblpurchase_suggested_details where tblpurchase_suggested.id = tblpurchase_suggested_details.purchase_suggested_id)',
+    'tblpurchase_suggested.user_admin_id',   
     'tblpurchase_suggested.date',
 );
 
@@ -39,6 +39,9 @@ foreach ($rResult as $aRow) {
     $approval = false;
     for ($i = 0; $i < count($aColumns); $i++) {
         $_data = $aRow[$aColumns[$i]];
+        if ($aColumns[$i] == 'tblpurchase_suggested.date') {
+            $_data=_d($aRow['tblpurchase_suggested.date']);
+        }
         $array_fields = ['tblpurchase_suggested.user_head_id', 'tblpurchase_suggested.user_admin_id'];
         if(in_array($aColumns[$i], $array_fields)) {
             $_data = 'Chưa duyệt';

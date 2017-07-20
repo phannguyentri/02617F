@@ -92,10 +92,12 @@ class Purchase_suggested extends Admin_controller
     {
         $id=$this->input->post('id');
         $status=$this->input->post('status');
-        $status=$status+1;
+        
+
         $staff_id=get_staff_user_id();
         $date=date('Y-m-d H:i:s');
         $data=array('status'=>$status);
+        $inv=$this->purchase_suggested_model->get($id);
         if(is_admin() && $status==0)
         {
             $data['user_head_id']=$staff_id;
@@ -108,7 +110,7 @@ class Purchase_suggested extends Admin_controller
         }
         elseif(is_admin() && $status==1)
         {
-            $inv=$this->purchases_model->getPurchaseByID($id);
+            $data['status']=2;
             if($inv->user_head_id==NULL || $inv->user_head_id=='')
             {
                 $data['user_head_id']=$staff_id;
@@ -122,12 +124,18 @@ class Purchase_suggested extends Admin_controller
         }
         elseif(is_head($inv->create_by))
         {
+            $data['status']+=1;
             $data['user_head_id']=$staff_id;
             $data['user_head_date']=$date;
         }
-        
+        $success=fale;
+        // var_dump($data);die();
         // date('Y-m-d H:i:s'),get_staff_user_id()
-        $success=$this->purchase_suggested_model->update_status($id,$data);
+        if(is_admin() || is_head($inv->create_by))
+        {
+            $success=$this->purchase_suggested_model->update_status($id,$data);
+        }
+        // var_dump($success);die();
         if($success) {
             echo json_encode(array(
                 'success' => $success,

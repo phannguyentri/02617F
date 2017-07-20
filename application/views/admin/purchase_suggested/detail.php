@@ -245,7 +245,7 @@
                 </div>
                 
                 <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
-                  <button class="btn btn-info mtop20 only-save customer-form-submiter">
+                  <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l('submit'); ?>
                 </button>
                 <?php } ?>

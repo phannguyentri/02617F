@@ -155,11 +155,21 @@
                       $default_group = (isset($item) ? $item->group_id : "");
                       echo render_select('group_id', $groups, array('id','name'), 'item_group_id', $default_group, array(), array(), '', '', false);
                     ?>
-
+                    
+                    <!-- <div class="form-group">
+                         <label for="date"><?php echo _l('item_date'); ?></label>
+                         <div class="input-group">
+                          
+                            <input type="number" min="0" name="date" class="form-control" value="<?=$date ?>" id="date">
+                            <span class="input-group-addon">
+                            <?php echo _l('Tháng') ?></span>
+                          </div>
+                    </div> -->
                     <?php
                         $release_date = ( isset($item) ? _d($item->release_date) : _d(date('Y-m-d')));
                         echo render_date_input( 'release_date', 'item_release_date' , $release_date, 'date'); 
                     ?>
+
 
                     <?php
                         $date_of_removal_of_sample = ( isset($item) ? _d($item->date_of_removal_of_sample) : _d(date('Y-m-d')));

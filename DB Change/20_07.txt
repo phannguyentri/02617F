@@ -1,0 +1,1 @@
+ALTER TABLE `tblitems` ADD `date` DECIMAL(15,0) NULL AFTER `quantity`;

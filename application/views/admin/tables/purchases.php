@@ -10,10 +10,11 @@ $aColumns     = array(
     '1',
     'code',
     'date',
-    'fullname',
+    'tblstaff.fullname',
     'name',
     'reason',
-    'status'
+    'status',
+    '2'
 
 );
 $sIndexColumn = "id";

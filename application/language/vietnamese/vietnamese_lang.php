@@ -3542,7 +3542,7 @@ $lang['client-company-birthday'] = "Ngày thành lập công ty";
 $lang['client_type'] = 'Loại khách hàng';
 ## invoice items
 $lang['item_detail'] = 'Chi tiết sản phẩm';
-$lang['item_date'] = 'Date sản phẩm';
+$lang['item_date'] = 'Tuổi tồn kho';
 $lang['item_price_history'] = 'Lịch sử thay đổi giá';
 $lang['item_price_date'] = 'Ngày sửa';
 $lang['item_files'] = 'Tài liệu liên quan';
@@ -3559,7 +3559,7 @@ $lang['item_price']            = "Giá bán";
 $lang['item_price_buy']        = "Giá nhập";
 $lang['item_old_price']        = "Giá cũ";
 $lang['item_new_price']        = "Giá mới";
-$lang['item_unit']             = "Đơn vị";
+$lang['item_unit']             = "Đơn vị tính";
 $lang['item_group_id']         = "Nhóm";
 $lang['item_release_date']     = "Ngày công bố";
 $lang['item_date_of_removal_of_sample'] = "Ngày bỏ mẫu";
