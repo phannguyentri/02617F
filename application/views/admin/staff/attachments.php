@@ -18,9 +18,12 @@
 </div><!-- /.modal -->
 <h4 class="no-mtop bold"><?php echo _l('customer_attachments'); ?></h4>
 <hr />
-<?php if(isset($client)){ ?>
-<?php echo form_open_multipart(admin_url('clients/upload_attachment/'.$client->userid),array('class'=>'dropzone','id'=>'client-attachments-upload')); ?>
+<?php if(isset($member)){ ?>
+
+<?php echo form_open_multipart(admin_url('staff/upload_attachment/'.$member->staffid),array('class'=>'dropzone','id'=>'client-attachments-upload')); ?>
+
 <input type="file" name="file" multiple />
+
 <?php echo form_close(); ?>
 <div class="text-right mtop15">
     <div id="dropbox-chooser"></div>

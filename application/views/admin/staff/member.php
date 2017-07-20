@@ -286,6 +286,7 @@ $selected=(isset($member) ? $member->gender : '');
     $_userid = get_staff_user_id();
     if($member->staffid!=$_userid) {
     ?>
+        
         <div role="tabpanel" class="tab-pane" id="tab_staff_permissions">
               <div class="checkbox checkbox-primary">
                 <?php
@@ -483,8 +484,70 @@ $selected=(isset($member) ? $member->gender : '');
 <?php echo form_close(); ?>
 <?php if(isset($member)){ ?>
 <div class="col-md-7 small-table-right-col">
- <div class="panel_s">
 
+<div class="panel_s">
+  <div class="panel-body">
+    <h4 class="bold no-margin font-medium">
+     <?php echo _l('staff_attachments'); ?>
+   </h4>
+   <hr />
+<?php echo form_open_multipart(admin_url('staff/upload_attachment/'.$member->staffid),array('class'=>'dropzone','id'=>'client-attachments-upload')); ?>
+<input type="file" name="file" multiple />
+<?php echo form_close(); ?>
+
+   <div class="clearfix"></div>
+   <hr />
+   <div class="mbot15 usernote hide inline-block full-width">
+    <?php echo form_open(admin_url('misc/add_note/'.$member->staffid . '/staff')); ?>
+    <?php echo render_textarea('description','staff_add_edit_note_description','',array('rows'=>5)); ?>
+    <button class="btn btn-info pull-right mbot15"><?php echo _l('submit'); ?></button>
+    <?php echo form_close(); ?>
+  </div>
+  <div class="clearfix"></div>
+  <div class="table-responsive mtop15">
+    <table class="table dt-table" data-order-col="2" data-order-type="desc">
+     <thead>
+      <tr>
+       <th width="50%"><?php echo _l('staff_notes_table_description_heading'); ?></th>
+       <th><?php echo _l('staff_notes_table_addedfrom_heading'); ?></th>
+       <th><?php echo _l('staff_notes_table_dateadded_heading'); ?></th>
+       <th><?php echo _l('options'); ?></th>
+     </tr>
+   </thead>
+   <tbody>
+    <?php foreach($user_notes as $note){ ?>
+    <tr>
+     <td width="50%">
+      <div data-note-description="<?php echo $note['id']; ?>">
+       <?php echo $note['description']; ?>
+     </div>
+     <div data-note-edit-textarea="<?php echo $note['id']; ?>" class="hide inline-block full-width">
+       <textarea name="description" class="form-control" rows="4"><?php echo clear_textarea_breaks($note['description']); ?></textarea>
+       <div class="text-right mtop15">
+        <button type="button" class="btn btn-default" onclick="toggle_edit_note(<?php echo $note['id']; ?>);return false;"><?php echo _l('cancel'); ?></button>
+        <button type="button" class="btn btn-info" onclick="edit_note(<?php echo $note['id']; ?>);"><?php echo _l('update_note'); ?></button>
+      </div>
+    </div>
+  </td>
+  <td><?php echo $note['firstname'] . ' ' . $note['lastname']; ?></td>
+  <td data-order="<?php echo $note['dateadded']; ?>"><?php echo _dt($note['dateadded']); ?></td>
+  <td>
+    <?php if($note['addedfrom'] == get_staff_user_id() || has_permission('staff','','delete')){ ?>
+    <a href="#" class="btn btn-default btn-icon" onclick="toggle_edit_note(<?php echo $note['id']; ?>);return false;"><i class="fa fa-pencil-square-o"></i></a>
+    <a href="<?php echo admin_url('misc/delete_note/'.$note['id']); ?>" class="btn btn-danger btn-icon _delete"><i class="fa fa-remove"></i></a>
+    <?php } ?>
+  </td>
+</tr>
+<?php } ?>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+
+
+ <div class="panel_s">
   <div class="panel-body">
     <h4 class="bold no-margin font-medium">
      <?php echo _l('staff_add_edit_notes'); ?>
@@ -542,6 +605,8 @@ $selected=(isset($member) ? $member->gender : '');
 
 </div>
 </div>
+
+
 <div class="panel_s">
  <div class="panel-body">
   <h4 class="bold no-margin font-medium">
