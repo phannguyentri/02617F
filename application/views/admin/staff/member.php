@@ -313,6 +313,10 @@ $selected=(isset($member) ? $member->gender : '');
                 <label for="administrator"><?php echo _l('rule_not_staff'); ?></label>
                 </div>
             </div>
+
+            <?php $selected = (isset($member) ? $member->position_id : ''); ?>
+            <?php echo render_select('position_id',$positions,array('positionid','name'),'Chức vụ',$selected,array(),array()); ?>
+
               <?php
               do_action('staff_render_permissions');
               $selected = '';

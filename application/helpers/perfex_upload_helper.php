@@ -426,6 +426,48 @@ function handle_sales_attachments($rel_id,$rel_type)
 /**
  * Client attachments
  * @since  Version 1.0.4
+ * @param  mixed $staffid Satff ID to add attachments
+ * @return array  - Result values
+ */
+function handle_staff_attachments_upload($id,$staff_upload = false)
+{
+    $path = get_upload_path_by_type('staff') . $id . '/';
+    $CI =& get_instance();
+    if (isset($_FILES['file']['name'])) {
+        do_action('before_upload_staff_attachment',$id);
+        // Get the temp file path
+        $tmpFilePath = $_FILES['file']['tmp_name'];
+        // Make sure we have a filepath
+        if (!empty($tmpFilePath) && $tmpFilePath != '') {
+            // Setup our new file path
+            if (!file_exists($path)) {
+                mkdir($path);
+                fopen($path . 'index.html', 'w');
+            }
+            $filename    = unique_filename($path, $_FILES['file']['name']);
+            $newFilePath = $path . $filename;
+            // Upload the file into the temp dir
+            if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                $attachment = array();
+                $attachment[]= array(
+                    'file_name'=>$filename,
+                    'filetype'=>$_FILES["file"]["type"],
+                    );
+
+                if($staff_upload == TRUE){
+                    $attachment[0]['staffid'] = 0;
+                    $attachment[0]['contact_id'] = get_contact_user_id();
+                    $attachment['visible_to_customer'] = 1;
+                }
+
+                $CI->misc_model->add_attachment_to_database($id,'customer',$attachment);
+            }
+        }
+    }
+}
+/**
+ * Client attachments
+ * @since  Version 1.0.4
  * @param  mixed $clientid Client ID to add attachments
  * @return array  - Result values
  */

@@ -156,15 +156,24 @@
                       echo render_select('group_id', $groups, array('id','name'), 'item_group_id', $default_group, array(), array(), '', '', false);
                     ?>
                     
-                    <!-- <div class="form-group">
+                    <div class="form-group">
                          <label for="date"><?php echo _l('item_date'); ?></label>
                          <div class="input-group">
                           
-                            <input type="number" min="0" name="date" class="form-control" value="<?=$date ?>" id="date">
+                            <input type="number" min="0" name="date" class="form-control" value="<?=$item->date ?>" id="date">
                             <span class="input-group-addon">
                             <?php echo _l('Tháng') ?></span>
                           </div>
-                    </div> -->
+                    </div>
+                    <div class="form-group">
+                         <label for="warranty"><?php echo _l('item_warranty'); ?></label>
+                         <div class="input-group">
+                          
+                            <input type="number" min="0" name="warranty" class="form-control" value="<?=$item->warranty ?>" id=" warranty">
+                            <span class="input-group-addon">
+                            <?php echo _l('Tháng') ?></span>
+                          </div>
+                    </div>
                     <?php
                         $release_date = ( isset($item) ? _d($item->release_date) : _d(date('Y-m-d')));
                         echo render_date_input( 'release_date', 'item_release_date' , $release_date, 'date'); 
@@ -205,7 +214,7 @@
               </div>
               
               <div class="row">
-                  <button class="btn btn-info mtop20 only-save customer-form-submiter">
+                  <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l( 'submit'); ?>
                 </button>
               </div>
@@ -268,12 +277,14 @@
 </div>
 <?php init_tail(); ?>
 <script>
+    <?php if(isset($item)) { ?>
     init_invoice_item_data(<?php echo $item->id; ?>, '<?php echo admin_url('invoice_items/get_invoice_item_attachment/'); ?>');
     $(function(){
     initDataTable('.table-invoice-item-price-history', '<?=admin_url('invoice_items/price_history/' . $item->id)?>', [], [],'undefined',[0,'DESC']);
     
     initDataTable('.table-invoice-item-price-buy-history', '<?=admin_url('invoice_items/price_buy_history/' . $item->id)?>', [], [],'undefined',[0,'DESC']);
   });
+    <?php } ?>
 </script>
 <?php $this->load->view('admin/invoice_items/item_details_js'); ?>
 </body>

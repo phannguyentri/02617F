@@ -105,7 +105,6 @@ class Invoice_items extends Admin_controller
             $array_categories[2] = array(0, array());
             $data['array_categories'] = $array_categories;
             
-            
         } else {
             $title = _l('invoice_item_edit_heading');
             $item = $this->invoice_items_model->get_full($id);
@@ -133,7 +132,7 @@ class Invoice_items extends Admin_controller
         $data['title'] = $title;
         $this->load->view('admin/invoice_items/item_details', $data);
     }
-    public function get_categories($id='') {
+    public function get_categories($id=0) {
         if (!has_permission('items', '', 'view')) {
             if ($id != '' && !is_customer_admin($id)) {
                 access_denied('customers');
