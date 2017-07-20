@@ -25,7 +25,7 @@ class Category_model extends CRM_Model
     public function get_single($id) {
         if(is_numeric($id)) {
             $this->db->where('id', $id);
-            $item = $this->db->get('tblcategories')->result();
+            $item = $this->db->get('tblcategories')->row();
             if($item)
                 return $item;
         }
