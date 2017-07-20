@@ -62,6 +62,17 @@ class Position_model extends CRM_Model
         }
     }
 
+    public function getPositions($id=NULL)
+    {
+        if ($id=='' || $id==NULL) {
+            return $this->db->get('tblpositions')->result_array();
+        }
+        else{
+            $this->db->where('tblpositions.positionid', $id);
+            return $this->db->get('tblpositions')->row();
+        }
+    }
+
 //    public function get_call_logs_and_staff($id, $where = array())
 //    {
 //        $this->db->where('c.ID', $id);

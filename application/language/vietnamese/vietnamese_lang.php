@@ -3619,3 +3619,5 @@ $lang['category_import_success']         = "Đã nhập ";
 $lang['import_items']                    = "Nhập sản phẩm";
 
 $lang['import_choose_file']              = "Chọn tệp xls";
+
+$lang['item_warranty']              = "Thời gian bảo hành";

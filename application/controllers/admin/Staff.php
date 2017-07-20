@@ -5,6 +5,7 @@ class Staff extends Admin_controller
     function __construct()
     {
         parent::__construct();
+         $this->load->model('position_model');
     }
     /* List all staff members */
     public function index()
@@ -23,8 +24,8 @@ class Staff extends Admin_controller
     /* Add new staff member or edit existing */
     public function member($id = '')
     {
-
-//        do_action('staff_member_edit_view_profile',$id);
+        // var_dump(STAFF_PROFILE_IMAGES_FOLDER);die();
+       do_action('staff_member_edit_view_profile',$id);
 
         if(!true_small_admin($id))
         {
@@ -110,12 +111,18 @@ class Staff extends Admin_controller
         
         $data['base_currency'] = $this->currencies_model->get_base_currency();
         $data['roles']       = $this->roles_model->get();
+        $data['positions']       = $this->position_model->getPositions();
        // var_dump($data['maxid']);die();
         $data['permissions'] = $this->roles_model->get_permissions();
         $data['user_notes'] = $this->misc_model->get_notes($id, 'staff');
         $data['departments'] = $this->departments_model->get();
         $data['title']       = $title;
         $this->load->view('admin/staff/member', $data);
+    }
+
+    public function upload_attachment($id)
+    {
+        handle_staff_attachments_upload($id);
     }
 
     public function get_staff_role($idrole="",$idrule="")

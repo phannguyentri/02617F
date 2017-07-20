@@ -12,7 +12,6 @@ class Clients extends Admin_controller
     public function index()
     {
 
-
         if (!has_permission('customers', '', 'view')) {
             if (!have_assigned_customers() && !has_permission('customers','','create')) {
                 access_denied('customers');

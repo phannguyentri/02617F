@@ -1,1 +1,3 @@
 ALTER TABLE `tblitems` ADD `date` DECIMAL(15,0) NULL AFTER `quantity`;
+
+ALTER TABLE `tblitems` ADD `warranty` DECIMAL(15,0) NULL;
