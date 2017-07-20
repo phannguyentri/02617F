@@ -1742,8 +1742,8 @@ $lang['is_invoiced_estimate_delete_error'] = 'Ước tính này được lập h
 # Customers & Invoices / Estimates
 $lang['ship_to']                  = 'Chuyển đến';
 $lang['customer_profile_details'] = 'Chi tiết khách hàng';
-$lang['billing_shipping']         = 'Thanh toán & Vận chuyển';
-$lang['billing_address']          = 'Địa chỉ thanh toán';
+$lang['billing_shipping']         = 'Địa chỉ';
+$lang['billing_address']          = 'Địa chỉ liên hệ';
 $lang['shipping_address']         = 'Địa chỉ giao hàng';
 
 $lang['billing_street']  = 'Tên đường';

@@ -21,7 +21,6 @@ class Invoice_items extends Admin_controller
         $data['taxes']        = $this->taxes_model->get();
         $data['items_groups'] = $this->invoice_items_model->get_groups();
         $data['items_units'] = $this->invoice_items_model->get_units();
-        // var_dump($data['items_units']);die();
         
 
         $data['title'] = _l('invoice_items');

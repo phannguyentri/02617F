@@ -10,7 +10,7 @@
                     <?php echo _l( 'customer_profile_details'); ?>
                 </a>
             </li>
-            <li role="presentation">
+            <li style="<?=(isset($client) && $client->client_type == 2 || !isset($client) ? "" : "display: none")?>" role="presentation">
                 <a href="#billing_and_shipping" aria-controls="billing_and_shipping" role="tab" data-toggle="tab">
                     <?php echo _l( 'billing_shipping'); ?>
                 </a>
@@ -190,20 +190,23 @@
                 <input type="text" class="tagsinput_phone" value="<?=$mobilephone_text?>" id="mobilephone_number" name="mobilephone_number" data-role="tagsinput">
             </div>
 
-
+            
             <?php $value=( isset($client) ? $client->address : ''); ?>
-            <?php echo render_input( 'address', 'client_address',$value, 'text', array(), $group_attrs_company); ?>
-            <?php $value=( isset($client) ? $client->city : ''); ?>
-            <?php echo render_input( 'city', 'client_city',$value, 'text', array(), $group_attrs_company); ?>
-            <?php $value=( isset($client) ? $client->state : ''); ?>
-            <?php echo render_input( 'state', 'client_state',$value, 'text', array(), $group_attrs_company); ?>
+            <?php echo render_input( 'address', 'client_address',$value, 'text', array()); ?>
             <?php $value=( isset($client) ? $client->zip : ''); ?>
-            <?php echo render_input( 'zip', 'client_postal_code',$value, 'text', array(), $group_attrs_company); ?>
+            <?php echo render_input( 'zip', 'client_postal_code',$value, 'text', array()); ?>
             <?php $countries= get_all_countries();
             $customer_default_country = get_option('customer_default_country');
             $selected =( isset($client) ? $client->country : $customer_default_country);
-            echo render_select( 'country',$countries,array( 'country_id',array( 'short_name')), 'clients_country',$selected,array('data-none-selected-text'=>_l('dropdown_non_selected_tex')), $group_attrs_company);
+            echo render_select( 'country',$countries,array( 'country_id',array( 'short_name')), 'clients_country',$selected,array('data-none-selected-text'=>_l('dropdown_non_selected_tex')));
             ?>
+            
+            <?php $value=( isset($client) ? $client->city : ''); ?>
+            <?php echo render_select( 'city', get_all_province(), array('provinceid','name') , 'client_city',$value,array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); ?>
+            
+            <?php $value=( isset($client) ? $client->state : ''); ?>
+            <?php echo render_select( 'state', get_all_wards(), array('wardid', 'name'),'client_state',$value, array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); ?>
+            
             <?php $value=( isset($client) ? $client->website : ''); ?>
             <?php echo render_input( 'website', 'client_website',$value); ?>
             <?php
@@ -286,22 +289,24 @@
         </table>
     </div>
     <?php } ?>
-    <div role="tabpanel" class="tab-pane" id="billing_and_shipping">
+    <div style="<?=(isset($client) && $client->client_type == 2 || !isset($client) ? "" : "display: none")?>" role="tabpanel" class="tab-pane" id="billing_and_shipping">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
-                        
-                    <div id="col-billing" class="col-md-6 <?=(isset($client) && $client->client_type == 2 || !isset($client) ? "" : "hidden")?>">
+                    <div class="col-md-6">
                         <h4><?php echo _l('billing_address'); ?> <a href="#" class="pull-right billing-same-as-customer"><small class="text-info font-medium-xs"><?php echo _l('customer_billing_same_as_profile'); ?></small></a></h4>
                         <hr />
                         <?php $value=( isset($client) ? $client->billing_street : ''); ?>
                         <?php echo render_input( 'billing_street', 'billing_street',$value); ?>
-                        <?php $value=( isset($client) ? $client->billing_city : ''); ?>
-                        <?php echo render_input( 'billing_city', 'billing_city',$value); ?>
+                        
                         <?php $value=( isset($client) ? $client->billing_state : ''); ?>
                         <?php echo render_input( 'billing_state', 'billing_state',$value); ?>
                         <?php $value=( isset($client) ? $client->billing_zip : ''); ?>
                         <?php echo render_input( 'billing_zip', 'billing_zip',$value); ?>
+                        
+                        <?php $value=( isset($client) ? $client->billing_city : ''); ?>
+                        <?php echo render_select( 'billing_city',get_all_province(), array('provinceid','name'),'billing_city',$value,array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); ?>
+
                         <?php $selected=( isset($client) ? $client->billing_country : '' ); ?>
                         <?php echo render_select( 'billing_country',$countries,array( 'country_id',array( 'short_name')), 'billing_country',$selected,array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); ?>
                     </div>

@@ -1307,6 +1307,20 @@ function get_all_countries()
     $CI =& get_instance();
     return $CI->db->get('tblcountries')->result_array();
 }
+function get_all_wards($district_id='')
+{
+    $CI =& get_instance();
+    if(is_numeric($district_id)) {
+        $CI->db->where('districtid', $district_id);
+    }
+    return $CI->db->get('ward')->result_array();
+}
+function get_all_province()
+{
+    $CI =& get_instance();
+
+    return $CI->db->get('province')->result_array();
+}
 /**
  * Get country row from database based on passed country id
  * @param  mixed $id
