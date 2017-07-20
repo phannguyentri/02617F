@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $aColumns     = array(
     'id',
     'category',
-    '(select category from tblcategories a where a.id=tblcategories.category_parent)',
+    '(select category from tblcategories a where a.id=tblcategories.category_parent) as parent',
 
 );
 $sIndexColumn = "id";
@@ -24,6 +24,8 @@ $output       = $result['output'];
 $rResult      = $result['rResult'];
 //var_dump($rResult);die();
 
+// Tuan anh : Custom
+$this->_instance->load->model('category_model');
 
 $j=0;
 foreach ($rResult as $aRow) {
@@ -34,6 +36,29 @@ foreach ($rResult as $aRow) {
         if ($aColumns[$i] == 'tblroles.id_role') {
             $_data=$aRow['tblroles.name'];
         }
+        if ($aColumns[$i] == '(select category from tblcategories a where a.id=tblcategories.category_parent) as parent') {
+            $category = $this->_instance->category_model->get_single_by_name($aRow['parent']);
+    
+            $categories = [];
+            while($category) {
+                array_unshift($categories, $category->category);
+
+                // bad way
+                $temp = $this->_instance->category_model->get_single($category->category_parent);
+                if($temp)
+                    $category = $this->_instance->category_model->get_single_by_name($temp->category);
+                else
+                    $category = $temp;
+            }
+            $sub = "";
+            foreach($categories as $value) {
+                
+                $_data .= $sub.">".$value."<br />";    
+                $sub .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; 
+            }
+            
+            // exit();
+        }
         $row[] = $_data;
     }
     if ($aRow['creator'] == get_staff_user_id() || is_admin()) {
@@ -42,5 +67,6 @@ foreach ($rResult as $aRow) {
     } else {
         $row[] = '';
     }
+    // print_r($aColumns);
     $output['aaData'][] = $row;
 }

@@ -92,9 +92,6 @@ class Invoice_items extends Admin_controller
                 if ($success == true || $success_avatar == true) {
                     set_alert('success', _l('updated_successfuly', _l('als_products')));
                 }
-                // else {
-                //     exit("fail");
-                // }
                 redirect(admin_url('invoice_items/item/' . $id));
             }
         }
