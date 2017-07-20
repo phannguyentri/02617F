@@ -82,7 +82,7 @@
                                 <?php endif; ?>
                                 <?php echo form_open_multipart($this->uri->uri_string(),array('id'=>'import_form')) ;?>
                                 <?php echo form_hidden('leads_import','true'); ?>
-                                <?php echo render_input('file_import','choose_csv_file','','file'); ?>
+                                <?php echo render_input('file_import','import_choose_file','','file'); ?>
                                 <div class="form-group">
                                     <button type="button" class="btn btn-info import btn-import-submit"><?php echo _l('import'); ?></button>
                                     <button type="button" class="btn btn-info simulate btn-import-submit"><?php echo _l('simulate_import'); ?></button>

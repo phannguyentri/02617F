@@ -2754,7 +2754,7 @@ $lang['receive_notification_on_new_ticket'] = 'Nhận thông báo về việc m�
 $lang['receive_notification_on_new_ticket_help'] = 'Tất cả nhân viên thuộc phòng bán vé sẽ nhận được thông báo rằng vé mới được mở';
 $lang['event_updated'] = 'Sự kiện được cập nhật thành công';
 $lang['customer_contacts'] = 'Liên hệ';
-$lang['new_contact'] = 'Địa chỉ liên lạc mới';
+$lang['new_contact'] = 'Thêm liên hệ mới';
 $lang['contact'] = 'Liên hệ';
 $lang['contact_lowercase'] = 'Liên hệ';
 $lang['contact_primary'] = 'Liên hệ chính';
@@ -3615,3 +3615,7 @@ $lang['abc'] = "abc";
 $lang['import_categories']               = "Nhập danh mục";
 $lang['load_import_success']             = "Tải dữ liệu nhập thành công";
 $lang['category_import_success']         = "Đã nhập ";
+
+$lang['import_items']                    = "Nhập sản phẩm";
+
+$lang['import_choose_file']              = "Chọn tệp xls";

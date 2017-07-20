@@ -9,6 +9,11 @@
             <!--<a href="#" class="btn btn-info pull-left" data-toggle="modal" data-target="#sales_item_modal"><?php echo _l('new_invoice_item'); ?></a>-->
             <a href="<?php echo admin_url('invoice_items/item') ?>" class="btn btn-info pull-left"><?php echo _l('new_invoice_item'); ?></a>
             <a href="#" class="btn btn-info pull-left mleft5" data-toggle="modal" data-target="#groups"><?php echo _l('item_groups'); ?></a>
+            <?php if(is_admin()){ ?>
+            <a href="<?php echo admin_url('invoice_items/import'); ?>" class="btn btn-info pull-left mleft5 display-block">
+            <?php echo _l('import_items'); ?>
+            </a>
+            <?php } ?>
             <!-- <a href="#" class="btn btn-info pull-left mleft5" data-toggle="modal" data-target="#landtype">Loại nhà đất</a> -->
           </div>
 

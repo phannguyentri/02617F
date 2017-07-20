@@ -6,7 +6,7 @@ class Invoice_items extends Admin_controller
     {
         parent::__construct();
         $this->load->model('invoice_items_model');
-
+        $this->load->model('category_model');
     }
     /* List all available items */
     public function index()
@@ -331,6 +331,10 @@ class Invoice_items extends Admin_controller
     {
         $total_imported = 0;
         $load_result = false;
+        $alert = [
+            'success' => 0,
+            'fail'    => [],
+        ];
         if ($this->input->post()) {
             if (isset($_FILES['file_import']['name']) && $_FILES['file_import']['name'] != '') {
                 // Get the temp file path
@@ -420,11 +424,11 @@ class Invoice_items extends Admin_controller
                         $fetch_columns_step = true;
                         $fetch_product_step = false;
                         $columns_found = 0;
+                        $product_count = 0;
                         foreach($rows as $row) {
                             if($fetch_columns_step) {
                                 $stt=0;
                                 foreach($important_columns as $column_key=>$column_value) {
-                                    var_dump(trim($row[$stt]), trim($column_value[0]));
                                     // Nếu bảng tính không có cột để xét thì thoát, kết quả sẽ không thể nhập
                                     if(!isset($row[$stt]))
                                         break;
@@ -443,54 +447,100 @@ class Invoice_items extends Admin_controller
                                 continue;
                             }
                             if($fetch_product_step) {
+                                $product_count++;
                                 $data = [];
                                 $stt = 0;
+                                $data_ok = true;
+                                $reason = "";
                                 // Gán từng ô là field tương ứng trong csdl
                                 foreach($important_columns as $column_key=>$column_value) {
-                                    $data[$column_key] = $row[$stt];
+                                    if($column_key == 'group_id') {
+                                        $all_groups = get_item_groups();
+                                        $result_search = false;
+                                        
+                                        foreach($all_groups as $key=>$group) {
+                                            if(trim($group['name']) == trim($row[$stt])) {
+                                                $result_search = $key;
+                                                break;
+                                            }
+                                        }
+                                        if($result_search !== false) {
+                                            $data[$column_key] = $all_groups[$result_search]['name'];
+                                        }
+                                        else {
+                                            $reason .= "Không tìm thấy " . $column_value[0] . " ".$row[$stt] ."<br />";
+                                            $data_ok = false;
+                                        }
+                                    }
+                                    if($column_key == 'country_id') {
+                                        $all_countries = get_all_countries();
+                                        $result_search = false;
+                                        foreach($all_countries as $key=>$country) {
+                                            if(trim($country['short_name']) == trim($row[$stt])) {
+                                                $result_search = $key;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        if($result_search !== false) {
+                                            $data[$column_key] = $all_countries[$result_search]['country_id'];
+                                        }
+                                        else {
+                                            $reason .= "Không tìm thấy " . $column_value[0] . " ".$row[$stt] ."<br />";
+                                            $data_ok = false;
+                                        }
+                                    }
+                                    if($column_key == 'category_id') {
+                                        $category_name = trim($row[$stt]);
+                                        $category = $this->category_model->get_single_by_name($category_name);
+                                        if($category)
+                                            $data[$column_key] = $category->id;
+                                        else {
+                                            $reason .= "Không tìm thấy " . $column_value[0] . " ".$category_name ."<br />";
+                                            $data_ok = false;
+                                        }
+                                    }
+                                    if($data[$column_key] == '') {
+                                        $data[$column_key] = $row[$stt];
+                                    }
                                     $stt++;
                                 }
-                                print_r($data);
+                                if($data_ok) {
+                                    $this->db->insert('tblitems',$data);
+                                    if($this->db->affected_rows() > 0) {
+                                        $alert['success']++;
+                                    }
+                                    else {
+                                        $alert['fail'][] = [$product_count, array_values($data)[0], $reason];
+                                    }
+                                }
+                                else {
+                                    $alert['fail'][] = [$product_count, array_values($data)[0], $reason];
+                                }
                             }
                         }
-                        var_dump($fetch_columns_step, $fetch_product_step, $columns_found);
-                        exit();
-                        $this->session->set_userdata('query_array', $query_array);
-                        $this->session->set_userdata('query_duplicate', $had_item);
+                        // var_dump($fetch_columns_step, $fetch_product_step, $columns_found, $alert);
+                        // exit();
+                        $data['message'] = "
+                            Nhập thành công " . $alert['success'] . " sản phẩm.
+                        ";
+                        if(count($alert['fail']) > 0) {
+                            foreach($alert['fail'] as $item) {
+                                $data['message'] .= "Dòng ".$item[0]." gặp lỗi ".$item[2];
+                            }
+                        }
+                        // $this->session->set_userdata('query_array', $query_array);
+                        // $this->session->set_userdata('query_duplicate', $had_item);
                     }
                 } else {
                     set_alert('warning', _l('import_upload_failed'));
                 }
             }
-            if($this->input->post('confirm') && $this->input->post('confirm')==1) {
             
-                $row_imported = 0;
-                foreach($this->session->userdata('query_array') as $value) {
-                    $parent = 0;
-                    if($value['parent'] != '') {
-                        $parent = $this->category_model->get_single_by_name($value['parent']);
-                        if($parent) 
-                            $parent = $parent->id;
-                        else
-                            $parent = 0;
-                    }
-                    $data = array(
-                        'category' => $value['name'],
-                        'category_parent' => $parent,
-                    );
-                    $this->category_model->add_category($data);
-                    $row_imported++;
-                }
-                $this->session->unset_userdata('query_array');
-            }
         }
         
         if (isset($load_result) && $load_result == true) {
             set_alert('success', _l('load_import_success'));
-        }
-        if(isset($row_imported)) {
-            $data['row_imported'] = $row_imported;
-            set_alert('success', _l('category_import_success') . $row_imported);
         }
 
         $data['title']          = 'Import';
