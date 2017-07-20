@@ -460,7 +460,7 @@ function handle_staff_attachments_upload($id,$staff_upload = false)
                     $attachment['visible_to_customer'] = 1;
                 }
 
-                $CI->misc_model->add_attachment_to_database($id,'customer',$attachment);
+                $CI->misc_model->add_attachment_to_database($id,'staff',$attachment);
             }
         }
     }

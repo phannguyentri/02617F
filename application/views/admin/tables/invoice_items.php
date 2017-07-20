@@ -46,6 +46,12 @@ foreach ($rResult as $aRow) {
         if($aColumns[$i] == 'tblitems.avatar' && file_exists($_data)) {
             $_data = '<img src="'.base_url($_data).'" width="50px" />';
         }
+        if($aColumns[$i] == 'tblitems.price') {
+            $_data = number_format($aRow['tblitems.price'],0,',','.');
+        }
+        // if($aColumns[$i] == 'tblitems.price') {
+        //     $_data = number_format($aRow['tblitems.price'],0,',','.');
+        // }
         $row[] = $_data;
     }
     $options = '';

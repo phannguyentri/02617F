@@ -388,6 +388,7 @@ class Clients extends Admin_controller
     }
     public function upload_attachment($id)
     {
+        var_dump("expression");die();
         handle_client_attachments_upload($id);
     }
     public function add_external_attachment()

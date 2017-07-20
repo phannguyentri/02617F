@@ -104,11 +104,11 @@
 
                     <?php
                       $default_price = (isset($item) ? $item->price : 0);
-                      echo render_input('price', _l('item_price'), $default_price);
+                      echo render_input('price', _l('item_price'), number_format($default_price,0,".","."),'',array('onkeyup'=>"formart_num('price')"));
                     ?>
                     <?php
                       $default_price_buy = (isset($item) ? $item->price_buy : 0);
-                      echo render_input('price_buy', _l('item_price_buy'), $default_price_buy);
+                      echo render_input('price_buy', _l('item_price_buy'), number_format($default_price_buy,0,".","."),'',array('onkeyup'=>"formart_num('price_buy')"));
                     ?>
 
                     <?php 
@@ -287,5 +287,30 @@
     <?php } ?>
 </script>
 <?php $this->load->view('admin/invoice_items/item_details_js'); ?>
+<script>
+function formatNumber(nStr, decSeperate, groupSeperate) {
+  //decSeperate= ki tu cach,groupSeperate= ki tu noi
+          nStr += '';
+          x = nStr.split(decSeperate);
+          x1 = x[0];
+          x2 = x.length > 1 ? ',' + x[1] : '';
+          var rgx = /(\d+)(\d{3})/;
+          while (rgx.test(x1)) {
+              x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
+          }
+          return x1 + x2;
+      }
+  function formart_num(id_input)
+  {
+    key="";
+    money=$("#"+id_input).val().replace(/[^\d\.]/g, '');
+    a=money.split(".");
+    $.each(a , function (index, value){
+        key=key+value;
+    });
+    $("#"+id_input).val(formatNumber(key, '.', '.'));
+  }
+
+</script>
 </body>
 </html>

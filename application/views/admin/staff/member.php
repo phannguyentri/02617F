@@ -70,7 +70,7 @@
 <?php } ?>
 
 <?php $value = (isset($member) ? $member->staff_code : get_option('prefix_staff').$maxid); ?>
-<?php $attrs = (isset($member) ? array() : array('readonly'=>true)); ?>
+<?php $attrs = array('readonly'=>true); ?>
 <?php echo render_input('staff_code','Mã nhân viên',$value,'text',$attrs); ?>
 
 <?php $value = (isset($member) ? $member->fullname : ''); ?>
@@ -497,50 +497,143 @@ $selected=(isset($member) ? $member->gender : '');
 
    <div class="clearfix"></div>
    <hr />
-   <div class="mbot15 usernote hide inline-block full-width">
+   <!-- <div class="mbot15 usernote hide inline-block full-width">
     <?php echo form_open(admin_url('misc/add_note/'.$member->staffid . '/staff')); ?>
     <?php echo render_textarea('description','staff_add_edit_note_description','',array('rows'=>5)); ?>
     <button class="btn btn-info pull-right mbot15"><?php echo _l('submit'); ?></button>
     <?php echo form_close(); ?>
-  </div>
+  </div> -->
   <div class="clearfix"></div>
   <div class="table-responsive mtop15">
     <table class="table dt-table" data-order-col="2" data-order-type="desc">
-     <thead>
-      <tr>
-       <th width="50%"><?php echo _l('staff_notes_table_description_heading'); ?></th>
-       <th><?php echo _l('staff_notes_table_addedfrom_heading'); ?></th>
-       <th><?php echo _l('staff_notes_table_dateadded_heading'); ?></th>
-       <th><?php echo _l('options'); ?></th>
-     </tr>
-   </thead>
-   <tbody>
-    <?php foreach($user_notes as $note){ ?>
-    <tr>
-     <td width="50%">
-      <div data-note-description="<?php echo $note['id']; ?>">
-       <?php echo $note['description']; ?>
-     </div>
-     <div data-note-edit-textarea="<?php echo $note['id']; ?>" class="hide inline-block full-width">
-       <textarea name="description" class="form-control" rows="4"><?php echo clear_textarea_breaks($note['description']); ?></textarea>
-       <div class="text-right mtop15">
-        <button type="button" class="btn btn-default" onclick="toggle_edit_note(<?php echo $note['id']; ?>);return false;"><?php echo _l('cancel'); ?></button>
-        <button type="button" class="btn btn-info" onclick="edit_note(<?php echo $note['id']; ?>);"><?php echo _l('update_note'); ?></button>
-      </div>
-    </div>
-  </td>
-  <td><?php echo $note['firstname'] . ' ' . $note['lastname']; ?></td>
-  <td data-order="<?php echo $note['dateadded']; ?>"><?php echo _dt($note['dateadded']); ?></td>
-  <td>
-    <?php if($note['addedfrom'] == get_staff_user_id() || has_permission('staff','','delete')){ ?>
-    <a href="#" class="btn btn-default btn-icon" onclick="toggle_edit_note(<?php echo $note['id']; ?>);return false;"><i class="fa fa-pencil-square-o"></i></a>
-    <a href="<?php echo admin_url('misc/delete_note/'.$note['id']); ?>" class="btn btn-danger btn-icon _delete"><i class="fa fa-remove"></i></a>
-    <?php } ?>
-  </td>
-</tr>
-<?php } ?>
-</tbody>
-</table>
+            <thead>
+                <tr>
+                    <th width="30%"><?php echo _l('customer_attachments_file'); ?></th>
+                    <th><?php echo _l('customer_attachments_show_in_customers_area'); ?></th>
+                    <th><?php echo _l('file_date_uploaded'); ?></th>
+                    <th><?php echo _l('options'); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($attachments as $type => $attachment){
+                    $download_indicator = 'id';
+                    $key_indicator = 'rel_id';
+                    $upload_path = get_upload_path_by_type($type);
+                    if($type == 'invoice'){
+                        $url = site_url() .'download/file/sales_attachment/';
+                        $download_indicator = 'attachment_key';
+                    } else if($type == 'proposal'){
+                        $url = site_url() .'download/file/sales_attachment/';
+                        $download_indicator = 'attachment_key';
+                    } else if($type == 'estimate'){
+                        $url = site_url() .'download/file/sales_attachment/';
+                        $download_indicator = 'attachment_key';
+                    } else if($type == 'contract'){
+                        $url = site_url() .'download/file/contract/';
+                    } else if($type == 'lead'){
+                        $url = site_url() .'download/file/lead_attachment/';
+                    } else if($type == 'task'){
+                        $url = site_url() .'download/file/taskattachment/';
+                    } else if($type == 'ticket'){
+                        $url = site_url() .'download/file/ticket/';
+                        $key_indicator = 'ticketid';
+                    } else if($type == 'customer'){
+                        $url = site_url() .'download/file/client/';
+                    } else if($type == 'expense'){
+                        $url = site_url() .'download/file/expense/';
+                        $download_indicator = 'rel_id';
+                    }
+                    ?>
+                    <?php foreach($attachment as $_att){
+                        ?>
+                        <tr id="tr_file_<?php echo $_att['id']; ?>">
+                            <td>
+                             <?php
+                             $path = $upload_path . $_att[$key_indicator] . '/' . $_att['file_name'];
+                             $is_image = false;
+                             if(!isset($_att['external'])) {
+                                $attachment_url = $url . $_att[$download_indicator];
+                                $is_image = is_image($path);
+                                $img_url = site_url('download/preview_image?path='.protected_file_url_by_path($path).'&type='.$_att['filetype']);
+                            } else if(isset($_att['external']) && !empty($_att['external'])){
+
+                                if(!empty($_att['thumbnail_link'])){
+                                    $is_image = true;
+                                    $img_url = optimize_dropbox_thumbnail($_att['thumbnail_link']);
+                                }
+
+                                $attachment_url = $_att['external_link'];
+                            }
+                            if($is_image){
+                                echo '<div class="preview_image">';
+                            }
+                            ?>
+                            <a href="<?php if($is_image){ echo $img_url; } else {echo $attachment_url; } ?>"<?php if($is_image){ ?> data-lightbox="customer-profile" <?php } ?> class="display-block mbot5">
+                                <?php if($is_image){ ?>
+                                <div class="table-image">
+                                   <img src="<?php echo $img_url; ?>">
+                               </div>
+                               <?php } else { ?>
+                               <i class="<?php echo get_mime_class($_att['filetype']); ?>"></i> <?php echo $_att['file_name']; ?>
+                               <?php } ?>
+
+                           </a>
+                           <?php if($is_image){
+                            echo '</div>';
+                        }
+                        ?>
+                    </td>
+                    <td>
+                        <div class="onoffswitch"<?php if($type != 'customer'){?> data-toggle="tooltip" data-title="<?php echo _l('customer_attachments_show_notice'); ?>" <?php } ?>>
+                            <input type="checkbox" <?php if($type != 'customer'){echo 'disabled';} ?> id="<?php echo $_att['id']; ?>" data-id="<?php echo $_att['id']; ?>" class="onoffswitch-checkbox customer_file" data-switch-url="<?php echo admin_url(); ?>misc/toggle_file_visibility" <?php if(isset($_att['visible_to_customer']) && $_att['visible_to_customer'] == 1){echo 'checked';} ?>>
+                            <label class="onoffswitch-label" for="<?php echo $_att['id']; ?>"></label>
+                        </div>
+                        <?php if($type == 'customer' && $_att['visible_to_customer'] == 1){
+                            $file_visibility_message = '';
+                            $total_shares = total_rows('tblcustomerfiles_shares',array('file_id'=>$_att['id']));
+
+                            if($total_shares == 0){
+                                $file_visibility_message = _l('file_share_visibility_notice');
+                            } else {
+                                $share_contacts_id = get_customer_profile_file_sharing(array('file_id'=>$_att['id']));
+                                if(count($share_contacts_id) == 0){
+                                    $file_visibility_message = _l('file_share_visibility_notice');
+                                }
+                            }
+                            echo '<span class="text-warning'.(empty($file_visibility_message) || total_rows('tblcontacts',array('userid'=>$client->userid)) == 0 ? ' hide': '').'">'.$file_visibility_message.'</span>';
+                            if(isset($share_contacts_id) && count($share_contacts_id) > 0){
+                                $names = '';
+                                $contacts_selected = '';
+                                foreach($share_contacts_id as $file_share){
+                                    $names.= get_contact_full_name($file_share['contact_id']) .', ';
+                                    $contacts_selected .= $file_share['contact_id'].',';
+                                }
+                                if($contacts_selected != ''){
+                                    $contacts_selected = substr($contacts_selected,0,-1);
+                                }
+                                if($names != ''){
+                                    echo '<a href="#" onclick="do_share_file_contacts(\''.$contacts_selected.'\','.$_att['id'].'); return false;"><i class="fa fa-pencil-square-o"></i></a> ' . _l('share_file_with_show',mb_substr($names, 0,-2));
+                                }
+                            }
+                        }
+                        ?>
+                    </td>
+                    <td data-order="<?php echo $_att['dateadded']; ?>"><?php echo _dt($_att['dateadded']); ?></td>
+                    <td>
+                        <?php if(!isset($_att['external'])){ ?>
+                        <button type="button" data-toggle="modal" data-file-name="<?php echo $_att['file_name']; ?>" data-filetype="<?php echo $_att['filetype']; ?>" data-path="<?php echo $path; ?>" data-target="#send_file" class="btn btn-info btn-icon"><i class="fa fa-envelope"></i></button>
+                        <?php } else if(isset($_att['external']) && !empty($_att['external'])) {
+                            echo '<a href="'.$_att['external_link'].'" class="btn btn-info btn-icon" target="_blank"><i class="fa fa-dropbox"></i></a>';
+                        } ?>
+                        <?php if($type == 'customer'){ ?>
+                        <a href="<?php echo admin_url('clients/delete_attachment/'.$_att['rel_id'].'/'.$_att['id']); ?>"  class="btn btn-danger btn-icon _delete"><i class="fa fa-remove"></i></a>
+                        <?php } ?>
+                    </td>
+                    <?php } ?>
+                </tr>
+                <?php } ?>
+            </tbody>
+        </table>
 </div>
 
 </div>
