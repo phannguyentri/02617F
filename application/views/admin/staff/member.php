@@ -509,7 +509,7 @@ $selected=(isset($member) ? $member->gender : '');
             <thead>
                 <tr>
                     <th width="30%"><?php echo _l('customer_attachments_file'); ?></th>
-                    <th><?php echo _l('customer_attachments_show_in_customers_area'); ?></th>
+                    <!-- <th><?php echo _l('customer_attachments_show_in_customers_area'); ?></th> -->
                     <th><?php echo _l('file_date_uploaded'); ?></th>
                     <th><?php echo _l('options'); ?></th>
                 </tr>
@@ -583,7 +583,7 @@ $selected=(isset($member) ? $member->gender : '');
                         }
                         ?>
                     </td>
-                    <td>
+                    <!-- <td>
                         <div class="onoffswitch"<?php if($type != 'customer'){?> data-toggle="tooltip" data-title="<?php echo _l('customer_attachments_show_notice'); ?>" <?php } ?>>
                             <input type="checkbox" <?php if($type != 'customer'){echo 'disabled';} ?> id="<?php echo $_att['id']; ?>" data-id="<?php echo $_att['id']; ?>" class="onoffswitch-checkbox customer_file" data-switch-url="<?php echo admin_url(); ?>misc/toggle_file_visibility" <?php if(isset($_att['visible_to_customer']) && $_att['visible_to_customer'] == 1){echo 'checked';} ?>>
                             <label class="onoffswitch-label" for="<?php echo $_att['id']; ?>"></label>
@@ -617,16 +617,16 @@ $selected=(isset($member) ? $member->gender : '');
                             }
                         }
                         ?>
-                    </td>
+                    </td> -->
                     <td data-order="<?php echo $_att['dateadded']; ?>"><?php echo _dt($_att['dateadded']); ?></td>
                     <td>
-                        <?php if(!isset($_att['external'])){ ?>
+                        <!-- <?php if(!isset($_att['external'])){ ?>
                         <button type="button" data-toggle="modal" data-file-name="<?php echo $_att['file_name']; ?>" data-filetype="<?php echo $_att['filetype']; ?>" data-path="<?php echo $path; ?>" data-target="#send_file" class="btn btn-info btn-icon"><i class="fa fa-envelope"></i></button>
                         <?php } else if(isset($_att['external']) && !empty($_att['external'])) {
                             echo '<a href="'.$_att['external_link'].'" class="btn btn-info btn-icon" target="_blank"><i class="fa fa-dropbox"></i></a>';
-                        } ?>
+                        } ?> -->
                         <?php if($type == 'customer'){ ?>
-                        <a href="<?php echo admin_url('clients/delete_attachment/'.$_att['rel_id'].'/'.$_att['id']); ?>"  class="btn btn-danger btn-icon _delete"><i class="fa fa-remove"></i></a>
+                        <a href="<?php echo admin_url('staff/delete_attachment/'.$_att['rel_id'].'/'.$_att['id']); ?>"  class="btn btn-danger btn-icon _delete"><i class="fa fa-remove"></i></a>
                         <?php } ?>
                     </td>
                     <?php } ?>

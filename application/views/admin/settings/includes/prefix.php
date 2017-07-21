@@ -7,6 +7,7 @@
         <?php echo render_input('settings[prefix_purchase_plan]','Kế hoạch mua',get_option('prefix_purchase_plan')); ?>
         <?php echo render_input('settings[prefix_purchase_suggested]','Đề xuất mua',get_option('prefix_purchase_suggested')); ?>
         <?php echo render_input('settings[prefix_purchase_order]','Đơn hàng mua',get_option('prefix_purchase_order')); ?>
+        <?php echo render_input('settings[prefix_product]','Sản phẩm',get_option('prefix_product')); ?>
 
         <hr />
     </div>

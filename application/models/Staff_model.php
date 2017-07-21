@@ -65,16 +65,14 @@ class Staff_model extends CRM_Model
             $this->db->delete('tblfiles');
             if ($this->db->affected_rows() > 0) {
                 $deleted = true;
-                $this->db->where('file_id', $id);
-                $this->db->delete('tblcustomerfiles_shares');
                 logActivity('Đã Hủy Đính Kèm của Khách Hàng [StaffID: ' . $attachment->rel_id . ']');
             }
 
-            if (is_dir(get_upload_path_by_type('customer') . $attachment->rel_id)) {
+            if (is_dir(get_upload_path_by_type('staff') . $attachment->rel_id)) {
                 // Check if no attachments left, so we can delete the folder also
-                $other_attachments = list_files(get_upload_path_by_type('customer') . $attachment->rel_id);
+                $other_attachments = list_files(get_upload_path_by_type('staff') . $attachment->rel_id);
                 if (count($other_attachments) == 0) {
-                    delete_dir(get_upload_path_by_type('customer') . $attachment->rel_id);
+                    delete_dir(get_upload_path_by_type('staff') . $attachment->rel_id);
                 }
             }
         }
