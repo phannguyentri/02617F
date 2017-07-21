@@ -3623,3 +3623,7 @@ $lang['import_choose_file']              = "Chọn tệp xls";
 $lang['item_warranty']              = "Thời gian bảo hành";
 
 $lang['staff_attachments']              = "Các tập tin";
+$lang['als_suppliers']              = "Nhà cung cấp";
+$lang['new_supplier']              = "Nhà cung cấp mới";
+$lang['import_supplier']              = "Import nhà cung cấp";
+$lang['suppliers_summary']              = "Tóm tắt nhà cung cấp";

@@ -14,7 +14,7 @@ $aColumns     = array(
     'name',
     'reason',
     'status',
-    '2'
+    'CONCAT((SELECT fullname FROM tblstaff  WHERE user_head_id=tblstaff.staffid),",",(SELECT fullname FROM tblstaff  WHERE user_admin_id=tblstaff.staffid)) as confirm'
 
 );
 $sIndexColumn = "id";
@@ -26,8 +26,8 @@ $join         = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblpurchase_plan.create_by'
 );
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where, array(
-    'id','converted'
-    // 'tblroles.roleid'
+    'id','converted',
+    'CONCAT(user_head_id,",",user_admin_id) as confirm_ids'
 ));
 $output       = $result['output'];
 $rResult      = $result['rResult'];
@@ -67,6 +67,25 @@ foreach ($rResult as $aRow) {
                 $_data.='<i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['status']]) . '"></i>
                     </a>
                 </span>';
+        }
+        if (strpos($aColumns[$i], 'as') !== false && !isset($aRow[$aColumns[$i]])) {
+            $_data = $aRow['confirm'];
+            $confirms=array_unique(explode(',', $_data));
+            $confirm_ids=array_unique(explode(',', $aRow['confirm_ids']));
+            $_data            = '';
+            $result = '';
+            $as = 0;
+            for ($x=0; $x < count($confirms); $x++) { 
+                if($confirms[$x]!='')
+                {
+                    $_data .= '<a href="' . admin_url('profile/' . $confirm_ids[$x]) . '">' . staff_profile_image($confirm_ids[$x], array(
+                        'staff-profile-image-small mright5'
+                    ), 'small', array(
+                        'data-toggle' => 'tooltip',
+                        'data-title' => $confirms[$x]
+                    )) . '</a>';
+                }
+            }
         }
         if ($aColumns[$i] == '1') {
             $_data=$j;
