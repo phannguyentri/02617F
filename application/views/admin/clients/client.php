@@ -88,7 +88,7 @@
     var type_of_organization          = $('#type_of_organization');
     var vat                           = $('#vat');
     var short_name                    = $('#short_name');
-    var billing_col                   = $('#billing_and_shipping,li:has(a[aria-controls="billing_and_shipping"])');
+    var billing_col                   = $('li:has(a[aria-controls="billing_and_shipping"])');
     if(client_type == 1) {
       $('label[for="company"]').html('<small class="req text-danger">* </small> <?=_l('client-name')?> <?=_l('client-personal')?>');
       
@@ -124,13 +124,160 @@
     }
   };
   $(document).ready(()=>{
+    var default_city  = '<?php echo isset($client) ? $client->city : 0 ?>';
+    var default_state = '<?php echo isset($client) ? $client->state : 0 ?>';
+    var default_ward  = '<?php echo isset($client) ? $client->address_ward : 0?>';
 
+    var default_city_billing  = '<?php echo isset($client) ? $client->billing_city : 0 ?>';
+    var default_state_billing = '<?php echo isset($client) ? $client->billing_state : 0 ?>';
+    var default_ward_billing  = '<?php echo isset($client) ? $client->billing_ward : 0?>';
+
+    var default_city_shipping  = '<?php echo isset($client) ? $client->shipping_city : 0 ?>';
+    var default_state_shipping = '<?php echo isset($client) ? $client->shipping_state : 0 ?>';
+    var default_ward_shipping  = '<?php echo isset($client) ? $client->shipping_ward : 0?>';
+
+    var default_city_dkkd  = '<?php echo isset($client) ? $client->dkkd_city : 0 ?>';
+    var default_state_dkkd = '<?php echo isset($client) ? $client->dkkd_state : 0 ?>';
+    var default_ward_dkkd  = '<?php echo isset($client) ? $client->dkkd_ward : 0?>';
+
+    var loadFromCity = (city_id, currentTarget, default_value_state, default_value_ward) => {
+      console.log();
+      var objState = $(currentTarget).parent().parent().next().find('select');
+      var objWard = $(currentTarget).parent().parent().next().next().find('select');
+      objState.find('option').remove();
+      objState.append('<option value=""></option>');
+      objWard.find('option').remove();
+      objWard.append('<option value=""></option>');
+      
+      objState.selectpicker("refresh");
+      objWard.selectpicker("refresh");
+
+      if(city_id != 0 && city_id != '') {
+        $.ajax({
+          url : admin_url + 'clients/get_districts/' + city_id,
+          dataType : 'json',
+        })
+        .done((data) => {          
+          objState.find('option').remove();
+          objState.append('<option value=""></option>');
+          var foundSelected = false;
+          $.each(data, (key,value) => {
+            var stringSelected = "";
+            if(!foundSelected && value.districtid == default_value_state) {
+              stringSelected = ' selected="selected"';
+              foundSelected = true;
+            }
+            objState.append('<option value="' + value.districtid + '"'+stringSelected+'>' + value.name + '</option>');
+          });
+          objState.selectpicker('refresh');
+          if(foundSelected) {
+            loadFromState(default_value_state, objState, default_value_ward);
+          }
+        });
+      }
+    };
+    var loadFromState = (state_id, currentTarget, default_value_ward) => {
+      var objWard = $(currentTarget).parent().parent().next().find('select');
+
+      objWard.find('option').remove();
+      objWard.append('<option value=""></option>');
+      objWard.selectpicker("refresh");
+      if(state_id != 0 && state_id != '') {
+        $.ajax({
+          url : admin_url + 'clients/get_wards/' + state_id,
+          dataType : 'json',
+        })
+        .done((data) => {
+          $.each(data, (key,value) => {
+            var stringSelected = "";
+            if(value.wardid == default_value_ward) {
+              stringSelected = 'selected="selected"';
+            }
+            objWard.append('<option value="' + value.wardid + '"' + stringSelected + '>' + value.name + '</option>');
+          });
+          objWard.selectpicker('refresh');
+        });
+      }
+    };
+    
+    $('#city').change((e)=>{
+      var city_id = $(e.currentTarget).val();
+      loadFromCity(city_id, e.currentTarget, default_state, default_ward);
+    });
+    $('#billing_city').change((e)=>{
+      var city_id = $(e.currentTarget).val();
+      loadFromCity(city_id, e.currentTarget, default_state_billing, default_ward_billing);
+    });
+    $('#shipping_city').change((e)=>{
+      var city_id = $(e.currentTarget).val();
+      loadFromCity(city_id, e.currentTarget, default_state_shipping, default_ward_shipping);
+    });
+    $('#dkkd_city').change((e)=>{
+      var city_id = $(e.currentTarget).val();
+      loadFromCity(city_id, e.currentTarget, default_state_dkkd, default_ward_dkkd);
+    });
+
+    $('#state').change((e)=>{
+      var state_id = $(e.currentTarget).val();
+      loadFromState(state_id, e.currentTarget, default_ward);
+    });
+    $('#billing_state').change((e)=>{
+      var state_id = $(e.currentTarget).val();
+      loadFromState(state_id, e.currentTarget, default_ward_billing);
+    });
+    $('#shipping_state').change((e)=>{
+      var state_id = $(e.currentTarget).val();
+      loadFromState(state_id, e.currentTarget, default_ward_shipping);
+    });
+    $('#dkkd_state').change((e)=>{
+      var state_id = $(e.currentTarget).val();
+      loadFromState(state_id, e.currentTarget, default_ward_dkkd);
+    });
+
+    loadFromCity(default_city, $('#city'), default_state, default_ward);
+    loadFromCity(default_city_billing, $('#billing_city'), default_state_billing, default_ward_billing);
+    loadFromCity(default_city_shipping, $('#shipping_city'), default_state_shipping, default_ward_shipping);
+    loadFromCity(default_city_dkkd, $('#dkkd_city'), default_state_dkkd, default_ward_dkkd);
+    
     $('#client_type').change((e)=>{
       client_type = $(e.currentTarget).find('option:selected').val();
       console.log(client_type);
       switchMode();
     });
+
+    $('.billing-same-as-customer').on('click', function(e) {
+      e.preventDefault();
+      $('select[name="billing_country"]').selectpicker('val', $('select[name="country"]').selectpicker('val'));
+      $('select[name="billing_city"]').selectpicker('val', $('select[name="city"]').selectpicker('val'));
+      loadFromCity($('select[name="city"]').selectpicker('val'), $('select[name="billing_city"]'), $('select[name="state"]').selectpicker('val'), $('select[name="address_ward"]').selectpicker('val'));
+
+      $('input[name="billing_room_number"]').val($('input[name="address_room_number"]').val());
+      $('input[name="billing_building"]').val($('input[name="address_building"]').val());
+      $('input[name="billing_home_number"]').val($('input[name="address_home_number"]').val());
+      $('input[name="billing_street"]').val($('input[name="address"]').val());
+      $('input[name="billing_town"]').val($('input[name="address_town"]').val());
+      $('input[name="billing_zip"]').val($('input[name="zip"]').val());
+      
+    });
+    $('.customer-copy-billing-address').on('click', function(e) {
+      e.preventDefault();
+      $('select[name="shipping_country"]').selectpicker('val', $('select[name="billing_country"]').selectpicker('val'));
+      
+      $('select[name="shipping_city"]').selectpicker('val', $('select[name="billing_city"]').selectpicker('val'));
+      loadFromCity($('select[name="shipping_city"]').selectpicker('val'), $('select[name="shipping_city"]'), $('select[name="billing_state"]').selectpicker('val'), $('select[name="billing_ward"]').selectpicker('val'));
+
+
+      $('input[name="shipping_room_number"]').val($('input[name="billing_room_number"]').val());
+      $('input[name="shipping_building"]').val($('input[name="billing_building"]').val());
+      $('input[name="shipping_home_number"]').val($('input[name="billing_home_number"]').val());
+      $('input[name="shipping_street"]').val($('input[name="billing_street"]').val());
+      $('input[name="shipping_town"]').val($('input[name="billing_town"]').val());
+      $('input[name="shipping_zip"]').val($('input[name="billing_zip"]').val());
+    });
+
+
   });
+  
   
   
 

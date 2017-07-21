@@ -1315,6 +1315,13 @@ function get_all_wards($district_id='')
     }
     return $CI->db->get('ward')->result_array();
 }
+function get_all_district($province_id) {
+    $CI =& get_instance();
+    if(is_numeric($province_id)) {
+        $CI->db->where('provinceid', $province_id);
+    }
+    return $CI->db->get('district')->result_array();
+}
 function get_all_province()
 {
     $CI =& get_instance();

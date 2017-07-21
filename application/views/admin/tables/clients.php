@@ -9,7 +9,7 @@ $aColumns = array(
     '1',
     'company',
     'tblcontacts.id',
-    'tblcontacts.email',
+    'tblclients.email',
     'tblclients.phonenumber',
     'tblclients.active',
     '(SELECT GROUP_CONCAT(name) FROM tblcustomersgroups LEFT JOIN tblcustomergroups_in ON tblcustomergroups_in.groupid = tblcustomersgroups.id WHERE customer_id = tblclients.userid)'

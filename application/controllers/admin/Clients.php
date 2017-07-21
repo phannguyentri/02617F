@@ -41,6 +41,21 @@ class Clients extends Admin_controller
 
         $this->load->view('admin/clients/manage', $data);
     }
+    public function get_wards($district_id) {
+        if(is_numeric($district_id) && $this->input->is_ajax_request()) {
+            echo json_encode(get_all_wards($district_id));
+        }
+    }
+    public function get_districts($province_id) {
+        if(is_numeric($province_id) && $this->input->is_ajax_request()) {
+            echo json_encode(get_all_district($province_id));
+        }
+    }
+    public function get_province($country_id) {
+        if(is_numeric($province_id) && $this->input->is_ajax_request()) {
+            echo json_encode(get_all_province($country_id));
+        }
+    }
     /* Edit client or add new client*/
     public function client($id = '')
     {

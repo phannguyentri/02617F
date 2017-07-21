@@ -1769,7 +1769,7 @@ $lang['setup_google_api_key_customer_map']                     = 'Thiết lập 
 $lang['customer_attachments_file']                             = 'Tập tin';
 $lang['client_send_set_password_email']                        = 'Send SET password email';
 $lang['customer_billing_same_as_profile']                      = 'Tương tự như thông tin khách hàng';
-$lang['customer_billing_copy']                                 = 'Sao chép Địa chỉ Thanh toán';
+$lang['customer_billing_copy']                                 = 'Sao chép Địa chỉ liên hệ';
 $lang['customer_map']                                          = 'Bản đồ';
 $lang['set_password_email_sent_to_client']                     = 'Email để thiết lập mật khẩu được gửi thành công để liên lạc';
 $lang['set_password_email_sent_to_client_and_profile_updated'] = 'Đã cập nhật hồ sơ và email để thiết lập mật khẩu để liên lạc';
@@ -3623,3 +3623,12 @@ $lang['import_choose_file']              = "Chọn tệp xls";
 $lang['item_warranty']              = "Thời gian bảo hành";
 
 $lang['staff_attachments']              = "Các tập tin";
+
+$lang['client_district']                    = "Quận/huyện";
+
+$lang['client_address_room_number']      = "Số phòng";
+$lang['client_ward']                     = "Phường/xã/thị trấn";
+$lang['client_address_building']         = "Tòa nhà";
+$lang['client_address_home_number']      = "Số nhà";
+$lang['client_address_town']             = "Khu phố/thôn/ấp";
+$lang['dkkd_address']                    = "Địa chỉ đăng ký kinh doanh";
