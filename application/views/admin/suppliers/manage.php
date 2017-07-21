@@ -133,29 +133,18 @@
                                             <h3 class="text-success no-margin"><?php echo _l('suppliers_summary'); ?></h3>
                                         </div>
                                         <div class="col-md-2 col-xs-6 border-right">
-                                            <h3 class="bold"><?php echo total_rows('tblsuppliers',($where_summary != '' ? substr($where_summary,5) : '')); ?></h3>
-                                            <span class="text-dark"><?php echo _l('customers_summary_total'); ?></span>
+                                            <h3 class="bold"><?php echo total_rows('tblclients',($where_summary != '' ? substr($where_summary,5) : '')); ?></h3>
+                                            <span class="text-dark"><?php echo _l('suppliers_summary_total'); ?></span>
                                         </div>
                                         <div class="col-md-2 col-xs-6 border-right">
-                                            <h3 class="bold"><?php echo total_rows('tblsuppliers','active=1'.$where_summary); ?></h3>
-                                            <span class="text-success"><?php echo _l('active_customers'); ?></span>
+                                            <h3 class="bold"><?php echo total_rows('tblclients','active=1'.$where_summary); ?></h3>
+                                            <span class="text-success"><?php echo _l('active_suppliers'); ?></span>
                                         </div>
                                         <div class="col-md-2 col-xs-6 border-right">
-                                            <h3 class="bold"><?php echo total_rows('tblsuppliers','active=0'.$where_summary); ?></h3>
-                                            <span class="text-danger"><?php echo _l('inactive_active_customers'); ?></span>
+                                            <h3 class="bold"><?php echo total_rows('tblclients','active=0'.$where_summary); ?></h3>
+                                            <span class="text-danger"><?php echo _l('inactive_active_suppliers'); ?></span>
                                         </div>
-                                        <div class="col-md-2 col-xs-6 border-right">
-                                            <h3 class="bold"><?php echo total_rows('tblcontacts','active=1'.$where_summary); ?></h3>
-                                            <span class="text-info"><?php echo _l('customers_summary_active'); ?></span>
-                                        </div>
-                                        <div class="col-md-2  col-xs-6 border-right">
-                                            <h3 class="bold"><?php echo total_rows('tblcontacts','active=0'.$where_summary); ?></h3>
-                                            <span class="text-danger"><?php echo _l('customers_summary_inactive'); ?></span>
-                                        </div>
-                                        <div class="col-md-2 col-xs-6">
-                                            <h3 class="bold"><?php echo total_rows('tblcontacts','last_login LIKE "'.date('Y-m-d').'%"'.$where_summary); ?></h3>
-                                            <span class="text-muted"><?php echo _l('customers_summary_logged_in_today'); ?></span>
-                                        </div>
+                                        
                                     </div>
                                     <?php } ?>
                                 </div>
