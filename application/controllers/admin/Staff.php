@@ -129,8 +129,8 @@ class Staff extends Admin_controller
 
     public function delete_attachment($customer_id, $id)
     {
-        if (has_permission('customers', '', 'delete') || is_customer_admin($customer_id)) {
-            $this->clients_model->delete_attachment($id);
+        if (has_permission('staff', '', 'delete') || is_admin()) {
+            $this->staff_model->delete_attachment($id);
         }
         redirect($_SERVER['HTTP_REFERER']);
     }

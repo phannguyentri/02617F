@@ -21,7 +21,7 @@
               _l('Người đề nghị'),
               _l('purchase_suggested_status'),
               _l('purchase_total_items'),
-              _l('user_admin'),              
+              _l('Được duyệt bởi'),              
               _l('purchase_suggested_date'),
               _l('actions'),              
               ),

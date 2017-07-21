@@ -5,14 +5,15 @@ $plan_status=array(
     "1"=>"Đề xuất mua được xác nhận chọn để duyệt Đề xuất mua",
     "0"=>"Đề xuất mua chưa được xác nhận chọn để xác nhận"
 );
+$confirm=6;
 $aColumns     = array(
     'tblpurchase_suggested.id',
     'tblpurchase_suggested.code',
     'tblpurchase_suggested.name',
-    'tblpurchase_suggested.user_head_id',
+    'tblstaff.fullname',
     'tblpurchase_suggested.status',
     '(select count(*) from tblpurchase_suggested_details where tblpurchase_suggested.id = tblpurchase_suggested_details.purchase_suggested_id)',
-    'tblpurchase_suggested.user_admin_id',   
+    'CONCAT((SELECT fullname FROM tblstaff  WHERE user_head_id=tblstaff.staffid),",",(SELECT fullname FROM tblstaff  WHERE user_admin_id=tblstaff.staffid))' ,   
     'tblpurchase_suggested.date',
 );
 
@@ -23,9 +24,10 @@ $where = array();
 $order_by = 'tblpurchase_suggested.id ASC';
 
 $join             = array(
-
+    'LEFT JOIN tblstaff  ON tblstaff.staffid=tblpurchase_suggested.create_by'
     );
 $additionalSelect = array(
+    'CONCAT(user_head_id,",",user_admin_id) as confirm_ids'
     );
 // print_r($join);
 // exit();
@@ -42,9 +44,24 @@ foreach ($rResult as $aRow) {
         if ($aColumns[$i] == 'tblpurchase_suggested.date') {
             $_data=_d($aRow['tblpurchase_suggested.date']);
         }
-        $array_fields = ['tblpurchase_suggested.user_head_id', 'tblpurchase_suggested.user_admin_id'];
-        if(in_array($aColumns[$i], $array_fields)) {
-            $_data = 'Chưa duyệt';
+        if ($i==$confirm) {
+            $_data = $aRow[$aColumns[$i]];
+            $confirms=array_unique(explode(',', $_data));
+            $confirm_ids=array_unique(explode(',', $aRow['confirm_ids']));
+            $_data            = '';
+            $result = '';
+            $as = 0;
+            for ($x=0; $x < count($confirms); $x++) { 
+                if($confirms[$x]!='')
+                {
+                    $_data .= '<a href="' . admin_url('profile/' . $confirm_ids[$x]) . '">' . staff_profile_image($confirm_ids[$x], array(
+                        'staff-profile-image-small mright5'
+                    ), 'small', array(
+                        'data-toggle' => 'tooltip',
+                        'data-title' => $confirms[$x]
+                    )) . '</a>';
+                }
+            }
         }
 
         $array_link = ['tblpurchase_suggested.id', 'tblpurchase_suggested.name', 'tblpurchase_suggested.code'];

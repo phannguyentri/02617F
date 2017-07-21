@@ -90,10 +90,10 @@
                     <?php $value = (isset($item) ? (($item->code)? $item->code : get_option('prefix_product').sprintf("%05d",$item->id)) : get_option('prefix_product').sprintf("%05d",(getMaxID('id','tblitems')+1))); ?>
                     <?php $attrs = array('readonly'=>true); ?>
                     <?php echo render_input('code','Mã sản phẩm',$value,'text',$attrs); ?>
-                    <?php
+                    <!-- <?php
                       $default_code = (isset($item) ? $item->code : "");
                       echo render_input('code', _l('item_code'), $default_code);
-                    ?>
+                    ?> -->
 
                     <?php
                       $default_name = (isset($item) ? $item->name : "");
