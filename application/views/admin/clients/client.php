@@ -88,7 +88,7 @@
     var type_of_organization          = $('#type_of_organization');
     var vat                           = $('#vat');
     var short_name                    = $('#short_name');
-    var billing_col                   = $('#col-billing');
+    var billing_col                   = $('#billing_and_shipping,li:has(a[aria-controls="billing_and_shipping"])');
     if(client_type == 1) {
       $('label[for="company"]').html('<small class="req text-danger">* </small> <?=_l('client-name')?> <?=_l('client-personal')?>');
       
