@@ -31,6 +31,55 @@ class Staff_model extends CRM_Model
         }
         return $staff;
     }
+    /**
+     *  Get customer attachment
+     * @param   mixed $id   customer id
+     * @return  array
+     */
+    public function get_all_staff_attachments($id)
+    {
+        $this->db->where('rel_id', $id);
+        $this->db->where('rel_type', 'staff');
+        $staff_attachments = $this->db->get('tblfiles')->result_array();
+
+        $attachments[] = $staff_attachments;
+        return $attachments;
+    }
+
+    /**
+     * Delete customer attachment uploaded from the customer profile
+     * @param  mixed $id attachment id
+     * @return boolean
+     */
+    public function delete_attachment($id)
+    {
+        $this->db->where('id', $id);
+        $attachment = $this->db->get('tblfiles')->row();
+        $deleted    = false;
+        if ($attachment) {
+            if (empty($attachment->external)) {
+                unlink(get_upload_path_by_type('staff') . $attachment->rel_id . '/' . $attachment->file_name);
+            }
+
+            $this->db->where('id', $id);
+            $this->db->delete('tblfiles');
+            if ($this->db->affected_rows() > 0) {
+                $deleted = true;
+                $this->db->where('file_id', $id);
+                $this->db->delete('tblcustomerfiles_shares');
+                logActivity('Đã Hủy Đính Kèm của Khách Hàng [StaffID: ' . $attachment->rel_id . ']');
+            }
+
+            if (is_dir(get_upload_path_by_type('customer') . $attachment->rel_id)) {
+                // Check if no attachments left, so we can delete the folder also
+                $other_attachments = list_files(get_upload_path_by_type('customer') . $attachment->rel_id);
+                if (count($other_attachments) == 0) {
+                    delete_dir(get_upload_path_by_type('customer') . $attachment->rel_id);
+                }
+            }
+        }
+        return $deleted;
+    }
     public function delete($id, $transfer_data_to)
     {
 

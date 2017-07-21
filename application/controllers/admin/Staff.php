@@ -4,6 +4,7 @@ class Staff extends Admin_controller
 {
     function __construct()
     {
+        // var_dump(STAFF_PROFILE_IMAGES_FOLDER);die();
         parent::__construct();
          $this->load->model('position_model');
     }
@@ -84,6 +85,7 @@ class Staff extends Admin_controller
             $member->staff_manager=json_decode($member->staff_manager);
 
             $data['member']            = $member;
+            $data['attachments']   = $this->staff_model->get_all_staff_attachments($id);
             $title                     = $member->firstname . ' ' . $member->lastname;
             $data['staff_permissions'] = $this->roles_model->get_staff_permissions($id);
             $data['staff_departments'] = $this->departments_model->get_staff_departments($member->staffid);
@@ -123,6 +125,14 @@ class Staff extends Admin_controller
     public function upload_attachment($id)
     {
         handle_staff_attachments_upload($id);
+    }
+
+    public function delete_attachment($customer_id, $id)
+    {
+        if (has_permission('customers', '', 'delete') || is_customer_admin($customer_id)) {
+            $this->clients_model->delete_attachment($id);
+        }
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     public function get_staff_role($idrole="",$idrule="")

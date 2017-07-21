@@ -46,3 +46,6 @@ define('LEAD_ATTACHMENTS_FOLDER',FCPATH . 'uploads/leads' . '/');
 define('PROJECT_ATTACHMENTS_FOLDER',FCPATH . 'uploads/projects' . '/');
 // Project discussions attachments
 define('PROJECT_DISCUSSION_ATTACHMENT_FOLDER',FCPATH . 'uploads/discussions' . '/');
+
+// Staff attachments folder from profile
+define('STAFF_ATTACHMENTS_FOLDER',FCPATH.'uploads/staffs'.'/');

@@ -42,6 +42,8 @@ class Invoice_items extends Admin_controller
                     access_denied('items');
                 }
                 $data                 = $this->input->post();
+                $data['price']=str_replace('.','',$data['price']);
+                $data['price_buy']=str_replace('.','',$data['price_buy']);
                 $save_and_add_contact = false;
                 // Category 3rd level
                 if(is_array($data['category_id'])) {
@@ -76,6 +78,9 @@ class Invoice_items extends Admin_controller
                     }
                 }
                 $data = $this->input->post();
+                $data['price']=str_replace('.','',$data['price']);
+                $data['price_buy']=str_replace('.','',$data['price_buy']);
+                // var_dump($data);die();
                 $data['itemid'] = $id;
                 $item = $this->invoice_items_model->get_full($id);
                 if(is_array($data['category_id'])) {

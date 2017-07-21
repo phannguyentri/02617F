@@ -69,7 +69,7 @@
 </div>
 <?php } ?>
 
-<?php $value = (isset($member) ? $member->staff_code : get_option('prefix_staff').$maxid); ?>
+<?php $value = (isset($member) ? $member->staff_code : get_option('prefix_staff').$maxid) ?>
 <?php $attrs = array('readonly'=>true); ?>
 <?php echo render_input('staff_code','Mã nhân viên',$value,'text',$attrs); ?>
 
@@ -890,6 +890,32 @@ $selected=(isset($member) ? $member->gender : '');
                     });
                 }
             }
+    Dropzone.options.clientAttachmentsUpload = false;
+ var customer_id = $('input[name="userid"]').val();
+ if ($('#client-attachments-upload').length > 0) {
+   new Dropzone('#client-attachments-upload', {
+     paramName: "file",
+     dictDefaultMessage:drop_files_here_to_upload,
+     dictFallbackMessage:browser_not_support_drag_and_drop,
+     dictRemoveFile:remove_file,
+     dictFileTooBig: file_exceds_maxfile_size_in_form,
+     dictMaxFilesExceeded:you_can_not_upload_any_more_files,
+     maxFilesize: max_php_ini_upload_size.replace(/\D/g, ''),
+     addRemoveLinks: false,
+     accept: function(file, done) {
+       done();
+     },
+     acceptedFiles: allowed_files,
+     error: function(file, response) {
+       alert_float('danger', response);
+     },
+     success: function(file, response) {
+      if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+        window.location.reload();
+      }
+    }
+  });
+ }
 </script>
 </body>
 </html>
