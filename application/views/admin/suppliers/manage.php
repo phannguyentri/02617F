@@ -9,8 +9,8 @@
                             <?php if (has_permission('suppliers','','create')) { ?>
                             <a href="<?php echo admin_url('suppliers/supplier'); ?>" class="btn btn-info mright5 test pull-left display-block">
                                 <?php echo _l('new_supplier'); ?></a>
-                                <a href="<?php echo admin_url('suppliers/import'); ?>" class="btn btn-info pull-left display-block mright5">
-                                    <?php echo _l('import_supplier'); ?></a>
+                                <!-- <a href="<?php echo admin_url('suppliers/import'); ?>" class="btn btn-info pull-left display-block mright5">
+                                    <?php echo _l('import_supplier'); ?></a> -->
                                     <?php } ?>
                                     <div class="visible-xs">
                                         <div class="clearfix"></div>
@@ -123,9 +123,6 @@
                                 <div class="clearfix"></div>
                                 <?php if(has_permission('suppliers','','view')) {
                                     $where_summary = '';
-                                    if(!has_permission('suppliers','','view')){
-                                        $where_summary = ' AND userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id='.get_staff_user_id().')';
-                                    }
                                     ?>
                                     <hr />
                                     <div class="row mbot15">
@@ -133,15 +130,15 @@
                                             <h3 class="text-success no-margin"><?php echo _l('suppliers_summary'); ?></h3>
                                         </div>
                                         <div class="col-md-2 col-xs-6 border-right">
-                                            <h3 class="bold"><?php echo total_rows('tblclients',($where_summary != '' ? substr($where_summary,5) : '')); ?></h3>
+                                            <h3 class="bold"><?php echo total_rows('tblsuppliers',''); ?></h3>
                                             <span class="text-dark"><?php echo _l('suppliers_summary_total'); ?></span>
                                         </div>
                                         <div class="col-md-2 col-xs-6 border-right">
-                                            <h3 class="bold"><?php echo total_rows('tblclients','active=1'.$where_summary); ?></h3>
+                                            <h3 class="bold"><?php echo total_rows('tblsuppliers','active=1'); ?></h3>
                                             <span class="text-success"><?php echo _l('active_suppliers'); ?></span>
                                         </div>
                                         <div class="col-md-2 col-xs-6 border-right">
-                                            <h3 class="bold"><?php echo total_rows('tblclients','active=0'.$where_summary); ?></h3>
+                                            <h3 class="bold"><?php echo total_rows('tblsuppliers','active=0'); ?></h3>
                                             <span class="text-danger"><?php echo _l('inactive_active_suppliers'); ?></span>
                                         </div>
                                         
@@ -213,8 +210,7 @@
                     _l('contact_primary'),
                     _l('company_primary_email'),
                     _l('clients_list_phone'),
-                    _l('customer_active'),
-                    _l('customer_groups'),
+                    _l('customer_active')
                     );
                  foreach($_table_data as $_t){
                     array_push($table_data,$_t);

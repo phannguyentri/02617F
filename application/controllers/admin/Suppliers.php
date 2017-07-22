@@ -6,6 +6,7 @@ class Suppliers extends Admin_controller
     function __construct()
     {
         parent::__construct();
+        $this->load->model('suppliers_model');
     }
     /* List all suppliers */
     public function index()
@@ -20,25 +21,7 @@ class Suppliers extends Admin_controller
         if ($this->input->is_ajax_request()) {
             $this->perfex_base->get_table_data('suppliers');
         }
-        $this->load->model('contracts_model');
-        $data['contract_types'] = $this->contracts_model->get_contract_types();
-        $data['groups']         = $this->clients_model->get_groups();
         $data['title']          = _l('suppliers');
-
-        $this->load->model('proposals_model');
-        $data['proposal_statuses'] = $this->proposals_model->get_statuses();
-
-        $this->load->model('invoices_model');
-        $data['invoice_statuses'] = $this->invoices_model->get_statuses();
-
-        $this->load->model('estimates_model');
-        $data['estimate_statuses'] = $this->estimates_model->get_statuses();
-
-        $this->load->model('projects_model');
-        $data['project_statuses'] = $this->projects_model->get_project_statuses();
-
-        $data['customer_admins'] = $this->clients_model->get_customers_admin_unique_ids();
-
         $this->load->view('admin/suppliers/manage', $data);
     }
     /* Edit supplier or add new supplier*/
@@ -61,18 +44,9 @@ class Suppliers extends Admin_controller
                     $save_and_add_contact = true;
                 }
                 $id = $this->clients_model->add($data);
-                if (!has_permission('customers', '', 'view')) {
-                    $assign['customer_admins']   = array();
-                    $assign['customer_admins'][] = get_staff_user_id();
-                    $this->clients_model->assign_admins($assign, $id);
-                }
                 if ($id) {
-                    set_alert('success', _l('added_successfuly', _l('client')));
-                    if ($save_and_add_contact == false) {
-                        redirect(admin_url('clients/client/' . $id));
-                    } else {
-                        redirect(admin_url('clients/client/' . $id . '?new_contact=true'));
-                    }
+                    set_alert('success', _l('added_successfuly', _l('supplier')));
+                    redirect(admin_url('suppliers/supplier/' . $id));
                 }
             } else {
                 if (!has_permission('customers', '', 'edit')) {
@@ -88,10 +62,10 @@ class Suppliers extends Admin_controller
             }
         }
         if ($id == '') {
-            $title = _l('add_new', _l('client_lowercase'));
+            $title = _l('add_new', _l('suppliers'));
         } else {
-            $client = $this->clients_model->get($id);
-            if (!$client) {
+            $supplier = $this->suppliers_model->get($id);
+            if (!$supplier) {
                 blank_page('Client Not Found');
             }
 
@@ -102,7 +76,7 @@ class Suppliers extends Admin_controller
             $this->load->model('payment_modes_model');
             $data['payment_modes'] = $this->payment_modes_model->get();
             $data['attachments']   = $this->clients_model->get_all_customer_attachments($id);
-            $data['client']        = $client;
+            $data['client']        = $supplier;
             $title                 = $client->company;
             // Get all active staff members (used to add reminder)
             $this->load->model('staff_model');
@@ -146,5 +120,23 @@ class Suppliers extends Admin_controller
 
         $data['title'] = $title;
         $this->load->view('admin/suppliers/supplier', $data);
+    }
+
+    /* Delete supplier */
+    public function delete($id)
+    {
+        if (!has_permission('suppliers', '', 'delete')) {
+            access_denied('suppliers');
+        }
+        if (!$id) {
+            redirect(admin_url('suppliers'));
+        }
+        $response = $this->suppliers_model->delete($id);
+        if ($response == true) {
+            set_alert('success', _l('deleted', _l('suppliers')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('suppliers')));
+        }
+        redirect(admin_url('suppliers'));
     }
 }
