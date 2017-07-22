@@ -3645,3 +3645,4 @@ $lang['active_suppliers']              = "Nhà cung cấp đang hoạt động";
 $lang['inactive_active_suppliers']              = "Nhà cung cấp không hoạt động";
 
 
+$lang['client_area'] = "Khu vực";

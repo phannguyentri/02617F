@@ -157,8 +157,9 @@ class Clients extends Admin_controller
         $this->load->model('projects_model');
         $data['project_statuses'] = $this->projects_model->get_project_statuses();
         $data['contacts']         = $this->clients_model->get_contacts($id);
-
-
+        $data['sources']  = $this->clients_model->get_source();
+        $data['areas']  = $this->clients_model->get_area();
+        
         $data['title'] = $title;
         $this->load->view('admin/clients/client', $data);
     }

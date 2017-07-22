@@ -77,6 +77,7 @@
 <script type="text/javascript">
   // others script write here
   var client_type = $('#client_type option:selected').val();
+  console.log(client_type);
   var switchMode = () => {
     var name_title                    = $('#name_title');
     var cooperative_day               = $('#cooperative_day');
@@ -123,6 +124,7 @@
       short_name.parent().hide();
     }
   };
+  // switchMode();
   $(document).ready(()=>{
     var default_city  = '<?php echo isset($client) ? $client->city : 0 ?>';
     var default_state = '<?php echo isset($client) ? $client->state : 0 ?>';
@@ -274,7 +276,21 @@
       $('input[name="shipping_town"]').val($('input[name="billing_town"]').val());
       $('input[name="shipping_zip"]').val($('input[name="billing_zip"]').val());
     });
+    $('.customer-copy-billing-address-dkkd').on('click', function(e) {
+      e.preventDefault();
+      $('select[name="dkkd_country"]').selectpicker('val', $('select[name="billing_country"]').selectpicker('val'));
+      
+      $('select[name="dkkd_city"]').selectpicker('val', $('select[name="billing_city"]').selectpicker('val'));
+      loadFromCity($('select[name="dkkd_city"]').selectpicker('val'), $('select[name="dkkd_city"]'), $('select[name="billing_state"]').selectpicker('val'), $('select[name="billing_ward"]').selectpicker('val'));
 
+
+      $('input[name="dkkd_room_number"]').val($('input[name="billing_room_number"]').val());
+      $('input[name="dkkd_building"]').val($('input[name="billing_building"]').val());
+      $('input[name="dkkd_home_number"]').val($('input[name="billing_home_number"]').val());
+      $('input[name="dkkd_street"]').val($('input[name="billing_street"]').val());
+      $('input[name="dkkd_town"]').val($('input[name="billing_town"]').val());
+      $('input[name="dkkd_zip"]').val($('input[name="billing_zip"]').val());
+    });
 
   });
   

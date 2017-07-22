@@ -487,6 +487,27 @@ class Clients_model extends CRM_Model
         }
         return $userid;
     }
+    // Sources
+    /**
+     * Get leads sources
+     * @param  mixed $id Optional - Source ID
+     * @return mixed object if id passed else array
+     */
+    public function get_source($id = false)
+    {
+        if (is_numeric($id)) {
+            $this->db->where('id', $id);
+            return $this->db->get('tblleadssources')->row();
+        }
+        return $this->db->get('tblleadssources')->result_array();
+    }
+    public function get_area($id = false) {
+        if (is_numeric($id)) {
+            $this->db->where('id', $id);
+            return $this->db->get('tblarea')->row();
+        }
+        return $this->db->get('tblarea')->result_array();
+    }
     /**
      * @param  array $_POST data
      * @param  integer ID
