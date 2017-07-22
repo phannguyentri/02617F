@@ -10,6 +10,7 @@ class Suppliers extends Admin_controller
     /* List all suppliers */
     public function index()
     {
+        // var_dump(has_permission('suppliers','','create'));die();
 
         if (!has_permission('suppliers', '', 'view')) {
             if (!has_permission('suppliers','','create')) {
@@ -17,12 +18,12 @@ class Suppliers extends Admin_controller
             }
         }
         if ($this->input->is_ajax_request()) {
-            $this->perfex_base->get_table_data('clients');
+            $this->perfex_base->get_table_data('suppliers');
         }
         $this->load->model('contracts_model');
         $data['contract_types'] = $this->contracts_model->get_contract_types();
         $data['groups']         = $this->clients_model->get_groups();
-        $data['title']          = _l('clients');
+        $data['title']          = _l('suppliers');
 
         $this->load->model('proposals_model');
         $data['proposal_statuses'] = $this->proposals_model->get_statuses();
@@ -144,6 +145,6 @@ class Suppliers extends Admin_controller
 
 
         $data['title'] = $title;
-        $this->load->view('admin/clients/client', $data);
+        $this->load->view('admin/suppliers/supplier', $data);
     }
 }
