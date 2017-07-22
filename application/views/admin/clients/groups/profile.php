@@ -54,13 +54,13 @@
                            ),
                        );
                        
-                     echo render_select('client_type', $client_type_value, array('id','name'),'client_type', (isset($client) ? $client->client_type : 1), array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); ?>
+                     echo render_select('client_type', $client_type_value, array('id','name'),'client_type', (isset($client) ? $client->client_type : 1), array(), array(), '', '', false); ?>
                       
                     <?php
                     $value= ( isset($client) ? $client->company : ''); 
                     $attrs = (isset($client) ? array() : array('autofocus'=>true));
                     $name_type_client = ( isset($client) ? ($client->client_type == 2 ? "client-company" : "client-personal") : 'client-personal' ); ?>
-                    <?php echo render_input( 'company', $name_type_client,$value,'text',$attrs); ?>
+                    <?php echo render_input( 'company', _l("client-name",$name_type_client),$value,'text',$attrs); ?>
                     
                     <?php
                     $c_attrs_personal = (isset($client) ? ($client->client_type == 1 ? array() : array('style' => 'display:none')) : array());
@@ -68,7 +68,7 @@
                     echo render_input( 'short_name', 'client_shortname' , $short_name, 'text', array(), $c_attrs_personal); ?>                    
                     
                     <?php $value = (isset($client) ? _d($client->birthday) : _d(date('Y-m-d')));
-                        $label = (isset($client) ? _l('date_birth') : _l('client-company-birthday'));
+                        $label = (isset($client) ? ($client->client_type == 2 ? _l('client-company-birthday') : _l('date_birth')) : _l('date_birth'));
                     echo render_date_input('birthday', $label, $value); ?>
 
                     <?php
@@ -103,12 +103,12 @@
                     echo render_select('type_of_organization',$type_of_organization,array('id','name'),'type_of_organization',$value_type_of_organization,$s_attrs, $group_attrs_company); ?>
 
                     <?php
-                    $c_attrs_personal = (isset($client) ? ($client->client_type == 1 ? array() : array('style' => 'display:none')) : array());
+                    $c_attrs_personal = (isset($client) ? ($client->client_type == 2 ? array() : array('style' => 'display:none')) : array('style' => 'display:none'));
                     $bussiness_registration_number = ( isset($client) ? $client->bussiness_registration_number : "" );
                     echo render_input( 'bussiness_registration_number', 'bussiness_registration_number' , $bussiness_registration_number, 'text', array(), $c_attrs_personal ); ?>
                     
                     <?php
-                    $c_attrs_personal = (isset($client) ? ($client->client_type == 1 ? array() : array('style' => 'display:none')) : array());
+                    $c_attrs_personal = (isset($client) ? ($client->client_type == 2 ? array() : array('style' => 'display:none')) : array('style' => 'display:none'));
                     $legal_representative = ( isset($client) ? $client->legal_representative : "" );
                     echo render_input( 'legal_representative', 'legal_representative' , $legal_representative, 'text', array(), $c_attrs_personal ); ?>
 
@@ -117,15 +117,15 @@
                     echo render_input( 'email', 'email' , $email ,'email',array('autocomplete'=>'off')); ?>
 
                     <?php
-                    $c_attrs_personal = (isset($client) ? ($client->client_type == 1 ? array() : array('style' => 'display:none')) : array());
+                    $c_attrs_personal = (isset($client) ? ($client->client_type == 2 ? array() : array('style' => 'display:none')) : array('style' => 'display:none'));
                     $cooperative_day = ( isset($client) ? _d($client->cooperative_day) : _d(date('Y-m-d')));
-                    echo render_date_input( 'cooperative_day', 'cooperative_day' , $cooperative_day, 'text', array(), $c_attrs_personal ); ?>
+                    echo render_date_input( 'cooperative_day', 'cooperative_day' , $cooperative_day, array(), $c_attrs_personal ); ?>
 
                     <?php
-                    $c_attrs_personal = (isset($client) ? ($client->client_type == 1 ? array() : array('style' => 'display:none')) : array());
+                    $c_attrs_personal = (isset($client) ? ($client->client_type == 2 ? array() : array('style' => 'display:none')) : array('style' => 'display:none'));
                     if(get_option('company_requires_vat_number_field') == 1){
                         $value=( isset($client) ? $client->vat : '');
-                        echo render_input( 'vat', 'client_vat_number',$value);
+                        echo render_input( 'vat', 'client_vat_number',$value, 'text', array(), $c_attrs_personal);
                     }
                     $s_attrs = array('data-none-selected-text'=>_l('system_default_string'));
                     $selected = '';
@@ -167,6 +167,24 @@
               <?php echo render_input( 'latitude', 'customer_latitude',$value); ?>
               <?php $value=( isset($client) ? $client->longitude : ''); ?>
               <?php echo render_input( 'longitude', 'customer_longitude',$value); ?> -->
+
+              <?php
+                    $selected = array();
+                    if(isset($customer_groups)){
+                        foreach($customer_groups as $group){
+                        array_push($selected,$group['groupid']);
+                    }
+                }
+                echo render_select('groups_in[]',$groups,array('id','name'),'customer_groups',$selected,array('multiple'=>true),array(),'','',false);
+                ?>
+                <?php
+                $default_source_id = 0;
+                if(!isset($client) && count($sources) > 0) {
+                    $default_source_id = $sources[0]['id'];
+                }
+                echo render_select('source_approach', $sources, array('id','name'),'source_from', !isset($client) ? $default_source_id : $client->source_approach, array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); 
+                ?>
+
           </div>
           <div class="col-md-6">
               
@@ -190,7 +208,14 @@
                 <input type="text" class="tagsinput_phone" value="<?=$mobilephone_text?>" id="mobilephone_number" name="mobilephone_number" data-role="tagsinput">
             </div>
 
-            
+            <?php
+                $default_source_id = 0;
+                if(!isset($client) && count($areas) > 0) {
+                    $default_source_id = $areas[0]['id'];
+                }
+                echo render_select('address_area', $areas, array('id','name'),'client_area', !isset($client) ? $default_source_id : $client->address_area, array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); 
+            ?>
+
             <?php $countries= get_all_countries();
             $customer_default_country = get_option('customer_default_country');
             $selected =( isset($client) ? $client->country : $customer_default_country);
@@ -227,21 +252,7 @@
 
             <?php $value=( isset($client) ? $client->website : ''); ?>
             <?php echo render_input( 'website', 'client_website',$value); ?>
-            <?php
-            $selected = array();
-            if(isset($customer_groups)){
-                foreach($customer_groups as $group){
-                   array_push($selected,$group['groupid']);
-               }
-           }
-           echo render_select('groups_in[]',$groups,array('id','name'),'customer_groups',$selected,array('multiple'=>true),array(),'','',false);
-           ?>
-           <?php
-            $default_source_id = 0;
-            if(!isset($client) && count($sources) > 0) {
-            $default_source_id = $sources[0]['id'];
-            }
-            echo render_select('source_approach', $sources, array('id','name'),'source_from', !isset($client) ? $default_source_id : $client->source_approach, array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); ?>
+            
             
        </div>
        <div class="col-md-12">
@@ -314,7 +325,13 @@
                     <div class="col-md-6">
                         <h4><?php echo _l('billing_address'); ?> <a href="#" class="pull-right billing-same-as-customer"><small class="text-info font-medium-xs"><?php echo _l('customer_billing_same_as_profile'); ?></small></a></h4>
                         <hr />
-                        
+                        <?php
+                            $default_source_id = 0;
+                            if(!isset($client) && count($areas) > 0) {
+                                $default_source_id = $areas[0]['id'];
+                            }
+                            echo render_select('billing_area', $areas, array('id','name'),'client_area', !isset($client) ? $default_source_id : $client->billing_area, array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); 
+                        ?>
                         <?php $countries= get_all_countries();
                         $customer_default_country = get_option('customer_default_country');
                         $selected =( isset($client) ? $client->billing_country : $customer_default_country);
@@ -353,6 +370,13 @@
                             <i class="fa fa-question-circle" data-toggle="tooltip" data-title="<?php echo _l('customer_shipping_address_notice'); ?>"></i>
                             <?php echo _l('shipping_address'); ?> <a href="#" class="pull-right customer-copy-billing-address"><small class="text-info font-medium-xs"><?php echo _l('customer_billing_copy'); ?></small></a></h4>
                             <hr />
+                            <?php
+                                $default_source_id = 0;
+                                if(!isset($client) && count($areas) > 0) {
+                                    $default_source_id = $areas[0]['id'];
+                                }
+                                echo render_select('shipping_area', $areas, array('id','name'),'client_area', !isset($client) ? $default_source_id : $client->shipping_area, array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); 
+                            ?>
                             <?php $countries= get_all_countries();
                             $customer_default_country = get_option('customer_default_country');
                             $selected =( isset($client) ? $client->shipping_country : $customer_default_country);
@@ -403,9 +427,17 @@
                         <?php } ?>
                     </div>
                     <div class="col-md-6">
-                        <h4><?php echo _l('dkkd_address'); ?> <a href="#" class="pull-right billing-same-as-customer"><small class="text-info font-medium-xs"><?php echo _l('customer_billing_same_as_profile'); ?></small></a></h4>
+                        <h4><?php echo _l('dkkd_address'); ?> <a href="#" class="pull-right customer-copy-billing-address-dkkd"><small class="text-info font-medium-xs"><?php echo _l('customer_billing_same_as_profile'); ?></small></a></h4>
                         <hr />
                         
+                        <?php
+                            $default_source_id = 0;
+                            if(!isset($client) && count($areas) > 0) {
+                                $default_source_id = $areas[0]['id'];
+                            }
+                            echo render_select('dkkd_area', $areas, array('id','name'),'client_area', !isset($client) ? $default_source_id : $client->dkkd_area, array('data-none-selected-text'=>_l('dropdown_non_selected_tex'))); 
+                        ?>
+
                         <?php $countries= get_all_countries();
                         $customer_default_country = get_option('customer_default_country');
                         $selected =( isset($client) ? $client->dkkd_country : $customer_default_country);

@@ -6,3 +6,5 @@ ALTER TABLE `tblclients` ADD `billing_room_number` TEXT NOT NULL AFTER `address_
 
 ALTER TABLE `tblclients` ADD `dkkd_city` TEXT NOT NULL AFTER `address_home_number`, ADD `dkkd_state` TEXT NOT NULL AFTER `dkkd_city`, ADD `dkkd_ward` TEXT NOT NULL AFTER `dkkd_state`, ADD `dkkd_room_number` TEXT NOT NULL AFTER `dkkd_ward`, ADD `dkkd_building` TEXT NOT NULL AFTER `dkkd_room_number`, ADD `dkkd_home_number` TEXT NOT NULL AFTER `dkkd_building`, ADD `dkkd_address` TEXT NOT NULL AFTER `dkkd_home_number`, ADD `dkkd_zip` TEXT NOT NULL AFTER `dkkd_address`, ADD `dkkd_country` TEXT NOT NULL AFTER `dkkd_zip`, ADD `dkkd_client_address_town` TEXT NOT NULL AFTER `dkkd_country`;
 
+ALTER TABLE `tblclients` ADD `dkkd_street` TEXT NOT NULL AFTER `dkkd_home_number`;
+ALTER TABLE `tblclients` ADD `dkkd_town` TEXT NOT NULL AFTER `dkkd_street`;
