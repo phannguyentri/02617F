@@ -40,10 +40,9 @@ class Suppliers_model extends CRM_Model
      */
     public function get($id = '', $where = array('tblsuppliers.active' => 1), $single_result_type = 'row')
     {
-        $this->db->select(implode(',', prefixed_table_fields_array('tblsuppliers')) . ',CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblsuppliers.userid and is_primary = 1) ELSE company END as company');
+        $this->db->select(implode(',', prefixed_table_fields_array('tblsuppliers')));
 
         $this->db->join('tblcountries', 'tblcountries.country_id = tblsuppliers.country', 'left');
-        $this->db->join('tblcontacts', 'tblcontacts.userid = tblsuppliers.userid AND is_primary = 1', 'left');
         if (is_numeric($id)) {
             $this->db->where('tblsuppliers.userid', $id);
             $client = $this->db->get('tblsuppliers')->$single_result_type();
