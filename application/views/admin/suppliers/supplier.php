@@ -49,7 +49,7 @@
         </div>
         <?php } ?>
         <h4 class="customer-heading-profile bold"><?php echo $title; ?></h4>
-        <?php $this->load->view('admin/clients/tabs'); ?>
+        <!-- <?php $this->load->view('admin/clients/tabs'); ?> -->
       </div>
     </div>
   </div>
