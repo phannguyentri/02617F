@@ -3623,7 +3623,7 @@ $lang['import_choose_file']              = "Chọn tệp xls";
 $lang['item_warranty']              = "Thời gian bảo hành";
 
 $lang['staff_attachments']              = "Các tập tin";
-<<<<<<< HEAD
+
 
 $lang['client_district']                    = "Quận/huyện";
 
@@ -3633,16 +3633,14 @@ $lang['client_address_building']         = "Tòa nhà";
 $lang['client_address_home_number']      = "Số nhà";
 $lang['client_address_town']             = "Khu phố/thôn/ấp";
 $lang['dkkd_address']                    = "Địa chỉ đăng ký kinh doanh";
-=======
+
 $lang['als_suppliers']              = "Nhà cung cấp";
+$lang['suppliers']              = "Nhà cung cấp";
 $lang['new_supplier']              = "Nhà cung cấp mới";
 $lang['import_supplier']              = "Import nhà cung cấp";
 $lang['suppliers_summary']              = "Tóm tắt nhà cung cấp";
-<<<<<<< HEAD
 $lang['suppliers_summary_total']              = "Tổng số nhà cung cấp";
 $lang['active_suppliers']              = "Nhà cung cấp đang hoạt động";
 $lang['inactive_active_suppliers']              = "Nhà cung cấp không hoạt động";
 
-=======
->>>>>>> ceea0cb2f9dfa3712f16cd26d303078209f0f51b
->>>>>>> 33ae6e6a9bff4d48efb57110602a81528b193b16
+
