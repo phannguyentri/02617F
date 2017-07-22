@@ -8,3 +8,4 @@ ALTER TABLE `tblclients` ADD `dkkd_city` TEXT NOT NULL AFTER `address_home_numbe
 
 ALTER TABLE `tblclients` ADD `dkkd_street` TEXT NOT NULL AFTER `dkkd_home_number`;
 ALTER TABLE `tblclients` ADD `dkkd_town` TEXT NOT NULL AFTER `dkkd_street`;
+ALTER TABLE `tblclients` ADD `dkkd_area` TEXT NOT NULL AFTER `dkkd_ward`;

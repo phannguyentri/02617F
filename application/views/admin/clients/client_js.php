@@ -158,11 +158,11 @@ if(_table_api) {
        $('body').find('.nav-tabs [href="#' + tab_active + '"]').click();
      }
 
-     if(company_is_required == 1){
-       _validate_form($('.client-form'), {
-         company: 'required',
-       });
-     }
+    //  if(company_is_required == 1){
+    //    _validate_form($('.client-form'), {
+    //      company: 'required',
+    //    });
+    //  }
 
      
 

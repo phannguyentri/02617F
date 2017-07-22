@@ -1805,7 +1805,6 @@ function switch_field(field) {
 }
 // General validate form function
 function _validate_form(form, form_rules, submithandler) {
-
     var f = $(form).validate({
         rules: form_rules,
         messages: {

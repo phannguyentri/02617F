@@ -76,8 +76,29 @@
 <?php init_tail(); ?>
 <script type="text/javascript">
   // others script write here
+  function addRules(rulesObj){
+    for (var item in rulesObj){
+      $('#'+item).rules('add',rulesObj[item]);  
+    } 
+  }
+
+  function removeRules(rulesObj){
+    for (var item in rulesObj){
+      $('#'+item).rules('remove');  
+    } 
+  }
   var client_type = $('#client_type option:selected').val();
-  console.log(client_type);
+
+  var personalRules = {
+      short_name : {
+        require: true,
+      },
+  };
+  var companyRules = {
+      type_of_organization : {
+        require: true,
+      },
+  };
   var switchMode = () => {
     var name_title                    = $('#name_title');
     var cooperative_day               = $('#cooperative_day');
@@ -106,6 +127,9 @@
       id_card.parent().show();
       mobilephone_number.parent().show();
       short_name.parent().show();
+
+      // removeRules(companyRules);
+      // addRules(personalRules);
     }
     else {
       $('label[for="company"]').html('<small class="req text-danger">* </small> <?=_l('client-name')?> <?=_l('client-company')?>');
@@ -122,6 +146,10 @@
       id_card.parent().hide();
       mobilephone_number.parent().hide();
       short_name.parent().hide();
+
+      // removeRules(personalRules);
+      // addRules(companyRules);
+       
     }
   };
   // switchMode();
@@ -249,6 +277,7 @@
 
     $('.billing-same-as-customer').on('click', function(e) {
       e.preventDefault();
+      $('select[name="billing_area"]').selectpicker('val', $('select[name="address_area"]').selectpicker('val'));
       $('select[name="billing_country"]').selectpicker('val', $('select[name="country"]').selectpicker('val'));
       $('select[name="billing_city"]').selectpicker('val', $('select[name="city"]').selectpicker('val'));
       loadFromCity($('select[name="city"]').selectpicker('val'), $('select[name="billing_city"]'), $('select[name="state"]').selectpicker('val'), $('select[name="address_ward"]').selectpicker('val'));
@@ -263,6 +292,7 @@
     });
     $('.customer-copy-billing-address').on('click', function(e) {
       e.preventDefault();
+      $('select[name="shipping_area"]').selectpicker('val', $('select[name="billing_area"]').selectpicker('val'));
       $('select[name="shipping_country"]').selectpicker('val', $('select[name="billing_country"]').selectpicker('val'));
       
       $('select[name="shipping_city"]').selectpicker('val', $('select[name="billing_city"]').selectpicker('val'));
@@ -278,6 +308,7 @@
     });
     $('.customer-copy-billing-address-dkkd').on('click', function(e) {
       e.preventDefault();
+      $('select[name="dkkd_area"]').selectpicker('val', $('select[name="billing_area"]').selectpicker('val'));
       $('select[name="dkkd_country"]').selectpicker('val', $('select[name="billing_country"]').selectpicker('val'));
       
       $('select[name="dkkd_city"]').selectpicker('val', $('select[name="billing_city"]').selectpicker('val'));
@@ -293,10 +324,6 @@
     });
 
   });
-  
-  
-  
-
   
 
 </script>
