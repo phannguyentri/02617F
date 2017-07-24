@@ -22,7 +22,7 @@
                 </a>
             </li>
             <li role="presentation">
-                <a href="#customer_admins" aria-controls=customer_admins" role="tab" data-toggle="tab">
+                <a href="#customer_admins" aria-controls="customer_admins" role="tab" data-toggle="tab">
                     <?php echo _l( 'customer_admins'); ?>
                 </a>
             </li>

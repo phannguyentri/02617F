@@ -748,6 +748,7 @@ class Cron_model extends CRM_Model
             if (date('Y-m-d H:i:s') >= $reminder['date']) {
                 $staff = $this->staff_model->get($reminder['staff']);
                 load_admin_language($reminder['staff']);
+                // var_dump("expression");die();
                 $_rel_type_translated = '';
                 if ($reminder['rel_type'] == 'customer') {
                     $_rel_type_translated = _l('client_lowercase');
@@ -769,6 +770,7 @@ class Cron_model extends CRM_Model
                     $_rel_type_translated = _l('expense_lowercase');
                 }
                 $description .= $reminder['description'];
+                
                 add_notification(array(
                     'fromcompany' => true,
                     'touserid' => $reminder['staff'],
@@ -778,6 +780,7 @@ class Cron_model extends CRM_Model
                         $_rel_type_translated . ' - ' . $reminder['description']
                     ))
                 ));
+                // var_dump($staff->email);die();
                 if ($reminder['notify_by_email'] == 1) {
                     $this->emails_model->send_simple_email($staff->email, _l('not_new_reminder_for', $_rel_type_translated), $description . '<br /><br />' . get_option('email_signature'));
                 }

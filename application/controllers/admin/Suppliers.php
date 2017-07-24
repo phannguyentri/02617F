@@ -43,7 +43,8 @@ class Suppliers extends Admin_controller
                     unset($data['save_and_add_contact']);
                     $save_and_add_contact = true;
                 }
-                $id = $this->clients_model->add($data);
+                var_dump($data);die();
+                $id = $this->suppliers_model->add($data);
                 if ($id) {
                     set_alert('success', _l('added_successfuly', _l('supplier')));
                     redirect(admin_url('suppliers/supplier/' . $id));
@@ -54,11 +55,11 @@ class Suppliers extends Admin_controller
                         access_denied('customers');
                     }
                 }
-                $success = $this->clients_model->update($this->input->post(), $id);
+                $success = $this->suppliers_model->update($this->input->post(), $id);
                 if ($success == true) {
-                    set_alert('success', _l('updated_successfuly', _l('client')));
+                    set_alert('success', _l('updated_successfuly', _l('supplier')));
                 }
-                redirect(admin_url('clients/client/' . $id));
+                redirect(admin_url('suppliers/supplier/' . $id));
             }
         }
         if ($id == '') {
@@ -76,8 +77,8 @@ class Suppliers extends Admin_controller
             $this->load->model('payment_modes_model');
             $data['payment_modes'] = $this->payment_modes_model->get();
             $data['attachments']   = $this->clients_model->get_all_customer_attachments($id);
-            $data['client']        = $supplier;
-            $title                 = $client->company;
+            $data['supplier']        = $supplier;
+            $title                 = $supplier->company;
             // Get all active staff members (used to add reminder)
             $this->load->model('staff_model');
             $data['members'] = $this->staff_model->get('', 1);
@@ -102,11 +103,7 @@ class Suppliers extends Admin_controller
                 }
             }
         }
-        if (!$this->input->get('group')) {
-            $group = 'profile';
-        } else {
-            $group = $this->input->get('group');
-        }
+
         $data['group']  = $group;
         $data['groups'] = $this->clients_model->get_groups();
         $this->load->model('currencies_model');

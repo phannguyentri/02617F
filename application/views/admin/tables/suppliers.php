@@ -64,7 +64,7 @@ foreach ($rResult as $aRow) {
             if ($aRow['company'] == '') {
                 $aRow['company'] = _l('no_company_view_profile');
             }
-            $_data = '<a href="' . admin_url('clients/client/' . $aRow['userid']) . '">' . $aRow['company'] . '</a>';
+            $_data = '<a href="' . admin_url('suppliers/supplier/' . $aRow['userid']) . '">' . $aRow['company'] . '</a>';
 
         } else if ($aColumns[$i] == 'phonenumber') {
             $_data = '<a href="tel:' . $_data . '">' . $_data . '</a>';
@@ -72,7 +72,7 @@ foreach ($rResult as $aRow) {
             $_data = '<a href="mailto:' . $_data . '">' . $_data . '</a>';
         } else if ($i == 2) {
             // primary contact add link
-            $_data = '<a href="' . admin_url('clients/client/' . $aRow['userid'] . '?contactid=' . get_primary_contact_user_id($aRow['userid'])) . '" target="_blank">' . $aRow['firstname'] . ' ' . $aRow['lastname'] . '</a>';
+            $_data = '<a href="' . admin_url('suppliers/supplier/' . $aRow['userid'] . '?contactid=' . get_primary_contact_user_id($aRow['userid'])) . '" target="_blank">' . $aRow['firstname'] . ' ' . $aRow['lastname'] . '</a>';
         } else if ($aColumns[$i] == 'tblsuppliers.active') {
             $checked = '';
             if ($aRow['tblsuppliers.active'] == 1) {

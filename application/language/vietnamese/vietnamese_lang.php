@@ -3524,7 +3524,7 @@ $lang['client_shortname'] = 'Tên ngắn gọn';
 $lang['client_name_title'] = 'Danh xưng';
 $lang['id_card'] = 'Số chứng minh nhân dân';
 $lang['type_of_organization'] = 'Loại hình tổ chức';
-$lang['bussiness_registration_number'] = 'Số DKKD';
+$lang['bussiness_registration_number'] = 'Số ĐKKD';
 $lang['legal_representative'] = 'Đại diện pháp luật';
 $lang['email'] = 'Email';
 
@@ -3643,6 +3643,20 @@ $lang['suppliers_summary']              = "Tóm tắt nhà cung cấp";
 $lang['suppliers_summary_total']              = "Tổng số nhà cung cấp";
 $lang['active_suppliers']              = "Nhà cung cấp đang hoạt động";
 $lang['inactive_active_suppliers']              = "Nhà cung cấp không hoạt động";
-
-
 $lang['client_area'] = "Khu vực";
+$lang['supplier_add_edit_profile'] = "Hồ sơ";
+$lang['supplier_name'] = "Tên nhà cung cấp";
+$lang['als_purchase_orders'] = "Đặt hàng";
+$lang['als_import_goods'] = "Nhập hàng";
+$lang['utilities_menu_name'] = "Tên menu";
+$lang['als_imp_contracts'] = "Hợp đồng mua";
+$lang['als_imp_transfers'] = "Chuyển kho";
+$lang['als_imp_adjustments'] = "Điều chỉnh kho";
+$lang['als_imp_internals'] = "Nội bộ";
+$lang['als_imp_returns'] = "Hàng trả về";
+$lang['als_quotation'] = "Báo giá";
+$lang['als_contracts'] = "Hợp đồng bán";
+$lang['als_sale_orders'] = "Đơn hàng bán";
+$lang['als_quotations'] = "Báo giá";
+$lang['als_deliveries'] = "Giao hàng";
+$lang['als_sale_contracts'] = "Hợp đồng bán";

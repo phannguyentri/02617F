@@ -59,6 +59,7 @@ class Clients extends Admin_controller
     /* Edit client or add new client*/
     public function client($id = '')
     {
+
         if (!has_permission('customers', '', 'view')) {
             if ($id != '' && !is_customer_admin($id)) {
                 access_denied('customers');
@@ -105,7 +106,9 @@ class Clients extends Admin_controller
         if ($id == '') {
             $title = _l('add_new', _l('client_lowercase'));
         } else {
+
             $client = $this->clients_model->get($id);
+
             if (!$client) {
                 blank_page('Client Not Found');
             }
@@ -143,11 +146,13 @@ class Clients extends Admin_controller
                 }
             }
         }
+        
         if (!$this->input->get('group')) {
             $group = 'profile';
         } else {
             $group = $this->input->get('group');
         }
+        
         $data['group']  = $group;
         $data['groups'] = $this->clients_model->get_groups();
         $this->load->model('currencies_model');
@@ -159,7 +164,6 @@ class Clients extends Admin_controller
         $data['contacts']         = $this->clients_model->get_contacts($id);
         $data['sources']  = $this->clients_model->get_source();
         $data['areas']  = $this->clients_model->get_area();
-        
         $data['title'] = $title;
         $this->load->view('admin/clients/client', $data);
     }
@@ -175,7 +179,6 @@ class Clients extends Admin_controller
         $data['contactid']   = $contact_id;
         if ($this->input->post()) {
             $data = $this->input->post();
-            var_dump($data);die();
             unset($data['contactid']);
             if ($contact_id == '') {
                 if (!has_permission('customers', '', 'create')) {

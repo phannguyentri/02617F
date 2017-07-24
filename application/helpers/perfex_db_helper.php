@@ -432,6 +432,7 @@ function logActivity($description, $staffid = NULL)
  */
 function add_main_menu_item($options = array(), $parent = '')
 {
+    var_dump($parent);die;
     $default_options = array(
         'name',
         'permission',

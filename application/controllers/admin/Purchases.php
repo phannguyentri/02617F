@@ -11,6 +11,7 @@ class Purchases extends Admin_controller
     /* Get all invoices in case user go on index page */
     public function index($id = false)
     {
+    
         $this->list_invoices($id);
     }
     /* List all invoices datatables */

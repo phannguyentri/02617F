@@ -135,7 +135,7 @@ class CI_Exceptions {
 			log_message('error', $heading.': '.$page);
 		}
 
-		echo $this->show_error($heading, $message, 'error_404', 404);
+		echo $this->show_error($heading, $message, 'circle', 404);
 		exit(4); // EXIT_UNKNOWN_FILE
 	}
 
@@ -157,11 +157,11 @@ class CI_Exceptions {
 	public function show_error($heading, $message, $template = 'error_general', $status_code = 500)
 	{
 		$templates_path = config_item('error_views_path');
+
 		if (empty($templates_path))
 		{
 			$templates_path = VIEWPATH.'errors'.DIRECTORY_SEPARATOR;
 		}
-
 		if (is_cli())
 		{
 			$message = "\t".(is_array($message) ? implode("\n\t", $message) : $message);
@@ -169,6 +169,7 @@ class CI_Exceptions {
 		}
 		else
 		{
+
 			set_status_header($status_code);
 			$message = '<p>'.(is_array($message) ? implode('</p><p>', $message) : $message).'</p>';
 			$template = 'html'.DIRECTORY_SEPARATOR.$template;
