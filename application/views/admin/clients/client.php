@@ -76,6 +76,7 @@
 <?php init_tail(); ?>
 <script type="text/javascript">
   // others script write here
+  $('.client-form').validate({});
   function addRules(rulesObj){
     for (var item in rulesObj){
       $('#'+item).rules('add',rulesObj[item]);  

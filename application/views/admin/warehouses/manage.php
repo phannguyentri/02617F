@@ -61,11 +61,37 @@
         <?php echo form_close(); ?>
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<div class="modal fade lead-modal" id="detail" tabindex="-1" role="dialog"  >
+    <div class="modal-dialog" style="width: 70%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">
+                    <span class="edit-title"><?php echo _l('warehouse_info'); ?></span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <?php init_tail(); ?>
 <script>
-
+    function view_detail(id) {
+        $.get('<?php echo admin_url("warehouses/modal_detail/")?>' + id, (data) => {
+            $('#detail .modal-body .row').html(data.body);
+            $('#detail .modal-title').html(data.header);
+        }, 'json');
+        $('#detail').modal('show');
+    }
     function view_init_department(id)
     {
+        
+        
+        return ;
         $('#type').modal('show');
         $('.add-title').addClass('hide');
         jQuery.ajax({

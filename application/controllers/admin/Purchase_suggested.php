@@ -43,8 +43,6 @@ class Purchase_suggested extends Admin_controller
         else {
             $data['title'] = _l('purchase_suggested_edit_heading');
             $data['item'] = $this->purchase_suggested_model->get($id);
-            // var_dump($data['item']);die();
-            
         }
         
         $this->load->view('admin/purchase_suggested/detail', $data);

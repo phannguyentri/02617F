@@ -48,7 +48,7 @@ class Warehouses extends Admin_controller
         ));
 
     }
-     public function add_warehouse()
+    public function add_warehouse()
     {
         if ($this->input->post()) {
             $message = '';
@@ -96,13 +96,32 @@ class Warehouses extends Admin_controller
         }
         die;
     }
-
-
-
     public function get_row_warehouse($id)
     {
         echo json_encode($this->warehouse_model->get_row_warehouse($id));
     }
+    public function detail($id) {
+        $warehouse = $this->warehouse_model->get_full($id);
 
+        if( $id != '' && $warehouse) {
+            
+            $data['title'] = _l('purchase_suggested_edit_heading');
+            $data['warehouse'] = $warehouse;
+            $this->load->view('admin/warehouses/detail', $data);
+        }
+        else {
+            redirect(admin_url('warehouses'));
+        }
+    }
+    public function modal_detail($id) {
+        $warehouse = $this->warehouse_model->get_full($id);
 
+        if( $id != '' && $warehouse) {
+            $result = new stdClass();
+            $data['warehouse'] = $warehouse;
+            $result->body = $this->load->view('admin/warehouses/modal_detail', $data, TRUE);
+            $result->header = _l('warehouse_info') . " " . $warehouse->warehouse;
+            exit(json_encode($result));
+        }
+    }
 }

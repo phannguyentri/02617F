@@ -3571,6 +3571,8 @@ $lang['item_product_features'] = "Đặc tính sản phẩm";
 $lang['item_category']         = "Danh mục sản phẩm";
 $lang['item_category_level']   = "Danh mục cấp ";
 $lang['item_quantity']         = "Số lượng";
+$lang['item_remaining_amount'] = "Số lượng tồn";
+$lang['item_remaining_value']  = "Giá trị tồn";
 $lang['minimum_quantity']      = "Số lượng tối thiểu";
 $lang['maximum_quantity']      = "Số lượng tối đa";
 
@@ -3646,3 +3648,6 @@ $lang['inactive_active_suppliers']              = "Nhà cung cấp không hoạt
 
 
 $lang['client_area'] = "Khu vực";
+$lang['warehouse_name'] = "Tên kho";
+$lang['warehouse_code'] = "Mã kho";
+$lang['warehouse_info'] = "Chi tiết kho";
