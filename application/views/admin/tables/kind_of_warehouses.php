@@ -3,15 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 $aColumns     = array(
-    'warehouseid',
-    'code',
-    'warehouse',
-    'address',
-    'phone',
-
+    'id',
+    'name'
 );
-$sIndexColumn = "warehouseid";
-$sTable       = 'tblwarehouses';
+$sIndexColumn = "id";
+$sTable       = 'tbl_kindof_warehouse';
 $where        = array(
 //    'AND id_lead="' . $rel_id . '"'
 );
@@ -38,7 +34,7 @@ foreach ($rResult as $aRow) {
         }
         $row[] = $_data;
     }
-    if ($aRow['creator'] == get_staff_user_id() || is_admin()) {
+    if (is_admin()) {
         $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_department(' . $aRow['warehouseid'] . '); return false;"><i class="fa fa-pencil"></i> Sửa</a>';
         $_data.= '<a href="#" class="btn btn-default btn-icon" onclick="view_detail(' . $aRow['warehouseid'] . '); return false;"><i class="fa fa-eye"></i> Chi tiết</a>';
 
