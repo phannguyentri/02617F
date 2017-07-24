@@ -7,6 +7,21 @@ class Warehouse_model extends CRM_Model
     {
         parent::__construct();
     }
+    function get_full($id_warehouse) {
+        if(is_numeric($id_warehouse)) {
+            $this->db->where('warehouseid', $id_warehouse);
+            $warehouse = $this->db->get('tblwarehouses')->row();
+            if($warehouse) {
+                $this->db->from('tblwarehouses_products');
+                $this->db->where('warehouse_id', $warehouse->warehouseid);
+                $this->db->join('tblitems', 'product_id = tblitems.id' ,'left');
+                $warehouse->detail = $this->db->get()->result();
+
+                return $warehouse;
+            }
+        }
+        return false;
+    }
     /**
      * Get task by id
      * @param  mixed $id task id

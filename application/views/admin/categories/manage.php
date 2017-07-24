@@ -74,6 +74,8 @@
 //                if($data!="")
                 {
                     $('#category').val(json.category);
+                    $('#category_parent').selectpicker("val", json.category_parent);
+
                     jQuery('#id_type').prop('action',admin_url+'categories/update_category/'+id);
                 }
             }

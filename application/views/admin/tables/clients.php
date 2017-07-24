@@ -139,7 +139,6 @@ $output  = $result['output'];
 $rResult = $result['rResult'];
 
 foreach ($rResult as $aRow) {
-
     $row = array();
 
     for ($i = 0; $i < count($aColumns); $i++) {
