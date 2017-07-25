@@ -3646,7 +3646,6 @@ $lang['suppliers_summary_total']              = "Tổng số nhà cung cấp";
 $lang['active_suppliers']              = "Nhà cung cấp đang hoạt động";
 $lang['inactive_active_suppliers']              = "Nhà cung cấp không hoạt động";
 $lang['client_area'] = "Khu vực";
-<<<<<<< HEAD
 $lang['supplier_add_edit_profile'] = "Hồ sơ";
 $lang['supplier_name'] = "Tên nhà cung cấp";
 $lang['als_purchase_orders'] = "Đặt hàng";
@@ -3663,8 +3662,8 @@ $lang['als_sale_orders'] = "Đơn hàng bán";
 $lang['als_quotations'] = "Báo giá";
 $lang['als_deliveries'] = "Giao hàng";
 $lang['als_sale_contracts'] = "Hợp đồng bán";
-=======
+
 $lang['warehouse_name'] = "Tên kho";
-$lang['warehouse_code'] = "Mã kho";
+$lang['warehouse_code'] = "Mã kho";                
 $lang['warehouse_info'] = "Chi tiết kho";
->>>>>>> 9c73c1325ef041bc1f311b2eef5f4f5ff5917caa
+$lang['supplier_profile_details'] = "Chi tiết nhà cung cấp";
