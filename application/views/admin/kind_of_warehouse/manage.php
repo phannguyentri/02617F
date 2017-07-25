@@ -13,12 +13,9 @@
                         <div class="clearfix"></div>
                         <?php render_datatable(array(
                             _l('id'),
-                            _l('Mã kho'),
-                            _l('Tên kho'),
-                            _l('Địa chỉ'),
-                            _l('Điện thoại'),
-                            _l('options')
-                        ),'warehouses'); ?>
+                            _l('Tên loại kho'),
+                            _l('options'),
+                        ),'kind-of-warehouses'); ?>
                     </div>
                 </div>
             </div>
@@ -27,7 +24,7 @@
 </div>
 <div class="modal fade" id="type" tabindex="-1" role="dialog">
     <div class="modal-dialog">
-        <?php echo form_open(admin_url('warehouses/add_warehouse'),array('id'=>'id_type')); ?>
+        <?php echo form_open(admin_url('kind_of_warehouses/add'),array('id'=>'id_type')); ?>
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -80,20 +77,13 @@
 </div><!-- /.modal -->
 <?php init_tail(); ?>
 <script>
-    function view_detail(id) {
-        $.get('<?php echo admin_url("warehouses/modal_detail/")?>' + id, (data) => {
-            $('#detail .modal-body .row').html(data.body);
-            $('#detail .modal-title').html(data.header);
-        }, 'json');
-        $('#detail').modal('show');
-    }
     function view_init_department(id)
     {
         $('#type').modal('show');
         $('.add-title').addClass('hide');
         jQuery.ajax({
             type: "post",
-            url:admin_url+"warehouses/get_row_warehouse/"+id,
+            url:admin_url+"kind_of_warehouses/get_row/"+id,
             data: '',
             cache: false,
             success: function (data) {
@@ -104,14 +94,14 @@
                     $('#warehouse').val(json.warehouse);
                     $('#address').val(json.address);
                     $('#phone').val(json.phone);
-                    jQuery('#id_type').prop('action',admin_url+'warehouses/update_warehouse/'+id);
+                    jQuery('#id_type').prop('action',admin_url+'kind_of_warehouses/update/'+id);
                 }
             }
         });
     }
 
     $(function(){
-        initDataTable('.table-warehouses', window.location.href, [1], [1]);
+        initDataTable('.table-kind-of-warehouses', window.location.href, [1], [1]);
         _validate_form($('form'),{code:'required',warehouse:'required',address:'required',phone:'required'},manage_contract_types);
         $('#type').on('hidden.bs.modal', function(event) {
             $('#additional').html('');
@@ -159,7 +149,7 @@
         $('#type').modal('show');
         $('.edit-title').addClass('hide');
         jQuery('#category').val('');
-        jQuery('#id_type').prop('action',admin_url+'warehouses/add_warehouse');
+        jQuery('#id_type').prop('action',admin_url+'kind_of_warehouses/add');
     }
     function edit_type(invoker,id){
         var name = $(invoker).data('name');
