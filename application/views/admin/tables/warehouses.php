@@ -8,7 +8,7 @@ $aColumns     = array(
     'warehouse',
     'address',
     'phone',
-
+    '(select name from tbl_kindof_warehouse a where tblwarehouses.kindof_warehouse = a.id) as kind_of_warehouse',
 );
 $sIndexColumn = "warehouseid";
 $sTable       = 'tblwarehouses';
@@ -35,6 +35,9 @@ foreach ($rResult as $aRow) {
         $_data = $aRow[$aColumns[$i]];
         if ($aColumns[$i] == 'tblroles.id_role') {
             $_data=$aRow['tblroles.name'];
+        }
+        if ($aColumns[$i] == '(select name from tbl_kindof_warehouse a where tblwarehouses.kindof_warehouse = a.id) as kind_of_warehouse') {
+            $_data = $aRow['kind_of_warehouse'];
         }
         $row[] = $_data;
     }

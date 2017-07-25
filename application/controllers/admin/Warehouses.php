@@ -7,6 +7,7 @@ class Warehouses extends Admin_controller
         parent::__construct();
         $this->load->model('projects_model');
         $this->load->model('warehouse_model');
+        $this->load->model('kind_of_warehouse_model');
     }
     /* Open also all taks if user access this /tasks url */
     public function index()
@@ -26,7 +27,8 @@ class Warehouses extends Admin_controller
         }
         $data['roles']=$this->warehouse_model->get_roles();
         // var_dump($data['roles']);die();
-        $data['title'] = _l('Danh mục sản phẩm');
+        $data['title'] = _l('Kho hàng');
+        $data['kind_of_warehouse'] = $this->kind_of_warehouse_model->get_array_list();
         $this->load->view('admin/warehouses/manage', $data);
     }
     /* Get task data in a right pane */

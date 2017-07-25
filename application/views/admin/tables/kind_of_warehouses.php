@@ -35,10 +35,9 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     if (is_admin()) {
-        $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_department(' . $aRow['warehouseid'] . '); return false;"><i class="fa fa-pencil"></i> Sửa</a>';
-        $_data.= '<a href="#" class="btn btn-default btn-icon" onclick="view_detail(' . $aRow['warehouseid'] . '); return false;"><i class="fa fa-eye"></i> Chi tiết</a>';
+        $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_department(' . $aRow['id'] . '); return false;"><i class="fa fa-pencil"></i> Sửa</a>';
 
-        $_data.= icon_btn('warehouses/delete_warehouse/'. $aRow['warehouseid'] , 'remove', 'btn-danger delete-reminder');
+        $_data.= icon_btn('kind_of_warehouse/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-reminder');
         
         
         $row[] = $_data;

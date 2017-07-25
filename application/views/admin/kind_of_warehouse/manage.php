@@ -5,7 +5,9 @@
             <div class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body _buttons">
-                        <a href="#" onclick="new_warehouse(); return false;" class="btn btn-info pull-left display-block"><?php echo _l('Thêm kho mới'); ?></a>
+                        <a href="#" onclick="new_warehouse(); return false;" class="btn mright5 btn-info pull-left display-block"><?php echo _l('Thêm loại kho mới'); ?></a>
+
+                        <a href="<?php echo admin_url() . 'warehouses'?> " class="btn btn-info pull-left display-block"><?php echo _l('Trở lại Kho'); ?></a>
                     </div>
                 </div>
                 <div class="panel_s">
@@ -29,24 +31,14 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">
-                    <span class="edit-title"><?php echo _l('Sửa kho sản phẩm'); ?></span>
-                    <span class="add-title"><?php echo _l('Thêm kho sản phẩm mới'); ?></span>
+                    <span class="edit-title"><?php echo _l('Sửa loại kho'); ?></span>
+                    <span class="add-title"><?php echo _l('Thêm loại kho'); ?></span>
                 </h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <div id="additional"></div>
-                        <?php echo render_input('code','Mã kho'); ?>
-                    </div>
-                    <div class="col-md-12">
-                        <?php echo render_input('warehouse','Tên kho'); ?>
-                    </div>
-                    <div class="col-md-12">
-                        <?php echo render_input('address','Địa chỉ'); ?>
-                    </div>
-                    <div class="col-md-12">
-                        <?php echo render_input('phone','Điện thoại'); ?>
+                        <?php echo render_input('name','Tên loại kho'); ?>
                     </div>
                 </div>
             </div>
@@ -83,18 +75,15 @@
         $('.add-title').addClass('hide');
         jQuery.ajax({
             type: "post",
-            url:admin_url+"kind_of_warehouses/get_row/"+id,
+            url:admin_url+"kind_of_warehouse/get_row/"+id,
             data: '',
             cache: false,
             success: function (data) {
                 var json = JSON.parse(data);
 //                if($data!="")
                 {
-                    $('#code').val(json.code);
-                    $('#warehouse').val(json.warehouse);
-                    $('#address').val(json.address);
-                    $('#phone').val(json.phone);
-                    jQuery('#id_type').prop('action',admin_url+'kind_of_warehouses/update/'+id);
+                    $('#name').val(json.name);
+                    jQuery('#id_type').prop('action',admin_url+'kind_of_warehouse/update/'+id);
                 }
             }
         });
@@ -139,7 +128,7 @@
             if(response.success == true){
                 alert_float('success',response.message);
             }
-            $('.table-warehouses').DataTable().ajax.reload();
+            $('.table-kind-of-warehouses').DataTable().ajax.reload();
             $('#type').modal('hide');
         });
         return false;
@@ -149,7 +138,7 @@
         $('#type').modal('show');
         $('.edit-title').addClass('hide');
         jQuery('#category').val('');
-        jQuery('#id_type').prop('action',admin_url+'kind_of_warehouses/add');
+        jQuery('#id_type').prop('action',admin_url+'kind_of_warehouse/add');
     }
     function edit_type(invoker,id){
         var name = $(invoker).data('name');
