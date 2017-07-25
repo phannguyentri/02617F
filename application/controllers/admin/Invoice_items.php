@@ -366,7 +366,7 @@ class Invoice_items extends Admin_controller
                                 
                                 $objReader = PHPExcel_IOFactory::createReader($inputFileType);
                                 
-                                $objReader->setReadDataOnly(true);
+                                // $objReader->setReadDataOnly(true);
                                 
                                 /**  Load $inputFileName to a PHPExcel Object  **/
                             $objPHPExcel =           $objReader->load($newFilePath);
@@ -500,6 +500,9 @@ class Invoice_items extends Admin_controller
                                             $reason .= "Không tìm thấy " . $column_value[0] . " ".$category_name ."<br />";
                                             $data_ok = false;
                                         }
+                                    }
+                                    if($column_key == 'release_date' || $column_key == 'date_of_removal_of_sample') {
+                                        $data[$column_key] = date("Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($row[$stt]));
                                     }
                                     if($data[$column_key] == '') {
                                         $data[$column_key] = $row[$stt];

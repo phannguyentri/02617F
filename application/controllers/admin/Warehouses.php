@@ -8,6 +8,7 @@ class Warehouses extends Admin_controller
         $this->load->model('projects_model');
         $this->load->model('warehouse_model');
         $this->load->model('kind_of_warehouse_model');
+        $this->load->model('category_model');
     }
     /* Open also all taks if user access this /tasks url */
     public function index()
@@ -15,20 +16,29 @@ class Warehouses extends Admin_controller
 
         $this->list_warehouses();
     }
+    public function get_all_products($category_id) {
+        if (!is_admin()) {
+            access_denied('contracts');
+        }
+        if ($this->input->is_ajax_request()) {
+            exit(json_encode($this->warehouse_model->get_products($category_id)));
+        }
+    } 
     /* List all tasks */
     public function list_warehouses()
     {
         if (!is_admin()) {
             access_denied('contracts');
         }
-        // var_dump("expression");die();
         if ($this->input->is_ajax_request()) {
             $this->perfex_base->get_table_data('warehouses');
         }
         $data['roles']=$this->warehouse_model->get_roles();
-        // var_dump($data['roles']);die();
         $data['title'] = _l('Kho hàng');
         $data['kind_of_warehouse'] = $this->kind_of_warehouse_model->get_array_list();
+        $data['categories'] = [];
+        $this->category_model->get_by_id(0,$data['categories']);
+
         $this->load->view('admin/warehouses/manage', $data);
     }
     /* Get task data in a right pane */
@@ -115,7 +125,21 @@ class Warehouses extends Admin_controller
             redirect(admin_url('warehouses'));
         }
     }
+    // public function modal_detail($id) {
+    //     $warehouse = $this->warehouse_model->get_full($id);
+
+    //     if( $id != '' && $warehouse) {
+    //         $result = new stdClass();
+    //         $data['warehouse'] = $warehouse;
+    //         $result->body = $this->load->view('admin/warehouses/modal_detail', $data, TRUE);
+    //         $result->header = _l('warehouse_info') . " " . $warehouse->warehouse;
+    //         exit(json_encode($result));
+    //     }
+    // }
     public function modal_detail($id) {
+        if($this->input->is_ajax_request() && !$this->input->get('get')) {
+            $this->perfex_base->get_table_data('warehouse_detail');
+        }
         $warehouse = $this->warehouse_model->get_full($id);
 
         if( $id != '' && $warehouse) {

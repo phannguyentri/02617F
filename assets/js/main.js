@@ -561,6 +561,7 @@ $(function() {
     var not_sortable_leads = (headers_leads.length - 1);
     initDataTable('.table-leads', admin_url + 'leads?table_leads=true', [not_sortable_leads, 0], [not_sortable_leads, 0], LeadsServerParams, [10, 'DESC']);
     $.each(LeadsServerParams, function(i, obj) {
+        
         $('select' + obj).on('change', function() {
             $('.table-leads').DataTable().ajax.reload();
         });

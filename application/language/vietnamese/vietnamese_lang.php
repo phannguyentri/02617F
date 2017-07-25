@@ -3664,3 +3664,4 @@ $lang['als_deliveries'] = "Giao hàng";
 $lang['als_sale_contracts'] = "Hợp đồng bán";
 
 
+$lang['warehouse_info'] = "Thông tin kho";

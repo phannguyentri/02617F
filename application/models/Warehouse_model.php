@@ -7,6 +7,10 @@ class Warehouse_model extends CRM_Model
     {
         parent::__construct();
     }
+    public function get_products($id_category) {
+        $this->db->where('category_id', $id_category);
+        return $this->db->get('tblitems')->result_array();
+    }
     function get_full($id_warehouse) {
         if(is_numeric($id_warehouse)) {
             $this->db->where('warehouseid', $id_warehouse);
