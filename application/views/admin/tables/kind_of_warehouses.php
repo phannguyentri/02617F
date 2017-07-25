@@ -36,7 +36,6 @@ foreach ($rResult as $aRow) {
     }
     if (is_admin()) {
         $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_department(' . $aRow['warehouseid'] . '); return false;"><i class="fa fa-pencil"></i> Sửa</a>';
-        $_data.= '<a href="#" class="btn btn-default btn-icon" onclick="view_detail(' . $aRow['warehouseid'] . '); return false;"><i class="fa fa-eye"></i> Chi tiết</a>';
 
         $_data.= icon_btn('warehouses/delete_warehouse/'. $aRow['warehouseid'] , 'remove', 'btn-danger delete-reminder');
         

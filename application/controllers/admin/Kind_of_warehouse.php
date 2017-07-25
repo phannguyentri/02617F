@@ -2,6 +2,9 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 class Kind_of_warehouse extends Admin_controller
 {
+    public function __construct() {
+        $this->load->model('kind_of_warehouse_model');
+    }
     public function index() {
         if (!is_admin()) {
             access_denied('contracts');
@@ -13,6 +16,14 @@ class Kind_of_warehouse extends Admin_controller
         // var_dump($data['roles']);die();
         $data['title'] = _l('Loại kho');
         $this->load->view('admin/kind_of_warehouse/manage', $data);
+    }
+    public function get_row($id) {
+        $item = $this->kind_of_warehouse_model->get_row($id);
+        if($item)
+            exit(json_encode($item));
+        else {
+            return false;
+        }
     }
     public function add() {
         if (!is_admin()) {

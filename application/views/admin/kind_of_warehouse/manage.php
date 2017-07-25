@@ -29,24 +29,18 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">
-                    <span class="edit-title"><?php echo _l('Sửa kho sản phẩm'); ?></span>
-                    <span class="add-title"><?php echo _l('Thêm kho sản phẩm mới'); ?></span>
+                    <span class="edit-title"><?php echo _l('Sửa loại kho'); ?></span>
+                    <span class="add-title"><?php echo _l('Thêm loại kho'); ?></span>
                 </h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
                         <div id="additional"></div>
-                        <?php echo render_input('code','Mã kho'); ?>
+                        <?php echo render_input('code','id'); ?>
                     </div>
                     <div class="col-md-12">
-                        <?php echo render_input('warehouse','Tên kho'); ?>
-                    </div>
-                    <div class="col-md-12">
-                        <?php echo render_input('address','Địa chỉ'); ?>
-                    </div>
-                    <div class="col-md-12">
-                        <?php echo render_input('phone','Điện thoại'); ?>
+                        <?php echo render_input('name','Tên loại kho'); ?>
                     </div>
                 </div>
             </div>
@@ -91,9 +85,7 @@
 //                if($data!="")
                 {
                     $('#code').val(json.code);
-                    $('#warehouse').val(json.warehouse);
-                    $('#address').val(json.address);
-                    $('#phone').val(json.phone);
+                    $('#name').val(json.name);
                     jQuery('#id_type').prop('action',admin_url+'kind_of_warehouses/update/'+id);
                 }
             }

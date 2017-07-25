@@ -81,6 +81,8 @@
 <?php init_tail(); ?>
 <script>
     function view_detail(id) {
+        $('#detail .modal-body .row').html("");
+        $('#detail .modal-title').html("<span class=\"edit-title\"><?php echo _l('warehouse_info'); ?></span>");
         $.get('<?php echo admin_url("warehouses/modal_detail/")?>' + id, (data) => {
             $('#detail .modal-body .row').html(data.body);
             $('#detail .modal-title').html(data.header);
