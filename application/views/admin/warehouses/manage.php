@@ -5,7 +5,8 @@
             <div class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body _buttons">
-                        <a href="#" onclick="new_warehouse(); return false;" class="btn btn-info pull-left display-block"><?php echo _l('Thêm kho mới'); ?></a>
+                        <a href="#" onclick="new_warehouse(); return false;" class="btn mright5 btn-info pull-left display-block"><?php echo _l('Thêm kho mới'); ?></a>
+                        <a href="<?php echo admin_url() . "kind_of_warehouse" ?>" class="btn mright5 btn-info pull-left display-block"><?php echo _l('Loại kho'); ?></a>
                     </div>
                 </div>
                 <div class="panel_s">
@@ -17,6 +18,7 @@
                             _l('Tên kho'),
                             _l('Địa chỉ'),
                             _l('Điện thoại'),
+                            _l('Loại kho'),
                             _l('options')
                         ),'warehouses'); ?>
                     </div>
@@ -50,6 +52,11 @@
                     </div>
                     <div class="col-md-12">
                         <?php echo render_input('phone','Điện thoại'); ?>
+                    </div>
+                    <div class="col-md-12">
+                    <?php 
+                        echo render_select('kindof_warehouse', $kind_of_warehouse, array('id', 'name'), 'Loại kho');
+                    ?>
                     </div>
                 </div>
             </div>
@@ -106,6 +113,7 @@
                     $('#warehouse').val(json.warehouse);
                     $('#address').val(json.address);
                     $('#phone').val(json.phone);
+                    $('#kindof_warehouse').selectpicker('val', json.kindof_warehouse);
                     jQuery('#id_type').prop('action',admin_url+'warehouses/update_warehouse/'+id);
                 }
             }
