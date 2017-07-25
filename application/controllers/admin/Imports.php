@@ -5,7 +5,7 @@ class Imports extends Admin_controller
     function __construct()
     {
         parent::__construct();
-        // $this->load->model('imports_model');
+        $this->load->model('imports_model');
     }
     public function index() {
         list_warehouses_products();
@@ -17,17 +17,40 @@ class Imports extends Admin_controller
     public function list_warehouses_products($warehouse_id = false, $product_id = false)
     {
         if ($this->input->is_ajax_request()) {
-            $this->perfex_base->get_table_data('warehouses_products', array(
-                'warehouse_id' => $warehouse_id,
-                'product_id' => $product_id
-            ));
+            $this->perfex_base->get_table_data('warehouses_products');
+            // , array(
+            //     'warehouse_id' => $warehouse_id,
+            //     'product_id' => $product_id
+            // )
         }
     }
 
     public function imp_adjustment() {
+        if ($this->input->is_ajax_request()) {
+            $this->perfex_base->get_table_data('warehouses_products');
+        }
         $data['title'] = _l('Điều chỉnh kho hàng');
-
         $this->load->view('admin/imports/adjustment', $data);
+    }
+
+    /* Get task data in a right pane */
+    public function delete_warehouses_adjustment($id)
+    {
+        if (!$id) {
+            die('Không tìm thấy mục nào');
+        }
+        $success    = $this->imports_model->delete_warehouses_adjustment($id);
+        $alert_type = 'warning';
+        $message    = _l('Không thể xóa dữ liệu');
+        if ($success) {
+            $alert_type = 'success';
+            $message    = _l('Xóa dữ liệu thành công');
+        }
+        echo json_encode(array(
+            'alert_type' => $alert_type,
+            'message' => $message
+        ));
+
     }
 
     public function warehouses_overview() {

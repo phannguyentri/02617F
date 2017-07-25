@@ -3,21 +3,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
 $aColumns     = array(
-    'unitid',
-    'unit',
-
+    '1',
+    'warehouse',
+    '(select name from tbl_kindof_warehouse where tbl_kindof_warehouse.id=tblwarehouses_products.id) as kindof_ware_house',
+    'tblshipments.shipment',
+    'tblracks.rack',
+    '(SELECT name FROM tblitems WHERE tblitems.id=product_id)',
+    'tblwarehouses_products.product_quantity'
 );
-$sIndexColumn = "unitid";
-$sTable       = 'tblunits';
+$sIndexColumn = "id";
+$sTable       = 'tblwarehouses_products';
 $where        = array(
 //    'AND id_lead="' . $rel_id . '"'
 );
 $join         = array(
-    // 'LEFT JOIN tblroles  ON tblroles.roleid=tbldepartment.id_role'
+    'LEFT JOIN tblwarehouses  ON tblwarehouses.warehouseid=tblwarehouses_products.warehouse_id',
+    'LEFT JOIN tblshipments  ON tblshipments.shipmentid=tblwarehouses_products.shipment',
+    'LEFT JOIN tblracks  ON tblracks.rackid=tblwarehouses_products.rack',
+    // 'LEFT JOIN tblitems  ON tblitems.id=tblwarehouses_products.product_id',
 );
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where, array(
-    // 'tblroles.name',
-    // 'tblroles.roleid'
+    'id'
 ));
 $output       = $result['output'];
 $rResult      = $result['rResult'];
@@ -33,11 +39,17 @@ foreach ($rResult as $aRow) {
         if ($aColumns[$i] == 'tblroles.id_role') {
             $_data=$aRow['tblroles.name'];
         }
+        if ($aColumns[$i] == '1') {
+            $_data=$j;
+        }
+        if($aColumns[$i] == '(select name from tbl_kindof_warehouse where tbl_kindof_warehouse.id=tblwarehouses_products.id) as kindof_ware_house') {
+            $_data = $aRow['kindof_ware_house'];
+        }
         $row[] = $_data;
     }
-    if ($aRow['creator'] == get_staff_user_id() || is_admin()) {
-        $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_department(' . $aRow['unitid'] . '); return false;"><i class="fa fa-eye"></i></a>';
-        $row[] =$_data.icon_btn('units/delete_unit/'. $aRow['unitid'] , 'remove', 'btn-danger delete-reminder');
+    if (is_admin()) {
+        $_data = '<a href="#" class="btn btn-default btn-icon" onclick="view_init_adjustment(' . $aRow['id'] . '); return false;"><i class="fa fa-edit"></i></a>';
+        $row[] =$_data.icon_btn('imports/delete_warehouses_adjustment/'. $aRow['id'] , 'remove', 'btn-danger delete-remind');
     } else {
         $row[] = '';
     }
