@@ -3662,3 +3662,11 @@ $lang['als_sale_orders'] = "Đơn hàng bán";
 $lang['als_quotations'] = "Báo giá";
 $lang['als_deliveries'] = "Giao hàng";
 $lang['als_sale_contracts'] = "Hợp đồng bán";
+<<<<<<< HEAD
+=======
+
+$lang['warehouse_name'] = "Tên kho";
+$lang['warehouse_code'] = "Mã kho";                
+$lang['warehouse_info'] = "Chi tiết kho";
+$lang['supplier_profile_details'] = "Chi tiết nhà cung cấp";
+>>>>>>> eed071d28134edef2ace12666732323f925cd69c
