@@ -145,6 +145,23 @@ class Warehouses extends Admin_controller
         if( $id != '' && $warehouse) {
             $result = new stdClass();
             $data['warehouse'] = $warehouse;
+            $data['categories'] = [];
+            $this->category_model->get_by_id(0,$data['categories']);
+            $data['products_in_warehouse'] = $this->warehouse_model->get_products_in_warehouse($id);
+            $product_category = array();
+            $product_outof_date = 0;
+            $product_low_quantity = 0;
+            
+            foreach($data['products_in_warehouse'] as $key=>$value) {
+                if(!in_array($value['category_id'], $product_category)) {
+                    array_push($product_category, $value['category_id']);
+                }
+                
+            }
+            $data['product_category'] = $product_category;
+            $data['product_outof_date'] = $product_outof_date;
+            $data['product_low_quantity'] = $product_low_quantity;
+
             $result->body = $this->load->view('admin/warehouses/modal_detail', $data, TRUE);
             $result->header = _l('warehouse_info') . " " . $warehouse->warehouse;
             exit(json_encode($result));

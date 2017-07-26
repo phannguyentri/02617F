@@ -6,8 +6,8 @@
                 <div class="panel_s">
                     <div class="panel-body">
                         <h3 class="text-muted _total">
-                            0         </h3>
-                        <span class="text-warning">Tổng danh mục</span>
+                            <?php echo count($product_category) ?>         </h3>
+                        <span class="text-warning">Số danh mục chứa sản phẩm</span>
                     </div>
                 </div>
             </div>
@@ -15,7 +15,7 @@
                 <div class="panel_s">
                     <div class="panel-body">
                         <h3 class="text-muted _total">
-                            0         </h3>
+                            <?php echo count($products_in_warehouse) ?>         </h3>
                         <span class="text-danger">Tổng sản phẩm</span>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                 <div class="panel_s">
                     <div class="panel-body">
                         <h3 class="text-muted _total">
-                            0         </h3>
+                            <?php echo $product_outof_date ?>         </h3>
                         <span class="text-success">Sản phẩm tồn quá hạn</span>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                 <div class="panel_s">
                     <div class="panel-body">
                         <h3 class="text-muted _total">
-                            0         </h3>
+                            <?php echo $product_low_quantity ?>         </h3>
                         <span class="text-primary">Sản phẩm dưới định mức</span>
                     </div>
                 </div>
@@ -42,11 +42,11 @@
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <?php 
-                    echo render_select('filter_kindof_warehouse', array(), array('id', 'name'), 'als_list');
+                    echo render_select('detail_categories', $categories, array('id', 'category'), 'als_list');
                 ?>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                <?php echo render_select('product_category', array(), array('id', 'category'), 'als_products'); ?>
+                <?php echo render_select('detail_products', $products_in_warehouse, array('id', 'name'), 'als_products'); ?>
             </div>
         </div>
         <?php render_datatable(array(

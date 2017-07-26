@@ -19,7 +19,18 @@ $join             = array(
     );
 $additionalSelect = array(
     );
-$result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, array(), $additionalSelect);
+$where = array();
+if($this->_instance->input->post()) {
+    $filter_detail_categories = $this->_instance->input->post('detail_categories');
+    if(is_numeric($filter_detail_categories)) {
+        array_push($where, 'AND tblitems.category_id='.$filter_detail_categories);
+    }
+    $filter_detail_products = $this->_instance->input->post('detail_products');
+    if(is_numeric($filter_detail_products)) {
+        array_push($where, 'AND tblwarehouses_products.product_id='.$filter_detail_products);
+    }
+}
+$result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect);
 $output           = $result['output'];
 $rResult          = $result['rResult'];
 

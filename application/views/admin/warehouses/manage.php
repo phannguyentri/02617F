@@ -110,8 +110,19 @@
         $.get('<?php echo admin_url("warehouses/modal_detail/")?>' + id + '?get=true', (data) => {
             $('#detail .modal-body .row').html(data.body);
             $('#detail .modal-title').html(data.header);
-            initDataTable('.table-warehouse-detail', admin_url + 'warehouses/modal_detail/' + id, [1], [1]);
+            let filterList_detail = {
+                "detail_categories" : "[name='detail_categories']",
+                "detail_products"  : "[name='detail_products']",
+            }
+            initDataTable('.table-warehouse-detail', admin_url + 'warehouses/modal_detail/' + id, [1], [1], filterList_detail);
+            $.each(filterList_detail, (index, obj) => {   
+                $('select' + obj).on('change', () => {
+                    
+                    $('.table-warehouse-detail').DataTable().ajax.reload();
+                });
+            });
             init_selectpicker();
+
         }, 'json');
         $('#detail').modal('show');
     }
