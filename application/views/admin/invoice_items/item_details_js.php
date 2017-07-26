@@ -7,11 +7,14 @@
     
 $(document).ready(()=>{
     var createSelect = (id_category = 0, select) => {
+        if(id_category == 0 || typeof(id_category) == 'undefined' || typeof(select) == 'undefined') {
+            return;
+        }
         $.ajax({
             url: '<?php echo admin_url('invoice_items/get_categories/') ?>' + id_category,
             dataType: 'json',
         }).done((data)=>{
-            console.log(select);
+            select.parent().parent().show();
             select.find('option').remove();
             select.append('<option value></option>');
             $.each(data, (index,value) => {
@@ -20,31 +23,18 @@ $(document).ready(()=>{
             select.selectpicker('refresh');
         });
     };
-    $('select[name=category_id\\[\\]]:first').on('change', (e)=>{  
+    $('select[name=category_id\\[\\]]').on('change', (e)=>{  
         // 
-        $('select[name=category_id\\[\\]]:last').find('option:gt(0)').remove();
-        $('select[name=category_id\\[\\]]:last').selectpicker('refresh');
+        $(e.currentTarget).parents('div.form-group').nextAll().find('select[name=category_id\\[\\]] option:gt(0)').remove();
+        $(e.currentTarget).parents('div.form-group').nextAll().find('select[name=category_id\\[\\]]').selectpicker('refresh');
         // Hide
-        $('select[name=category_id\\[\\]]:last').parent().parent().hide();
-        if($(e.currentTarget).val() == 0 || $(e.currentTarget).val() == ''){
-            $('select[name=category_id\\[\\]]:odd').parent().parent().hide(); 
-        } else {
-            $('select[name=category_id\\[\\]]:odd').parent().parent().show();
-        }
-        createSelect($('select[name=category_id\\[\\]]:first').val(), $('select[name=category_id\\[\\]]:odd'));
-    });
-    $('select[name=category_id\\[\\]]:odd').on('change', (e)=>{  
-        createSelect($('select[name=category_id\\[\\]]:odd').val(), $('select[name=category_id\\[\\]]:last'));
-        if($(e.currentTarget).val() == 0 || $(e.currentTarget).val() == '')
-            $('select[name=category_id\\[\\]]:last').parent().parent().hide();
+        if($(e.currentTarget).val() != '' && $(e.currentTarget).val() != 0)
+            $(e.currentTarget).parents('div.form-group').next().nextAll().find('select[name=category_id\\[\\]]').parents('div.form-group').hide();
         else
-            $('select[name=category_id\\[\\]]:last').parent().parent().show();
+            $(e.currentTarget).parents('div.form-group').nextAll().find('select[name=category_id\\[\\]]').parents('div.form-group').hide();
+        
+        createSelect($(e.currentTarget).val(), $(e.currentTarget).parents('div.form-group').next().find('select[name=category_id\\[\\]]'));
     });
-    createSelect($('select[name=category_id\\[\\]]:first').val(), $('select[name=category_id\\[\\]]:odd'));
-    if($('select[name=category_id\\[\\]]:odd').val() == 0 || $('select[name=category_id\\[\\]]:odd').val() == '')
-        $('select[name=category_id\\[\\]]:last').parent().parent().hide();
-    if($('select[name=category_id\\[\\]]:first').val() == 0 || $('select[name=category_id\\[\\]]:first').val() == '')
-        $('select[name=category_id\\[\\]]:odd').parent().parent().hide();
 });
  $(function() {
     _validate_form($('.client-form'), {

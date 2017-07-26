@@ -114,6 +114,16 @@
                       echo render_input('price_buy', _l('item_price_buy'), number_format($default_price_buy,0,".","."),'',array('onkeyup'=>"formart_num('price_buy')"));
                     ?>
 
+                    <?php
+                      $default_tax = (isset($item) ? $item->tax : 0);
+                      echo render_select('tax', get_all_taxes(), array('id','name'), 'taxes', $default_tax, array(), array(), '', '', false);
+                    ?>
+
+                    <?php
+                        $default_rate = (isset($item) ? $item->rate : 0);
+                      echo render_input('rate', _l('tax_add_edit_rate'), $default_rate,'',array());
+                    ?>
+
                     <?php 
                         $contents_description = (isset($item) ? $item->description : "");
                         echo render_textarea('description','item_description',$contents_description,array(),array(),'','tinymce'); 
@@ -182,17 +192,18 @@
                         echo render_date_input( 'release_date', 'item_release_date' , $release_date, 'date'); 
                     ?>
 
-
                     <?php
                         $date_of_removal_of_sample = ( isset($item) ? _d($item->date_of_removal_of_sample) : _d(date('Y-m-d')));
                         echo render_date_input( 'date_of_removal_of_sample', 'item_date_of_removal_of_sample' , $date_of_removal_of_sample, 'date'); 
                     ?>
+
                     <?php
                       $countries = get_all_countries();
                       $default_contry = (isset($item) ? $item->country_id : "");
                       
                       echo render_select('country_id', $countries, array('country_id','short_name'), 'item_country_id', $default_contry, array(), array(), '', '', false);
                     ?>
+
                     <?php
                       $default_specification = (isset($item) ? $item->specification : "");
                       echo render_input('specification', _l('item_specification'), $default_specification);
@@ -291,18 +302,35 @@
 </script>
 <?php $this->load->view('admin/invoice_items/item_details_js'); ?>
 <script>
-function formatNumber(nStr, decSeperate, groupSeperate) {
-  //decSeperate= ki tu cach,groupSeperate= ki tu noi
-          nStr += '';
-          x = nStr.split(decSeperate);
-          x1 = x[0];
-          x2 = x.length > 1 ? ',' + x[1] : '';
-          var rgx = /(\d+)(\d{3})/;
-          while (rgx.test(x1)) {
-              x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
-          }
-          return x1 + x2;
-      }
+    $('document').ready(()=>{
+        <?php
+            if(!isset($item)) {
+        ?>
+            getRate($('#tax').val());
+        <?php
+            }
+        ?>
+    });
+    var getRate = (tax_id) => {
+        $.get(admin_url + 'invoice_items/get_tax/' + tax_id, (data) => {
+            $('#rate').val(data.taxrate);
+        }, 'json');
+    };
+    $('#tax').on('change', ()=>{
+        getRate($('#tax').val());
+    });
+    function formatNumber(nStr, decSeperate, groupSeperate) {
+        //decSeperate= ki tu cach,groupSeperate= ki tu noi
+        nStr += '';
+        x = nStr.split(decSeperate);
+        x1 = x[0];
+        x2 = x.length > 1 ? ',' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + groupSeperate + '$2');
+        }
+        return x1 + x2;
+    }
   function formart_num(id_input)
   {
     key="";
