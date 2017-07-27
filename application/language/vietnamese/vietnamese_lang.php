@@ -3671,10 +3671,11 @@ $lang['import_name'] = "Tên phiếu điều chỉnh";
 $lang['adjustments'] = "Phiếu điều chỉnh kho";
 $lang['internals'] = "Phiếu nhập kho nội địa";
 $lang['adjustment_code'] = "Mã phiếu điều chỉnh";
-$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
-$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
-$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
-$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
+$lang['settings_sales_faxnumber'] = "Số fax";
+$lang['address'] = "Địa chỉ";
+$lang['vat_no'] = "Mã số thuế";
+$lang['Tel'] = "Tel";
+$lang['Fax'] = "Fax";
 $lang['creater']                   = "Người lập";
 
 
