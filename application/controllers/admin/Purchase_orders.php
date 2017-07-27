@@ -12,24 +12,55 @@ class Purchase_orders extends Admin_controller
     public function index() {
 
         if ($this->input->is_ajax_request()) {
-            $this->perfex_base->get_table_data('purchase_suggested');
+            $this->perfex_base->get_table_data('purchase_orders');
         }
         $data['title'] = _l('purchase_suggested');
-        $this->load->view('admin/purchase_suggested/manage', $data);
+        $this->load->view('admin/orders/manage', $data);
     }
     public function convert($id='') {
         $data = array();
+        $data['title'] = _l('orders_create_heading');
         $purchase_suggested = $this->purchase_suggested_model->get($id);
-        if(!$purchase_suggested) {
-            redirect(admin_url + 'orders');
+        if(!$purchase_suggested || $purchase_suggested->status != 2 || $this->orders_model->check_exists($purchase_suggested->id)) {
+            redirect(admin_url() . 'purchase_orders');
         }
+
         $data['purchase_suggested'] = $purchase_suggested;
         $data['product_list'] = $purchase_suggested->items;
         $data['suppliers'] = $this->orders_model->get_suppliers();
         $data['warehouses'] = $this->orders_model->get_warehouses();
-        
-        
+        if($this->input->post()) {
+            $data = $this->input->post();
+            $data['code'] = get_option('prefix_purchase_order') . $data['code'];
+            $data['id_user_create'] = get_staff_user_id();
+            $this->orders_model->insert($data);
+            redirect(admin_url() . 'purchase_orders');
+        }
         $this->load->view('admin/orders/convert', $data);
+    }
+    public function view($id='') {
+        if(is_numeric($id)) {
+            $order = $this->orders_model->get($id);
+            if($order) {
+                $data = array();
+                $data['title'] = _l('orders_view_heading');
+                $data['suppliers'] = $this->orders_model->get_suppliers();
+                $data['warehouses'] = $this->orders_model->get_warehouses();
+                // get purchase suggested id
+                $this->db->where('id', $order->id_purchase_suggested);
+                $ps = $this->db->get('tblpurchase_suggested')->row();
+                if($ps) {
+                    $order->code_purchase_suggested = $ps->code;
+                }
+                else {
+                    $order->code_purchase_suggested = "";
+                }
+                $data['item'] = $order;
+                $content = $this->load->view('admin/orders/view', $data, true);
+                exit($content);
+            }
+        }
+        redirect(admin_url() . 'purchase_orders');
     }
     public function detail($id='') {
         $data = array();
