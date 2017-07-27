@@ -7,6 +7,7 @@ class Purchase_orders extends Admin_controller
         parent::__construct();
         $this->load->model('purchase_suggested_model');
         $this->load->model('invoice_items_model');
+        $this->load->model('orders_model');
     }
     public function index() {
 
@@ -15,6 +16,20 @@ class Purchase_orders extends Admin_controller
         }
         $data['title'] = _l('purchase_suggested');
         $this->load->view('admin/purchase_suggested/manage', $data);
+    }
+    public function convert($id='') {
+        $data = array();
+        $purchase_suggested = $this->purchase_suggested_model->get($id);
+        if(!$purchase_suggested) {
+            redirect(admin_url + 'orders');
+        }
+        $data['purchase_suggested'] = $purchase_suggested;
+        $data['product_list'] = $purchase_suggested->items;
+        $data['suppliers'] = $this->orders_model->get_suppliers();
+        $data['warehouses'] = $this->orders_model->get_warehouses();
+        
+        
+        $this->load->view('admin/orders/convert', $data);
     }
     public function detail($id='') {
         $data = array();
