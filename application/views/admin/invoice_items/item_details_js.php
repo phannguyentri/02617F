@@ -36,7 +36,7 @@ $(document).ready(()=>{
         createSelect($(e.currentTarget).val(), $(e.currentTarget).parents('div.form-group').next().find('select[name=category_id\\[\\]]'));
     });
 });
- $(function() {
+$(function() {
     _validate_form($('.client-form'), {
         unit: 'required',
         minimum_quantity: 'required',
@@ -50,5 +50,5 @@ $(document).ready(()=>{
         price_buy: 'required',
         unit: 'required',
     });
- });
+});
 </script>

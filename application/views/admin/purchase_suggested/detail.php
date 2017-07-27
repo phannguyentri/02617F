@@ -86,9 +86,21 @@
                     ?> -->
                     <div class="form-group">
                                  <label for="number"><?php echo _l('Mã đề xuất'); ?></label>
-                                 <div class="input-group">
-                                  <span class="input-group-addon">
-                                    <?php echo get_option('prefix_purchase_suggested') ?></span>
+                                 
+                                  
+                                    
+                                    <?php
+                                    if(!isset($item)) {
+                                    ?>
+                                    <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <?php
+                                        echo get_option('prefix_purchase_suggested');
+                                        ?>
+                                    </span>
+                                    <?php
+                                    }
+                                    ?>
                                     <?php 
                                         // var_dump($purchase);
                                         if($item)
@@ -102,14 +114,18 @@
                                         }
                                     ?>
                                     <input type="text" name="code" class="form-control" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
+                                  <?php if(!isset($item)) { ?>
                                   </div>
+                                  <?php } ?>
                             </div>
-                    
                     <?php
                     $default_name = (isset($item) ? $item->name : "");
                     echo render_input('name', _l('purchase_suggested_name'), $default_name);
                     ?>
-
+                    <?php
+                        $default_date = ( isset($item) ? _d($item->date) : _d(date('Y-m-d')));
+                        echo render_date_input( 'date', 'project_datecreated' , $default_date , 'date'); 
+                    ?>
                     <?php 
                     $reason = (isset($item) ? $item->reason : "");
                     echo render_textarea('reason', 'purchase_suggested_reason', $reason, array(), array(), '', 'tinymce');
