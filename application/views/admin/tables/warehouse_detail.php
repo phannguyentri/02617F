@@ -19,7 +19,9 @@ $join             = array(
     );
 $additionalSelect = array(
     );
-$where = array();
+$where = array(
+    'AND tblwarehouses_products.warehouse_id='.$warehouse_id
+);
 if($this->_instance->input->post()) {
     $filter_detail_categories = $this->_instance->input->post('detail_categories');
     if(is_numeric($filter_detail_categories)) {

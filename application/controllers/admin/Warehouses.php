@@ -138,7 +138,7 @@ class Warehouses extends Admin_controller
     // }
     public function modal_detail($id) {
         if($this->input->is_ajax_request() && !$this->input->get('get')) {
-            $this->perfex_base->get_table_data('warehouse_detail');
+            $this->perfex_base->get_table_data('warehouse_detail', array('warehouse_id' => $id));
         }
         $warehouse = $this->warehouse_model->get_full($id);
 
