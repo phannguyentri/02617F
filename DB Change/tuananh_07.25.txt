@@ -1,0 +1,1 @@
+ALTER TABLE `tblitems` ADD `discount` DECIMAL(11,2) NOT NULL AFTER `warranty`;

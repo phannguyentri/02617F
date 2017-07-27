@@ -1308,6 +1308,7 @@ function get_all_countries()
     $CI =& get_instance();
     return $CI->db->get('tblcountries')->result_array();
 }
+// Customize function TAAAAA
 function get_all_wards($district_id='')
 {
     $CI =& get_instance();
@@ -1329,6 +1330,11 @@ function get_all_province()
 
     return $CI->db->get('province')->result_array();
 }
+function get_all_taxes() {
+    $CI =& get_instance();
+    return $CI->db->get('tbltaxes')->result_array();
+}
+// END Customize function TAAAAA
 /**
  * Get country row from database based on passed country id
  * @param  mixed $id

@@ -24,7 +24,7 @@ class Purchase_suggested extends Admin_controller
                 
                 if(isset($data_post['items']) && count($data_post['items']) > 0) {
                     $data_post['create_by'] = get_staff_user_id();
-
+                    $data_post['code'] = get_option('prefix_purchase_suggested') . $data_post['code'];
                     $result_id = $this->purchase_suggested_model->add($data_post);
                     set_alert('success', _l('added_successfuly', _l('purchase_suggested')));
                     redirect(admin_url('purchase_suggested/detail/' . $result_id));

@@ -26,6 +26,15 @@ class Invoice_items extends Admin_controller
         $data['title'] = _l('invoice_items');
         $this->load->view('admin/invoice_items/manage', $data);
     }
+    public function get_tax($id_tax) {
+        if (!has_permission('items', '', 'view')) {
+            access_denied('Invoice Items');
+        }
+        if ($this->input->is_ajax_request()) {
+            $this->load->model('taxes_model');
+            exit(json_encode($this->taxes_model->get($id_tax)));
+        }
+    }
     /* Edit client or add new client*/
     public function item($id = '')
     {
@@ -44,7 +53,7 @@ class Invoice_items extends Admin_controller
                 $data['price']=str_replace('.','',$data['price']);
                 $data['price_buy']=str_replace('.','',$data['price_buy']);
                 $save_and_add_contact = false;
-                // Category 3rd level
+                // Category 4rd level
                 if(is_array($data['category_id'])) {
                     for ($i=count($data['category_id'])-1; $i >= 0 ; $i--) { 
                         if( $data['category_id'][$i] != 0 ) {
@@ -79,7 +88,6 @@ class Invoice_items extends Admin_controller
                 $data = $this->input->post();
                 $data['price']=str_replace('.','',$data['price']);
                 $data['price_buy']=str_replace('.','',$data['price_buy']);
-                // var_dump($data);die();
                 $data['itemid'] = $id;
                 $item = $this->invoice_items_model->get_full($id);
                 if(is_array($data['category_id'])) {
@@ -104,6 +112,7 @@ class Invoice_items extends Admin_controller
             $array_categories[] = array(0, $this->invoice_items_model->get_same_level_categories(0));
             $array_categories[1] = array(0, array());
             $array_categories[2] = array(0, array());
+            $array_categories[3] = array(0, array());
             $data['array_categories'] = $array_categories;
             
         } else {
@@ -114,12 +123,15 @@ class Invoice_items extends Admin_controller
             $array_categories[] = array($item->category_id, $this->invoice_items_model->get_same_level_categories($item->category_id));
             $this->invoice_items_model->get_category_parent_id($item->category_id, $array_categories);
             
-            if(count($array_categories) < 3) {
+            if(count($array_categories) < 4) {
                 if(!isset($array_categories[1])) {
                     $array_categories[1] = array(0, array());
                 }
                 if(!isset($array_categories[2])) {
                     $array_categories[2] = array(0, array());
+                }
+                if(!isset($array_categories[3])) {
+                    $array_categories[3] = array(0, array());
                 }
             }
             if (!$item) {
@@ -366,7 +378,7 @@ class Invoice_items extends Admin_controller
                                 
                                 $objReader = PHPExcel_IOFactory::createReader($inputFileType);
                                 
-                                $objReader->setReadDataOnly(true);
+                                // $objReader->setReadDataOnly(true);
                                 
                                 /**  Load $inputFileName to a PHPExcel Object  **/
                             $objPHPExcel =           $objReader->load($newFilePath);
@@ -500,6 +512,9 @@ class Invoice_items extends Admin_controller
                                             $reason .= "Không tìm thấy " . $column_value[0] . " ".$category_name ."<br />";
                                             $data_ok = false;
                                         }
+                                    }
+                                    if($column_key == 'release_date' || $column_key == 'date_of_removal_of_sample') {
+                                        $data[$column_key] = date("Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($row[$stt]));
                                     }
                                     if($data[$column_key] == '') {
                                         $data[$column_key] = $row[$stt];

@@ -3679,3 +3679,11 @@ $lang['creater']                   = "Người lập";
 
 
 
+$lang['warehouse_info'] = "Thông tin kho";
+
+$lang['orders_create_heading'] = "Tạo đơn hàng";
+$lang['orders_code'] = 'Mã đơn đặt hàng';
+$lang['orders_explan'] = "Diễn giải";
+$lang['orders_date_create'] = "Ngày lập phiếu";
+$lang['orders_date_import'] = "Ngày nhập dự kiến";
+$lang['orders_user_create'] = "Người lập phiếu";

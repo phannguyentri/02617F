@@ -145,6 +145,7 @@ class Purchase_suggested_model extends CRM_Model
     public function get_detail($purchase_suggested_id) {
         if(is_numeric($purchase_suggested_id)) {
             $this->db->where('purchase_suggested_id', $purchase_suggested_id);
+            $this->db->join('tblitems', 'tblitems.id = tblpurchase_suggested_details.product_id', 'left');
             return $this->db->get('tblpurchase_suggested_details')->result();
         }
         return [];
