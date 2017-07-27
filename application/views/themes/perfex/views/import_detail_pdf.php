@@ -57,6 +57,28 @@ $info_left_column  = '';
 // }
 $info_right_column=$info_right_column .= '<a href="' . admin_url('#') . '" style="color:#4e4e4e;text-decoration:none;"><b> ' . date('Y-m-d H:i:s') . '</b></a>';
 
+$invoice_info='';
+$invoice_info = '<b>' . get_option('invoice_company_name') . '</b><br />';
+$invoice_info .= _l('address').': '.get_option('invoice_company_address') . '<br/>';
+// if (get_option('invoice_company_city') != '') {
+//     $invoice_info .= get_option('invoice_company_city') . ', ';
+// }
+if(get_option('company_vat') != ''){
+    $invoice_info .= _l('vat_no').': '.get_option('company_vat').'<br/>';
+}
+$invoice_info .= get_option('invoice_company_country_code') . ' ';
+$invoice_info .= get_option('invoice_company_postal_code') . ' ';
+
+if (get_option('invoice_company_phonenumber') != '') {
+    $invoice_info .= _l('Tel').': '.get_option('invoice_company_phonenumber').'  ';
+}
+if (get_option('invoice_company_faxnumber') != '') {
+    $invoice_info .= _l('Fax').': '.get_option('invoice_company_faxnumber').'  ';
+}
+if (get_option('main_domain') != '') {
+    $invoice_info .= _l('Website').': '.get_option('main_domain');
+}
+
 // if ($status != 2 && $status != 5 && get_option('show_pay_link_to_invoice_pdf') == 1) {
 //     $info_right_column .= '<a style="color:#84c529;text-decoration:none;" href="' . site_url('viewinvoice/' . $invoice->id . '/' . $invoice->hash) . '">' . _l('view_invoice_pdf_link_pay') . '</a><br />';
 // }
@@ -68,14 +90,27 @@ $info_left_column .= pdf_logo_url();
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_column, 0, 'J', 0, 0, '', '', true, 0, true, true, 0);
 // write the second column
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
-// $pdf->MultiCell(0, 0, '$info_inner_column', 0, 'C', 0, 1, '', '', true, 0, true, false, 0);
-$pdf->ln(10);
+// $pdf->MultiCell(0, 0, $invoice_info, 0, 'C', 0, 1, '', '', true, 0, true, false, 0);
+// $y            = $pdf->getY();
+$pdf->ln(5);
+
+$pdf->writeHTMLCell((true ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+$pdf->ln(20);
 // Set Head
 $plan_name=($invoice->name)? $invoice->name:_l('Kế Hoạch Mua');
-$plan_name=_l('adjustments');
+// var_dump($invoice);die();
+if($invoice->rel_type=='adjustment')
+{
+    $plan_name=_l('adjustments');
+}
+else
+{
+    $plan_name=_l('internals');
+}
+
 $pdf->SetFont($font_name, 'B', 20);
 $pdf->Cell(0, 0, mb_strtoupper($plan_name, 'UTF-8') , 0, 1, 'C', 0, '', 0);
-$pdf->ln(20);
+$pdf->ln(10);
 //Set purchase no
 // var_dump($pdf->get_fonts_list());die();
 // $pdf->SetFont($font_name, 'B', $font_size);
@@ -247,9 +282,9 @@ $pdf->writeHTML($tblhtml, true, false, false, false, '');
 $pdf->Ln(20);
 $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         <tr>
-            <td>" . mb_ucfirst(_l('creater'), "UTF-8") . "</td>
-            <td>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</td>
-            <td>" . mb_ucfirst(_l('user_admin'), "UTF-8") . "</td>
+            <td><b>" . mb_ucfirst(_l('creater'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('user_admin'), "UTF-8") . "</b></td>
         </tr>
         <tr>
             <td style=\"height: 100px\" colspan=\"3\"></td>

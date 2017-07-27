@@ -96,8 +96,13 @@ foreach ($rResult as $aRow) {
         }
         $row[] = $_data;
     }
+    $_data='';
     if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
-        $_data = icon_btn('imports/'.$rel_type.'_detail/'. $aRow['id'] , 'edit');
+        $_data .= icon_btn('imports/detail_pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
+        if($aRow['status']!=2)
+        {            
+            $_data .= icon_btn('imports/'.$rel_type.'_detail/'. $aRow['id'] , 'edit');
+        }       
         $row[] =$_data.icon_btn('imports/delete_import/'. $aRow['id'] , 'remove', 'btn-danger delete-remind');
     } else {
         $row[] = '';

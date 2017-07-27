@@ -25,7 +25,6 @@ class Settings_model extends CRM_Model
      */
     public function update($data)
     {
-
         $original_encrypted_fields = array();
         foreach ($this->encrypted_fields as $ef) {
             $original_encrypted_fields[$ef] = get_option($ef);
