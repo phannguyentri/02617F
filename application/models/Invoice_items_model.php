@@ -27,8 +27,9 @@ class Invoice_items_model extends CRM_Model
 
     public function get_full($id = '')
     {
-        
+         $this->db->select('tblitems.*,tblunits.unit as unit_name');
         $this->db->from('tblitems');
+        $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
         $this->db->order_by('tblitems.id', 'desc');
         if (is_numeric($id)) {
             
@@ -111,14 +112,10 @@ class Invoice_items_model extends CRM_Model
         $this->db->select('*');
         $this->db->from('district');
         $this->db->order_by('name', 'asc');
-        // $re=$this->db->get()->result_array();
-        // var_dump($provinceid);die();
         if (isset($provinceid) && $provinceid!='') {
-            // var_dump('dvsd');die();
             $this->db->where('provinceid', $provinceid);
             return $this->db->get()->result_array();
         }
-        // var_dump('dvsd1');die();
         return $this->db->get()->result_array();
     }
 
@@ -128,14 +125,10 @@ class Invoice_items_model extends CRM_Model
         $this->db->select('*');
         $this->db->from('landtype');
         $this->db->order_by('name', 'asc');
-        // $re=$this->db->get()->result_array();
-        // var_dump($id);die();
         if (isset($id) && $id!='') {
-            // var_dump('dvsd');die();
             $this->db->where('id', $id);
             return $this->db->get()->row();
         }
-        // var_dump('dvsd1');die();
         return $this->db->get()->result_array();
     }
 
@@ -167,7 +160,7 @@ class Invoice_items_model extends CRM_Model
         return $items;
     }
     /**
-     * Add new invoice item
+     * Add new import item
      * @param array $data Invoice item data
      * @return boolean
      */

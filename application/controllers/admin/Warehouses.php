@@ -126,4 +126,10 @@ class Warehouses extends Admin_controller
             exit(json_encode($result));
         }
     }
+
+    public function getWarehouses($warehouse_type) {
+        if(is_numeric($warehouse_type) && $this->input->is_ajax_request()) {
+            echo json_encode($this->warehouse_model->getWarehousesByType($warehouse_type));
+        }
+    }
 }

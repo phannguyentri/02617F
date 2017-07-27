@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $aColumns     = array(
     '1',
     'warehouse',
-    '(select name from tbl_kindof_warehouse where tbl_kindof_warehouse.id=tblwarehouses_products.id) as kindof_ware_house',
+    '(SELECT name FROM tbl_kindof_warehouse WHERE warehouse_id=id )',
     'tblshipments.shipment',
     'tblracks.rack',
     '(SELECT name FROM tblitems WHERE tblitems.id=product_id)',

@@ -33,6 +33,37 @@ class Warehouse_model extends CRM_Model
         $roles = $this->db->get('tblroles')->result_array();
         return $roles;
     }
+
+    public function getWarehouses($id = '')
+    {
+        $this->db->select('tblwarehouses.*');
+        $this->db->from('tblwarehouses');
+        if (is_numeric($id)) 
+        {
+            $this->db->where('id', $id);
+            return $this->db->get()->row();
+        }
+        else 
+        {
+            return $this->db->get()->result_array();
+        }
+
+        return false;
+    }
+
+    public function getWarehousesByType($warehouse_type = '')
+    {
+        $this->db->select('tblwarehouses.*');
+        $this->db->from('tblwarehouses');
+        if (is_numeric($warehouse_type)) 
+        {
+            $this->db->where('kindof_warehouse', $warehouse_type);
+            return $this->db->get()->result_array();
+        }
+
+        return false;
+    }
+
     public function add_warehouse($data)
     {
         if (is_admin()) {

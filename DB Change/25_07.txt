@@ -1,1 +1,7 @@
 ALTER TABLE `tblwarehouses_products` ADD `shipment` INT NULL AFTER `product_quantity`;
+
+INSERT INTO `dudoffhoa`.`tbloptions` (`id`, `name`, `value`) VALUES (NULL, 'prefix_adjustment', 'ÐC-');
+
+ALTER TABLE `tblitems` ADD `prefix` VARCHAR(50) NOT NULL AFTER `id`;
+
+INSERT INTO `dudoffhoa`.`tblpermissions` (`permissionid`, `name`, `shortname`) VALUES (NULL, 'Import_items', 'import_items');

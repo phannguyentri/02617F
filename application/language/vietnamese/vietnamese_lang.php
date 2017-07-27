@@ -3654,7 +3654,7 @@ $lang['utilities_menu_name'] = "Tên menu";
 $lang['als_imp_contracts'] = "Hợp đồng mua";
 $lang['als_imp_transfers'] = "Chuyển kho";
 $lang['als_imp_adjustments'] = "Điều chỉnh kho";
-$lang['als_imp_internals'] = "Nội bộ";
+$lang['als_imp_internals'] = "Nội địa";
 $lang['als_imp_returns'] = "Hàng trả về";
 $lang['als_quotation'] = "Báo giá";
 $lang['als_contracts'] = "Hợp đồng bán";
@@ -3662,5 +3662,20 @@ $lang['als_sale_orders'] = "Đơn hàng bán";
 $lang['als_quotations'] = "Báo giá";
 $lang['als_deliveries'] = "Giao hàng";
 $lang['als_sale_contracts'] = "Hợp đồng bán";
+
+$lang['warehouse_type'] = "Loại kho";
+$lang['warehouse_name'] = "Kho hàng";
+$lang['item_name'] = "Sản phẩm";
+$lang['supplier_profile_details'] = "Chi tiết nhà cung cấp";
+$lang['import_name'] = "Tên phiếu điều chỉnh";
+$lang['adjustments'] = "Phiếu điều chỉnh kho";
+$lang['internals'] = "Phiếu nhập kho nội địa";
+$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
+$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
+$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
+$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
+$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
+$lang['creater']                   = "Người lập";
+
 
 
