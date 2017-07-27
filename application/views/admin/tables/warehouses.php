@@ -24,6 +24,7 @@ if($this->_instance->input->post()) {
         array_push($where, 'AND tblwarehouses.kindof_warehouse='.$filter_kind_of_warehouse);
     }
     $filter_product_category = $this->_instance->input->post('product_category');
+    
     if(is_numeric($filter_product_category)) {
         array_push($where, 'AND tblwarehouses.warehouseid in 
         (select tblwarehouses_products.warehouse_id from tblwarehouses_products where tblwarehouses_products.product_id in 
