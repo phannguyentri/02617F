@@ -16,7 +16,7 @@
         <!-- Product information -->
         
 
-  <h4 class="bold no-margin"><?php echo (isset($item) ? _l('Sửa phiếu điều chỉnh kho') : _l('Tạo phiếu điều chỉnh kho')); ?></h4>
+  <h4 class="bold no-margin"><?php echo (isset($item) ? (($item->status==2)?_l('Xem phiếu điều chỉnh kho'):_l('Sửa phiếu điều chỉnh kho')) : _l('Tạo phiếu điều chỉnh kho')); ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
@@ -254,7 +254,7 @@
                 <!-- End Customize from invoice -->
                 </div>
                 
-                <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
+                <?php if(isset($item) && $item->status != 2 || !isset($item)) { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l('submit'); ?>
                 </button>

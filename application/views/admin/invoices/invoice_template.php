@@ -451,8 +451,8 @@ if(isset($invoice) && ($invoice->recurring !== 0 && $invoice->last_recurring_dat
    if($default_tax == ''){
     $no_tax_selected = 'selected';
   }
-  $select .= '<option value="" '.$no_tax_selected.'>'._l('no_tax').'</option>';
 
+  $select .= '<option value="" '.$no_tax_selected.'>'._l('no_tax').'</option>';
   foreach($taxes as $tax){
     $selected = '';
     if(is_array($default_tax_name)){

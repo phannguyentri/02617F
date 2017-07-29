@@ -108,7 +108,11 @@ foreach ($rResult as $aRow) {
         if($aRow['status']!=2)
         {            
             $_data .= icon_btn('exports/export_detail/'. $aRow['id'] , 'edit');
-        }       
+        }  
+        else
+        {            
+            $_data .= icon_btn('exports/export_detail/'. $aRow['id'] , 'eye');
+        }      
         $row[] =$_data.icon_btn('exports/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-remind');
     } else {
         $row[] = '';

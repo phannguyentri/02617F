@@ -102,7 +102,11 @@ foreach ($rResult as $aRow) {
         if($aRow['status']!=2)
         {            
             $_data .= icon_btn('imports/'.$rel_type.'_detail/'. $aRow['id'] , 'edit');
-        }       
+        }  
+        else
+        {
+            $_data .= icon_btn('imports/'.$rel_type.'_detail/'. $aRow['id'] , 'eye');
+        }     
         $row[] =$_data.icon_btn('imports/delete_import/'. $aRow['id'] , 'remove', 'btn-danger delete-remind');
     } else {
         $row[] = '';

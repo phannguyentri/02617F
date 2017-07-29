@@ -15,7 +15,7 @@
         <!-- Product information -->
         
 
-  <h4 class="bold no-margin"><?php echo (isset($item) ? _l('Sửa phiếu điều chỉnh kho nội địa') : _l('Tạo phiếu điều chỉnh kho nội địa')); ?></h4>
+  <h4 class="bold no-margin"><?php echo (isset($item) ? (($item->status==2)?_l('Xem phiếu nhập kho nội địa'):_l('Sửa phiếu nhập kho nội địa')) : _l('Tạo phiếu nhập kho nội địa')); ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
@@ -50,7 +50,7 @@
         <ul class="nav nav-tabs profile-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#item_detail" aria-controls="item_detail" role="tab" data-toggle="tab">
-                    <?php echo _l('Chi tiết phiếu điều chỉnh kho nội địa'); ?>
+                    <?php echo _l('Chi tiết phiếu nhập kho nội địa'); ?>
                 </a>
             </li>
         </ul>
@@ -253,7 +253,7 @@
                 <!-- End Customize from invoice -->
                 </div>
                 
-                <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
+                <?php if(isset($item) && $item->status != 2 || !isset($item)) { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l('submit'); ?>
                 </button>

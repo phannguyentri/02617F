@@ -253,6 +253,8 @@ class Invoices extends Admin_controller
         ));
         $this->load->model('taxes_model');
         $data['taxes'] = $this->taxes_model->get();
+        // echo "<pre>";
+        // var_dump($data['taxes']);die();
         $this->load->model('invoice_items_model');
         $data['items']        = $this->invoice_items_model->get_grouped();
         $data['items_groups'] = $this->invoice_items_model->get_groups();

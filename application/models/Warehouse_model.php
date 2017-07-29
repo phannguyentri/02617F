@@ -46,6 +46,23 @@ class Warehouse_model extends CRM_Model
         return $roles;
     }
 
+    public function getWarehouseTypes($id = '')
+    {
+        $this->db->select('tbl_kindof_warehouse.*');
+        $this->db->from('tbl_kindof_warehouse');
+        if (is_numeric($id)) 
+        {
+            $this->db->where('id', $id);
+            return $this->db->get()->row();
+        }
+        else 
+        {
+            return $this->db->get()->result_array();
+        }
+
+        return false;
+    }
+
     public function getWarehouses($id = '')
     {
 

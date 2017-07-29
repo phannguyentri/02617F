@@ -8,6 +8,7 @@ class Exports extends Admin_controller
         $this->load->model('exports_model');
         $this->load->model('invoice_items_model');
         $this->load->model('clients_model');
+        $this->load->model('warehouse_model');
     }
     public function index()
     {
@@ -75,12 +76,11 @@ class Exports extends Admin_controller
         if (!has_permission('customers', '', 'view')) {
             $where_clients .= ' AND tblclients.userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id=' . get_staff_user_id() . ')';
         }
-
+        $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
+        $data['warehouses']= $this->warehouse_model->getWarehouses();
+        $data['receivers'] = $this->staff_model->get('','',array('staffid<>'=>1));
         $data['customers'] = $this->clients_model->get('', $where_clients);
         $data['items']= $this->invoice_items_model->get_full();
-        
-        // $data['warehouse_types']= $this->exports_model->getWarehouseTypes();
-        // $data['warehouses']= $this->warehouse_model->getWarehouses();
         $data['title'] = $title;
         $this->load->view('admin/exports/detail', $data);
     }

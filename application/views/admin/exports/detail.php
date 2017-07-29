@@ -47,7 +47,7 @@
         <ul class="nav nav-tabs profile-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#item_detail" aria-controls="item_detail" role="tab" data-toggle="tab">
-                    <?php echo _l('sale_detail'); ?>
+                    <?php echo _l('export_detail'); ?>
                 </a>
             </li>
         </ul>
@@ -97,6 +97,11 @@
                             <input type="text" name="code" class="form-control" id="code" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
                           </div>
                     </div>
+
+                    <?php
+                    $value= ( isset($item) ? $item->rel_code : ''); 
+                    $attrs = array('readonly'=>true);?>
+                    <?php echo render_input( 'rel_code', _l("sale_code"),$value,'text',$attrs); ?>
 
                     <?php $value = (isset($item) ? _d($item->date) : _d(date('Y-m-d')));?>
                     <?php echo render_date_input('date','view_date',$value); ?>
@@ -159,17 +164,18 @@
                         
 
                         <div class="table-responsive s_table">
-                            <table class="table items item-purchase no-mtop">
+                            <table class="table items item-export no-mtop">
                                 <thead>
                                     <tr>
                                         <th><input type="hidden" id="itemID" value="" /></th>
-                                        <th width="20%" class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_name'); ?>"></i> <?php echo _l('item_name'); ?></th>
-                                        <th width="10%" class="text-left"><?php echo _l('item_unit'); ?></th>
-                                        <th width="10%" class="text-left"><?php echo _l('item_quantity'); ?></th>
+                                        <th width="" class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_name'); ?>"></i> <?php echo _l('item_name'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('item_unit'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('item_quantity'); ?></th>
                                         
-                                        <th width="10%" class="text-left"><?php echo _l('item_price'); ?></th>
-                                        <th width="10%" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
-                                        <th width="15%" class="text-left"><?php echo _l('item_specification'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('item_price'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('warehouse_type'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('warehouse_name'); ?></th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -186,7 +192,7 @@
                                         </td>
 
                                         <td>
-                                            <input class="mainQuantity" type="number" min="1" value="1"  class="form-control" placeholder="<?php echo _l('item_quantity'); ?>">
+                                            <input style="width: 100px" class="mainQuantity" type="number" min="1" value="1"  class="form-control" placeholder="<?php echo _l('item_quantity'); ?>">
                                         </td>
                                         
                                         <td>
@@ -196,7 +202,33 @@
                                             0
                                         </td>
                                         <td>
-                                            <?php echo _l('item_specification'); ?>
+                    <?php
+                       $select = '<select class="selectpicker display-block warehouse_type main-warehouse_type" data-container="body" data-width="100%" name="warehouse_type"  data-live-search="true">';
+                      $select .= '<option value="" '.$no_tax_selected.'>'._l('no_select').'</option>';
+                      foreach($warehouse_types as $type){
+                        $selected = '';
+                      $select .= '<option value="" '.$type['id'].'>'.$type['name'].'</option>';
+
+                    }
+                    $select .= '</select>';
+                    echo $select;
+                    ?>
+                                        </td>
+                                        <td>
+                                            
+                    <?php
+                       $select = '<select class="selectpicker display-block warehouse_id main-warehouse_id" data-container="body" data-width="100%" name="warehouse_id"  data-live-search="true">';
+                      $select .= '<option value="" '.$no_tax_selected.'>'._l('no_select').'</option>';
+                      foreach($warehouses as $warehouse){
+                        $selected = '';
+                      $select .= '<option value="" '.$warehouse['warehouse'].'>'.$warehouse['warehouse'].'</option>';
+
+                    }
+                    $select .= '</select>';
+                    echo $select;
+                    ?>
+
+
                                         </td>
                                         <td>
                                             <button style="display:none" id="btnAdd" type="button" onclick="createTrItem(); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
@@ -255,7 +287,7 @@
                 <!-- End Customize from invoice -->
                 </div>
                 
-                <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
+                <?php if(isset($item) && $item->status != 2 || !isset($item)) { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l('submit'); ?>
                 </button>
@@ -276,7 +308,7 @@
 </div>
 <?php init_tail(); ?>
 <script>
-    _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required'});
+    _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required',receiver_id:'required'});
     
     var itemList = <?php echo json_encode($items);?>;
 
@@ -309,8 +341,8 @@
     var isNew = false;
     var createTrItem = () => {
         if(!isNew) return;
-        if( $('table.item-purchase tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').length ) {
-            $('table.item-purchase tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').parent().find('td:nth-child(2) > input').focus();
+        if( $('table.item-export tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').length ) {
+            $('table.item-export tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').parent().find('td:nth-child(2) > input').focus();
             alert('Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!');
             return;
         }
@@ -323,6 +355,7 @@
         var td5 = $('<td></td>');
         var td6 = $('<td></td>');
         var td7 = $('<td></td>');
+        var td8 = $('<td></td>');
 
         td1.find('input').val($('tr.main').find('td:nth-child(1) > input').val());
         td2.text($('tr.main').find('td:nth-child(2)').text());
@@ -332,6 +365,7 @@
         td5.text( $('tr.main').find('td:nth-child(5)').text() );
         td6.text( $('tr.main').find('td:nth-child(6)').text() );
         td7.text( $('tr.main').find('td:nth-child(7)').text() );
+        td8.text( $('tr.main').find('td:nth-child(8)').text() );
         
         newTr.append(td1);
         newTr.append(td2);
@@ -340,9 +374,10 @@
         newTr.append(td5);
         newTr.append(td6);
         newTr.append(td7);
+        newTr.append(td8);
 
         newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td');
-        $('table.item-purchase tbody').append(newTr);
+        $('table.item-export tbody').append(newTr);
         total++;
         totalPrice += $('tr.main').find('td:nth-child(4) > input').val() * $('tr.main').find('td:nth-child(5)').text().replace(/\+/g, ' ');
         uniqueArray++;
@@ -374,7 +409,7 @@
     };
     var refreshTotal = () => {
         $('.total').text(formatNumber(total));
-        var items = $('table.item-purchase tbody tr:gt(0)');
+        var items = $('table.item-export tbody tr:gt(0)');
         totalPrice = 0;
         $.each(items, (index,value)=>{
             totalPrice += $(value).find('td:nth-child(4) > input').val() * $(value).find('td:nth-child(5)').text().replace(/\,/g, '');
