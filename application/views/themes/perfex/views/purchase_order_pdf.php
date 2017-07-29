@@ -28,10 +28,12 @@ if (is_array($pdf_text_color_array) && count($pdf_text_color_array) == 3) {
 // Get Y position for the separation
 $y            = $pdf->getY();
 
+
+
+
+
 $info_right_column = '';
 $info_left_column  = '';
-
-
 
 
 // $info_right_column .= '<a href="' . admin_url('purchase_order/view/' . $purchase_suggested->id) . '" style="color:#4e4e4e;text-decoration:none;"><b># ' . $purchase_suggested->date . '</b></a>';
@@ -43,28 +45,58 @@ $info_left_column .= pdf_logo_url();
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_column, 0, 'J', 0, 0, '', '', true, 0, true, true, 0);
 // write the second column
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
+$pdf->ln(10);
+
+// Get Y position for the separation
+$y            = $pdf->getY();
+$invoice_info = '<b>' . get_option('invoice_company_name') . '</b><br />';
+$invoice_info .= get_option('invoice_company_address') . '<br/>';
+if (get_option('invoice_company_city') != '') {
+    $invoice_info .= get_option('invoice_company_city') . ', ';
+}
+$invoice_info .= get_option('invoice_company_country_code') . ' ';
+$invoice_info .= get_option('invoice_company_postal_code') . ' ';
+
+if (get_option('invoice_company_phonenumber') != '') {
+    $invoice_info .= '<br />' . get_option('invoice_company_phonenumber');
+}
+if(get_option('company_vat') != ''){
+    $invoice_info .= '<br />'.get_option('company_vat');
+}
+// check for company custom fields
+$custom_company_fields = get_company_custom_fields();
+if (count($custom_company_fields) > 0) {
+    $invoice_info .= '<br />';
+}
+foreach ($custom_company_fields as $field) {
+    $invoice_info .= $field['label'] . ': ' . $field['value'] . '<br />';
+}
+$pdf->writeHTMLCell(($swap == '1' ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 $pdf->ln(20);
+
+
 $title = _l('orders_ticket');
 $title = mb_strtoupper($title, "UTF-8");
+
 
 $info_center_column = '<span style="font-weight:bold;font-size:30px;">' . $title . '</span><p style="text-align: center;">'._l('orders_date_create').': ' . date("d/m/Y", strtotime($purchase_order->date_create)) . '</p>';
 $date_create .= '';
 
-$pdf->writeHTMLCell(($dimensions['wk']) - $dimensions['lm'], '', '', $y+10, $info_center_column, 0, 0, false, true, 'C', true);
+$pdf->writeHTMLCell(($dimensions['wk']) - $dimensions['lm'], '', '', $y+20, $info_center_column, 0, 0, false, true, 'C', true);
 $pdf->ln(30);
+
+$y            = $pdf->getY();
 
 $detail .= '<p><b>' . _l('als_suppliers') . '</b>: '. $purchase_order->suppliers_company.'</p>';
 $detail .= '<p><b>' . _l('address') . '</b>: '. $purchase_order->suppliers_address.'</p>';
 $detail .= '<p><b>' . _l('company_vat_number') . '</b>: '. $purchase_order->suppliers_vat.'</p>';
 
+$pdf->writeHTMLCell($dimensions['wk'] - $dimensions['lm'], '', '', $y, $detail, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 
-// $detail  = _l('purchase_suggested_code').': ' . get_option('prefix_purchase_suggested').$purchase_suggested->code . '</b> <br /> <br />';
-// $detail .= _l('purchase_suggested_name').': ' . $purchase_suggested->name . '<br /> <br />';
-// $detail .= _l('purchase_suggested_date').': ' . $purchase_suggested->date . '<br /> <br />';
-// $detail .= _l('purchase_suggested_reason').': ' . $purchase_suggested->reason . '<br /> <br />';
-// // $detail .= _l('purchase_suggested_status').': <b>' . ($purchase_suggested->status == 1 ? "Đã duyệt" : "Chưa duyệt") . '</b> <br /> <br /> <br />';
 
-$pdf->writeHTMLCell($dimensions['wk'] - $dimensions['lm'], '', '', $y+30, $detail, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+
+
+
 // Thông tin Kho hàng và nhân viên
 $tblTable = '
 <table width="100%" cellspacing="0" cellpadding="5">
@@ -139,19 +171,20 @@ $tblHtml = '
     </tr>
         ';
 // Items
-$tblHtml .= '<tbody>';
 
 $i=0;
 $totalPrice = 0;
 
 foreach($purchase_order->products as $value) {
+    // print_r($value);
+    // exit();
     $i++;
     $tblHtml .= '
         <tr>
             <td>'.$i.'</td>
             <td>'.$value->product_code.'</td>
-            <td>'.$value->product_name.'</span></td>
-            <td>'.$value->product_unit.'</td>
+            <td>'.$value->product_code.'</td>
+            <td>'.$value->unit.'</td>
             <td style="text-align:center">'.number_format($value->product_quantity).'</td>
             <td style="text-align:right">'.number_format($value->product_price_buy).'</td>
             <td>'.$value->rate.'</td>
@@ -160,6 +193,7 @@ foreach($purchase_order->products as $value) {
     ';
     $totalPrice += ($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* $value->rate);
 }
+
 $tblHtml .= '
         <tr>
             <td colspan="5" style="text-align: right">'._l('purchase_total_price').'</td>
@@ -170,10 +204,11 @@ $tblHtml .= '
             <td colspan="3" style="text-align: right">' . number_format($i). '</td>
         </tr>
 ';
-$tblHtml .= '</tbody>';
 $tblHtml .= '</table>';
 $pdf->writeHTML($tblHtml, true, false, false, false, '');
 
+// print_r($tblHtml);
+// exit();
 
 // // $detail = _l('user_head').': <b>' . $purchase_suggested->user_head_name . '</b> <br /> <br />';
 // // $detail .= _l('user_admin').': <b>' . $purchase_suggested->user_admin_name . '</b> <br /> <br />';

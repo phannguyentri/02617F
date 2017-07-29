@@ -52,6 +52,8 @@ class Invoice_items extends Admin_controller
                 $data                 = $this->input->post();
                 $data['price']=str_replace('.','',$data['price']);
                 $data['price_buy']=str_replace('.','',$data['price_buy']);
+                $data['minimum_quantity']=str_replace('.','',$data['minimum_quantity']);
+                $data['maximum_quantity']=str_replace('.','',$data['maximum_quantity']);
                 $save_and_add_contact = false;
                 // Category 4rd level
                 if(is_array($data['category_id'])) {
@@ -88,6 +90,9 @@ class Invoice_items extends Admin_controller
                 $data = $this->input->post();
                 $data['price']=str_replace('.','',$data['price']);
                 $data['price_buy']=str_replace('.','',$data['price_buy']);
+                $data['minimum_quantity']=str_replace('.','',$data['minimum_quantity']);
+                $data['maximum_quantity']=str_replace('.','',$data['maximum_quantity']);
+                
                 $data['itemid'] = $id;
                 $item = $this->invoice_items_model->get_full($id);
                 if(is_array($data['category_id'])) {

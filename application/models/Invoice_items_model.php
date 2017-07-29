@@ -232,6 +232,13 @@ class Invoice_items_model extends CRM_Model
      */
     public function delete($id)
     {
+        // kiểm tra hàng tồn trong kho
+        $this->db->where('product_id', $id);
+        $items = $this->db->get('tblwarehouses_products')->result();
+        if(count($items) > 0) {
+            return false;
+        }
+        // Final
         $this->db->where('id', $id);
         $this->db->delete('tblitems');
         if ($this->db->affected_rows() > 0) {

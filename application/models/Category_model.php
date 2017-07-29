@@ -40,6 +40,14 @@ class Category_model extends CRM_Model
         }
         return array();
     }
+    public function get_full_childs_id($parent_id, &$result) {
+        array_push($result, $parent_id);
+        $this->db->where('category_parent', $parent_id);
+        $items = $this->db->get('tblcategories')->result();
+        foreach($items as $value) {
+            $this->get_full_childs_id($value->id, $result);
+        }
+    }
     public function get_single($id) {
         if(is_numeric($id)) {
             $this->db->where('id', $id);

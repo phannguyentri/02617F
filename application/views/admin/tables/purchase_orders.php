@@ -43,7 +43,7 @@ foreach ($rResult as $aRow) {
     {
         $options=icon_btn('purchase_suggested/convert_to_order/'. $aRow['tblpurchase_suggested.id'] , 'exchange', 'btn-default');
     }
-    
+    $options .= icon_btn('purchase_orders/detail_pdf/'. $aRow['tblorders.id'] .'?pdf=true' , 'print', 'btn-default', array('target'=>'_blank'));
    $row[] = $options;
 
    $output['aaData'][] = $row;

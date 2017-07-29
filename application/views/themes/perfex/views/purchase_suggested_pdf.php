@@ -58,6 +58,34 @@ $info_left_column .= pdf_logo_url();
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_column, 0, 'J', 0, 0, '', '', true, 0, true, true, 0);
 // write the second column
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
+
+
+$invoice_info = '<b>' . get_option('invoice_company_name') . '</b><br />';
+$invoice_info .= get_option('invoice_company_address') . '<br/>';
+if (get_option('invoice_company_city') != '') {
+    $invoice_info .= get_option('invoice_company_city') . ', ';
+}
+$invoice_info .= get_option('invoice_company_country_code') . ' ';
+$invoice_info .= get_option('invoice_company_postal_code') . ' ';
+
+if (get_option('invoice_company_phonenumber') != '') {
+    $invoice_info .= '<br />' . get_option('invoice_company_phonenumber');
+}
+if(get_option('company_vat') != ''){
+    $invoice_info .= '<br />'.get_option('company_vat');
+}
+// check for company custom fields
+$custom_company_fields = get_company_custom_fields();
+if (count($custom_company_fields) > 0) {
+    $invoice_info .= '<br />';
+}
+foreach ($custom_company_fields as $field) {
+    $invoice_info .= $field['label'] . ': ' . $field['value'] . '<br />';
+}
+$pdf->writeHTMLCell(($swap == '1' ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y+40, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+
+
+
 $pdf->ln(10);
 $title = _l('purchase_suggested');
 $title = mb_strtoupper($title, "UTF-8");
@@ -74,10 +102,10 @@ $detail .= _l('purchase_suggested_date').': ' . $purchase_suggested->date . '<br
 $detail .= _l('purchase_suggested_reason').': ' . $purchase_suggested->reason . '<br /> <br />';
 // $detail .= _l('purchase_suggested_status').': <b>' . ($purchase_suggested->status == 1 ? "Đã duyệt" : "Chưa duyệt") . '</b> <br /> <br /> <br />';
 
-$pdf->writeHTMLCell($dimensions['wk'] - $dimensions['lm'] - 20, '', '', $y, $detail, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+$pdf->writeHTMLCell($dimensions['wk'] - $dimensions['lm'] - 20, '', '', $y, $detail, 0, 0, false, true, ($swap == '1' ? 'R' : 'L'), true);
 
 // The Table
-$pdf->Ln(60);
+$pdf->Ln(80);
 $item_width = 38;
 // If show item taxes is disabled in PDF we should increase the item width table heading
 if (get_option('show_tax_per_item') == 0) {
@@ -134,7 +162,7 @@ $tblhtml .= '
 ';
 $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
-$pdf->writeHTML($tblhtml, true, false, false, false, '');
+$pdf->writeHTMLCell($dimensions['wk'] - $dimensions['lm'] - 20, '', '', $y+100, $tblhtml, false, true, 'L', true);
 
 
 // $detail = _l('user_head').': <b>' . $purchase_suggested->user_head_name . '</b> <br /> <br />';
