@@ -42,6 +42,36 @@ function getMaxID($id,$table)
     }
     return $CI->perfex_base->getMaxID($id,$table);
 }
+
+function getProvince($id)
+{
+   
+    $CI =& get_instance();
+    if (!class_exists('perfex_base')) {
+        $CI->load->library('perfex_base');
+    }
+    return $CI->perfex_base->getProvince($id);
+}
+
+function getDistrict($id)
+{
+   
+    $CI =& get_instance();
+    if (!class_exists('perfex_base')) {
+        $CI->load->library('perfex_base');
+    }
+    return $CI->perfex_base->getDistrict($id);
+}
+
+function getWard($id)
+{
+   
+    $CI =& get_instance();
+    if (!class_exists('perfex_base')) {
+        $CI->load->library('perfex_base');
+    }
+    return $CI->perfex_base->getWard($id);
+}
 /**
  * Check if contact id passed is primary contact
  * If you dont pass $contact_id the current logged in contact will be checked
@@ -257,6 +287,34 @@ function get_option($name)
     }
     return $CI->perfex_base->get_option($name);
 }
+
+// function getProvince($id)
+// {
+   
+//     $CI =& get_instance();
+//     if (!class_exists('perfex_base')) {
+//         $CI->load->library('perfex_base');
+//     }
+//     return $CI->perfex_base->getProvince($id);
+// }
+// function getDistrict($id)
+// {
+   
+//     $CI =& get_instance();
+//     if (!class_exists('perfex_base')) {
+//         $CI->load->library('perfex_base');
+//     }
+//     return $CI->perfex_base->getDistrict($id);
+// }
+// function getAward($id)
+// {
+   
+//     $CI =& get_instance();
+//     if (!class_exists('perfex_base')) {
+//         $CI->load->library('perfex_base');
+//     }
+//     return $CI->perfex_base->getAward($id);
+// }
 /**
  * Get option value from database
  * @param  string $name Option name
@@ -432,7 +490,6 @@ function logActivity($description, $staffid = NULL)
  */
 function add_main_menu_item($options = array(), $parent = '')
 {
-    var_dump($parent);die;
     $default_options = array(
         'name',
         'permission',

@@ -127,6 +127,33 @@ class Perfex_Base
         }
         return '';
     }
+
+    public function getProvince($id)
+    {
+        
+        if (isset($id)) {
+            $this->_instance->db->where('provinceid',$id);
+            return $this->_instance->db->get('province')->row();
+        }
+        return false;
+    }
+
+    public function getDistrict($id)
+    {        
+        if (isset($id)) {
+            $this->_instance->db->where('districtid',$id);
+            return $this->_instance->db->get('district')->row();
+        }
+        return false;
+    }
+    public function getWard($id)
+    {        
+        if (isset($id)) {
+            $this->_instance->db->where('wardid',$id);
+            return $this->_instance->db->get('ward')->row();
+        }
+        return false;
+    }
     /**
      * Function that gets option based on passed name
      * @param  string $name
@@ -154,6 +181,20 @@ class Perfex_Base
         }
         return '';
     }
+
+    
+
+    // public function getAward($id)
+    // {
+        
+    //     if (is_numeric($id) 
+    //     {           
+    //         $this->_instance->db->where('districtid', $id);
+    //         return $this->_instance->db->get('district')->row();
+    //     }
+    //     return false;
+    // }
+
     /**
      * Add new quick action data
      * @param array $item

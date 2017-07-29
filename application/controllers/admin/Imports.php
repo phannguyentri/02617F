@@ -68,7 +68,8 @@ class Imports extends Admin_controller
 
         } else {
             $data['item'] = $this->imports_model->getImportByID($id);
-            // var_dump($data['item']);die();
+            $data['warehouse_id']=$data['item']->items[0]->warehouse_id;
+            $data['warehouse_type']=$this->warehouse_model->getWarehouses($data['warehouse_id'])->kindof_warehouse;
             if (!$data['item']) {
                 blank_page('Purchase Not Found');
             }
@@ -136,7 +137,9 @@ class Imports extends Admin_controller
 
         } else {
             $data['item'] = $this->imports_model->getImportByID($id);
-            // var_dump($data['item']);die();
+            
+            $data['warehouse_id']=$data['item']->items[0]->warehouse_id;
+            $data['warehouse_type']=$this->warehouse_model->getWarehouses($data['warehouse_id'])->kindof_warehouse;
             if (!$data['item']) {
                 blank_page('Purchase Not Found');
             }
@@ -251,7 +254,7 @@ class Imports extends Admin_controller
         }
         $invoice        = $this->imports_model->getImportByID($id);
         $invoice_number = $invoice->prefix.$invoice->code;
-        
+
         $pdf            = import_detail_pdf($invoice);
         $type           = 'D';
         if ($this->input->get('pdf') || $this->input->get('print')) {

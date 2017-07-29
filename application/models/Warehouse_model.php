@@ -48,11 +48,12 @@ class Warehouse_model extends CRM_Model
 
     public function getWarehouses($id = '')
     {
+
         $this->db->select('tblwarehouses.*');
         $this->db->from('tblwarehouses');
         if (is_numeric($id)) 
         {
-            $this->db->where('id', $id);
+            $this->db->where('warehouseid', $id);
             return $this->db->get()->row();
         }
         else 

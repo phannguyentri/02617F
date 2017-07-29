@@ -2,7 +2,6 @@
 <div id="wrapper">
  <div class="content">
    <div class="row">
-
   <div class="col-md-12">
    <div class="panel_s">
      <div class="panel-body">
@@ -13,10 +12,7 @@
       <div class="clearfix"></div>
         <?php 
         } ?>
-        <!-- Product information -->
-        
-
-  <h4 class="bold no-margin"><?php echo (isset($item) ? _l('Sửa phiếu điều chỉnh kho') : _l('Tạo phiếu điều chỉnh kho')); ?></h4>
+  <h4 class="bold no-margin"><?php echo (isset($item) ? _l('edit_sale_order') : _l('add_sale_order')); ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
@@ -51,7 +47,7 @@
         <ul class="nav nav-tabs profile-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#item_detail" aria-controls="item_detail" role="tab" data-toggle="tab">
-                    <?php echo _l('Chi tiết phiếu điều chỉnh kho'); ?>
+                    <?php echo _l('sale_detail'); ?>
                 </a>
             </li>
         </ul>
@@ -66,26 +62,26 @@
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 _buttons">
                     <div class="pull-right">
                         <?php if( isset($item) ) { ?>
-                        <a href="<?php echo admin_url('imports/detail_pdf/' . $item->id . '?print=true') ?>" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="In" aria-describedby="tooltip652034"><i class="fa fa-print"></i></a>
-                        <a href="<?php echo admin_url('imports/detail_pdf/' . $item->id  ) ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Xem PDF"><i class="fa fa-file-pdf-o"></i></a>
+                        <a href="<?php echo admin_url('sales/pdf/' . $item->id . '?print=true') ?>" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="In" aria-describedby="tooltip652034"><i class="fa fa-print"></i></a>
+                        <a href="<?php echo admin_url('sales/pdf/' . $item->id  ) ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Xem PDF"><i class="fa fa-file-pdf-o"></i></a>
                         <?php } ?>
                     </div>
                 </div>
             </div>
             
-            <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'client-form', 'autocomplete' => 'off')); ?>
+            <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'sales-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
                   <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">            
                     <?php
                     $attrs_not_select = array('data-none-selected-text' => _l('system_default_string'));
                     ?>
                     <div class="form-group">
-                         <label for="number"><?php echo _l('adjustment_code'); ?></label>
+                         <label for="number"><?php echo _l('sale_code'); ?></label>
                          <div class="input-group">
                           <span class="input-group-addon">
-                          <?php $prefix =($item) ? $item->prefix : get_option('prefix_adjustment'); ?>
+                          <?php $prefix =($item) ? $item->prefix : get_option('prefix_sale'); ?>
                             <?=$prefix?>
-                            <?php echo form_hidden('rel_type', 'adjustment'); ?>
+                            <?php echo form_hidden('rel_type', 'sale_order'); ?>
                             <?=form_hidden('prefix',$prefix)?>    
                             </span>
                             <?php 
@@ -95,22 +91,22 @@
                                 }
                                 else
                                 {
-                                    $number=sprintf('%05d',getMaxID('id','tblimports')+1);
+                                    $number=sprintf('%05d',getMaxID('id','tblsales')+1);
                                 }
                             ?>
-                            <input type="text" name="code" class="form-control" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
+                            <input type="text" name="code" class="form-control" id="code" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
                           </div>
                     </div>
 
                     <?php $value = (isset($item) ? _d($item->date) : _d(date('Y-m-d')));?>
-                    <?php echo render_date_input('date','Ngày',$value); ?>
+                    <?php echo render_date_input('date','view_date',$value); ?>
                     
                     <?php
-                    $default_name = (isset($item) ? $item->name : "");
-                    echo render_input('name', _l('import_name'), $default_name);
+                    $default_name = (isset($item) ? $item->name : _l('sale_name'));
+                    echo form_hidden('name', _l('sale_name'), $default_name);
                     ?>
 
-                    <?php
+                    <!-- <?php
                     $selected=(isset($item) ? $warehouse_type : '');
                     echo render_select('warehouse_type',$warehouse_types,array('id','name'),'warehouse_type',$selected); 
                     ?>
@@ -118,7 +114,13 @@
                     <?php
                     $selected=(isset($item) ? $warehouse_id : '');
                     echo render_select('warehouse_id',$warehouses,array('warehouseid','warehouse'),'warehouse_name',$selected); 
+                    ?> -->
+
+                    <?php
+                    $selected=(isset($item) ? $item->customer_id : '');
+                    echo render_select('customer_id',$customers,array('userid','company'),'client',$selected); 
                     ?>
+
 
                     <?php 
                     $reason = (isset($item) ? $item->reason : "");
@@ -166,7 +168,7 @@
                                         <th width="10%" class="text-left"><?php echo _l('item_unit'); ?></th>
                                         <th width="10%" class="text-left"><?php echo _l('item_quantity'); ?></th>
                                         
-                                        <th width="10%" class="text-left"><?php echo _l('item_price_buy'); ?></th>
+                                        <th width="10%" class="text-left"><?php echo _l('item_price'); ?></th>
                                         <th width="10%" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
                                         <th width="15%" class="text-left"><?php echo _l('item_specification'); ?></th>
                                         <th></th>
@@ -275,7 +277,7 @@
 </div>
 <?php init_tail(); ?>
 <script>
-    _validate_form($('.client-form'),{code:'required',warehouse_type:'required',warehouse_id:'required'});
+    _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required'});
     
     var itemList = <?php echo json_encode($items);?>;
 
@@ -388,7 +390,7 @@
             //console.log(trBar.find('td:nth-child(2) > input'));
             
             trBar.find('td:first > input').val(itemFound.id);
-            trBar.find('td:nth-child(2)').text(itemFound.name);
+            trBar.find('td:nth-child(2)').text(itemFound.name+' ('+itemFound.prefix+itemFound.code+')');
             trBar.find('td:nth-child(3)').text(itemFound.unit_name);
             trBar.find('td:nth-child(3) > input').val(itemFound.unit);
             trBar.find('td:nth-child(4) > input').val(1);

@@ -1247,6 +1247,43 @@ function format_status_adjustment($id)
             $class = 'label label-' . $label;
             return '<span class="inline-block ' . $class . '">' . $status_name . '</span>';
 }
+function format_status_sale($id)
+{
+
+        $label = get_status_label($id);
+        if ($id == 2) {
+            $label = 'light-green';
+            $status_name="Đơn đặt hàng đã duyệt";
+        }
+        else if ($id == 1) {
+                $label = 'info';
+                $status_name="Đơn đặt hàng được xác nhận";
+            } else if ($id == 0) {
+                $label = 'warning';
+                $status_name="Đơn đặt hàng chưa được xác nhận";
+            }
+            $class = 'label label-' . $label;
+            return '<span class="inline-block ' . $class . '">' . $status_name . '</span>';
+}
+
+function format_status_export($id)
+{
+
+        $label = get_status_label($id);
+        if ($id == 2) {
+            $label = 'light-green';
+            $status_name="Phiếu xuất kho đã duyệt";
+        }
+        else if ($id == 1) {
+                $label = 'info';
+                $status_name="Phiếu xuất kho được xác nhận";
+            } else if ($id == 0) {
+                $label = 'warning';
+                $status_name="Phiếu xuất kho chưa được xác nhận";
+            }
+            $class = 'label label-' . $label;
+            return '<span class="inline-block ' . $class . '">' . $status_name . '</span>';
+}
 /**
  * Function that format task status for the final user
  * @param  string  $id    status id

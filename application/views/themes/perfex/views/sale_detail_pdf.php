@@ -97,26 +97,24 @@ $pdf->ln(5);
 $pdf->writeHTMLCell((true ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 $pdf->ln(20);
 // Set Head
-if($invoice->rel_type=='adjustment')
-{
-    $plan_name=_l('adjustments');
-}
-if($invoice->rel_type=='internal')
-{
-    $plan_name=_l('internals');
-}
+$plan_name=_l('sales');
 
 $pdf->SetFont($font_name, 'B', 20);
 $pdf->Cell(0, 0, mb_strtoupper($plan_name, 'UTF-8') , 0, 1, 'C', 0, '', 0);
-$pdf->ln(10);
+// $pdf->ln(10);
 //Set purchase no
 // var_dump($pdf->get_fonts_list());die();
 // $pdf->SetFont($font_name, 'B', $font_size);
 // $pdf->MultiCell(0, 0, '<b>Kế hoạch: #' . $invoice_number . '</b>' , 0, 'L', 0, 0, '', '', true, 0, true, false, 0);
 // $pdf->ln(4);
-// //Set date
-// $pdf->Cell(0, 0, _l('Ngày: ')._d($invoice->date) , 0, 1, 'L', 0, '', 0);
+//Set code
+$pdf->SetFont($font_name, 'I', $font_size);
+$pdf->Cell(0, 0, _l('code_no').($invoice_number) , 0, 1, 'C', 0, '', 0);
 // $pdf->ln(4);
+//Set date
+$pdf->SetFont($font_name, 'I', $font_size);
+$pdf->Cell(0, 0, _l('view_date').': '._d($invoice->date) , 0, 1, 'C', 0, '', 0);
+$pdf->ln(4);
 
 
 
@@ -151,19 +149,40 @@ $pdf->ln(10);
 
 //Set detail
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('Mã phiếu: ').$invoice_number , 0, 1, 'L', 0, '', 0);
-$pdf->ln(4);
+$pdf->Cell(0, 0, _l('customer_name').': '.$customer->company , 0, 1, 'L', 0, '', 0);
+$pdf->ln(2);
+$adress1='';
+$adress2=array();
+if($customer->address_building){$adress2[]=_l('Tòa nhà ').$customer->address_building;}
+if($customer->address_home_number){$adress2[]=_l('Số ').$customer->address_home_number;}
+if($customer->address_town){$adress2[]=_l('Đường ').$customer->address_town;}
+if($customer->address_ward){$adress2[]=_l('Phường/xã ').getWard($customer->address_ward)->name;}
+if($customer->state){$adress2[]=_l('Quận/huyện ').getDistrict($customer->state)->name;}
+if($customer->city){$adress2[]=_l('Tỉnh/tp ').getProvince($customer->city)->name;}
+$address=($adress1)? $adress1 : implode(', ', $adress2);
+$shipping_address=array();
+if($customer->shipping_building){$adress2[]=_l('Tòa nhà ').$customer->shipping_building;}
+if($customer->shipping_home_number){$adress2[]=_l('Số ').$customer->shipping_home_number;}
+if($customer->shipping_street){$adress2[]=_l('Đường ').$customer->shipping_street;}
+if($customer->shipping_ward){$adress2[]=_l('Phường/xã ').getWard($customer->shipping_ward)->name;}
+if($customer->shipping_state){$adress2[]=_l('Quận/huyện ').getDistrict($customer->shipping_state)->name;}
+if($customer->shipping_city){$adress2[]=_l('Tỉnh/tp ').getProvince($customer->shipping_city);}
+$pdf->SetFont($font_name, '', $font_size);
+// $pdf->Cell(0, 0, _l('address').': '.'<div width="100%">'.$address.'</div>', 0, 1, 'L', 0, '', 0);
+// $pdf->writeHTMLCell(0, '', '', $y, $address, 0, 0, false, true, 'C', true);
+$pdf->writeHTML(_l('address').': '.'<div width="100%">'.$address.'</div>', true, false, false, false, '');
+$pdf->ln(2);
 
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('Ngày lập: ')._d($invoice->date) , 0, 1, 'L', 0, '', 0);
-$pdf->ln(4);
+$pdf->Cell(0, 0, _l('tel').': '.$customer->phonenumber , 0, 1, 'L', 0, '', 0);
+$pdf->ln(2);
 
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('Người tạo: ').$invoice->creater , 0, 1, 'L', 0, '', 0);
-$pdf->ln(4);
+$pdf->Cell(0, 0, _l('fax').': '.$customer->fax , 0, 1, 'L', 0, '', 0);
+$pdf->ln(2);
 
-$pdf->Cell(0, 0, _l('Ghi chú: ').clear_textarea_breaks($invoice->reason) , 0, 1, 'L', 0, '', 0);
-$pdf->ln(4);
+$pdf->Cell(0, 0, _l('shipping_address').': '.implode(', ', $shipping_address) , 0, 1, 'L', 0, '', 0);
+$pdf->ln(2);
 
 // Bill to
 // $client_details = '<b>' . _l('invoice_bill_to') . '</b><br />';

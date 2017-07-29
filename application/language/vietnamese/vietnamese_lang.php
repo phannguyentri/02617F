@@ -3677,14 +3677,47 @@ $lang['vat_no'] = "Mã số thuế";
 $lang['Tel'] = "Tel";
 $lang['Fax'] = "Fax";
 $lang['creater']                   = "Người lập";
-
-
-
 $lang['warehouse_info'] = "Thông tin kho";
-
 $lang['orders_create_heading'] = "Tạo đơn hàng";
 $lang['orders_code'] = 'Mã đơn đặt hàng';
 $lang['orders_explan'] = "Diễn giải";
 $lang['orders_date_create'] = "Ngày lập phiếu";
 $lang['orders_date_import'] = "Ngày nhập dự kiến";
 $lang['orders_user_create'] = "Người lập phiếu";
+
+$lang['sale_orders'] = "Đơn đặt hàng";
+$lang['add_sale_order'] = "Thêm đơn đặt hàng";
+$lang['sales'] = "Đơn đặt hàng";
+$lang['sale'] = "đơn đặt hàng";
+$lang['sale_detail'] = "Chi tiết đơn hàng";
+$lang['sale_code'] = "Mã phiếu đặt hàng";
+$lang['sale_name'] = "Phiếu Đặt Hàng";
+$lang['edit_sale_order'] = "Sửa đơn đặt hàng";
+$lang['code_no'] = "Phiếu số: ";
+$lang['customer_name'] = "Tên khách hàng";
+$lang['address'] = "Địa chỉ";
+$lang['tel'] = "Điện thoại";
+$lang['fax'] = "Fax";
+$lang['email'] = "Email";
+$lang['als_export_warehouses'] = "Xuất Hàng";
+$lang['sale_export_warehouses'] = "Xuất kho bán hàng";
+$lang['transfer_export_warehouses'] = "Xuất chuyển kho";
+$lang['edit_export_order'] = "Sửa phiếu xuất kho";
+$lang['orders_user_create'] = "Người lập phiếu";
+$lang['export_detail'] = "Chi tiết phiếu xuất kho";
+$lang['exports'] = "Phiếu xuất kho";
+$lang['export_orders'] = "Phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['export_code'] = "Mã phiếu xuất kho";
+$lang['staffs'] = "Nhân viên nhận hàng";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['export_name'] = "Phiếu Xuất Kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
+$lang['add_export_order'] = "Thêm phiếu xuất kho";
