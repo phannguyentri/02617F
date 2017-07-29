@@ -22,6 +22,24 @@ class Category_model extends CRM_Model
             return $this->db->get('tblcategories')->result_array();
         }
     }
+    public function get_level1() {
+        $this->db->where('category_parent', '0');
+        $items = $this->db->get('tblcategories')->result_array();
+        if($items) {
+            return $items;
+        }
+        return false;
+    }
+    public function get_childs($parent_id) {
+        if(is_numeric($parent_id)) {
+            $this->db->where('category_parent', $parent_id);
+            $items = $this->db->get('tblcategories')->result_array();
+            if($items) {
+                return $items;
+            }
+        }
+        return array();
+    }
     public function get_single($id) {
         if(is_numeric($id)) {
             $this->db->where('id', $id);

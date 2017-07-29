@@ -17,8 +17,9 @@ $aColumns     = array(
 // var_dump($aColumns);die;
 $sIndexColumn = "id";
 $sTable       = 'tblitems';
+$where = array(
 
-
+);
 $join             = array(
     'LEFT JOIN tbltaxes ON tbltaxes.id = tblitems.tax',     
     'LEFT JOIN tblitems_groups ON tblitems_groups.id = tblitems.group_id',
@@ -30,7 +31,27 @@ $additionalSelect = array(
     'taxrate',
     'group_id',
     );
-$result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, array(), $additionalSelect);
+if($this->_instance->input->post()) {
+    $filter_category_1 = $this->_instance->input->post('category_1');
+    $filter_category_2 = $this->_instance->input->post('category_2');
+    $filter_category_3 = $this->_instance->input->post('category_3');
+    $filter_category_4 = $this->_instance->input->post('category_4');
+
+    if(!is_null($filter_category_4) && $filter_category_4 != "") {
+        array_push($where, 'AND tblitems.category_id='.$filter_category_4);
+    }
+    else if(!is_null($filter_category_3) && $filter_category_3 != "") {
+        array_push($where, 'AND tblitems.category_id='.$filter_category_3);
+    }
+    else if(!is_null($filter_category_2) && $filter_category_2 != "") {
+        array_push($where, 'AND tblitems.category_id='.$filter_category_2);
+    }
+    else if(!is_null($filter_category_1) && $filter_category_1 != "") {
+        array_push($where, 'AND tblitems.category_id='.$filter_category_1);
+    } 
+    
+}
+$result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect);
 $output           = $result['output'];
 $rResult          = $result['rResult'];
 

@@ -28,7 +28,8 @@ class Categories extends Admin_controller
         
         $data['categories'] = [];
         $this->category_model->get_by_id(0,$data['categories']);
-        // var_dump($data['roles']);die();
+        $data['category_1'] = $this->category_model->get_level1();
+
         $data['title'] = _l('Danh mục sản phẩm');
         $this->load->view('admin/categories/manage', $data);
     }
@@ -102,6 +103,9 @@ class Categories extends Admin_controller
     public function get_row_category($id)
     {
         echo json_encode($this->category_model->get_row_category($id));
+    }
+    public function get_childs($id) {
+        echo json_encode($this->category_model->get_childs($id));
     }
     public function import()
     {

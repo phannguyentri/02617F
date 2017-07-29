@@ -3,29 +3,18 @@
   <div class="content">
     <div class="row">
       <div class="col-md-12">
-        <?php if(has_permission('items','','create')){ ?>
-        <div class="panel_s">
-          <div class="panel-body _buttons">
-            <a href="<?php echo admin_url('purchase_suggested/detail') ?>" class="btn btn-info pull-left"><?php echo _l('purchase_suggested_add_heading'); ?></a>
-          </div>
-
-        </div>
-        <?php } ?>
+        
         <div class="panel_s">
           <div class="panel-body">
             <div class="clearfix"></div>
             <?php render_datatable(array(
               "ID",
-              _l('purchase_suggested_code'),
-              _l('purchase_suggested_name'),
-              _l('Người đề nghị'),
-              _l('purchase_suggested_status'),
-              _l('purchase_total_items'),
-              _l('Được duyệt bởi'),              
-              _l('purchase_suggested_date'),
+              _l('orders_code'),
+              _l('orders_date_create'),
+              _l('orders_user_create'),
               _l('actions'),              
               ),
-              'purchase-suggested'); ?>
+              'purchase-orders'); ?>
             </div>
           </div>
         </div>
@@ -93,29 +82,9 @@
 </div>
 <?php init_tail(); ?>
 <script>
-  function var_status(status,id)
-    {
-        dataString={id:id,status:status};
-        jQuery.ajax({
-            type: "post",
-            url:"<?=admin_url()?>purchase_suggested/update_status",
-            data: dataString,
-            cache: false,
-            success: function (response) {
-                response = JSON.parse(response);
-                if (response.success == true) {
-                    $('.table-purchase-suggested').DataTable().ajax.reload();
-                    alert_float('success', response.message);
-                }
-                return false;
-            }
-        });
-
-    }
-
 
   $(function(){
-    initDataTable('.table-purchase-suggested', '<?=admin_url('purchase_suggested')?>', [], [],'undefined',[0,'DESC']);
+    initDataTable('.table-purchase-orders', '<?=admin_url('purchase_orders')?>', [], [],'undefined',[0,'DESC']);
 
   });
 </script>

@@ -29,8 +29,6 @@ $join             = array(
 $additionalSelect = array(
     'CONCAT(user_head_id,",",user_admin_id) as confirm_ids'
     );
-// print_r($join);
-// exit();
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect, $order_by);
 
 $output           = $result['output'];
@@ -69,7 +67,7 @@ foreach ($rResult as $aRow) {
             $_data = '<a href="'.admin_url('purchase_suggested/detail/').$aRow['tblpurchase_suggested.id'].'">'.$_data.'</a>';
         }
         if($aColumns[$i] == 'tblpurchase_suggested.code') {
-            $_data = '<a href="'.admin_url('purchase_suggested/detail/').$aRow['tblpurchase_suggested.id'].'">'.get_option('prefix_purchase_suggested').$aRow['tblpurchase_suggested.code'].'</a>';
+            $_data = '<a href="'.admin_url('purchase_suggested/detail/').$aRow['tblpurchase_suggested.id'].'">'.$aRow['tblpurchase_suggested.code'].'</a>';
         }
         if($aColumns[$i] == 'tblpurchase_suggested.status') {
             if($aRow['tblpurchase_suggested.status']==0)
@@ -116,7 +114,7 @@ foreach ($rResult as $aRow) {
     $options = '';
     if(is_admin() && $aRow['tblpurchase_suggested.status']==2 && $aRow['converted']==0)
     {
-        $options=icon_btn('purchase_suggested/convert_to_order/'. $aRow['tblpurchase_suggested.id'] , 'exchange', 'btn-default');
+        $options=icon_btn('purchase_orders/convert/'. $aRow['tblpurchase_suggested.id'] , 'exchange', 'btn-default');
     }
     // if(has_permission('items','','edit')){
         $options .= icon_btn('purchase_suggested/detail_pdf/' . $aRow['tblpurchase_suggested.id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));

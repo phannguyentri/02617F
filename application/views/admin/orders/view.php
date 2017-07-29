@@ -15,7 +15,7 @@
         <!-- Product information -->
         
 
-          <h4 class="bold no-margin"><?php echo _l('orders_create_heading') ?></h4>
+          <h4 class="bold no-margin"><?php echo _l('orders_view_heading') ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
@@ -38,15 +38,10 @@
                 
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 _buttons">
                     <div class="pull-right">
-                        <?php if( isset($item) ) { ?>
-                        <a href="<?php echo admin_url('purchase_suggested/detail_pdf/' . $item->id . '?print=true') ?>" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="In" aria-describedby="tooltip652034"><i class="fa fa-print"></i></a>
-                        <a href="<?php echo admin_url('purchase_suggested/detail_pdf/' . $item->id  ) ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Xem PDF"><i class="fa fa-file-pdf-o"></i></a>
-                        <?php } ?>
                     </div>
                 </div>
             </div>
             
-            <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'client-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
                   <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">            
                     <?php
@@ -56,60 +51,35 @@
                     <!-- prefix_purchase_order -->
                     <div class="form-group">
                         <label for="number"><?php echo _l('orders_code'); ?></label>  
-                                    <?php
-                                    if(!isset($item)) {
-                                    ?>
-                                    <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <?php
-                                        echo get_option('prefix_purchase_order');
-                                        ?>
-                                    </span>
-                                    <?php
-                                    }
-                                    ?>
-                                    <?php 
-                                        // var_dump($purchase);
-                                        if($item)
-                                        {
-
-                                            $number=$item->code;
-                                        }
-                                        else
-                                        {
-                                            $number=sprintf('%05d',getMaxID('id','tblorders')+1);
-                                        }
-                                    ?>
-                                    <input type="text" name="code" class="form-control" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
-                                  <?php if(!isset($item)) { ?>
-                                  </div>
-                                  <?php } ?>
-                            </div>
+                                    
+                        <input type="text" name="code" class="form-control" value="<?=$item->code ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
+                                  
+                    </div>
                     
                     <div class="form-group">
                         <label for="id_purchase_suggested"><?php echo _l('purchase_suggested_code') ?></label>
-                        <input type="hidden" name="id_purchase_suggested" class="form-control" value="<?php echo $purchase_suggested->id ?>">
-                        <input type="text" class="form-control" value="<?php echo $purchase_suggested->code ?>" readonly>
+                        <input type="text" class="form-control" value="<?php echo $item->code_purchase_suggested ?>" readonly>
                     </div>
 
+                    
                     <?php 
-                        $default_supplier = "";
-                        echo render_select('id_supplier', $suppliers, array('userid', 'company'), 'suppliers', $default_supplier);
+                        $default_supplier = $item->id_supplier;
+                        echo render_select('id_supplier', $suppliers, array('userid', 'company'), 'suppliers', $default_supplier, array('disabled'=>'disabled'));
                     ?>
                     <?php 
-                        $default_warehouse = "";
-                        echo render_select('id_warehouse', $warehouses, array('warehouseid', 'warehouse'), 'als_warehouses', $default_warehouse);
+                        $default_warehouse = $item->id_warehouse;
+                        echo render_select('id_warehouse', $warehouses, array('warehouseid', 'warehouse'), 'als_warehouses', $default_warehouse, array('disabled'=>'disabled'));
                     ?>
                     <?php
-                        $default_date_create = ( isset($item) ? _d($item->date_create) : _d(date('Y-m-d')));
-                        echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , 'date'); 
+                        $default_date_create = date("Y-m-d", strtotime($item->date_create));
+                        echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , array('readonly'=>'readonly')); 
                     ?>
                     <?php
-                        $default_date_import = ( isset($item) ? _d($item->date_import) : _d(date('Y-m-d')));
-                        echo render_date_input( 'date_import', 'orders_date_import' , $default_date_import , 'date'); 
+                        $default_date_import = date("Y-m-d", strtotime($item->date_import));
+                        echo render_date_input( 'date_import', 'orders_date_import' , $default_date_import, array('readonly'=>'readonly')); 
                     ?>
                     <?php 
-                    $reason = (isset($item) ? $item->reason : "");
+                    $reason = $item->explan;
                     echo render_textarea('explan', 'orders_explan', $reason, array(), array(), '', 'tinymce');
                     ?>
                 </div>
@@ -143,9 +113,9 @@
                                     <?php
                                     $i=0;
                                     $totalPrice=0;
-                                    if(isset($product_list) && count($product_list) > 0) {
+                                    if(isset($item->products) && count($item->products) > 0) {
                                         
-                                        foreach($product_list as $value) {
+                                        foreach($item->products as $value) {
                                         ?>
                                     <tr class="sortable item">
                                         <td>
@@ -194,13 +164,7 @@
                 <!-- End Customize from invoice -->
                 </div>
                 
-                <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
-                  <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
-                    <?php echo _l('convert'); ?>
-                </button>
-                <?php } ?>
               </div>
-            <?php echo form_close(); ?>
             </div>
         </div>
 
@@ -215,15 +179,6 @@
 </div>
 <?php init_tail(); ?>
 <script>
-    $(function() {
-        _validate_form($('.client-form'), {
-            id_supplier: 'required',
-            id_warehouse: 'required',
-            date: 'required',
-            date_import: 'required',
-            explan: 'required',
-        });
-    });
     //format currency
     function formatNumber(nStr, decSeperate=".", groupSeperate=",") {
         nStr += '';
