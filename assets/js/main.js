@@ -4595,7 +4595,7 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
         return true;
     });
     return false;
-}
+};
 // Get taxes dropdown selectpicker template / Causing problems with ajax becuase is fetching from server
 function get_taxes_dropdown_template(name, taxname) {
     jQuery.ajaxSetup({

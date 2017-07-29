@@ -351,7 +351,7 @@
         var td1 = $('<td><input type="hidden" name="items[' + uniqueArray + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
         var td3 = $('<td></td>');
-        var td4 = $('<td><input class="mainQuantity" type="number" name="items[' + uniqueArray + '][quantity]" value="" /></td>');
+        var td4 = $('<td><input style="width: 100px" class="mainQuantity" type="number" name="items[' + uniqueArray + '][quantity]" value="" /></td>');
         var td5 = $('<td></td>');
         var td6 = $('<td></td>');
         var td7 = $('<td></td>');
@@ -362,11 +362,11 @@
         td3.text($('tr.main').find('td:nth-child(3)').text());
         td4.find('input').val($('tr.main').find('td:nth-child(4) > input').val());
         
-        td5.text( $('tr.main').find('td:nth-child(5)').text() );
-        td6.text( $('tr.main').find('td:nth-child(6)').text() );
-        td7.text( $('tr.main').find('td:nth-child(7)').text() );
-        td8.text( $('tr.main').find('td:nth-child(8)').text() );
-        
+        td5.text( $('tr.main').find('td:nth-child(5)').text());
+        td6.text( $('tr.main').find('td:nth-child(6)').text());
+        td7.text( $('tr.main').find('td:nth-child(7)').val());
+        td8.text( $('tr.main').find('td:nth-child(8)').val());
+        console.log($('tr.main').find('td:nth-child(7)').selectpicker('val'))
         newTr.append(td1);
         newTr.append(td2);
         newTr.append(td3);
@@ -429,8 +429,9 @@
             trBar.find('td:nth-child(3) > input').val(itemFound.unit);
             trBar.find('td:nth-child(4) > input').val(1);
             trBar.find('td:nth-child(5)').text(formatNumber(itemFound.price_buy));
-            trBar.find('td:nth-child(6)').text(  formatNumber(itemFound.price_buy * 1) );
-            trBar.find('td:nth-child(7)').text(itemFound.specification);
+            trBar.find('td:nth-child(6)').text(formatNumber(itemFound.price_buy * 1) );
+            trBar.find('td:nth-child(7)');
+            trBar.find('td:nth-child(8)');
             isNew = true;
             $('#btnAdd').show();
         }

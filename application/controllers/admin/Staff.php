@@ -46,7 +46,7 @@ class Staff extends Admin_controller
                 if ($id) {
                     handle_staff_profile_image_upload($id);
                     set_alert('success', _l('added_successfuly', _l('staff_member')));
-                    redirect(admin_url('staff/member/' . $id));
+                    redirect(admin_url('staff'));
                 }
             } else {
                 if (!has_permission('staff', '', 'edit')) {
@@ -69,10 +69,11 @@ class Staff extends Admin_controller
                     } else if(isset($response['cant_remove_yourself_from_admin'])){
                         set_alert('warning', _l('staff_cant_remove_yourself_from_admin'));
                     }
+                    redirect(admin_url('staff/member/' . $id));
                 } elseif ($response == true) {
                    set_alert('success', _l('updated_successfuly', _l('staff_member')));
                }
-               redirect(admin_url('staff/member/' . $id));
+               redirect(admin_url('staff'));
             }
         }
         if ($id == '') {
