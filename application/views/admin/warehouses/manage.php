@@ -153,7 +153,7 @@
         "kind_of_warehouse" : "[name='filter_kindof_warehouse']",
         "product_category"  : "[name='product_category']",
         "products"          : "[name='products']",
-    }
+    };
     $(function(){
         initDataTable('.table-warehouses', window.location.href, [1], [1], filterList);
         $.each(filterList, (index, value) => {

@@ -68,7 +68,7 @@ $pdf->ln(20);
 // Get Y position for the separation
 $y            = $pdf->getY();
 
-$detail  = _l('purchase_suggested_code').': ' . get_option('prefix_purchase_suggested').$purchase_suggested->code . '</b> <br /> <br />';
+$detail  = _l('purchase_suggested_code').': ' . $purchase_suggested->code . '</b> <br /> <br />';
 $detail .= _l('purchase_suggested_name').': ' . $purchase_suggested->name . '<br /> <br />';
 $detail .= _l('purchase_suggested_date').': ' . $purchase_suggested->date . '<br /> <br />';
 $detail .= _l('purchase_suggested_reason').': ' . $purchase_suggested->reason . '<br /> <br />';

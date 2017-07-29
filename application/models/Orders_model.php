@@ -8,7 +8,16 @@ class Orders_model extends CRM_Model
     }
     public function get($id) {
         if(is_numeric($id)) {
+            $this->db->select('tblorders.*,tblsuppliers.company as suppliers_company
+            ,tblsuppliers.address as suppliers_address
+            ,tblsuppliers.vat as suppliers_vat
+            ,tblwarehouses.warehouse as warehouse_name
+            ,tblwarehouses.address as warehouse_address
+            ,tblstaff.fullname as user_fullname');
             $this->db->where('id', $id);
+            $this->db->join('tblsuppliers', 'tblsuppliers.userid = tblorders.id_supplier', 'left');
+            $this->db->join('tblwarehouses', 'tblwarehouses.warehouseid = tblorders.id_warehouse', 'left');
+            $this->db->join('tblstaff', 'tblstaff.staffid = tblorders.id_user_create', 'left');
             $item = $this->db->get('tblorders')->row();
             if($item) {
                 $item->products = $this->get_detail($id);
@@ -20,7 +29,8 @@ class Orders_model extends CRM_Model
     public function get_detail($order_id) {
         if(is_numeric($order_id)) {
             $this->db->where('order_id', $order_id);
-            $this->db->join('tblitems', 'tblitems.id = tblorders_detail.product_id', 'left');
+            $this->db->join('tblitems',     'tblitems.id = tblorders_detail.product_id', 'left');
+            $this->db->join('tblunits',     'tblunits.unitid = tblitems.unit', 'left');
             $items = $this->db->get('tblorders_detail')->result();
             return $items;
         }

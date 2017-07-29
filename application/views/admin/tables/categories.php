@@ -16,6 +16,23 @@ $where        = array(
 $join         = array(
     // 'LEFT JOIN tblroles  ON tblroles.roleid=tbldepartment.id_role'
 );
+
+if($this->_instance->input->post()) {
+    $filter_category_1 = $this->_instance->input->post('category_1');
+    $filter_category_2 = $this->_instance->input->post('category_2');
+    $filter_category_3 = $this->_instance->input->post('category_3');
+
+    if(!is_null($filter_category_3) && $filter_category_3 != "") {
+        array_push($where, 'AND category_parent='.$filter_category_3);
+    }
+    else if(!is_null($filter_category_2) && $filter_category_2 != "") {
+        array_push($where, 'AND category_parent='.$filter_category_2);
+    }
+    else if(!is_null($filter_category_1) && $filter_category_1 != "") {
+        array_push($where, 'AND category_parent='.$filter_category_1);
+    } 
+}
+
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where, array(
     // 'tblroles.name',
     // 'tblroles.roleid'

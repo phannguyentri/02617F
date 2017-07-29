@@ -21,7 +21,7 @@ class Invoice_items extends Admin_controller
         $data['taxes']        = $this->taxes_model->get();
         $data['items_groups'] = $this->invoice_items_model->get_groups();
         $data['items_units'] = $this->invoice_items_model->get_units();
-        
+        $data['category_1'] = $this->category_model->get_level1();
 
         $data['title'] = _l('invoice_items');
         $this->load->view('admin/invoice_items/manage', $data);

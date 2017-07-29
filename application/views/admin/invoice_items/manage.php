@@ -20,6 +20,30 @@
         </div>
         <?php } ?>
         <div class="panel_s">
+            <div class="panel-body">
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <?php 
+                        echo render_select('category_1', $category_1, array('id', 'category'), 'Danh mục cấp 1');
+                    ?>
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <?php 
+                        echo render_select('category_2', array(), array('id', 'category'), 'Danh mục cấp 2');
+                    ?>
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <?php 
+                        echo render_select('category_3', array(), array('id', 'category'), 'Danh mục cấp 3');
+                    ?>
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <?php 
+                        echo render_select('category_4', array(), array('id', 'category'), 'Danh mục cấp 4');
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="panel_s">
           <div class="panel-body">
             <div class="clearfix"></div>
             <?php render_datatable(array(
@@ -182,9 +206,40 @@
 <?php init_tail(); ?>
 <script>
   $(function(){
+    var filterList = {
+        "category_1" : "[name='category_1']",
+        "category_2" : "[name='category_2']",
+        "category_3" : "[name='category_3']",
+        "category_4" : "[name='category_4']",
+    };
+    initDataTable('.table-invoice-items', window.location.href, [4], [4], filterList,[0,'DESC']);
+    $.each(filterList, (key,value)=>{
+        $('select' + value).on('change', () => {
+            $('.table-invoice-items').DataTable().ajax.reload();
+        });
+    });
+    $(document).ready(()=>{
+        $('#category_1,#category_2,#category_3,#category_4').on('change', (e) => {
+            var id = $(e.currentTarget).val();
+            $(e.currentTarget).parents('.col-xs-3').nextAll().find('select[name^="category_"] option:gt(0)').remove();
+            $(e.currentTarget).parents('.col-xs-3').nextAll().find('select[name^="category_"]').selectpicker('refresh');
+            if(typeof(id) == 'undefined' || id == 0) return;
+            jQuery.ajax({
+                type: "post",
+                url:admin_url+"categories/get_childs/"+id,
+                data: '',
+                cache: false,
+                success: function (data) {
+                    data = JSON.parse(data);
+                    data.map(o => 
+                            $(e.currentTarget).parents('.col-xs-3').next().find('select[name^="category_"]').append('<option value='+o.id+'>'+o.category+'</option>')
+                    );
+                    $(e.currentTarget).parents('.col-xs-3').next().find('select[name^="category_"]').selectpicker('refresh');
+                },
+            });
+        });
 
-    initDataTable('.table-invoice-items', window.location.href, [4], [4],'undefined',[0,'DESC']);
-
+    });
     if(get_url_param('groups_modal')){
       // Set time out user to see the message
       setTimeout(function(){

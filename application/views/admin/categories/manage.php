@@ -16,6 +16,25 @@
                 </div>
                 <div class="panel_s">
                     <div class="panel-body">
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <?php 
+                                echo render_select('category_1', $category_1, array('id', 'category'), 'Danh mục cấp 1');
+                            ?>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <?php 
+                                echo render_select('category_2', array(), array('id', 'category'), 'Danh mục cấp 2');
+                            ?>
+                        </div>
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <?php 
+                                echo render_select('category_3', array(), array('id', 'category'), 'Danh mục cấp 3');
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel_s">
+                    <div class="panel-body">
                         <div class="clearfix"></div>
                         <?php render_datatable(array(
                             _l('id'),
@@ -83,7 +102,17 @@
     }
 
     $(function(){
-        initDataTable('.table-categories', window.location.href, [1], [1]);
+        var filterList = {
+            "category_1" : "[name='category_1']",
+            "category_2" : "[name='category_2']",
+            "category_3" : "[name='category_3']",
+        };
+        initDataTable('.table-categories', window.location.href, [1], [1], filterList);
+        $.each(filterList, (key,value)=>{
+            $('select' + value).on('change', () => {
+                $('.table-categories').DataTable().ajax.reload();
+            });
+        });
         _validate_form($('form'),{category:'required'},manage_contract_types);
         $('#type').on('hidden.bs.modal', function(event) {
             $('#additional').html('');
@@ -96,11 +125,13 @@
     function manage_contract_types(form) {
         var data = $(form).serialize();
         var url = form.action;
+        alert('reload000');
         $.post(url, data).done(function(response) {
             response = JSON.parse(response);
             if(response.success == true){
                 alert_float('success',response.message);
             }
+            alert('reload');
             $('.table-categories').DataTable().ajax.reload();
             $('#type').modal('hide');
         });
@@ -120,8 +151,29 @@
         $('#type').modal('show');
         $('.add-title').addClass('hide');
     }
-
     
+    $(document).ready(()=>{
+        $('#category_1,#category_2,#category_3').on('change', (e) => {
+            var id = $(e.currentTarget).val();
+            $(e.currentTarget).parents('.col-xs-4').nextAll().find('select[name^="category_"] option:gt(0)').remove();
+            $(e.currentTarget).parents('.col-xs-4').nextAll().find('select[name^="category_"]').selectpicker('refresh');
+            if(typeof(id) == 'undefined' || id == 0) return;
+            jQuery.ajax({
+                type: "post",
+                url:admin_url+"categories/get_childs/"+id,
+                data: '',
+                cache: false,
+                success: function (data) {
+                    data = JSON.parse(data);
+                    data.map(o => 
+                            $(e.currentTarget).parents('.col-xs-4').next().find('select[name^="category_"]').append('<option value='+o.id+'>'+o.category+'</option>')
+                    );
+                    $(e.currentTarget).parents('.col-xs-4').next().find('select[name^="category_"]').selectpicker('refresh');
+                },
+            });
+        });
+        
+    });
 
 </script>
 </body>

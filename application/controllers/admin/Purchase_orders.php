@@ -98,17 +98,17 @@ class Purchase_orders extends Admin_controller
     }
     public function detail_pdf($id='') {
         if (!$id) {
-            redirect(admin_url('purchase_suggested'));
+            redirect(admin_url('purchase_orders'));
         }
-        $purchase_suggested        = $this->purchase_suggested_model->get($id);
-        $purchase_suggested_name = ($purchase_suggested->name) ? $purchase_suggested->name : get_option('prefix_purchase_suggested').$purchase_suggested->code;
+        $purchase_order        = $this->orders_model->get($id);
+        $purchase_order_code = $purchase_order->code;
 
-        $pdf            = purchase_suggested_pdf($purchase_suggested);
+        $pdf            = purchase_orders_pdf($purchase_order);
         $type           = 'D';
         if ($this->input->get('pdf') || $this->input->get('print')) {
             $type = 'I';
         }
-        $pdf->Output(mb_strtoupper(slug_it($purchase_suggested_name)) . '.pdf', $type);
+        $pdf->Output(mb_strtoupper(slug_it($purchase_order_code)) . '.pdf', $type);
     }
 
     /* Delete purchase */

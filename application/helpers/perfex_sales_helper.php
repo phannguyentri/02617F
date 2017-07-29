@@ -1247,6 +1247,55 @@ function purchase_suggested_pdf($purchase_suggested, $tag = '') {
     return $pdf;
 }
 
+function purchase_orders_pdf($purchase_order, $tag = '') {
+    $CI =& get_instance();
+    $CI->load->library('pdf');
+    
+    $purchase_order_name = $purchase_order->code;
+    
+    $font_name      = get_option('pdf_font');
+    $font_size      = get_option('pdf_font_size');
+
+    if ($font_size == '') {
+        $font_size = 10;
+    }
+
+    $formatArray = get_pdf_format('pdf_format_invoice');
+    $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false,false,'invoice');
+
+    $pdf->SetTitle($purchase_order_name);
+    $CI->pdf->SetMargins(PDF_MARGIN_LEFT, 25, PDF_MARGIN_RIGHT);
+
+    $CI->pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    $pdf->SetAuthor(get_option('company'));
+    $pdf->SetFont($font_name, '', $font_size);
+    $pdf->setImageScale(1.53);
+    $pdf->setJPEGQuality(100);
+    $pdf->AddPage($formatArray['orientation'], $formatArray['format']);
+
+    if ($CI->input->get('print') == 'true') {
+        // force print dialog
+        $js="";
+        $js = 'print(true);';
+        $pdf->IncludeJS($js);
+    }
+
+    // $status = $invoice->status;
+    $swap   = get_option('swap_pdf_info');
+    // $CI->load->library('numberword', array(
+    //     'clientid' => $invoice->clientid
+    // ));
+    // $invoice = do_action('invoice_html_pdf_data', $invoice);
+    if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_purchase_order_pdf.php')) {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_purchase_order_pdf.php');
+    } else {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/purchase_order_pdf.php');
+    }
+
+    return $pdf;
+}
+
 /**
  * Prepare general estimate pdf
  * @since  Version 1.0.2
