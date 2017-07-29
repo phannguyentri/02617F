@@ -9,7 +9,7 @@ $aColumns     = array(
     'tblitems.short_name',
     'tblitems.description',
     'tblitems.price',
-    'tblitems.unit',
+    'tblunits.unit',
     'tblitems_groups.name',
     'tblitems.minimum_quantity',
     'tblitems.maximum_quantity',
@@ -23,7 +23,8 @@ $where = array(
 $join             = array(
     'LEFT JOIN tbltaxes ON tbltaxes.id = tblitems.tax',     
     'LEFT JOIN tblitems_groups ON tblitems_groups.id = tblitems.group_id',
-    'LEFT JOIN district ON district.districtid = tblitems.district_id'
+    'LEFT JOIN district ON district.districtid = tblitems.district_id',
+    'LEFT JOIN tblunits ON tblitems.unit = tblunits.unitid',
     );
 $additionalSelect = array(
     'tblitems.id',
@@ -39,15 +40,55 @@ if($this->_instance->input->post()) {
 
     if(!is_null($filter_category_4) && $filter_category_4 != "") {
         array_push($where, 'AND tblitems.category_id='.$filter_category_4);
+        $result=[];
+        $this->_instance->category_model->get_full_childs_id($filter_category_4, $result);
+        $sum_where = 'AND (';
+        foreach($result as $value) {
+            if($sum_where != 'AND (')
+                $sum_where.=' OR ';
+            $sum_where .= 'tblitems.category_id='.$value;
+        }
+        $sum_where .= ')';
+        array_push($where, $sum_where);
     }
     else if(!is_null($filter_category_3) && $filter_category_3 != "") {
         array_push($where, 'AND tblitems.category_id='.$filter_category_3);
+        $result=[];
+        $this->_instance->category_model->get_full_childs_id($filter_category_3, $result);
+        $sum_where = 'AND (';
+        foreach($result as $value) {
+            if($sum_where != 'AND (')
+                $sum_where.=' OR ';
+            $sum_where .= 'tblitems.category_id='.$value;
+        }
+        $sum_where .= ')';
+        array_push($where, $sum_where);
     }
     else if(!is_null($filter_category_2) && $filter_category_2 != "") {
-        array_push($where, 'AND tblitems.category_id='.$filter_category_2);
+        // array_push($where, 'AND tblitems.category_id='.$filter_category_2);
+        $result=[];
+        $this->_instance->category_model->get_full_childs_id($filter_category_2, $result);
+        $sum_where = 'AND (';
+        foreach($result as $value) {
+            if($sum_where != 'AND (')
+                $sum_where.=' OR ';
+            $sum_where .= 'tblitems.category_id='.$value;
+        }
+        $sum_where .= ')';
+        array_push($where, $sum_where);
     }
     else if(!is_null($filter_category_1) && $filter_category_1 != "") {
-        array_push($where, 'AND tblitems.category_id='.$filter_category_1);
+        //array_push($where, 'AND tblitems.category_id='.$filter_category_1);
+        $result=[];
+        $this->_instance->category_model->get_full_childs_id($filter_category_1, $result);
+        $sum_where = 'AND (';
+        foreach($result as $value) {
+            if($sum_where != 'AND (')
+                $sum_where.=' OR ';
+            $sum_where .= 'tblitems.category_id='.$value;
+        }
+        $sum_where .= ')';
+        array_push($where, $sum_where);
     } 
     
 }
@@ -67,8 +108,12 @@ foreach ($rResult as $aRow) {
         if($aColumns[$i] == 'tblitems.avatar' && file_exists($_data)) {
             $_data = '<img src="'.base_url($_data).'" width="50px" />';
         }
-        if($aColumns[$i] == 'tblitems.price') {
-            $_data = number_format($aRow['tblitems.price'],0,',','.');
+        $format_number_column = ['tblitems.price','tblitems.minimum_quantity','tblitems.maximum_quantity'];
+        if(in_array($aColumns[$i], $format_number_column)) {
+            $_data = number_format($_data,0,',','.');
+        }
+        if($aColumns[$i] == 'tblitems.description') {
+            $_data = strlen($_data) > 50 ? substr($_data,0,50)."..." : $_data;
         }
         // if($aColumns[$i] == 'tblitems.price') {
         //     $_data = number_format($aRow['tblitems.price'],0,',','.');

@@ -213,11 +213,6 @@
         "category_4" : "[name='category_4']",
     };
     initDataTable('.table-invoice-items', window.location.href, [4], [4], filterList,[0,'DESC']);
-    $.each(filterList, (key,value)=>{
-        $('select' + value).on('change', () => {
-            $('.table-invoice-items').DataTable().ajax.reload();
-        });
-    });
     $(document).ready(()=>{
         $('#category_1,#category_2,#category_3,#category_4').on('change', (e) => {
             var id = $(e.currentTarget).val();
@@ -238,6 +233,12 @@
                 },
             });
         });
+    $.each(filterList, (key,value)=>{
+        $('select' + value).on('change', () => {
+            $('.table-invoice-items').DataTable().ajax.reload();
+        });
+    });
+    
 
     });
     if(get_url_param('groups_modal')){

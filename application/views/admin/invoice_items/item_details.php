@@ -157,11 +157,11 @@
                     ?>
                     <?php
                         $default_minimum = (isset($item) ? $item->minimum_quantity : 0);
-                        echo render_input('minimum_quantity', _l('minimum_quantity'), $default_minimum);
+                        echo render_input('minimum_quantity', _l('minimum_quantity'), number_format($default_minimum,0,".","."),'',array('onkeyup'=>"formart_num('minimum_quantity')"));
                     ?>
                     <?php
                         $default_maximum = (isset($item) ? $item->maximum_quantity : 0);
-                        echo render_input('maximum_quantity', _l('maximum_quantity'), $default_maximum);
+                        echo render_input('maximum_quantity', _l('maximum_quantity'), number_format($default_maximum,0,".","."),'',array('onkeyup'=>"formart_num('maximum_quantity')"));
                     ?>
                     <?php
                       $groups = get_item_groups();

@@ -14,12 +14,12 @@ class Purchase_orders extends Admin_controller
         if ($this->input->is_ajax_request()) {
             $this->perfex_base->get_table_data('purchase_orders');
         }
-        $data['title'] = _l('purchase_suggested');
+        $data['title'] = _l('orders_ticket');
         $this->load->view('admin/orders/manage', $data);
     }
     public function convert($id='') {
         $data = array();
-        $data['title'] = _l('orders_create_heading');
+        $data['title'] = _l('orders_ticket');
         $purchase_suggested = $this->purchase_suggested_model->get($id);
         if(!$purchase_suggested || $purchase_suggested->status != 2 || $this->orders_model->check_exists($purchase_suggested->id)) {
             redirect(admin_url() . 'purchase_orders');
