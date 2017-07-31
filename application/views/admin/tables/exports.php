@@ -9,6 +9,7 @@ $plan_status=array(
 $aColumns     = array(
     '1',
     'code',
+    'rel_code',
     'company',
     '(SELECT fullname FROM tblstaff WHERE create_by=tblstaff.staffid)',
     'status',
@@ -27,6 +28,7 @@ $join         = array(
 );
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where, array(
     'id',
+    'rel_id',
     'prefix',
     'tblstaff.fullname',
     'CONCAT(user_head_id,",",user_admin_id) as confirm_ids'

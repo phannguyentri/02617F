@@ -109,8 +109,8 @@
                     <?php echo render_date_input('date','view_date',$value); ?>
                     
                     <?php
-                    $default_name = (isset($item) ? $item->name : _l('sale_name'));
-                    echo form_hidden('name', _l('sale_name'), $default_name);
+                    $default_name = (isset($item) ? $item->name : _l('export_name'));
+                    echo form_hidden('name', _l('export_name'), $default_name);
                     ?>
 
                     <?php
@@ -119,7 +119,7 @@
                     ?>
 
                     <?php
-                    $selected=(isset($item) ? $receiver_id : '');
+                    $selected=(isset($item) ? $item->receiver_id : '');
                     echo render_select('receiver_id',$receivers,array('staffid','fullname'),'staffs',$selected); 
                     ?>
 
@@ -325,13 +325,17 @@
     var isNew = false;
     var createTrItem = () => {
         if(!isNew) return;
+        if(!$('tr.main #select_warehouse option:selected').length || $('tr.main #select_warehouse option:selected').val() == '') {
+            alert_float('danger', "Vui lòng chọn kho chứa sản phẩm!");
+            return;
+        }
         if( $('table.item-export tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').length ) {
             $('table.item-export tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').parent().find('td:nth-child(2) > input').focus();
-            alert('Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!');
+            alert_float('danger', "Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!");
             return;
         }
         if($('tr.main').find('td:nth-child(4) > input').val() > $('tr.main #select_warehouse option:selected').data('store')) {
-            alert('Kho ' + $('tr.main #select_warehouse option:selected').text() + '. Bạn đã nhập ' + $('tr.main').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
+            alert_float('danger', 'Kho ' + $('tr.main #select_warehouse option:selected').text() + '. Bạn đã nhập ' + $('tr.main').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
             return;
         }
         var newTr = $('<tr class="sortable item"></tr>');
@@ -442,11 +446,11 @@
     $(document).on('keyup', '.mainQuantity', (e)=>{
         var currentQuantityInput = $(e.currentTarget);
         let elementToCompare;
-        if(typeof(currentQuantityInput.data('store')) == 'undefined' )
+        if(typeof(currentQuantityInput.attr('data-store')) == 'undefined' )
             elementToCompare = currentQuantityInput.parents('tr').find('input:last');
         else
             elementToCompare = currentQuantityInput;
-        if(currentQuantityInput.val() > elementToCompare.data('store')) {
+        if(currentQuantityInput.val() > elementToCompare.attr('data-store')) {
             currentQuantityInput.attr("style", "width: 100px;border: 1px solid red !important");
             currentQuantityInput.attr('data-toggle', 'tooltip');
             currentQuantityInput.attr('data-trigger', 'manual');

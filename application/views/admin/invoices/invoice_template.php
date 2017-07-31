@@ -492,7 +492,7 @@ echo $select;
       $item['qty'] = 1;
     }
     $invoice_item_taxes = get_invoice_item_taxes($item['id']);
-                                      // passed like string
+    // passed like string
     if ($item['id'] == 0) {
       $invoice_item_taxes = $item['taxname'];
       $manual             = true;

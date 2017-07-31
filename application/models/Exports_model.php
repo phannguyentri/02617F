@@ -54,19 +54,21 @@ class Exports_model extends CRM_Model
     // var_dump($data);die();
         $import=array(
             'rel_type'=>$data['rel_type'],
+            'rel_code'=>$data['rel_code'],
             'prefix'=>$data['prefix'],
             'name'=>$data['name'],
             'code'=>$data['code'],
             'customer_id'=>$data['customer_id'],
+            'receiver_id'=>$data['receiver_id'],
             'reason'=>$data['reason'],
             'date'=>to_sql_date($data['date']),
             'create_by'=>get_staff_user_id()
             );
-        
+        // var_dump($import);die();
         $this->db->insert('tblexports', $import);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
-            logActivity('New Sale Added [ID:' . $insert_id . ', ' . $data['date'] . ']');
+            logActivity('New Export Added [ID:' . $insert_id . ', ' . $data['date'] . ']');
             $items=$data['items'];
              $total=0;
 
@@ -76,18 +78,19 @@ class Exports_model extends CRM_Model
                 $total+=$sub_total;
                 // var_dump("expression");die();
                 $item_data=array(
-                    'sale_id'=>$insert_id,
+                    'export_id'=>$insert_id,
                     'product_id'=>$item['id'],
                     'serial_no'=>$item['serial_no'],
                     'unit_id'=>$product->unit,
                     'quantity'=>$item['quantity'],
                     'unit_cost'=>$product->price,
-                    'sub_total'=>$sub_total
+                    'sub_total'=>$sub_total,
+                    'warehouse_id'=>$item['warehouse_id']
                     );
                  $this->db->insert('tblexport_items', $item_data);
                  if($this->db->affected_rows()>0)
                  {
-                    logActivity('Insert Sale Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
+                    logActivity('Insert Export Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                  }
             }
             $this->db->update('tblexports',array('total'=>$total),array('id'=>$insert_id));

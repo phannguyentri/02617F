@@ -34,14 +34,15 @@ class Exports extends Admin_controller
                 }
 
                 $data                 = $this->input->post();
-                
+                // var_dump($data);die();
+                // var_dump(nl2br($data['reason']));die();
                 if(isset($data['items']) && count($data['items']) > 0)
                 {
                     $id = $this->exports_model->add($data);
                 }
                 
                 if ($id) {
-                    set_alert('success', _l('added_successfuly', _l('sale')));
+                    set_alert('success', _l('added_successfuly', _l('exports')));
                     redirect(admin_url('exports'));
                 }
             } else {
@@ -51,12 +52,12 @@ class Exports extends Admin_controller
                 }
                 $success = $this->exports_model->update($this->input->post(), $id);
                 if ($success == true) {
-                    set_alert('success', _l('updated_successfuly', _l('sale')));
+                    set_alert('success', _l('updated_successfuly', _l('exports')));
                     redirect(admin_url('exports'));
                 }
                 else
                 {
-                    redirect(admin_url('exports/sale_detail/'.$id));
+                    redirect(admin_url('exports/export_detail/'.$id));
                 }
             }
         }
@@ -79,6 +80,7 @@ class Exports extends Admin_controller
         $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
         $data['warehouses']= $this->warehouse_model->getWarehouses();
         $data['receivers'] = $this->staff_model->get('','',array('staffid<>'=>1));
+        // var_dump($data['receivers']);die();
         $data['customers'] = $this->clients_model->get('', $where_clients);
         $data['items']= $this->invoice_items_model->get_full();
         $data['title'] = $title;

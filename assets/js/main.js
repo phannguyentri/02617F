@@ -4528,6 +4528,7 @@ function clear_main_values(default_taxes) {
 // Append the added items to the preview to the table as items
 function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
     // If not custom data passed get from the preview
+    alert(data);
     if (typeof(data) == 'undefined' || data == 'undefined') {
         data = get_main_values();
     }
@@ -4595,7 +4596,7 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
         return true;
     });
     return false;
-};
+}
 // Get taxes dropdown selectpicker template / Causing problems with ajax becuase is fetching from server
 function get_taxes_dropdown_template(name, taxname) {
     jQuery.ajaxSetup({

@@ -15,6 +15,7 @@
                     <div class="panel-body">
                     <?php render_datatable(array(
                             _l('#'),
+                            _l('Mã phiếu xuất kho'),
                             _l('Mã đơn hàng'),
                             _l('Khách hàng'),
                             _l('Người tạo'),
