@@ -25,21 +25,28 @@ $where = array(
 );
 if($this->_instance->input->post()) {
     $filter_detail_categories = $this->_instance->input->post('detail_categories');
-    $sum_where = "AND (";
+    $filter_detail_products = $this->_instance->input->post('detail_products');
+    
+    $sum_where = "";
     if(is_numeric($filter_detail_categories)) {
         $sum_where .= 'tblitems.category_id='.$filter_detail_categories;
        // array_push($where, 'AND tblitems.category_id='.$filter_detail_categories);
     }
-    $filter_detail_products = $this->_instance->input->post('detail_products');
+    
     if(is_numeric($filter_detail_products)) {
-        if($sum_where != "AND (")
+        if($sum_where != "")
             $sum_where.= ' OR ';
         $sum_where .= 'tblwarehouses_products.product_id='.$filter_detail_products;
         //array_push($where, 'OR tblwarehouses_products.product_id='.$filter_detail_products);
     }
-    $sum_where.= ')';
-    array_push($where, $sum_where);
+    if($sum_where!='') {
+        $sum_where = "AND (" . $sum_where;
+        $sum_where.= ')';
+        array_push($where, $sum_where);
+    }
 }
+// print_r($sum_where);
+// exit();
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect);
 $output           = $result['output'];
 $rResult          = $result['rResult'];

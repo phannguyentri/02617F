@@ -81,14 +81,24 @@ class Warehouse_model extends CRM_Model
         return false;
     }
 
-    public function getWarehousesByType($warehouse_type = '')
+    public function getWarehousesByType($warehouse_type = '', $filter_product='')
     {
         $this->db->select('tblwarehouses.*');
         $this->db->from('tblwarehouses');
-        if (is_numeric($warehouse_type)) 
+        if (is_numeric($warehouse_type) && is_numeric($filter_product) && $filter_product > 0) 
         {
-            $this->db->where('kindof_warehouse', $warehouse_type);
-            return $this->db->get()->result_array();
+            $this->db->join('tblwarehouses_products', 'tblwarehouses_products.warehouse_id=tblwarehouses.warehouseid');
+            $this->db->where('tblwarehouses.kindof_warehouse', $warehouse_type);
+            $this->db->where('tblwarehouses_products.product_id', $filter_product);
+            $warehouses = $this->db->get()->result();
+            
+            foreach($warehouses as $warehouse) {
+                
+                $this->db->where('warehouse_id', $warehouse->warehouseid);
+                $this->db->where('product_id', $filter_product);
+                $warehouse->items = $this->db->get('tblwarehouses_products')->result();
+            }
+            return $warehouses;
         }
 
         return false;

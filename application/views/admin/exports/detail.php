@@ -1,4 +1,6 @@
 <?php init_head(); ?>
+<style type="text/css">
+</style>
 <div id="wrapper">
  <div class="content">
    <div class="row">
@@ -202,33 +204,15 @@
                                             0
                                         </td>
                                         <td>
-                    <?php
-                       $select = '<select class="selectpicker display-block warehouse_type main-warehouse_type" data-container="body" data-width="100%" name="warehouse_type"  data-live-search="true">';
-                      $select .= '<option value="" '.$no_tax_selected.'>'._l('no_select').'</option>';
-                      foreach($warehouse_types as $type){
-                        $selected = '';
-                      $select .= '<option value="" '.$type['id'].'>'.$type['name'].'</option>';
-
-                    }
-                    $select .= '</select>';
-                    echo $select;
-                    ?>
+                                            <?php 
+                                                echo render_select('select_kindof_warehouse', $warehouse_types, array('id', 'name'));
+                                            ?>
+                                        
                                         </td>
                                         <td>
-                                            
-                    <?php
-                       $select = '<select class="selectpicker display-block warehouse_id main-warehouse_id" data-container="body" data-width="100%" name="warehouse_id"  data-live-search="true">';
-                      $select .= '<option value="" '.$no_tax_selected.'>'._l('no_select').'</option>';
-                      foreach($warehouses as $warehouse){
-                        $selected = '';
-                      $select .= '<option value="" '.$warehouse['warehouse'].'>'.$warehouse['warehouse'].'</option>';
-
-                    }
-                    $select .= '</select>';
-                    echo $select;
-                    ?>
-
-
+                                        <?php 
+                                            echo render_select('select_warehouse', array(), array('id', 'name'));
+                                        ?>
                                         </td>
                                         <td>
                                             <button style="display:none" id="btnAdd" type="button" onclick="createTrItem(); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
@@ -346,6 +330,10 @@
             alert('Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!');
             return;
         }
+        if($('tr.main').find('td:nth-child(4) > input').val() > $('tr.main #select_warehouse option:selected').data('store')) {
+            alert('Kho ' + $('tr.main #select_warehouse option:selected').text() + '. Bạn đã nhập ' + $('tr.main').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
+            return;
+        }
         var newTr = $('<tr class="sortable item"></tr>');
         
         var td1 = $('<td><input type="hidden" name="items[' + uniqueArray + '][id]" value="" /></td>');
@@ -364,9 +352,9 @@
         
         td5.text( $('tr.main').find('td:nth-child(5)').text());
         td6.text( $('tr.main').find('td:nth-child(6)').text());
-        td7.text( $('tr.main').find('td:nth-child(7)').val());
-        td8.text( $('tr.main').find('td:nth-child(8)').val());
-        console.log($('tr.main').find('td:nth-child(7)').selectpicker('val'))
+        td7.text( $('tr.main').find('td:nth-child(7) select option:selected').text());
+        td8.append( '<input type="hidden" data-store="'+$('tr.main').find('td:nth-child(8) select option:selected').data('store')+'" name="items[' + uniqueArray + '][warehouse]" value="'+$('tr.main').find('td:nth-child(8) select option:selected').val()+'" />');
+        td8.append($('tr.main').find('td:nth-child(8) select option:selected').text());
         newTr.append(td1);
         newTr.append(td2);
         newTr.append(td3);
@@ -390,7 +378,6 @@
         $('#custom_item_select').val('');
         $('#custom_item_select').selectpicker('refresh');
         var trBar = $('tr.main');
-        //console.log(trBar.find('td:nth-child(2) > input'));
         
         trBar.find('td:first > input').val("");
         trBar.find('td:nth-child(2) > input').val('');
@@ -419,15 +406,22 @@
     $('#custom_item_select').change((e)=>{
         var id = $(e.currentTarget).val();
         var itemFound = findItem(id);
+
+        $('#select_kindof_warehouse').val('');
+        $('#select_kindof_warehouse').selectpicker('refresh');
+        var warehouse_id=$('#select_warehouse');
+        warehouse_id.find('option:gt(0)').remove();
+        warehouse_id.selectpicker('refresh');
+
         if(typeof(itemFound) != 'undefined') {
             var trBar = $('tr.main');
-            //console.log(trBar.find('td:nth-child(2) > input'));
             
             trBar.find('td:first > input').val(itemFound.id);
             trBar.find('td:nth-child(2)').text(itemFound.name+' ('+itemFound.prefix+itemFound.code+')');
             trBar.find('td:nth-child(3)').text(itemFound.unit_name);
             trBar.find('td:nth-child(3) > input').val(itemFound.unit);
             trBar.find('td:nth-child(4) > input').val(1);
+            
             trBar.find('td:nth-child(5)').text(formatNumber(itemFound.price_buy));
             trBar.find('td:nth-child(6)').text(formatNumber(itemFound.price_buy * 1) );
             trBar.find('td:nth-child(7)');
@@ -440,41 +434,80 @@
             $('#btnAdd').hide();
         }
     });
-    $(document).on('keyup', '.mainQuantity',(e)=>{
-        
+    $('#select_warehouse').on('change', (e)=>{
+        if($(e.currentTarget).val() != '') {
+            $(e.currentTarget).parents('tr').find('input.mainQuantity').attr('data-store', $(e.currentTarget).find('option:selected').data('store'));
+        }
+    });
+    $(document).on('keyup', '.mainQuantity', (e)=>{
         var currentQuantityInput = $(e.currentTarget);
+        let elementToCompare;
+        if(typeof(currentQuantityInput.data('store')) == 'undefined' )
+            elementToCompare = currentQuantityInput.parents('tr').find('input:last');
+        else
+            elementToCompare = currentQuantityInput;
+        if(currentQuantityInput.val() > elementToCompare.data('store')) {
+            currentQuantityInput.attr("style", "width: 100px;border: 1px solid red !important");
+            currentQuantityInput.attr('data-toggle', 'tooltip');
+            currentQuantityInput.attr('data-trigger', 'manual');
+            currentQuantityInput.attr('title', 'Số lượng vượt mức cho phép!');
+            // $('[data-toggle="tooltip"]').tooltip();
+            currentQuantityInput.off('focus', '**').off('hover', '**');
+            currentQuantityInput.tooltip('fixTitle').focus(()=>$(this).tooltip('show')).hover(()=>$(this).tooltip('show'));
+            // error flag
+            currentQuantityInput.addClass('error');
+            currentQuantityInput.focus();
+        }
+        else {
+            currentQuantityInput.attr('title', 'OK!').tooltip('fixTitle').tooltip('show');
+            currentQuantityInput.attr("style", "width: 100px;");
+            // remove flag
+            currentQuantityInput.removeClass('error');
+            currentQuantityInput.focus();
+        }
+        
         var Gia = currentQuantityInput.parent().find(' + td');
         var Tong = Gia.find(' + td');
         Tong.text( formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
         refreshTotal();
     });
-    $('#warehouse_type').change(function(e){
-      var warehouse_type = $(e.currentTarget).val();
-      loadWarehouses(warehouse_type,'');
+    $('#select_kindof_warehouse').change(function(e){
+        
+
+        var warehouse_type = $(e.currentTarget).val();
+        var product = $(e.currentTarget).parents('tr').find('td:first input');
+        if(warehouse_type != '' && product.val() != '') {
+            loadWarehouses(warehouse_type,product.val()); 
+        }
     });
-    function loadWarehouses(warehouse_type,default_value=''){
-        var warehouse_id=$('#warehouse_id');
-        warehouse_id.find('option').remove()
-        warehouse_id.selectpicker("refresh");
-        if(warehouse_id != 0 && warehouse_id != '') {
-        $.ajax({
-          url : admin_url + 'warehouses/getWarehouses/' + warehouse_type,
-          dataType : 'json',
-        })
-        .done(function(data){          
-          warehouse_id.find('option').remove();
-          warehouse_id.append('<option value=""></option>');
-          $.each(data, function(key,value){
-            var stringSelected = "";
-            if(value.warehouseid == default_value) {
-              stringSelected = ' selected="selected"';
-            }
-            warehouse_id.append('<option value="' + value.warehouseid + '"'+stringSelected+'>' + value.warehouse + '</option>');
-          });
-          warehouse_id.selectpicker('refresh');
-        });
-      }
+    function loadWarehouses(warehouse_type, filter_by_product,default_value=''){
+        var warehouse_id=$('#select_warehouse');
+        warehouse_id.find('option:gt(0)').remove();
+        warehouse_id.selectpicker('refresh');
+        if(warehouse_id.length) {
+            $.ajax({
+                url : admin_url + 'warehouses/getWarehouses/' + warehouse_type + '/' + filter_by_product,
+                dataType : 'json',
+            })
+            .done(function(data){          
+                $.each(data, function(key,value){
+                    var stringSelected = "";
+                    if(value.warehouseid == default_value) {
+                        stringSelected = ' selected="selected"';
+                    }
+                    warehouse_id.append('<option data-store="'+value.items[0].product_quantity+'" value="' + value.warehouseid + '"'+stringSelected+'>' + value.warehouse + '(có '+value.items[0].product_quantity+')</option>');
+                });
+                warehouse_id.selectpicker('refresh');
+            });
+        }
     }
+    $('.customer-form-submiter').on('click', (e)=>{
+        if($('input.error').length) {
+            e.preventDefault();
+            alert('Giá trị không hợp lệ!');    
+        }
+        
+    });
     
 </script>
 </body>
