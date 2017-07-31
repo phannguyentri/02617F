@@ -12,6 +12,8 @@
               _l('orders_code'),
               _l('orders_date_create'),
               _l('orders_user_create'),
+              _l('user_head'),
+              _l('leads_dt_status'),
               _l('actions'),              
               ),
               'purchase-orders'); ?>

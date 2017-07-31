@@ -29,13 +29,20 @@ if($this->_instance->input->post()) {
     
     $sum_where = "";
     if(is_numeric($filter_detail_categories)) {
-        $sum_where .= 'tblitems.category_id='.$filter_detail_categories;
+        $sum_where .= '(tblitems.category_id='.$filter_detail_categories;
+        $result=[];
+        $this->_instance->category_model->get_full_childs_id($filter_detail_categories, $result);
+        foreach($result as $value) {
+            $sum_where .=' OR ';
+            $sum_where .= 'tblitems.category_id='.$value;
+        }
+        $sum_where .= ")";
        // array_push($where, 'AND tblitems.category_id='.$filter_detail_categories);
     }
     
     if(is_numeric($filter_detail_products)) {
         if($sum_where != "")
-            $sum_where.= ' OR ';
+            $sum_where.= ' AND ';
         $sum_where .= 'tblwarehouses_products.product_id='.$filter_detail_products;
         //array_push($where, 'OR tblwarehouses_products.product_id='.$filter_detail_products);
     }

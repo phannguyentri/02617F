@@ -28,7 +28,6 @@ class Purchase_orders extends Admin_controller
         $data['purchase_suggested'] = $purchase_suggested;
         $data['product_list'] = $purchase_suggested->items;
         $data['suppliers'] = $this->orders_model->get_suppliers();
-        $data['warehouses'] = $this->orders_model->get_warehouses();
         if($this->input->post()) {
             $data = $this->input->post();
             $data['code'] = get_option('prefix_purchase_order') . $data['code'];

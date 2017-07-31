@@ -102,10 +102,10 @@ $tblTable = '
 <table width="100%" cellspacing="0" cellpadding="5">
     <tr>
         <td>
-            <b>'._l('Kho hàng').':</b>
+            <b>'._l('orders_user_create').':</b>
         </td>
         <td>
-            '.$purchase_order->warehouse_name.'
+            '.$purchase_order->user_fullname.'
         </td>
         <td>
             <b>'._l('Ngày nhập dự kiến').':</b>
@@ -116,31 +116,12 @@ $tblTable = '
     </tr>
     <tr>
         <td>
-            <b>'._l('Địa chỉ kho').':</b>
-        </td>
-        <td>
-            '.$purchase_order->warehouse_address.'
-        </td>
-        <td>
-            <b>'._l('Người đặt hàng').':</b>
-        </td>
-        <td>
-            '.$purchase_order->user_fullname.'
-        </td>
-    </tr>
-    <tr>
-        <td>
             <b>'._l('orders_explan').':</b>
         </td>
         <td>
             '.$purchase_order->explan.'
         </td>
-        <td>
-
-        </td>
-        <td>
-            
-        </td>
+        
     </tr>
 </table>    
 ';
@@ -166,7 +147,7 @@ $tblHtml = '
         <th width="10%" valign="middle" align="center">'. _l('item_unit') .'</th>
         <th width="10%" valign="middle" align="center">'. _l('item_quantity') .'</th>
         <th width="10%" valign="middle" align="center">'. _l('item_price_buy') .'</th>
-        <th width="10%" valign="middle" align="center">'. _l('item_tax') . '</th>
+        <th width="10%" valign="middle" align="center">'. _l('tax') . '</th>
         <th width="20%" valign="middle" align="center">'. _l('purchase_total_price') . '</th>
     </tr>
         ';
@@ -210,27 +191,24 @@ $pdf->writeHTML($tblHtml, true, false, false, false, '');
 // print_r($tblHtml);
 // exit();
 
-// // $detail = _l('user_head').': <b>' . $purchase_suggested->user_head_name . '</b> <br /> <br />';
-// // $detail .= _l('user_admin').': <b>' . $purchase_suggested->user_admin_name . '</b> <br /> <br />';
-// $pdf->Ln(20);
-// $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
-//         <tr>
-//             <td>" . mb_ucfirst(_l('purchase_user'), "UTF-8") . "</td>
-//             <td>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</td>
-//             <td>" . mb_ucfirst(_l('user_admin'), "UTF-8") . "</td>
-//         </tr>
-//         <tr>
-//             <td style=\"height: 100px\" colspan=\"3\"></td>
-//         </tr>
-//         <tr>
-//             <td>" . $purchase_suggested->user_name . "</td>
-//             <td>" . $purchase_suggested->user_head_name . "</td>
-//             <td>" . $purchase_suggested->user_admin_name . "</td>
-//         </tr>
-//         <tr>
-//             <td>(ký, ghi rõ họ tên)</td>
-//             <td>(ký, ghi rõ họ tên)</td>
-//             <td>(ký, ghi rõ họ tên)</td>
-//         </tr>
-// </table>";
-// $pdf->writeHTML($table, true, false, false, false, '');
+// $detail = _l('user_head').': <b>' . $purchase_suggested->user_head_name . '</b> <br /> <br />';
+// $detail .= _l('user_admin').': <b>' . $purchase_suggested->user_admin_name . '</b> <br /> <br />';
+$pdf->Ln(20);
+$table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
+        <tr>
+            <td><b>" . mb_ucfirst(_l('orders_user_create'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</b></td>
+        </tr>
+        <tr>
+            <td style=\"height: 100px\" colspan=\"3\"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>(ký, ghi rõ họ tên)</td>
+            <td>(ký, ghi rõ họ tên)</td>
+        </tr>
+</table>";
+$pdf->writeHTML($table, true, false, false, false, '');

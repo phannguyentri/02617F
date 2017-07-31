@@ -20,7 +20,11 @@
   <div class="row">
     <div class="additional"></div>
     <div class="col-md-12">
-        
+        <?php
+            $type='warning';
+            $status='Đơn hàng mới';
+        ?>
+        <div class="ribbon <?=$type?>"><span><?=$status?></span></div>
         <ul class="nav nav-tabs profile-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#item_detail" aria-controls="item_detail" role="tab" data-toggle="tab">
@@ -95,10 +99,6 @@
                     <?php 
                         $default_supplier = "";
                         echo render_select('id_supplier', $suppliers, array('userid', 'company'), 'suppliers', $default_supplier);
-                    ?>
-                    <?php 
-                        $default_warehouse = "";
-                        echo render_select('id_warehouse', $warehouses, array('warehouseid', 'warehouse'), 'als_warehouses', $default_warehouse);
                     ?>
                     <?php
                         $default_date_create = ( isset($item) ? _d($item->date_create) : _d(date('Y-m-d')));
@@ -236,18 +236,6 @@
         }
         return x1 + x2;
     }
-
-    var findItem = (id) => {
-        var itemResult;
-        $.each(itemList, (index,value) => {
-            if(value.id == id) {
-                itemResult = value;
-                return false;
-            }
-        });
-        return itemResult;
-    };
-    
 </script>
 </body>
 </html>

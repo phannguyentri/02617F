@@ -85,10 +85,11 @@ class Warehouse_model extends CRM_Model
     {
         $this->db->select('tblwarehouses.*');
         $this->db->from('tblwarehouses');
+        $this->db->where('tblwarehouses.kindof_warehouse', $warehouse_type);
         if (is_numeric($warehouse_type) && is_numeric($filter_product) && $filter_product > 0) 
         {
             $this->db->join('tblwarehouses_products', 'tblwarehouses_products.warehouse_id=tblwarehouses.warehouseid');
-            $this->db->where('tblwarehouses.kindof_warehouse', $warehouse_type);
+            
             $this->db->where('tblwarehouses_products.product_id', $filter_product);
             $warehouses = $this->db->get()->result();
             
@@ -98,9 +99,12 @@ class Warehouse_model extends CRM_Model
                 $this->db->where('product_id', $filter_product);
                 $warehouse->items = $this->db->get('tblwarehouses_products')->result();
             }
-            return $warehouses;
+            
         }
-
+        else {
+            $warehouses = $this->db->get()->result();
+        }
+        return $warehouses;
         return false;
     }
 
