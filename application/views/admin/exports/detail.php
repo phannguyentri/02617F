@@ -107,8 +107,8 @@
                     <?php echo render_date_input('date','view_date',$value); ?>
                     
                     <?php
-                    $default_name = (isset($item) ? $item->name : _l('sale_name'));
-                    echo form_hidden('name', _l('sale_name'), $default_name);
+                    $default_name = (isset($item) ? $item->name : _l('export_name'));
+                    echo form_hidden('name', _l('export_name'), $default_name);
                     ?>
 
                     <?php
@@ -117,7 +117,7 @@
                     ?>
 
                     <?php
-                    $selected=(isset($item) ? $receiver_id : '');
+                    $selected=(isset($item) ? $item->receiver_id : '');
                     echo render_select('receiver_id',$receivers,array('staffid','fullname'),'staffs',$selected); 
                     ?>
 
@@ -202,22 +202,32 @@
                                             0
                                         </td>
                                         <td>
-                    <?php
-                       $select = '<select class="selectpicker display-block warehouse_type main-warehouse_type" data-container="body" data-width="100%" name="warehouse_type"  data-live-search="true">';
+                    <!-- <?php
+                       $select = '<select id="warehouse_type" name="warehouse_type" class="selectpicker" data-width="100%" data-none-selected-text="Không có gì được chọn" data-live-search="true">';
                       $select .= '<option value="" '.$no_tax_selected.'>'._l('no_select').'</option>';
                       foreach($warehouse_types as $type){
                         $selected = '';
+                        // var_dump($type);
                       $select .= '<option value="" '.$type['id'].'>'.$type['name'].'</option>';
 
                     }
                     $select .= '</select>';
+                    // var_dump($select);die();
                     echo $select;
+                    ?> -->
+                    <!-- <select id="warehouse_type" name="warehouse_type" class="selectpicker" data-width="100%" data-none-selected-text="Không có gì được chọn" data-live-search="true" tabindex="1">
+                    <option value="">                
+                    </option><option value="1">Kho hàng nhập</option><option value="2">Kho KCS</option><option value="3">Kho nguyên</option><option value="4">Kho lỗi</option><option value="5">Kho hàng trả về</option><option value="6">Kho chờ nhập phụ kiện</option>
+                    </select> -->
+                    <?php
+                    $selected=(isset($item) ? $item->receiver_id : '');
+                    echo render_select('warehouse_type',$warehouse_types,array('id','name'),'',$selected); 
                     ?>
                                         </td>
                                         <td>
                                             
                     <?php
-                       $select = '<select class="selectpicker display-block warehouse_id main-warehouse_id" data-container="body" data-width="100%" name="warehouse_id"  data-live-search="true">';
+                       $select = '<select class="selectpicker display-block warehouse_id main-warehouse_id" data-container="body" data-width="100%" name="warehouse_id"  data-live-search="true" id="warehouse_id">';
                       $select .= '<option value="" '.$no_tax_selected.'>'._l('no_select').'</option>';
                       foreach($warehouses as $warehouse){
                         $selected = '';
@@ -449,7 +459,9 @@
         refreshTotal();
     });
     $('#warehouse_type').change(function(e){
-      var warehouse_type = $(e.currentTarget).val();
+      var warehouse_type = $(this).val();
+      // console.log($(this));
+      alert(warehouse_type);
       loadWarehouses(warehouse_type,'');
     });
     function loadWarehouses(warehouse_type,default_value=''){

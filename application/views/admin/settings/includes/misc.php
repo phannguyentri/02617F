@@ -43,3 +43,4 @@
        <?php echo render_yes_no_option('use_recaptcha_customers_area','use_recaptcha_customers_area'); ?>
      </div>
    </div>
+

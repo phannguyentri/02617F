@@ -43,7 +43,7 @@ class Suppliers extends Admin_controller
                     unset($data['save_and_add_contact']);
                     $save_and_add_contact = true;
                 }
-                var_dump($data);die();
+                // var_dump($data);die();
                 $id = $this->suppliers_model->add($data);
                 if ($id) {
                     set_alert('success', _l('added_successfuly', _l('supplier')));
