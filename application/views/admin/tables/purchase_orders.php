@@ -22,7 +22,7 @@ $order_by = 'tblorders.id ASC';
 $join             = array(
     );
 $additionalSelect = array(
-
+    'converted',
     );
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect, $order_by);
 
@@ -55,7 +55,6 @@ foreach ($rResult as $aRow) {
             }
         }
         if($aColumns[$i] == 'IF(tblorders.user_head_id=0,0,1)') {
-            
             if($aRow['IF(tblorders.user_head_id=0,0,1)']==0)
             {
                 $type='warning';
@@ -69,24 +68,28 @@ foreach ($rResult as $aRow) {
             $_data = '<span class="inline-block label label-'.$type.'" task-status-table="'.$aRow['IF(tblorders.user_head_id=0,0,1)'].'">' . $status.'';
             if(has_permission('invoices', '', 'view') && has_permission('invoices', '', 'view_own'))
             {
-                if($aRow['tblpurchase_suggested.status']!=2){
-                    $_data.='<a href="javacript:void(0)" onclick="var_status('.$aRow['IF(tblorders.user_head_id=0,0,1)'].','.$aRow['tblorders.id'].')">';
+                if($aRow['IF(tblorders.user_head_id=0,0,1)']!=1){
+                    $_data.='<a href="javacript:void(0)" onclick="var_status('.$aRow['IF(tblorders.user_head_id=0,0,1)'].','.$aRow['tblorders.id'].')">
+                    <i class="fa fa-check task-icon task-unfinished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>';
                 }
                 else
                 {
-                    $_data.='<a href="javacript:void(0)">';
+                    $_data.='<a href="javacript:void(0)">
+                    <i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>';
                 }
             }
             else {
-                if($aRow['tblpurchase_suggested.status']==0) {
-                    $_data .= '<a href="javacript:void(0)" onclick="var_status(' . $aRow['IF(tblorders.user_head_id=0,0,1)'] . ',' . $aRow['tblorders.id'] . ')">';
+                if($aRow['IF(tblorders.user_head_id=0,0,1)']==0) {
+                    $_data .= '<a href="javacript:void(0)" onclick="var_status(' . $aRow['IF(tblorders.user_head_id=0,0,1)'] . ',' . $aRow['tblorders.id'] . ')">
+                    <i class="fa fa-check task-icon task-unfinished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>';
                 }
                 else
                 {
-                    $_data .= '<a href="javacript:void(0)">';
+                    $_data .= '<a href="javacript:void(0)">
+                    <i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>';
                 }
             }
-            $_data.='<i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['IF(tblorders.user_head_id=0,0,1)']]) . '"></i>
+            $_data.='
                 </a>
             </span>';
             
@@ -94,14 +97,14 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     $options = '';
-    if(is_admin() && $aRow['tblpurchase_suggested.status']==2 && $aRow['converted']==0)
+    if(is_admin() && $aRow['IF(tblorders.user_head_id=0,0,1)']==1 && $aRow['converted']==0)
     {
-        $options=icon_btn('purchase_suggested/convert_to_order/'. $aRow['tblpurchase_suggested.id'] , 'exchange', 'btn-default');
+        $options=icon_btn('purchase_orders/convert_to_contract/'. $aRow['tblorders.id'] , 'exchange', 'btn-default');
     }
     $options .= icon_btn('purchase_orders/detail_pdf/'. $aRow['tblorders.id'] .'?pdf=true' , 'file-pdf-o', 'btn-default', array('target'=>'_blank'));
     $options .= icon_btn('purchase_orders/detail_pdf/'. $aRow['tblorders.id'] .'?print=true' , 'print', 'btn-default', array('target'=>'_blank'));
     $options .= icon_btn('purchase_orders/detail_pdf/'. $aRow['tblorders.id'] , 'download', 'btn-default', array('target'=>'_blank'));
-   $row[] = $options;
+    $row[] = $options;
 
-   $output['aaData'][] = $row;
+    $output['aaData'][] = $row;
 }

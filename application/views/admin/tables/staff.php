@@ -87,6 +87,10 @@ foreach ($rResult as $aRow) {
                  $_data = _d($_data);
             }
         }
+        $array_link = ['profile_image', 'fullname'];
+        if(in_array($aColumns[$i],$array_link)){
+            $_data = '<a href="' . admin_url('staff/profile/' . $aRow['staffid']) . '">' . $_data . '</a>';
+        }
         $row[] = $_data;
     }
     $options = icon_btn('staff/member/' . $aRow['staffid'], 'pencil-square-o');

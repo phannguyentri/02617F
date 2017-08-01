@@ -121,7 +121,7 @@
 
                     <?php
                         $default_rate = (isset($item) ? $item->rate : 0);
-                      echo render_input('rate', _l('tax_add_edit_rate'), $default_rate,'',array());
+                      echo render_input('rate', _l('tax_add_edit_rate'), $default_rate,'',array(),array('style' => 'display:none;'));
                     ?>
 
                     <?php 

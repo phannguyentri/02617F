@@ -42,6 +42,28 @@ class Orders_model extends CRM_Model
     public function get_warehouses() {
         return $this->db->get('tblwarehouses')->result_array();
     }
+    public function convert_to_contact($id_order) {
+        $this->db->where('id', $id_order);
+        $order = $this->db->get('tblorders')->row();
+        if($order) {
+            $this->db->where('id', $id_order);
+            $data_order = array(
+                'converted' => '1',
+            );
+            $this->db->update('tblorders', $data_order);
+            $data = array(
+                'id_order' => $id_order,
+                'id_user_create' => get_staff_user_id(),
+            );
+            $this->db->insert('tblpurchase_contracts', $data);
+            if ($this->db->affected_rows() > 0) {
+                $new_id = $this->db->insert_id();
+                return $new_id;
+            }
+        }
+
+        return false;
+    }
     public function insert($data) {
         $purchase_suggested_id = $data['id_purchase_suggested'];
         $this->db->where('purchase_suggested_id', $purchase_suggested_id);
@@ -61,7 +83,6 @@ class Orders_model extends CRM_Model
             );
             $this->db->insert('tblorders_detail', $data_order);
         }
-        
     }
     public function check_exists($purchase_suggested_id) {
         if(is_numeric($purchase_suggested_id)) {
@@ -70,6 +91,15 @@ class Orders_model extends CRM_Model
             if(count($items) > 0) {
                 return true;
             }
+        }
+        return false;
+    }
+    public function update_status($id,$data)
+    {
+        $this->db->where('id',$id);
+        $this->db->update('tblorders',$data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
         }
         return false;
     }

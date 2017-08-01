@@ -10,6 +10,11 @@
         <?php echo render_input('settings[invoice_company_phonenumber]','settings_sales_phonenumber',get_option('invoice_company_phonenumber')); ?>
         <?php echo render_input('settings[invoice_company_faxnumber]','settings_sales_faxnumber',get_option('invoice_company_faxnumber')); ?>
         <?php echo render_input('settings[company_vat]','company_vat_number',get_option('company_vat')); ?>
+
+        <?php echo render_input('settings[company_deputation]','company_deputation',get_option('company_deputation')); ?>
+        <?php echo render_input('settings[company_contract_role]','company_contract_role',get_option('company_contract_role')); ?>
+        <?php echo render_input('settings[company_contract_blank_account]','company_contract_blank_account',get_option('company_contract_blank_account')); ?>
+        
         <hr />
         <?php echo render_custom_fields('company',0); ?>
     </div>

@@ -394,7 +394,7 @@ class Invoice_items extends Admin_controller
                                 
                                 $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
                                 
-                                for ($row = 2; $row <= $highestRow; ++$row) {
+                                for ($row = 1; $row <= $highestRow; ++$row) {
                                     for ($col = 0; $col < $highestColumnIndex; ++$col) {
                                         $value                     = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
                                         $rows[$row - 2][$col] = $value;
@@ -415,7 +415,7 @@ class Invoice_items extends Admin_controller
                         // Works with difficulty
                         $query_array = [];
                         $backup_rows = $rows;
-                        unset($rows[0]);
+
                         $result_array = [];
                         $important_columns = array(
                             'code'                      => array('Mã',                  -1),
@@ -448,11 +448,17 @@ class Invoice_items extends Admin_controller
                                 $stt=0;
                                 foreach($important_columns as $column_key=>$column_value) {
                                     // Nếu bảng tính không có cột để xét thì thoát, kết quả sẽ không thể nhập
-                                    if(!isset($row[$stt]))
+                                    if(!isset($row[$stt])){
+                                        exit("what");
                                         break;
+                                    }
+                                        
                                     // Kiểm tra nếu nội dung của ô bằng với nội dung cột cần nhập
                                     if(trim($row[$stt]) == trim($column_value[0])) {
                                         $columns_found++;
+                                    }
+                                    else {
+                                        // var_dump(trim($row[$stt]), trim($column_value[0]));
                                     }
                                     // Nếu tìm được đủ cột không tìm nữa và bắt đầu chạy thêm sản phẩm
                                     if($columns_found >= count($important_columns)) {
@@ -508,6 +514,24 @@ class Invoice_items extends Admin_controller
                                             $data_ok = false;
                                         }
                                     }
+                                    if($column_key == 'unit') {
+                                        $all_units = get_units();
+                                        $result_search = false;
+                                        foreach($all_units as $key=>$unit) {
+                                            if(trim($unit['unit']) == trim($row[$stt])) {
+                                                $result_search = $key;
+                                                break;
+                                            }
+                                        }
+                                        
+                                        if($result_search !== false) {
+                                            $data[$column_key] = $all_units[$result_search]['unitid'];
+                                        }
+                                        else {
+                                            $reason .= "Không tìm thấy " . $column_value[0] . " ".$row[$stt] ."<br />";
+                                            $data_ok = false;
+                                        }
+                                    }
                                     if($column_key == 'category_id') {
                                         $category_name = trim($row[$stt]);
                                         $category = $this->category_model->get_single_by_name($category_name);
@@ -543,15 +567,13 @@ class Invoice_items extends Admin_controller
                         // var_dump($fetch_columns_step, $fetch_product_step, $columns_found, $alert);
                         // exit();
                         $data['message'] = "
-                            Nhập thành công " . $alert['success'] . " sản phẩm.
+                            Nhập thành công " . $alert['success'] . " sản phẩm. <br />
                         ";
                         if(count($alert['fail']) > 0) {
                             foreach($alert['fail'] as $item) {
                                 $data['message'] .= "Dòng ".$item[0]." gặp lỗi ".$item[2];
                             }
                         }
-                        // $this->session->set_userdata('query_array', $query_array);
-                        // $this->session->set_userdata('query_duplicate', $had_item);
                     }
                 } else {
                     set_alert('warning', _l('import_upload_failed'));

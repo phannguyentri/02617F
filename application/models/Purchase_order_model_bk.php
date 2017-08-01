@@ -136,8 +136,6 @@ class Purchase_order_mode extends CRM_Model
             $sql = "select *,(select fullname from tblstaff where user_admin_id=staffid) as user_admin_name, (select fullname from tblstaff where user_head_id=staffid) as user_head_name, (select fullname from tblstaff where create_by=staffid) as user_name  from tblpurchase_suggested where id=". $id;
             $query = $this->db->query($sql);
             $item = $query->row();
-            // $this->db->where('id', $id);
-            // $item = $this->db->get('tblpurchase_suggested')->row();
             $item->items = $this->get_detail($id);
             return $item;
         }
@@ -158,30 +156,12 @@ class Purchase_order_mode extends CRM_Model
         }
         return false;
     }
-    public function delete_detail($purchase_suggested_id) {
-        $this->db->where('purchase_suggested_id', $purchase_suggested_id);
-        $this->db->delete('tblpurchase_suggested_details');
-        if ($this->db->affected_rows() > 0) {
-            logActivity('Purchase suggested detail Deleted [ID: ' . $purchase_suggested_id . ', Items: ' . $this->db->affected_rows() . ']');
-            return true;
-        }
-        return false;
-    }
-    public function delete($id) {
-        $this->db->where('id', $id);
-        $this->db->delete('tblpurchase_suggested');
-        if ($this->db->affected_rows() > 0) {
-            $this->delete_detail($id);
-            logActivity('Purchase suggested Deleted [ID: ' . $id . ']');
-            return true;
-        }
-        return false;
-    }
+    
 
     public function update_status($id,$data)
     {
         $this->db->where('id',$id);
-        $this->db->update('tblpurchase_suggested',$data);
+        $this->db->update('tblorders',$data);
         if ($this->db->affected_rows() > 0) {
             return true;
         }

@@ -169,10 +169,10 @@ foreach($purchase_order->products as $value) {
             <td style="text-align:center">'.number_format($value->product_quantity).'</td>
             <td style="text-align:right">'.number_format($value->product_price_buy).'</td>
             <td>'.$value->rate.'</td>
-            <td style="text-align:right">'.number_format($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* $value->rate).'</td>
+            <td style="text-align:right">'.number_format($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* ($value->rate)/100).'</td>
         </tr>
     ';
-    $totalPrice += ($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* $value->rate);
+    $totalPrice += ($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* $value->rate/100);
 }
 
 $tblHtml .= '
@@ -196,19 +196,14 @@ $pdf->writeHTML($tblHtml, true, false, false, false, '');
 $pdf->Ln(20);
 $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         <tr>
-            <td><b>" . mb_ucfirst(_l('orders_user_create'), "UTF-8") . "</b></td>
-            <td><b>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('orders_user_create'), "UTF-8") . "</b>
+            <br />(ký, ghi rõ họ tên)</td>
+            <td><b>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</b>
+            <br />(ký, ghi rõ họ tên)</td>
         </tr>
         <tr>
             <td style=\"height: 100px\" colspan=\"3\"></td>
         </tr>
-        <tr>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>(ký, ghi rõ họ tên)</td>
-            <td>(ký, ghi rõ họ tên)</td>
-        </tr>
+        
 </table>";
 $pdf->writeHTML($table, true, false, false, false, '');

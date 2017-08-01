@@ -39,7 +39,7 @@ if($this->_instance->input->post()) {
     $filter_category_4 = $this->_instance->input->post('category_4');
 
     if(!is_null($filter_category_4) && $filter_category_4 != "") {
-        array_push($where, 'AND tblitems.category_id='.$filter_category_4);
+        // array_push($where, 'AND tblitems.category_id='.$filter_category_4);
         $result=[];
         $this->_instance->category_model->get_full_childs_id($filter_category_4, $result);
         $sum_where = 'AND (';
@@ -52,7 +52,7 @@ if($this->_instance->input->post()) {
         array_push($where, $sum_where);
     }
     else if(!is_null($filter_category_3) && $filter_category_3 != "") {
-        array_push($where, 'AND tblitems.category_id='.$filter_category_3);
+        // array_push($where, 'AND tblitems.category_id='.$filter_category_3);
         $result=[];
         $this->_instance->category_model->get_full_childs_id($filter_category_3, $result);
         $sum_where = 'AND (';
@@ -90,8 +90,9 @@ if($this->_instance->input->post()) {
         $sum_where .= ')';
         array_push($where, $sum_where);
     } 
-    
 }
+// print_r($where);
+// exit();
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect);
 $output           = $result['output'];
 $rResult          = $result['rResult'];

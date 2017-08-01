@@ -178,7 +178,41 @@ class Purchase_suggested_model extends CRM_Model
         }
         return false;
     }
-
+    public function convert_to_order($id, $data) {
+        if(is_numeric($id)) {
+            $this->db->where('id', $id);
+            $purchase_suggested = $this->db->get('tblpurchase_suggested')->row();
+            if($purchase_suggested) {
+                $data_suggested = array(
+                    'converted' => '1',
+                );
+                $this->db->where('id', $id);
+                $this->db->update('tblpurchase_suggested', $data_suggested);
+                // Get products
+                $this->db->where('purchase_suggested_id', $id);
+                $this->db->join('tblitems', 'tblitems.id = tblpurchase_suggested_details.product_id', 'left');
+                $purchase_suggested_products = $this->db->get('tblpurchase_suggested_details')->result();
+                $this->db->insert('tblorders', $data);
+                if ($this->db->affected_rows() > 0) {
+                    $new_id = $this->db->insert_id();
+                    foreach($purchase_suggested_products as $key=>$value) {
+                        $data_order = array(
+                            'order_id' => $new_id,
+                            'product_id' => $value->id,
+                            'product_code' => $value->code,
+                            'product_quantity' => $value->product_quantity,
+                            'product_price_buy' => $value->product_price_buy,
+                            'product_discount' => $value->discount,
+                            'product_taxrate' => $value->rate,
+                        );
+                        $this->db->insert('tblorders_detail', $data_order);
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public function update_status($id,$data)
     {
         $this->db->where('id',$id);
