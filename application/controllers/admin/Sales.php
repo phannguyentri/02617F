@@ -9,6 +9,8 @@ class Sales extends Admin_controller
         $this->load->model('invoice_items_model');
         $this->load->model('clients_model');
     }
+    
+
     public function index()
     {
        
@@ -18,6 +20,7 @@ class Sales extends Admin_controller
         $data['title'] = _l('sale_orders');
         $this->load->view('admin/sales/manage', $data);
     }
+
 
     public function sale_detail($id='') 
     {

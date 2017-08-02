@@ -9,6 +9,7 @@ class Exports extends Admin_controller
         $this->load->model('invoice_items_model');
         $this->load->model('clients_model');
         $this->load->model('warehouse_model');
+        $this->load->model('sales_model');
     }
     public function index()
     {
@@ -50,7 +51,9 @@ class Exports extends Admin_controller
                 if (!has_permission('export_items', '', 'edit')) {
                         access_denied('export_items');
                 }
-                $success = $this->exports_model->update($this->input->post(), $id);
+                $data                 = $this->input->post();
+                // var_dump($id);die();
+                $success = $this->exports_model->update($data, $id);
                 if ($success == true) {
                     set_alert('success', _l('updated_successfuly', _l('exports')));
                     redirect(admin_url('exports'));
@@ -68,10 +71,18 @@ class Exports extends Admin_controller
         } else {
             
             $data['item'] = $this->exports_model->getExportByID($id);
+            $i=0;
+            foreach ($data['item']->items as $key => $value) {       
+                $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+                $i++;
+
+            }
+            // var_dump($data['item']);die();
             if (!$data['item']) {
                 blank_page('Export Not Found');
             }
         }
+
         $where_clients = 'tblclients.active=1';
 
         if (!has_permission('customers', '', 'view')) {
@@ -80,11 +91,53 @@ class Exports extends Admin_controller
         $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
         $data['warehouses']= $this->warehouse_model->getWarehouses();
         $data['receivers'] = $this->staff_model->get('','',array('staffid<>'=>1));
-        // var_dump($data['receivers']);die();
+        
         $data['customers'] = $this->clients_model->get('', $where_clients);
-        $data['items']= $this->invoice_items_model->get_full();
+        $data['items']= $this->invoice_items_model->get_full(); 
         $data['title'] = $title;
         $this->load->view('admin/exports/detail', $data);
+    }
+
+    public function sale_output($id)
+    {
+
+         if (!has_permission('export_items', '', 'view')) {
+            if ($id != '' && !is_customer_admin($id)) {
+                access_denied('export_items');
+            }
+        }
+
+        {            
+            $data['item'] = $this->sales_model->getSaleByID($id);
+            // var_dump($data['item']);die();
+            $i=0;
+            foreach ($data['item']->items as $key => $value) {    
+                $warehouse=(is_array($this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id))&& count($this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id))==1)? ($this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id)[0]) : ($this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id));
+                $data['item']->items[$i]->warehouse_type=$warehouse;
+
+                $i++;
+            }
+            // var_dump($data['item']);die();
+            if (!$data['item']) {
+                blank_page('Export Not Found');
+            }   
+        }
+
+        $where_clients = 'tblclients.active=1';
+
+        if (!has_permission('customers', '', 'view')) {
+            $where_clients .= ' AND tblclients.userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id=' . get_staff_user_id() . ')';
+        }
+
+        $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
+        $data['warehouses']= $this->warehouse_model->getWarehouses();
+        $data['receivers'] = $this->staff_model->get('','',array('staffid<>'=>1));
+        
+        $data['customers'] = $this->clients_model->get('', $where_clients);
+        $data['items']= $this->invoice_items_model->get_full(); 
+
+        $data['title'] = _l('Tạo phiếu xuất kho');        
+        $this->load->view('admin/exports/export', $data);
     }
 
 
@@ -119,7 +172,7 @@ class Exports extends Admin_controller
         $date=date('Y-m-d H:i:s');
         $data=array('status'=>$status);
 
-        $inv=$this->exports_model->getSaleByID($id);
+        $inv=$this->exports_model->getExportByID($id);
         if(is_admin() && $status==0)
         {
             $data['user_head_id']=$staff_id;
@@ -160,7 +213,7 @@ class Exports extends Admin_controller
         if($success) {
             echo json_encode(array(
                 'success' => $success,
-                'message' => _l('Xác nhận phiếu thành công')
+                'message' => _l('Xác nhận phiếu xuất kho thành công')
             ));
         }
         else
