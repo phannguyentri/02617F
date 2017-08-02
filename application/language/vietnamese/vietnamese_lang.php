@@ -3622,7 +3622,7 @@ $lang['import_items']                    = "Nhập sản phẩm";
 
 $lang['import_choose_file']              = "Chọn tệp xls";
 
-$lang['item_warranty']              = "Thời gian bảo hành";
+$lang['item_warranty']              = "Thời hạn bảo hành";
 
 $lang['staff_attachments']              = "Các tập tin";
 
