@@ -42,7 +42,7 @@ class Orders_model extends CRM_Model
     public function get_warehouses() {
         return $this->db->get('tblwarehouses')->result_array();
     }
-    public function convert_to_contact($id_order) {
+    public function convert_to_contact($id_order, $data) {
         $this->db->where('id', $id_order);
         $order = $this->db->get('tblorders')->row();
         if($order) {
@@ -51,10 +51,7 @@ class Orders_model extends CRM_Model
                 'converted' => '1',
             );
             $this->db->update('tblorders', $data_order);
-            $data = array(
-                'id_order' => $id_order,
-                'id_user_create' => get_staff_user_id(),
-            );
+            
             $this->db->insert('tblpurchase_contracts', $data);
             if ($this->db->affected_rows() > 0) {
                 $new_id = $this->db->insert_id();

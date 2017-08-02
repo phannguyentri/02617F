@@ -75,7 +75,7 @@
                     ?>
                     <!-- prefix_purchase_order -->
                     <div class="form-group">
-                        <label for="number"><?php echo _l('orders_code'); ?></label>  
+                        <label for="number"><?php echo _l('purchase_constract_code'); ?></label>  
                                     
                         <input type="text" name="code" class="form-control" value="<?=$item->code ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
                                   

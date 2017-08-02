@@ -11,15 +11,13 @@ class Purchase_contacts_model extends CRM_Model
             $this->db->select('tblpurchase_contracts.*,tblsuppliers.company as suppliers_company
             ,tblsuppliers.address as suppliers_address
             ,tblsuppliers.vat as suppliers_vat
-            ,tblwarehouses.warehouse as warehouse_name
-            ,tblwarehouses.address as warehouse_address
             ,tblstaff.fullname as user_fullname');
             $this->db->where('id', $id);
-            $this->db->join('tblsuppliers', 'tblsuppliers.userid = (select *.id_supplier from tblorders where tblpurchase_contracts.id_order = tblorders.id)', 'left');
+            $this->db->join('tblsuppliers', 'tblsuppliers.userid = tblpurchase_contracts.id_supplier', 'left');
             $this->db->join('tblstaff', 'tblstaff.staffid = tblpurchase_contracts.id_user_create', 'left');
             $item = $this->db->get('tblpurchase_contracts')->row();
             if($item) {
-                // $item->products = $this->get_detail($id);
+                $item->products = $this->get_detail($item->id_order);
                 return $item;
             }
         }

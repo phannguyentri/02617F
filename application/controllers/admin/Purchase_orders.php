@@ -51,10 +51,11 @@ class Purchase_orders extends Admin_controller
 
         if($this->input->post()) {
             $data = $this->input->post();
-            $data['code'] = get_option('prefix_purchase_order') . $data['code'];
+            $data['code'] = get_option('prefix_contract') . $data['code'];
             $data['id_user_create'] = get_staff_user_id();
+            $data['id_supplier'] = $order->id_supplier;
             $result = $this->orders_model->convert_to_contact($id, $data);
-            redirect(admin_url() . 'purchase_orders');
+            redirect(admin_url() . 'purchase_contracts');
         }
         $this->load->view('admin/orders/convert_to_contract', $data);
     }
