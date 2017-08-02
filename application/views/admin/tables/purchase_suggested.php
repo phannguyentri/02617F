@@ -27,7 +27,8 @@ $join             = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblpurchase_suggested.create_by'
     );
 $additionalSelect = array(
-    'CONCAT(user_head_id,",",user_admin_id) as confirm_ids'
+    'CONCAT(user_head_id,",",user_admin_id) as confirm_ids',
+    'converted'
     );
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect, $order_by);
 
@@ -89,23 +90,28 @@ foreach ($rResult as $aRow) {
             if(has_permission('invoices', '', 'view') && has_permission('invoices', '', 'view_own'))
             {
                 if($aRow['tblpurchase_suggested.status']!=2){
-                    $_data.='<a href="javacript:void(0)" onclick="var_status('.$aRow['tblpurchase_suggested.status'].','.$aRow['tblpurchase_suggested.id'].')">';
+                    $_data.='<a href="javacript:void(0)" onclick="var_status('.$aRow['tblpurchase_suggested.status'].','.$aRow['tblpurchase_suggested.id'].')">
+                    <i class="fa fa-check task-icon task-unfinished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>                    
+                    ';
                 }
                 else
                 {
-                    $_data.='<a href="javacript:void(0)">';
+                    $_data.='<a href="javacript:void(0)">
+                    <i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>';
                 }
             }
             else {
                 if($aRow['tblpurchase_suggested.status']==0) {
-                    $_data .= '<a href="javacript:void(0)" onclick="var_status(' . $aRow['tblpurchase_suggested.status'] . ',' . $aRow['tblpurchase_suggested.id'] . ')">';
+                    $_data .= '<a href="javacript:void(0)" onclick="var_status(' . $aRow['tblpurchase_suggested.status'] . ',' . $aRow['tblpurchase_suggested.id'] . ')">
+                    <i class="fa fa-check task-icon task-unfinished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>';
                 }
                 else
                 {
-                    $_data .= '<a href="javacript:void(0)">';
+                    $_data .= '<a href="javacript:void(0)">
+                    <i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>';
                 }
             }
-                $_data.='<i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>
+                $_data.='
                     </a>
                 </span>';
         }

@@ -238,6 +238,30 @@ class Invoice_items_model extends CRM_Model
         if(count($items) > 0) {
             return false;
         }
+        // kiểm tra sản phẩm tồn tại trong phiếu đề xuất
+        $this->db->where('product_id', $id);
+        $items = $this->db->get('tblpurchase_suggested_details')->result();
+        if(count($items) > 0) {
+            return false;
+        }
+        // kiểm tra sản phẩm tồn tại trong kế hoạch mua
+        $this->db->where('product_id', $id);
+        $items = $this->db->get('tblpurchase_plan_details')->result();
+        if(count($items) > 0) {
+            return false;
+        }
+        // kiểm tra sản phẩm tồn tại trong kế hoạch mua
+        $this->db->where('product_id', $id);
+        $items = $this->db->get('tblpurchase_plan_details')->result();
+        if(count($items) > 0) {
+            return false;
+        }
+        // kiểm tra sản phẩm tồn tại trong đơn hàng
+        $this->db->where('product_id', $id);
+        $items = $this->db->get('tblorders_detail')->result();
+        if(count($items) > 0) {
+            return false;
+        }
         // Final
         $this->db->where('id', $id);
         $this->db->delete('tblitems');

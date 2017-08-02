@@ -3606,7 +3606,7 @@ $lang['purchase_suggested_code']         = "Mã đề xuất";
 $lang['purchase_suggested_name']         = "Tên đề xuất";
 $lang['purchase_suggested_date']         = "Ngày đề xuất";
 $lang['purchase_suggested_status']       = "Trạng thái";
-$lang['purchase_total_items']            = "Tổng số sản phẩm";
+$lang['purchase_total_items']            = "Tổng loại sản phẩm";
 $lang['purchase_total_price']            = "Tổng giá";
 $lang['purchase_user']                   = "Người đề xuất";
 $lang['user_head']                       = "Trưởng bộ phận";
@@ -3726,3 +3726,12 @@ $lang['add_export_order'] = "Thêm phiếu xuất kho";
 $lang['add_export_order'] = "Thêm phiếu xuất kho";
 $lang['add_export_order'] = "Thêm phiếu xuất kho";
 $lang['add_export_order'] = "Thêm phiếu xuất kho";
+
+$lang['convert_to_purchase_contract'] = "Chuyển sang hợp đồng mua";
+$lang['purchase_contract'] = "Hợp đồng mua";
+
+$lang['company_deputation'] = "Người đại diện trên hợp đồng";
+$lang['company_contract_role'] = "Vai trò người đại diện trên hợp đòng";
+$lang['company_contract_blank_account'] = "Số tài khoản ngân hàng người đại diện";
+
+$lang['purchase_contract_create'] = "Tạo hợp đồng mua";

@@ -15,14 +15,14 @@
         <!-- Product information -->
         
 
-          <h4 class="bold no-margin"><?php echo _l('orders_create_heading') ?></h4>
+          <h4 class="bold no-margin"><?php echo _l('purchase_contract_create') ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
     <div class="col-md-12">
         <?php
             $type='warning';
-            $status='Đơn hàng mới';
+            $status='Hợp đồng mới';
         ?>
         <div class="ribbon <?=$type?>"><span><?=$status?></span></div>
         <ul class="nav nav-tabs profile-tabs" role="tablist">
@@ -66,7 +66,7 @@
                                     <div class="input-group">
                                     <span class="input-group-addon">
                                         <?php
-                                        echo get_option('prefix_purchase_order');
+                                        echo get_option('prefix_contract');
                                         ?>
                                     </span>
                                     <?php
@@ -81,7 +81,7 @@
                                         }
                                         else
                                         {
-                                            $number=sprintf('%05d',getMaxID('id','tblorders')+1);
+                                            $number=sprintf('%05d',getMaxID('id','tblpurchase_contracts')+1);
                                         }
                                     ?>
                                     <input type="text" name="code" class="form-control" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
@@ -91,27 +91,16 @@
                             </div>
                     
                     <div class="form-group">
-                        <label for="id_purchase_suggested"><?php echo _l('purchase_suggested_code') ?></label>
-                        <input type="hidden" name="id_purchase_suggested" class="form-control" value="<?php echo $purchase_suggested->id ?>">
-                        <input type="text" class="form-control" value="<?php echo $purchase_suggested->code ?>" readonly>
+                        <label for="id_purchase_suggested"><?php echo _l('orders_code') ?></label>
+                        <input type="hidden" name="id_purchase_suggested" class="form-control" value="<?php echo $order->id ?>">
+                        <input type="text" class="form-control" value="<?php echo $order->code ?>" readonly>
                     </div>
-
-                    <?php 
-                        $default_supplier = "";
-                        echo render_select('id_supplier', $suppliers, array('userid', 'company'), 'suppliers', $default_supplier);
-                    ?>
+                    
                     <?php
                         $default_date_create = ( isset($item) ? _d($item->date_create) : _d(date('Y-m-d')));
                         echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , 'date'); 
                     ?>
-                    <?php
-                        $default_date_import = ( isset($item) ? _d($item->date_import) : _d(date('Y-m-d')));
-                        echo render_date_input( 'date_import', 'orders_date_import' , $default_date_import , 'date'); 
-                    ?>
-                    <?php 
-                    $reason = (isset($item) ? $item->reason : "");
-                    echo render_textarea('explan', 'orders_explan', $reason, array(), array(), '', 'tinymce');
-                    ?>
+                    
                 </div>
 
                 
@@ -143,22 +132,22 @@
                                     <?php
                                     $i=0;
                                     $totalPrice=0;
-                                    if(isset($product_list) && count($product_list) > 0) {
+                                    if(isset($order) && count($order) > 0) {
                                         
-                                        foreach($product_list as $value) {
+                                        foreach($order->products as $value) {
                                         ?>
                                     <tr class="sortable item">
                                         <td>
                                             <input type="hidden"  value="<?php echo $value->product_id; ?>">
                                         </td>
                                         <td class="dragger"><?php echo $value->code; ?></td>
-                                        <td><?php echo $value->product_name; ?></td>
-                                        <td><?php echo $value->product_unit; ?></td>
+                                        <td><?php echo $value->name; ?></td>
+                                        <td><?php echo $value->unit; ?></td>
                                         <td><input readonly="readonly" class="mainQuantity" type="number" value="<?php echo $value->product_quantity; ?>"></td>
                                             
                                         <td><?php echo number_format($value->product_price_buy); ?></td>
                                         <td><?php echo number_format($value->product_quantity*$value->product_price_buy); ?></td>
-                                        <td><?php echo $value->product_specifications	; ?></td>
+                                        <td><?php echo $value->specification	; ?></td>
                                         <td></td>
                                     </tr>
                                         <?php

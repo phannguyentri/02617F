@@ -26,9 +26,17 @@ if($this->_instance->input->post()) {
     $filter_product_category = $this->_instance->input->post('product_category');
     
     if(is_numeric($filter_product_category)) {
+        $result=[];
+        $this->_instance->category_model->get_full_childs_id($filter_product_category, $result);
+        $sum_where = 'tblitems.category_id='.$filter_product_category;
+        foreach($result as $value) {
+            $sum_where.=' OR ';
+            $sum_where .= 'tblitems.category_id='.$value;
+        }
+        
         array_push($where, 'AND tblwarehouses.warehouseid in 
         (select tblwarehouses_products.warehouse_id from tblwarehouses_products where tblwarehouses_products.product_id in 
-        (select tblitems.id from tblitems where tblitems.category_id = '.$filter_product_category.')) ');
+        (select tblitems.id from tblitems where '.$sum_where.')) ');
     }
     $filter_product_category = $this->_instance->input->post('products');
     if(is_numeric($filter_product_category)) {

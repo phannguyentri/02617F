@@ -6,11 +6,11 @@
             <div class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body">
-                    <?php echo form_open($this->uri->uri_string()); ?>
-                    <?php echo form_hidden('download_sample','true'); ?>
-                    <button type="submit" class="btn btn-success">Download Sample</button>
+                    <!-- <?php echo form_open($this->uri->uri_string()); ?>
+                    <?php echo form_hidden('download_sample','true'); ?> -->
+                    <a href="<?php echo base_url('uploads/mau_sanpham.xlsx') ?>" target="_blank" class="btn btn-success">Download Sample</a>
                     <hr />
-                    <?php echo form_close(); ?>
+                    <!-- <?php echo form_close(); ?> -->
                        <?php $max_input = ini_get('max_input_vars');
                        if(($max_input>0 && isset($total_rows_post) && $total_rows_post >= $max_input)){ ?>
                         <div class="alert alert-warning">

@@ -37,6 +37,10 @@ foreach ($rResult as $aRow) {
     $row = array();
     for ($i = 0; $i < count($aColumns); $i++) {
         $_data = $aRow[$aColumns[$i]];
+        $format_number_column = ['tblitem_price_history.price','tblitem_price_history.new_price'];
+        if(in_array($aColumns[$i], $format_number_column)) {
+            $_data = number_format($_data,0,',','.');
+        }
         $row[] = $_data;
     }
     

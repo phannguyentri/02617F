@@ -104,7 +104,7 @@
 
   }
   $(function(){
-    initDataTable('.table-purchase-orders', '<?=admin_url('purchase_orders')?>', [], [],'undefined',[0,'DESC']);
+    initDataTable('.table-purchase-contacts', '<?=admin_url('purchase_conctacts')?>', [], [],'undefined',[0,'DESC']);
 
   });
 </script>

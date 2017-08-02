@@ -20,7 +20,28 @@
   <div class="row">
     <div class="additional"></div>
     <div class="col-md-12">
-        
+        <?php
+         if(isset($item))
+            {
+                if($item->user_head_id==0)
+                {
+                    $type='warning';
+                    $status='Chưa duyệt';
+                }
+                else
+                {
+                    $type='success';
+                    $status='Đã duyệt';
+                }
+            }
+            else
+            {
+                $type='warning';
+                $status='Đơn hàng mới';
+            }
+
+        ?>
+        <div class="ribbon <?=$type?>"><span><?=$status?></span></div>
         <ul class="nav nav-tabs profile-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#item_detail" aria-controls="item_detail" role="tab" data-toggle="tab">
@@ -38,6 +59,10 @@
                 
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 _buttons">
                     <div class="pull-right">
+                        <?php if( isset($item) ) { ?>
+                        <a href="<?php echo admin_url('purchase_orders/detail_pdf/' . $item->id . '?print=true') ?>" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="In" aria-describedby="tooltip652034"><i class="fa fa-print"></i></a>
+                        <a href="<?php echo admin_url('purchase_orders/detail_pdf/' . $item->id  ) ?>?pdf=true" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Xem PDF"><i class="fa fa-file-pdf-o"></i></a>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -66,10 +91,7 @@
                         $default_supplier = $item->id_supplier;
                         echo render_select('id_supplier', $suppliers, array('userid', 'company'), 'suppliers', $default_supplier, array('disabled'=>'disabled'));
                     ?>
-                    <?php 
-                        $default_warehouse = $item->id_warehouse;
-                        echo render_select('id_warehouse', $warehouses, array('warehouseid', 'warehouse'), 'als_warehouses', $default_warehouse, array('disabled'=>'disabled'));
-                    ?>
+
                     <?php
                         $default_date_create = date("Y-m-d", strtotime($item->date_create));
                         echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , array('readonly'=>'readonly')); 
@@ -116,19 +138,20 @@
                                     if(isset($item->products) && count($item->products) > 0) {
                                         
                                         foreach($item->products as $value) {
+
                                         ?>
                                     <tr class="sortable item">
                                         <td>
                                             <input type="hidden"  value="<?php echo $value->product_id; ?>">
                                         </td>
                                         <td class="dragger"><?php echo $value->code; ?></td>
-                                        <td><?php echo $value->product_name; ?></td>
-                                        <td><?php echo $value->product_unit; ?></td>
+                                        <td><?php echo $value->name; ?></td>
+                                        <td><?php echo $value->unit; ?></td>
                                         <td><input readonly="readonly" class="mainQuantity" type="number" value="<?php echo $value->product_quantity; ?>"></td>
                                             
                                         <td><?php echo number_format($value->product_price_buy); ?></td>
                                         <td><?php echo number_format($value->product_quantity*$value->product_price_buy); ?></td>
-                                        <td><?php echo $value->product_specifications	; ?></td>
+                                        <td><?php echo $value->specification	; ?></td>
                                         <td></td>
                                     </tr>
                                         <?php

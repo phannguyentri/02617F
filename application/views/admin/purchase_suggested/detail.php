@@ -395,7 +395,7 @@
             
             trBar.find('td:first > input').val(itemFound.id);
             trBar.find('td:nth-child(2)').text(itemFound.name);
-            trBar.find('td:nth-child(3)').text(itemFound.unit);
+            trBar.find('td:nth-child(3)').text(itemFound.unit_name);
             trBar.find('td:nth-child(4) > input').val(1);
             trBar.find('td:nth-child(5)').text(formatNumber(itemFound.price_buy));
             trBar.find('td:nth-child(6)').text(  formatNumber(itemFound.price_buy * 1) );

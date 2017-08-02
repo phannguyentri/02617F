@@ -28,15 +28,35 @@ class Purchase_orders extends Admin_controller
         $data['purchase_suggested'] = $purchase_suggested;
         $data['product_list'] = $purchase_suggested->items;
         $data['suppliers'] = $this->orders_model->get_suppliers();
-        $data['warehouses'] = $this->orders_model->get_warehouses();
         if($this->input->post()) {
             $data = $this->input->post();
             $data['code'] = get_option('prefix_purchase_order') . $data['code'];
             $data['id_user_create'] = get_staff_user_id();
-            $this->orders_model->insert($data);
+            $this->purchase_suggested_model->convert_to_order($id, $data);
             redirect(admin_url() . 'purchase_orders');
         }
         $this->load->view('admin/orders/convert', $data);
+    }
+    public function convert_to_contract($id='') {
+        $data = array();
+        $data['title'] = _l('convert_to_purchase_contract');
+        $order = $this->orders_model->get($id);
+        if(!$order || $order->user_head_id == 0) {
+            redirect(admin_url() . 'purchase_orders');
+        }
+
+        $data['order'] = $order;
+        $data['product_list'] = $order->items;
+        $data['suppliers'] = $this->orders_model->get_suppliers();
+
+        if($this->input->post()) {
+            $data = $this->input->post();
+            $data['code'] = get_option('prefix_purchase_order') . $data['code'];
+            $data['id_user_create'] = get_staff_user_id();
+            $result = $this->orders_model->convert_to_contact($id, $data);
+            redirect(admin_url() . 'purchase_orders');
+        }
+        $this->load->view('admin/orders/convert_to_contract', $data);
     }
     public function view($id='') {
         if(is_numeric($id)) {
@@ -137,18 +157,33 @@ class Purchase_orders extends Admin_controller
 
     public function update_status()
     {
-        $id=$this->input->post('id');
-        $status=$this->input->post('status');
-        $status=$status+1;
-        $staff_id=get_staff_user_id();
-        $date=date('Y-m-d H:i:s');
-        $data=array('status'=>$status);
-        // date('Y-m-d H:i:s'),get_staff_user_id()
-        $success=$this->purchase_suggested_model->update_status($id,$data);
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
+        
+        $staff_id = get_staff_user_id();
+        $date = date('Y-m-d H:i:s');
+        $inv = $this->orders_model->get($id);        
+        if(is_admin() && $status == 0)
+        {
+            $data['user_head_id'] = $staff_id;
+            $data['user_head_date'] = $date;
+        }
+        elseif(is_head($inv->id_user_create))
+        {
+            $data['user_head_id'] = $staff_id;
+            $data['user_head_date'] = $date;
+        }
+        $success=false;
+
+        if(is_admin() || is_head($inv->id_user_create))
+        {
+            $success=$this->orders_model->update_status($id, $data);
+        }
+
         if($success) {
             echo json_encode(array(
                 'success' => $success,
-                'message' => _l('Xác nhận đề xuất thành công')
+                'message' => _l('Xác nhận đơn hàng thành công')
             ));
         }
         else
@@ -158,6 +193,6 @@ class Purchase_orders extends Admin_controller
                 'message' => _l('Không thể cập nhật dữ liệu')
             ));
         }
-        die;
+        exit();
     }
 }
