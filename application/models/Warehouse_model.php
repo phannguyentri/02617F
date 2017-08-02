@@ -66,11 +66,36 @@ class Warehouse_model extends CRM_Model
     public function getWarehouses($id = '')
     {
 
-        $this->db->select('tblwarehouses.*');
+        $this->db->select('tblwarehouses.*,tbl_kindof_warehouse.name as kindof_warehouse_name');
+        $this->db->join('tbl_kindof_warehouse', 'tbl_kindof_warehouse.id = tblwarehouses.kindof_warehouse', 'left');
         $this->db->from('tblwarehouses');
         if (is_numeric($id)) 
         {
             $this->db->where('warehouseid', $id);
+            return $this->db->get()->row();
+        }
+        else 
+        {
+            return $this->db->get()->result_array();
+        }
+
+        return false;
+    }
+
+    public function getWarehouseProduct($warehouse_id = '',$product_id = '')
+    {
+        // var_dump($product_id);die();
+        $this->db->select('tblwarehouses.*,tbl_kindof_warehouse.name as kindof_warehouse_name,tblwarehouses_products.product_quantity');
+        $this->db->join('tbl_kindof_warehouse', 'tbl_kindof_warehouse.id = tblwarehouses.kindof_warehouse', 'left');
+        $this->db->join('tblwarehouses_products', 'tblwarehouses_products.warehouse_id = tblwarehouses.warehouseid', 'left');
+        $this->db->from('tblwarehouses');
+        if (is_numeric($product_id)) 
+        {
+            $this->db->where('product_id', $product_id);
+        }
+        if (is_numeric($warehouse_id)) 
+        {
+            $this->db->where('warehouseid', $warehouse_id);
             return $this->db->get()->row();
         }
         else 

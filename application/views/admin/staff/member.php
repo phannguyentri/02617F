@@ -336,7 +336,7 @@ $selected=(isset($member) ? $member->gender : '');
              ?>
              <?php echo render_select('role',$roles,array('roleid','name'),'staff_add_edit_role',$selected,array('onchange'=>'get_code_staff(this.value,'.$member->staffid.')')); ?>
              <?php $selected_staff_manager = (isset($member) ? $member->staff_manager : ''); ?>
-            <?php echo render_select('staff_manager[]',$staff_manager,array('staffid','name'),'Nhân viên quản lý',$selected_staff_manager,array('multiple'=>true),array()); ?>
+            <?php echo render_select('staff_manager[]',$staff_manager,array('staffid','name'),'Quản lý trực tiếp',$selected_staff_manager,array('multiple'=>true),array()); ?>
 
              <hr />
              <h4 class="font-medium mbot15 bold"><?php echo _l('staff_add_edit_permissions'); ?></h4>

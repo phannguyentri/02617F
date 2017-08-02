@@ -54,7 +54,7 @@ foreach ($rResult as $aRow) {
             $_data=_d($aRow['date']);
         }
         if ($aColumns[$i] == 'status') {
-            $_data='<span class="inline-block label label-'.get_status_label($aRow['status']).'" task-status-table="'.$aRow['status'].'">' . format_status_sale($aRow['status'],false,true).'';
+            $_data='<span class="inline-block label label-'.get_status_label($aRow['status']).'" task-status-table="'.$aRow['status'].'">' . format_status_export($aRow['status'],false,true).'';
             if(has_permission('invoices', '', 'view') && has_permission('invoices', '', 'view_own'))
             {
                 if($aRow['status']!=2){

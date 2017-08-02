@@ -96,6 +96,84 @@ class Sales_model extends CRM_Model
         return false;
     }
 
+     public function update($data,$id)
+   {
+        $affected=0;
+         $import=array(
+            'rel_type'=>$data['rel_type'],
+            'prefix'=>$data['prefix'],
+            'name'=>$data['name'],
+            'code'=>$data['code'],
+            'customer_id'=>$data['customer_id'],
+            'reason'=>$data['reason'],
+            'date'=>to_sql_date($data['date'])
+            );
+        
+        if($this->db->update('tblsales',$import,array('id'=>$id)) && $this->db->affected_rows()>0)
+        {
+            logActivity('Edit Sale Updated [ID:' . $id . ', Date' . date('Y-m-d') . ']');
+            $count=0;
+            $affected=1;
+        }
+        if ($id) {
+            $items=$data['items'];
+            $total=0;
+            $affected_id=array();
+            foreach ($items as $key => $item) {
+                $affected_id[]=$item['id'];
+                $product=$this->getProductById($item['id']);
+                $sub_total=$product->price*$item['quantity'];
+                $total+=$sub_total;
+                $itm=$this->getSaleItem($id,$item['id']);
+                $item_data=array(
+                    'sale_id'=>$id,
+                    'product_id'=>$item['id'],
+                    'serial_no'=>$item['serial_no'],
+                    'unit_id'=>$product->unit,
+                    'quantity'=>$item['quantity'],
+                    'unit_cost'=>$product->price,
+                    'sub_total'=>$sub_total
+                    );
+                if($itm)
+                {
+                    $this->db->update('tblsale_items', $item_data,array('id'=>$itm->id));
+                    if($this->db->affected_rows()>0)
+                     {
+                        logActivity('Edit Sale Item Updated [ID:' . $id . ', Item ID' . $item['id'] . ']');
+                     }
+                }
+                else
+                {
+                    $this->db->insert('tblsale_items', $item_data);
+                    if($this->db->affected_rows()>0)
+                     {
+                        logActivity('Insert Sale Item Added [ID:' . $id . ', Item ID' . $item['id'] . ']');
+                     }
+                }
+            }
+                if(!empty($affected_id))
+                {
+                    $this->db->where('sale_id', $id);
+                    $this->db->where_not_in('product_id', $affected_id);
+                    $this->db->delete('tblsale_items');
+                }
+
+            $this->db->update('tblsales',array('total'=>$total),array('id'=>$id));
+            return $id;
+        }
+        return false;
+    }
+
+    public function getSaleItem($sale_id,$product_id)
+    {
+        if (is_numeric($sale_id) && is_numeric($product_id)) {
+            $this->db->where('sale_id', $sale_id);
+            $this->db->where('product_id', $product_id);
+            return $this->db->get('tblsale_items')->row();
+        }
+        return false;
+    }
+
     public function getProductById($id)
     {       
             $this->db->select('tblitems.*,tblunits.unit as unit_name');

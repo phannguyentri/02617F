@@ -100,14 +100,22 @@ foreach ($rResult as $aRow) {
     $_data='';
     if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
         $_data .= icon_btn('sales/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
-        //Tao Phieu xuat kho
-        $_data .= icon_btn('sales/sale_output/'. $aRow['id'] , 'file-o');
-        //Tao Phieu Giao hang
-        $_data .= icon_btn('sales/sale_delivery/'. $aRow['id'] , 'truck');
+        if($aRow['status']==2)
+        {            
+            //Tao Phieu xuat kho
+            $_data .= icon_btn('exports/sale_output/'. $aRow['id'] , 'file-o');
+            //Tao Phieu Giao hang
+            $_data .= icon_btn('sales/sale_delivery/'. $aRow['id'] , 'truck');
+        }
+        
 
         if($aRow['status']!=2)
         {            
             $_data .= icon_btn('sales/sale_detail/'. $aRow['id'] , 'edit');
+        }
+        else
+        {
+            $_data .= icon_btn('sales/sale_detail/'. $aRow['id'] , 'eye');
         }       
         $row[] =$_data.icon_btn('sales/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-remind');
     } else {

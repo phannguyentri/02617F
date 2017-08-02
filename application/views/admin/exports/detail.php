@@ -198,7 +198,7 @@
                                         </td>
                                         
                                         <td>
-                                            <?php echo _l('item_price_buy'); ?>
+                                            <?php echo _l('item_price'); ?>
                                         </td>
                                         <td>
                                             0
@@ -231,11 +231,12 @@
                                         </td>
                                         <td class="dragger"><?php echo $value->product_name; ?></td>
                                         <td><?php echo $value->unit_name; ?></td>
-                                        <td><input class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
+                                        <td><input style="width: 100px" class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
                                             
                                         <td><?php echo number_format($value->unit_cost); ?></td>
                                         <td><?php echo number_format($value->sub_total); ?></td>
-                                        <td><?php echo $value->product_specifications	; ?></td>
+                                        <td><?php echo $value->warehouse_type->kindof_warehouse_name ?></td>
+                                        <td><input type="hidden" data-store="<?=$value->warehouse_type->kindof_warehouse_name ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(có <?=$value->warehouse_type->product_quantity?>)</td>
                                         <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php
@@ -295,7 +296,6 @@
     _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required',receiver_id:'required'});
     
     var itemList = <?php echo json_encode($items);?>;
-
     //format currency
     function formatNumber(nStr, decSeperate=".", groupSeperate=",") {
         nStr += '';
@@ -426,8 +426,8 @@
             trBar.find('td:nth-child(3) > input').val(itemFound.unit);
             trBar.find('td:nth-child(4) > input').val(1);
             
-            trBar.find('td:nth-child(5)').text(formatNumber(itemFound.price_buy));
-            trBar.find('td:nth-child(6)').text(formatNumber(itemFound.price_buy * 1) );
+            trBar.find('td:nth-child(5)').text(formatNumber(itemFound.price));
+            trBar.find('td:nth-child(6)').text(formatNumber(itemFound.price * 1) );
             trBar.find('td:nth-child(7)');
             trBar.find('td:nth-child(8)');
             isNew = true;

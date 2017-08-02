@@ -867,6 +867,117 @@ function render_select($name, $options, $option_attrs = array(), $label = '', $s
     $select .= '</div>';
     return $select;
 }
+
+function render_select2($name,$id, $options, $option_attrs = array(), $label = '', $selected = '', $select_attrs = array(), $form_group_attr = array(), $form_group_class = '', $select_class = '', $include_blank = true)
+{
+
+    $callback_translate = '';
+    if (isset($options['callback_translate'])) {
+        $callback_translate = $options['callback_translate'];
+        unset($options['callback_translate']);
+    }
+    $select           = '';
+    $_form_group_attr = '';
+    $_select_attrs    = '';
+    if (!isset($select_attrs['data-width'])) {
+        $select_attrs['data-width'] = '100%';
+    }
+    if (!isset($select_attrs['data-none-selected-text'])) {
+        $select_attrs['data-none-selected-text'] = _l('dropdown_non_selected_tex');
+    }
+    foreach ($select_attrs as $key => $val) {
+        // tooltips
+        if ($key == 'title') {
+            $val = _l($val);
+        }
+        $_select_attrs .= $key . '=' . '"' . $val . '"';
+    }
+    foreach ($form_group_attr as $key => $val) {
+        // tooltips
+        if ($key == 'title') {
+            $val = _l($val);
+        }
+        $_form_group_attr .= $key . '=' . '"' . $val . '"';
+    }
+    if (!empty($select_class)) {
+        $select_class = ' ' . $select_class;
+    }
+    if (!empty($form_group_class)) {
+        $form_group_class = ' ' . $form_group_class;
+    }
+    $select .= '<div class="form-group' . $form_group_class . '" ' . $_form_group_attr . '>';
+    if ($label != '') {
+        $select .= '<label for="' . $name . '" class="control-label">' . _l($label,'',false) . '</label>';
+    }
+    $select .= '<select id="' . $id . '" name="' . $name . '" class="selectpicker' . $select_class . '" ' . $_select_attrs . ' data-live-search="true">';
+    if ($include_blank == true) {
+        $select .= '<option value=""></option>';
+    }
+    foreach ($options as $option) {
+        $val       = '';
+        $_selected = '';
+        $key       = '';
+        if (isset($option[$option_attrs[0]]) && !empty($option[$option_attrs[0]])) {
+            $key = $option[$option_attrs[0]];
+        }
+        if (!is_array($option_attrs[1])) {
+            $val = $option[$option_attrs[1]];
+        } else {
+            foreach ($option_attrs[1] as $_val) {
+                $val .= $option[$_val] . ' ';
+            }
+        }
+        $val = trim($val);
+        if ($callback_translate != '') {
+            if (function_exists($callback_translate) && is_callable($callback_translate)) {
+                $val = call_user_func($callback_translate, $key);
+            }
+        }
+        $data_sub_text = '';
+        if (!is_array($selected)) {
+            if ($selected != '') {
+                if ($selected == $key) {
+                    $_selected = ' selected';
+                }
+            }
+        } else {
+            foreach ($selected as $id) {
+                if ($key == $id) {
+                    $_selected = ' selected';
+                }
+            }
+        }
+        if (isset($option_attrs[2])) {
+
+            if (strpos($option_attrs[2], ',') !== false) {
+                $sub_text = '';
+                $_temp    = explode(',', $option_attrs[2]);
+                foreach ($_temp as $t) {
+                    if (isset($option[$t])) {
+                        $sub_text .= $option[$t] . ' ';
+                    }
+                }
+            } else {
+                if (isset($option[$option_attrs[2]])) {
+                    $sub_text = $option[$option_attrs[2]];
+                } else {
+                    $sub_text = $option_attrs[2];
+                }
+            }
+            $data_sub_text = ' data-subtext=' . '"' . $sub_text . '"';
+        }
+        $data_content = '';
+        if (isset($option['option_attributes'])) {
+            foreach ($option['option_attributes'] as $_opt_attr_key => $_opt_attr_val) {
+                $data_content .= $_opt_attr_key . '=' . '"' . $_opt_attr_val . '"';
+            }
+        }
+        $select .= '<option value="' . $key . '"' . $_selected . $data_content . '' . $data_sub_text . '>' . $val . '</option>';
+    }
+    $select .= '</select>';
+    $select .= '</div>';
+    return $select;
+}
 /**
  * Init admin head
  * @param  boolean $aside should include aside

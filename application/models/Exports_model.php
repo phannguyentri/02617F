@@ -52,7 +52,7 @@ class Exports_model extends CRM_Model
     public function add($data)
    {
     // var_dump($data);die();
-        $import=array(
+        $export=array(
             'rel_type'=>$data['rel_type'],
             'rel_code'=>$data['rel_code'],
             'prefix'=>$data['prefix'],
@@ -64,8 +64,8 @@ class Exports_model extends CRM_Model
             'date'=>to_sql_date($data['date']),
             'create_by'=>get_staff_user_id()
             );
-        // var_dump($import);die();
-        $this->db->insert('tblexports', $import);
+        // var_dump($export);die();
+        $this->db->insert('tblexports', $export);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
             logActivity('New Export Added [ID:' . $insert_id . ', ' . $data['date'] . ']');
@@ -85,7 +85,7 @@ class Exports_model extends CRM_Model
                     'quantity'=>$item['quantity'],
                     'unit_cost'=>$product->price,
                     'sub_total'=>$sub_total,
-                    'warehouse_id'=>$item['warehouse_id']
+                    'warehouse_id'=>$item['warehouse']
                     );
                  $this->db->insert('tblexport_items', $item_data);
                  if($this->db->affected_rows()>0)
@@ -95,6 +95,88 @@ class Exports_model extends CRM_Model
             }
             $this->db->update('tblexports',array('total'=>$total),array('id'=>$insert_id));
             return $insert_id;
+        }
+        return false;
+    }
+
+     public function update($data,$id)
+   {
+    // var_dump($data);die();
+        $affected=false;
+        $export=array(
+            'rel_type'=>$data['rel_type'],
+            'rel_code'=>$data['rel_code'],
+            'prefix'=>$data['prefix'],
+            'name'=>$data['name'],
+            'code'=>$data['code'],
+            'customer_id'=>$data['customer_id'],
+            'receiver_id'=>$data['receiver_id'],
+            'reason'=>$data['reason'],
+            'date'=>to_sql_date($data['date'])
+            );
+        
+        if($this->db->update('tblexports',$export,array('id'=>$id)) && $this->db->affected_rows()>0)
+        {
+            logActivity('Edit Export Updated [ID:' . $id . ', ' . date('Y-m-d') . ']');
+            $count=0;
+            $affected=true;
+        }
+        if ($id) {
+            $items=$data['items'];
+            $total=0;
+            $affected_id=array();
+            foreach ($items as $key => $item) {
+                $affected_id[]=$item['id'];
+                $product=$this->getProductById($item['id']);
+                $sub_total=$product->price*$item['quantity'];
+                $total+=$sub_total;
+                $itm=$this->getExportItem($id,$item['id']);
+                $item_data=array(
+                    'export_id'=>$id,
+                    'product_id'=>$item['id'],
+                    'serial_no'=>$item['serial_no'],
+                    'unit_id'=>$product->unit,
+                    'quantity'=>$item['quantity'],
+                    'unit_cost'=>$product->price,
+                    'sub_total'=>$sub_total,
+                    'warehouse_id'=>$item['warehouse']
+                    );
+                if($itm)
+                {
+                    $this->db->update('tblexport_items', $item_data,array('id'=>$itm->id));
+                    if($this->db->affected_rows()>0)
+                     {
+                        logActivity('Edit Export Item Updated [ID:' . $id . ', Item ID' . $item['id'] . ']');
+                     }
+                }
+                else
+                {
+                    $this->db->insert('tblexport_items', $item_data);
+                    if($this->db->affected_rows()>0)
+                     {                        
+                        logActivity('Insert Export Item Added [ID:' . $id . ', Item ID' . $item['id'] . ']');
+                     }
+                }
+            }
+                if(!empty($affected_id))
+                {
+                    $this->db->where('export_id', $id);
+                    $this->db->where_not_in('product_id', $affected_id);
+                    $this->db->delete('tblexport_items');
+                }
+
+            $this->db->update('tblexports',array('total'=>$total),array('id'=>$id));
+            return $id;
+        }
+        return false;
+    }
+
+    public function getExportItem($import_id,$product_id)
+    {
+        if (is_numeric($import_id) && is_numeric($product_id)) {
+            $this->db->where('export_id', $import_id);
+            $this->db->where('product_id', $product_id);
+            return $this->db->get('tblexport_items')->row();
         }
         return false;
     }
