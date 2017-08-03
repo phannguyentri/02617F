@@ -24,6 +24,9 @@ $pdf_text_color_array = hex2rgb(get_option('pdf_text_color'));
 if (is_array($pdf_text_color_array) && count($pdf_text_color_array) == 3) {
     $pdf->SetTextColor($pdf_text_color_array[0], $pdf_text_color_array[1], $pdf_text_color_array[2]);
 }
+// set margins
+// $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+$pdf->SetFont($font_name,'',$font_size+2);
 
 // Get Y position for the separation
 $y            = $pdf->getY();
@@ -237,87 +240,119 @@ $tblTable = '
 </font>
 <br />
 <b><i>Hai bên thống nhất ký kết Hợp đồng với các điều khoản sau:</i></b>
+<br /><br />
+<b>I.	Nội dung giao dịch, mua bán:</b>
 ';
 $pdf->Ln(30);
 $pdf->writeHTML($tblTable, true, false, false, false, '');
 
-// // The Table
-// $pdf->Ln(3);
-// // $item_width = 38;
-// // // If show item taxes is disabled in PDF we should increase the item width table heading
-// // if (get_option('show_tax_per_item') == 0) {
-// //     $item_width = $item_width + 15;
-// // }
-// // // Header
-// // $qty_heading = _l('invoice_table_quantity_heading');
-
-// $tblHtml = '
-// <table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1">
-//     <tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">
-//         <th width="5%;" valign="middle" align="center">#</th>
-//         <th width="10%" valign="middle" align="center">
-//             <i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip"></i>'. _l('item_code').'</th>
-//         <th width="25%" valign="middle" align="center">'. _l('item_name') .'</th>
-//         <th width="10%" valign="middle" align="center">'. _l('item_unit') .'</th>
-//         <th width="10%" valign="middle" align="center">'. _l('item_quantity') .'</th>
-//         <th width="10%" valign="middle" align="center">'. _l('item_price_buy') .'</th>
-//         <th width="10%" valign="middle" align="center">'. _l('tax') . '</th>
-//         <th width="20%" valign="middle" align="center">'. _l('purchase_total_price') . '</th>
-//     </tr>
-//         ';
-// // Items
-
-// $i=0;
-// $totalPrice = 0;
-
-// foreach($purchase_order->products as $value) {
-//     // print_r($value);
-//     // exit();
-//     $i++;
-//     $tblHtml .= '
-//         <tr>
-//             <td>'.$i.'</td>
-//             <td>'.$value->product_code.'</td>
-//             <td>'.$value->product_code.'</td>
-//             <td>'.$value->unit.'</td>
-//             <td style="text-align:center">'.number_format($value->product_quantity).'</td>
-//             <td style="text-align:right">'.number_format($value->product_price_buy).'</td>
-//             <td>'.$value->rate.'</td>
-//             <td style="text-align:right">'.number_format($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* ($value->rate)/100).'</td>
-//         </tr>
-//     ';
-//     $totalPrice += ($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* $value->rate/100);
+// The Table
+$pdf->Ln(3);
+// $item_width = 38;
+// // If show item taxes is disabled in PDF we should increase the item width table heading
+// if (get_option('show_tax_per_item') == 0) {
+//     $item_width = $item_width + 15;
 // }
+// // Header
+// $qty_heading = _l('invoice_table_quantity_heading');
 
-// $tblHtml .= '
-//         <tr>
-//             <td colspan="5" style="text-align: right">'._l('purchase_total_price').'</td>
-//             <td colspan="3" style="text-align: right">' . number_format($totalPrice). '</td>
-//         </tr>
-//         <tr>
-//             <td colspan="5" style="text-align: right">'._l('purchase_total_items').'</td>
-//             <td colspan="3" style="text-align: right">' . number_format($i). '</td>
-//         </tr>
-// ';
-// $tblHtml .= '</table>';
-// $pdf->writeHTML($tblHtml, true, false, false, false, '');
+$tblHtml = '
+<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1">
+    <tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">
+        <th width="5%;" valign="middle" align="center">#</th>
+        <th width="10%" valign="middle" align="center">
+            <i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip"></i>'. _l('item_code').'</th>
+        <th width="25%" valign="middle" align="center">'. _l('item_name') .'</th>
+        <th width="10%" valign="middle" align="center">'. _l('item_unit') .'</th>
+        <th width="10%" valign="middle" align="center">'. _l('item_quantity') .'</th>
+        <th width="15%" valign="middle" align="center">'. _l('item_price_buy') .'</th>
+        <th width="5%" valign="middle" align="center">'. _l('tax') . '</th>
+        <th width="20%" valign="middle" align="center">'. _l('purchase_total_price') . '</th>
+    </tr>
+        ';
+// Items
 
+$i=0;
+$totalPrice = 0;
+
+foreach($purchase_contract->products as $value) {
+    // print_r($value);
+    // exit();
+    $i++;
+    $tblHtml .= '
+        <tr>
+            <td>'.$i.'</td>
+            <td>'.$value->product_code.'</td>
+            <td>'.$value->product_code.'</td>
+            <td>'.$value->unit.'</td>
+            <td style="text-align:center">'.number_format($value->product_quantity).'</td>
+            <td style="text-align:right">'.number_format($value->product_price_buy).'</td>
+            <td>'.$value->rate.'</td>
+            <td style="text-align:right">'.number_format($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* ($value->rate)/100).'</td>
+        </tr>
+    ';
+    $totalPrice += ($value->product_quantity*$value->product_price_buy + ($value->product_quantity*$value->product_price_buy)* $value->rate/100);
+}
+
+$tblHtml .= '
+        <tr>
+            <td colspan="5" style="text-align: right">'._l('purchase_total_price').'</td>
+            <td colspan="3" style="text-align: right">' . number_format($totalPrice). '</td>
+        </tr>
+        <tr>
+            <td colspan="5" style="text-align: right">'._l('purchase_total_items').'</td>
+            <td colspan="3" style="text-align: right">' . number_format($i). '</td>
+        </tr>
+';
+$tblHtml .= '</table>';
+$pdf->writeHTML($tblHtml, true, false, false, false, '');
+
+$footer = '
+<p>
+    <b>II.	Hình thức, thời hạn thanh toán:</b> <br />
+    -	Hình thức thanh toán: Mọi khoản thanh toán giữa Bên A và Bên B đều được thực hiện bằng hình thức chuyển khoản qua tài khoản ngân hàng của Bên A. <br />
+    -	Thời hạn thanh toán: <br />
++	Lần 1: Bên B thanh toán số tiền …………… đồng (……………………. đồng) vào tài khoản ngân hàng của Bên A trong vòng 24 giờ sau khi hợp đồng được ký kết. <br />
++	Lần 2: Bên B thanh toán số tiền …………………….. đồng (…………………….. đồng) vào tài khoản ngân hàng của Bên A trước khi giao hàng.
+</p>
+<p>
+    <b>III.	Chất lượng và suất xứ hàng hóa:</b> <br />
+-	Chất lượng hàng hóa Bên A cung cấp là hàng mới 100%, đúng chủng loại, chất lượng              tiêu chuẩn của nhà sản xuất.<br />
+-	Nguồn gốc xuất xứ hàng hóa: Sản xuất và lắp ráp tại Ý ( Italy). 
+</p>
+<p>
+    <b>IV.	Phương thức giao nhận và lắp đặt:</b> <br />
+-	Địa chỉ giao hàng: ………………………………………………………………………  TP. Hồ Chí Minh <br />
+-	Bên A thực hiện thi công lắp đặt tất cả hàng hóa cho bên B tại vị trí sử dụng theo chỉ định của bên B. <br /> 
+-	Cung cấp miễn phí tất cả vật tư phụ cần thiết cho việc lắp đặt. Thời gian giao hàng và lắp đặt theo yêu cầu của bên B.  
+</p>
+<p>
+    <b>V.	Bảo hành và dịch vụ:</b> <br />
+-	Bên A có trách nhiệm bảo hành toàn bộ hàng hóa và các công việc thực hiện trong thời gian 05 năm kể từ ngày nghiệm thu bàn giao đưa vào sử dụng. <br />
+-	Bên A sẽ thực hiện việc chăm sóc sản phẩm định kỳ miễn phí hàng năm. <br />
+-	Không bảo hành khi cố tình làm hư hỏng và các yếu tố khách quan như bão lũ, thiên tai…
+</p>
+<p>
+    <b>VI.	Điều khoản chung:</b> <br />
+-	Hai bên cam kết thực hiện đúng các điều khoản đã ghi trong hợp đồng. <br />
+-	Hợp đồng này được xác lập bằng sự thỏa thuận hoàn toàn về các điều khoản trên giữa hai bên. Tất cả mọi sự thay đổi, điều chỉnh hợp đồng phải được thống nhất bằng văn bản và có chữ ký xác nhận của hai bên. <br />
+-	Hợp đồng có hiệu lực kể từ ngày ký và được lập thành 02 bản, mỗi bên giữ 01 bản có giá trị pháp lý như nhau. 
+</p>
+';
+$pdf->writeHTML($footer, true, false, false, false, '');
 // // print_r($tblHtml);
 // // exit();
 
 // // $detail = _l('user_head').': <b>' . $purchase_suggested->user_head_name . '</b> <br /> <br />';
 // // $detail .= _l('user_admin').': <b>' . $purchase_suggested->user_admin_name . '</b> <br /> <br />';
-// $pdf->Ln(20);
-// $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
-//         <tr>
-//             <td><b>" . mb_ucfirst(_l('orders_user_create'), "UTF-8") . "</b>
-//             <br />(ký, ghi rõ họ tên)</td>
-//             <td><b>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</b>
-//             <br />(ký, ghi rõ họ tên)</td>
-//         </tr>
-//         <tr>
-//             <td style=\"height: 100px\" colspan=\"3\"></td>
-//         </tr>
+$pdf->Ln(20);
+$table = "<table height='1000' style=\"width: 100%;text-align: center\" border=\"0\">
+        <tr>
+            <td><b>ĐẠI DIỆN BÊN A</b>
+            <br />(ký, ghi rõ họ tên)</td>
+            <td><b>ĐẠI DIỆN BÊN B</b>
+            <br />(ký, ghi rõ họ tên)</td>
+        </tr>
         
-// </table>";
-// $pdf->writeHTML($table, true, false, false, false, '');
+</table>";
+$pdf->writeHTML($table, true, false, false, false, '');

@@ -155,6 +155,7 @@ class Clients extends Admin_controller
         
         $data['group']  = $group;
         $data['groups'] = $this->clients_model->get_groups();
+        $data['users'] = $this->clients_model->get();
         $this->load->model('currencies_model');
         $data['currencies'] = $this->currencies_model->get();
         $data['user_notes'] = $this->misc_model->get_notes($id, 'customer');

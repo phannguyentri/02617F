@@ -109,9 +109,13 @@
     var birthday                      = $('label[for="birthday"]');
     var mobilephone_number            = $('#mobilephone_number,#phonenumber');
     var type_of_organization          = $('#type_of_organization');
-    var vat                           = $('#vat');
+    var vat                           = $('#vat2');
     var short_name                    = $('#short_name');
-    var billing_col                   = $('li:has(a[aria-controls="billing_and_shipping"])');
+    var billing_col                   = $('.shipping_address_lane');
+    var website                       = $('#website');
+    var zip                           = $('#zip');
+    var default_language              = $('#default_language');
+
     if(client_type == 1) {
       $('label[for="company"]').html('<small class="req text-danger">* </small> <?=_l('client-name')?> <?=_l('client-personal')?>');
       
@@ -123,12 +127,16 @@
       legal_representative.parent().hide();
       cooperative_day.parent().parent().hide();
       billing_col.hide();
+      
+      website.parents('.form-group').hide();
+      zip.parents('.form-group').hide();
+      default_language.parents('.form-group').hide();
 
       // Personal
       id_card.parent().show();
       mobilephone_number.parent().show();
       short_name.parent().show();
-
+      
       // removeRules(companyRules);
       // addRules(personalRules);
     }
@@ -142,9 +150,11 @@
       legal_representative.parent().show();
       cooperative_day.parent().parent().show();
       billing_col.show();
+      website.parents('.form-group').show();
+      zip.parents('.form-group').show();
+      default_language.parents('.form-group').show();
 
       // Personal
-      id_card.parent().hide();
       mobilephone_number.parent().hide();
       short_name.parent().hide();
 

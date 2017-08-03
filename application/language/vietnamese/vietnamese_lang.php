@@ -3521,7 +3521,7 @@ $lang['client-type'] = 'Loại khách hàng';
 
 $lang['client-personal'] = 'Cá nhân';
 $lang['client_shortname'] = 'Tên ngắn gọn';
-$lang['client_name_title'] = 'Danh xưng';
+$lang['client_name_title'] = 'Danh xưng người đại diện';
 $lang['id_card'] = 'Số chứng minh nhân dân';
 $lang['type_of_organization'] = 'Loại hình tổ chức';
 $lang['bussiness_registration_number'] = 'Số ĐKKD';
@@ -3630,10 +3630,13 @@ $lang['staff_attachments']              = "Các tập tin";
 $lang['client_district']                    = "Quận/huyện";
 
 $lang['client_address_room_number']      = "Số phòng";
+$lang['client_street']                   = "Đường";
 $lang['client_ward']                     = "Phường/xã/thị trấn";
 $lang['client_address_building']         = "Tòa nhà";
 $lang['client_address_home_number']      = "Số nhà";
 $lang['client_address_town']             = "Khu phố/thôn/ấp";
+$lang['client_relationship']             = "Phân loại quan hệ";
+$lang['client_user_referrer']            = "Nguồn giới thiệu";
 $lang['dkkd_address']                    = "Địa chỉ đăng ký kinh doanh";
 
 $lang['als_suppliers']              = "Nhà cung cấp";
