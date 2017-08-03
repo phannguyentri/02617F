@@ -47,6 +47,9 @@ foreach ($rResult as $aRow) {
         if ($aColumns[$i] == '1') {
             $_data=$j;
         }
+        if ($aColumns[$i] == 'rel_code') {
+            $_data='<a href="'.admin_url('sales/sale_detail/'.$aRow['rel_id']).'">'.$aRow['rel_code'].'</a>';
+        }
         if ($aColumns[$i] == 'code') {
             $_data=$aRow['prefix'].$aRow['code'];
         }

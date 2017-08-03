@@ -14,35 +14,14 @@
       <div class="clearfix"></div>
         <?php 
         } ?>
-  <h4 class="bold no-margin"><?php echo (isset($item) ? _l('edit_export_order') : _l('add_export_order')); ?></h4>
+  <h4 class="bold no-margin"><?=_l('add_export_order') ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
     <div class="col-md-12">
         <?php
-         if(isset($item))
-            {
-                if($item->status==0)
-                {
-                    $type='warning';
-                    $status='Chưa duyệt';
-                }
-                elseif($item->status==1)
-                {
-                    $type='info';
-                    $status='Đã xác nhận';
-                }
-                else
-                {
-                    $type='success';
-                    $status='Đã duyệt';
-                }
-            }
-            else
-            {
                 $type='warning';
                 $status='Phiếu mới';
-            }
 
         ?>
         <div class="ribbon <?=$type?>"><span><?=$status?></span></div>
@@ -71,7 +50,7 @@
                 </div>
             </div>
             
-            <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'sales-form', 'autocomplete' => 'off')); ?>
+            <?php echo form_open_multipart(admin_url('exports/export_detail'), array('class' => 'sales-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
                   <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">            
                     <?php
@@ -81,27 +60,23 @@
                          <label for="number"><?php echo _l('export_code'); ?></label>
                          <div class="input-group">
                           <span class="input-group-addon">
-                          <?php $prefix =($item) ? $item->prefix : get_option('prefix_export'); ?>
+                          <?php $prefix =get_option('prefix_export'); ?>
                             <?=$prefix?>
                             <?php echo form_hidden('rel_type', 'export_sale_order'); ?>
+                            <?php echo form_hidden('rel_id', $item->id); ?>
                             <?=form_hidden('prefix',$prefix)?>    
                             </span>
                             <?php 
-                                if($item)
-                                {
-                                    $number=$item->code;
-                                }
-                                else
-                                {
+                                
                                     $number=sprintf('%05d',getMaxID('id','tblexports')+1);
-                                }
+                                
                             ?>
                             <input type="text" name="code" class="form-control" id="code" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
                           </div>
                     </div>
 
                     <?php
-                    $value= ( isset($item) ? $item->rel_code : ''); 
+                    $value= ( isset($item) ? $item->prefix.$item->code : ''); 
                     $attrs = array('readonly'=>true);?>
                     <?php echo render_input( 'rel_code', _l("sale_code"),$value,'text',$attrs); ?>
 
@@ -140,8 +115,8 @@
                 <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
                     <!-- Cusstomize from invoice -->
                     <div class="panel-body mtop10">
-                        <div class="row">
-                            <div class="col-md-4">
+                        <div class="row" style="display: none;">
+                            <div class="col-md-4" >
                                 <div class="form-group mbot25">
                                     <select class="selectpicker no-margin" data-width="100%" id="custom_item_select" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
                                         <option value=""></option>
@@ -183,7 +158,7 @@
                                 </thead>
                                 
                                 <tbody>
-                                    <tr class="main">
+                                    <!-- <tr class="main hide">
                                         <td><input type="hidden" id="itemID" value="" /></td>
                                         <td>
                                             <?php echo _l('item_name'); ?>
@@ -217,7 +192,7 @@
                                         <td>
                                             <button style="display:none" id="btnAdd" type="button" onclick="createTrItem(); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <?php
                                     $i=0;
                                     $totalPrice=0;
@@ -231,13 +206,20 @@
                                         </td>
                                         <td class="dragger"><?php echo $value->product_name; ?></td>
                                         <td><?php echo $value->unit_name; ?></td>
-                                        <td><input style="width: 100px" class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
+                                       
+                                        <td>
+                                        <input style="width: 100px; <?=$style?>" min="0" max="<?=$value->quantity-$value->export_quantity?>" class="mainQuantity <?=$err?>" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?=($value->quantity==$value->export_quantity)? 0 : $value->quantity-$value->export_quantity ?>">
+                                        <?php 
+                                            if($value->export_quantity!=NULL || $value->export_quantity!='')
+                                                echo "(".$value->export_quantity.'/'.$value->quantity.')';
+                                        ?>
+                                        </td>
                                             
                                         <td><?php echo number_format($value->unit_cost); ?></td>
                                         <td><?php echo number_format($value->sub_total); ?></td>
                                         <td>
                                         <?php 
-                                            echo render_select2('items['.$i.'][kind_warehouse]','select_kindof_warehouse'.$i, $warehouse_types, array('id', 'name'),'','',array('onchange'=>'loadWarehouseByID(this.value,$value->product_id,'.''.','.$i.')'));
+                                            echo render_select2('items['.$i.'][kind_warehouse]','select_kindof_warehouse'.$i, $warehouse_types, array('id', 'name'),'','',array('onchange'=>'loadWarehouseByID(this.value,'.$value->product_id.','.$i.')'));
                                         ?>
                                                 
                                         </td>
@@ -281,7 +263,7 @@
                 <!-- End Customize from invoice -->
                 </div>
                 
-                <?php if(isset($item) && $item->status != 2 || !isset($item)) { ?>
+                <?php if(isset($item)) { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l('submit'); ?>
                 </button>
@@ -447,7 +429,7 @@
             $('#btnAdd').hide();
         }
     });
-    $('#select_warehouse').on('change', (e)=>{
+    $('select[id^="select_warehouse"]').on('change', (e)=>{
         if($(e.currentTarget).val() != '') {
             $(e.currentTarget).parents('tr').find('input.mainQuantity').attr('data-store', $(e.currentTarget).find('option:selected').data('store'));
         }
@@ -456,10 +438,10 @@
         var currentQuantityInput = $(e.currentTarget);
         let elementToCompare;
         if(typeof(currentQuantityInput.attr('data-store')) == 'undefined' )
-            elementToCompare = currentQuantityInput.parents('tr').find('input:last');
+            elementToCompare = currentQuantityInput.parents('tr').find('input[aria-label!="Search"]:last');
         else
             elementToCompare = currentQuantityInput;
-        if(currentQuantityInput.val() > elementToCompare.attr('data-store')) {
+        if(parseInt(currentQuantityInput.val()) > parseInt(elementToCompare.attr('data-store'))) {
             currentQuantityInput.attr("style", "width: 100px;border: 1px solid red !important");
             currentQuantityInput.attr('data-toggle', 'tooltip');
             currentQuantityInput.attr('data-trigger', 'manual');
@@ -517,9 +499,7 @@
     }
 
     function loadWarehouseByID(warehouse_type, filter_by_product,id){
-        // alert($(this).attr('id'));
-        console.log(id)
-        var warehouse_id=$('#select_warehouse');
+        var warehouse_id=$('#select_warehouse'+id);
         warehouse_id.find('option:gt(0)').remove();
         warehouse_id.selectpicker('refresh');
         if(warehouse_id.length) {
@@ -529,9 +509,6 @@
             }).done(function(data){          
                 $.each(data, function(key,value){
                     var stringSelected = "";
-                    if(value.warehouseid == default_value) {
-                        stringSelected = ' selected="selected"';
-                    }
                     warehouse_id.append('<option data-store="'+value.items[0].product_quantity+'" value="' + value.warehouseid + '"'+stringSelected+'>' + value.warehouse + '(có '+value.items[0].product_quantity+')</option>');
                 });
                 warehouse_id.selectpicker('refresh');
@@ -542,9 +519,17 @@
     $('.customer-form-submiter').on('click', (e)=>{
         if($('input.error').length) {
             e.preventDefault();
-            alert('Giá trị không hợp lệ!');    
+            alert_float('warning','Giá trị không hợp lệ!');    
         }
-        
+        // alert($('select[id^="select_warehouse"]').selectpicker('val'));
+        $.each($('select[id^="select_warehouse"]'), function(key,value){
+            // alert($(value).selectpicker('val'))
+            if($(value).selectpicker('val')=='')
+            {
+                e.preventDefault();
+                alert_float('warning','Vui lòng chọn kho sản phẩm');  
+            }
+        });
     });
     
 </script>

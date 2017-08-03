@@ -35,7 +35,7 @@ class Exports extends Admin_controller
                 }
 
                 $data                 = $this->input->post();
-                // var_dump($data);die();
+                
                 // var_dump(nl2br($data['reason']));die();
                 if(isset($data['items']) && count($data['items']) > 0)
                 {
@@ -75,14 +75,12 @@ class Exports extends Admin_controller
             foreach ($data['item']->items as $key => $value) {       
                 $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
                 $i++;
-
             }
-            // var_dump($data['item']);die();
+            
             if (!$data['item']) {
                 blank_page('Export Not Found');
             }
         }
-
         $where_clients = 'tblclients.active=1';
 
         if (!has_permission('customers', '', 'view')) {

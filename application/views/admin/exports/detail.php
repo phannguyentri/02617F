@@ -83,7 +83,7 @@
                           <span class="input-group-addon">
                           <?php $prefix =($item) ? $item->prefix : get_option('prefix_export'); ?>
                             <?=$prefix?>
-                            <?php echo form_hidden('rel_type', 'export_sale_order'); ?>
+                            <?php echo form_hidden('rel_type', (($item->rel_type)? $item->rel_type :'export_warehouse_transfer')); ?>
                             <?=form_hidden('prefix',$prefix)?>    
                             </span>
                             <?php 
@@ -102,8 +102,13 @@
 
                     <?php
                     $value= ( isset($item) ? $item->rel_code : ''); 
-                    $attrs = array('readonly'=>true);?>
-                    <?php echo render_input( 'rel_code', _l("sale_code"),$value,'text',$attrs); ?>
+                    $attrs = array('readonly'=>true);
+                    if(!empty('rel_id') || !empty('rel_code'))
+                    {
+                        $frmattrs['style']="display: none;";
+                    }
+                    ?>
+                    <?php echo render_input( 'rel_code', _l("sale_code"),$value,'text',$attrs,$frmattrs); ?>
 
                     <?php $value = (isset($item) ? _d($item->date) : _d(date('Y-m-d')));?>
                     <?php echo render_date_input('date','view_date',$value); ?>
@@ -115,7 +120,7 @@
 
                     <?php
                     $selected=(isset($item) ? $item->customer_id : '');
-                    echo render_select('customer_id',$customers,array('userid','company'),'client',$selected);
+                    echo render_select('customer_id',$customers,array('userid','company'),'client',$selected,$frmattrs);
                     ?>
 
                     <?php
@@ -140,7 +145,8 @@
                 <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
                     <!-- Cusstomize from invoice -->
                     <div class="panel-body mtop10">
-                        <div class="row">
+                    <?php if(!empty($item->rel_id) || !empty($item->rel_code)){ $display='style="display: none;"';  }?>
+                        <div class="row" <?=$display?> >
                             <div class="col-md-4">
                                 <div class="form-group mbot25">
                                     <select class="selectpicker no-margin" data-width="100%" id="custom_item_select" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
@@ -163,8 +169,6 @@
                                 
                             </div>
                         </div>
-                        
-
                         <div class="table-responsive s_table">
                             <table class="table items item-export no-mtop">
                                 <thead>
@@ -183,7 +187,7 @@
                                 </thead>
                                 
                                 <tbody>
-                                    <tr class="main">
+                                    <tr class="main" <?=$display?> >
                                         <td><input type="hidden" id="itemID" value="" /></td>
                                         <td>
                                             <?php echo _l('item_name'); ?>
@@ -231,12 +235,22 @@
                                         </td>
                                         <td class="dragger"><?php echo $value->product_name; ?></td>
                                         <td><?php echo $value->unit_name; ?></td>
-                                        <td><input style="width: 100px" class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
+                                        <?php
+                                        $err='';
+                                            if($value->quantity>$value->warehouse_type->product_quantity)
+                                            {
+                                                $err='error';
+                                                $style='border: 1px solid red !important';
+                                            }
+                                        ?>
+                                        <td>
+                                        <input style="width: 100px; <?=$style?>" class="mainQuantity <?=$err?>" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>">
+                                        </td>
                                             
                                         <td><?php echo number_format($value->unit_cost); ?></td>
                                         <td><?php echo number_format($value->sub_total); ?></td>
                                         <td><?php echo $value->warehouse_type->kindof_warehouse_name ?></td>
-                                        <td><input type="hidden" data-store="<?=$value->warehouse_type->kindof_warehouse_name ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(có <?=$value->warehouse_type->product_quantity?>)</td>
+                                        <td><input type="hidden" data-store="<?=$value->warehouse_type->product_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(có <?=$value->warehouse_type->product_quantity?>)</td>
                                         <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php
@@ -450,7 +464,8 @@
             elementToCompare = currentQuantityInput.parents('tr').find('input:last');
         else
             elementToCompare = currentQuantityInput;
-        if(currentQuantityInput.val() > elementToCompare.attr('data-store')) {
+        
+        if(parseInt(currentQuantityInput.val()) > parseInt(elementToCompare.attr('data-store'))){
             currentQuantityInput.attr("style", "width: 100px;border: 1px solid red !important");
             currentQuantityInput.attr('data-toggle', 'tooltip');
             currentQuantityInput.attr('data-trigger', 'manual');
