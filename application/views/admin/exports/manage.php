@@ -96,7 +96,7 @@
 //     }
     $('body').on('click', '.delete-remind', function() {
         var r = confirm(confirm_action_prompt);
-        var table='.table-sales';
+        var table='.table-exports';
         if (r == false) {
             return false;
         } else {
