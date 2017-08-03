@@ -15,20 +15,16 @@
         <!-- Product information -->
         
 
-          <h4 class="bold no-margin"><?php echo _l('purchase_contract_create') ?></h4>
+          <h4 class="bold no-margin"><?php echo _l('purchase_constract_detail') ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
     <div class="col-md-12">
-        <?php
-            $type='warning';
-            $status='Hợp đồng mới';
-        ?>
-        <div class="ribbon <?=$type?>"><span><?=$status?></span></div>
+       
         <ul class="nav nav-tabs profile-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#item_detail" aria-controls="item_detail" role="tab" data-toggle="tab">
-                    <?php echo _l('purchase_suggested_information'); ?>
+                    <?php echo _l('purchase_constract_detail'); ?>
                 </a>
             </li>
         </ul>
@@ -43,14 +39,13 @@
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 _buttons">
                     <div class="pull-right">
                         <?php if( isset($item) ) { ?>
-                        <a href="<?php echo admin_url('purchase_suggested/detail_pdf/' . $item->id . '?print=true') ?>" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="In" aria-describedby="tooltip652034"><i class="fa fa-print"></i></a>
-                        <a href="<?php echo admin_url('purchase_suggested/detail_pdf/' . $item->id  ) ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Xem PDF"><i class="fa fa-file-pdf-o"></i></a>
+                        <a href="<?php echo admin_url('purchase_contracts/detail_pdf/' . $item->id . '?print=true') ?>" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="In" aria-describedby="tooltip652034"><i class="fa fa-print"></i></a>
+                        <a href="<?php echo admin_url('purchase_contracts/detail_pdf/' . $item->id . '?pdf=true') ?>" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Xem PDF"><i class="fa fa-file-pdf-o"></i></a>
                         <?php } ?>
                     </div>
                 </div>
             </div>
             
-            <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'client-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
                   <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">            
                     <?php
@@ -60,52 +55,25 @@
                     <!-- prefix_purchase_order -->
                     <div class="form-group">
                         <label for="number"><?php echo _l('purchase_constract_code'); ?></label>  
-                                    <?php
-                                    if(!isset($item)) {
-                                    ?>
-                                    <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <?php
-                                        echo get_option('prefix_contract');
-                                        ?>
-                                    </span>
-                                    <?php
-                                    }
-                                    ?>
-                                    <?php 
-                                        // var_dump($purchase);
-                                        if($item)
-                                        {
-
-                                            $number=$item->code;
-                                        }
-                                        else
-                                        {
-                                            $number=sprintf('%05d',getMaxID('id','tblpurchase_contracts')+1);
-                                        }
-                                    ?>
-                                    <input type="text" name="code" class="form-control" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
-                                  <?php if(!isset($item)) { ?>
-                                  </div>
-                                  <?php } ?>
-                            </div>
+                                    
+                        <input type="text" name="code" class="form-control" value="<?=$item->code ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>      
+                    </div>
                     
                     <div class="form-group">
                         <label for="id_order"><?php echo _l('orders_code') ?></label>
-                        <input type="hidden" name="id_order" class="form-control" value="<?php echo $order->id ?>">
-                        <input type="text" class="form-control" value="<?php echo $order->code ?>" readonly>
+                        <input type="text" class="form-control" value="<?php echo $item->code_order ?>" readonly>
                     </div>
+
                     
                     <?php 
-                        $default_supplier = $order->id_supplier;
+                        $default_supplier = $item->id_supplier;
                         echo render_select('id_supplier', $suppliers, array('userid', 'company'), 'suppliers', $default_supplier, array('disabled'=>'disabled'));
-?>
+                    ?>
 
                     <?php
-                        $default_date_create = ( isset($item) ? _d($item->date_create) : _d(date('Y-m-d')));
-                        echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , 'date'); 
+                        $default_date_create = date("Y-m-d", strtotime($item->date_create));
+                        echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , array('readonly'=>'readonly')); 
                     ?>
-                    
                 </div>
 
                 
@@ -137,9 +105,10 @@
                                     <?php
                                     $i=0;
                                     $totalPrice=0;
-                                    if(isset($order) && count($order) > 0) {
+                                    if(isset($item->products) && count($item->products) > 0) {
                                         
-                                        foreach($order->products as $value) {
+                                        foreach($item->products as $value) {
+
                                         ?>
                                     <tr class="sortable item">
                                         <td>
@@ -188,13 +157,7 @@
                 <!-- End Customize from invoice -->
                 </div>
                 
-                <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
-                  <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
-                    <?php echo _l('convert'); ?>
-                </button>
-                <?php } ?>
               </div>
-            <?php echo form_close(); ?>
             </div>
         </div>
 
@@ -209,15 +172,6 @@
 </div>
 <?php init_tail(); ?>
 <script>
-    $(function() {
-        _validate_form($('.client-form'), {
-            id_supplier: 'required',
-            id_warehouse: 'required',
-            date: 'required',
-            date_import: 'required',
-            explan: 'required',
-        });
-    });
     //format currency
     function formatNumber(nStr, decSeperate=".", groupSeperate=",") {
         nStr += '';
@@ -230,6 +184,18 @@
         }
         return x1 + x2;
     }
+
+    var findItem = (id) => {
+        var itemResult;
+        $.each(itemList, (index,value) => {
+            if(value.id == id) {
+                itemResult = value;
+                return false;
+            }
+        });
+        return itemResult;
+    };
+    
 </script>
 </body>
 </html>

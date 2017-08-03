@@ -9,14 +9,13 @@
             <div class="clearfix"></div>
             <?php render_datatable(array(
               "ID",
+              _l('purchase_constract_code'),
               _l('orders_code'),
-              _l('orders_date_create'),
               _l('orders_user_create'),
-              _l('user_head'),
-              _l('leads_dt_status'),
+              _l('orders_date_create'),
               _l('actions'),              
               ),
-              'purchase-orders'); ?>
+              'purchase-contracts'); ?>
             </div>
           </div>
         </div>
@@ -84,28 +83,9 @@
 </div>
 <?php init_tail(); ?>
 <script>
-  function var_status(status,id)
-  {
-      dataString={id:id,status:status};
-      jQuery.ajax({
-          type: "post",
-          url:"<?=admin_url()?>purchase_orders/update_status",
-          data: dataString,
-          cache: false,
-          success: function (response) {
-              response = JSON.parse(response);
-              if (response.success == true) {
-                  $('.table-purchase-orders').DataTable().ajax.reload();
-                  alert_float('success', response.message);
-              }
-              return false;
-          }
-      });
 
-  }
   $(function(){
-    initDataTable('.table-purchase-contacts', '<?=admin_url('purchase_conctacts')?>', [], [],'undefined',[0,'DESC']);
-
+    initDataTable('.table-purchase-contracts', '<?=admin_url('purchase_contracts')?>', [], [],'undefined',[0,'DESC']);
   });
 </script>
 </body>

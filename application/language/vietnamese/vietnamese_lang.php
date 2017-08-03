@@ -3735,3 +3735,7 @@ $lang['company_contract_role'] = "Vai trò người đại diện trên hợp đ
 $lang['company_contract_blank_account'] = "Số tài khoản ngân hàng người đại diện";
 
 $lang['purchase_contract_create'] = "Tạo hợp đồng mua";
+$lang['purchase_constract_code'] = "Mã hợp đồng mua";
+$lang['purchase_constract_detail'] = "Chi tiết hợp đồng mua";
+$lang['purchase_contracts'] = "Hợp đồng mua";
+$lang['purchase_contracts_number_code'] = "Số";
