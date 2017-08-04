@@ -164,13 +164,14 @@
                                 <thead>
                                     <tr>
                                         <th><input type="hidden" id="itemID" value="" /></th>
-                                        <th width="20%" class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_name'); ?>"></i> <?php echo _l('item_name'); ?></th>
+                                        <th width="25%" class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_name'); ?>"></i> <?php echo _l('item_name'); ?></th>
                                         <th width="10%" class="text-left"><?php echo _l('item_unit'); ?></th>
-                                        <th width="10%" class="text-left"><?php echo _l('item_quantity'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('item_quantity'); ?></th>
                                         
-                                        <th width="10%" class="text-left"><?php echo _l('item_price'); ?></th>
-                                        <th width="10%" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
-                                        <th width="15%" class="text-left"><?php echo _l('item_specification'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('item_price'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('warehouse_type'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('warehouse_name'); ?></th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -187,17 +188,24 @@
                                         </td>
 
                                         <td>
-                                            <input class="mainQuantity" type="number" min="1" value="1"  class="form-control" placeholder="<?php echo _l('item_quantity'); ?>">
+                                            <input style="width: 100px " class="mainQuantity" type="number" min="1" value="1"  class="form-control" placeholder="<?php echo _l('item_quantity'); ?>">
                                         </td>
                                         
                                         <td>
-                                            <?php echo _l('item_price_buy'); ?>
+                                            <?php echo _l('item_price'); ?>
                                         </td>
                                         <td>
                                             0
                                         </td>
                                         <td>
-                                            <?php echo _l('item_specification'); ?>
+                                            <?php 
+                                                echo render_select('select_kindof_warehouse', $warehouse_types, array('id', 'name'));
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?php 
+                                            echo render_select('select_warehouse', array(), array('id', 'name'));
+                                            ?>
                                         </td>
                                         <td>
                                             <button style="display:none" id="btnAdd" type="button" onclick="createTrItem(); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
@@ -214,13 +222,14 @@
                                         <td>
                                             <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
                                         </td>
-                                        <td class="dragger"><?php echo $value->product_name; ?></td>
+                                        <td class="dragger"><?php echo $value->product_name.' ('.$value->prefix.$value->code.')'; ?></td>
                                         <td><?php echo $value->unit_name; ?></td>
-                                        <td><input class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
+                                        <td><input style="width: 100px" class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
                                             
                                         <td><?php echo number_format($value->unit_cost); ?></td>
                                         <td><?php echo number_format($value->sub_total); ?></td>
-                                        <td><?php echo $value->product_specifications	; ?></td>
+                                        <td><?php echo $value->warehouse_type->kindof_warehouse_name ?></td>
+                                    <td><input type="hidden" data-store="<?=$value->warehouse_type->product_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(có <?=$value->warehouse_type->product_quantity?>)</td>
                                         <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php
@@ -253,10 +262,10 @@
                             </table>
                         </div>
                     </div>
-                <!-- End Customize from invoice -->
+                <!-- End Customize from invoice if(isset($item) && $item->status != 2 || !isset($item))  -->
                 </div>
                 
-                <?php if(isset($item) && $item->status != 2 || !isset($item)) { ?>
+                <?php { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l('submit'); ?>
                 </button>
@@ -320,10 +329,11 @@
         var td1 = $('<td><input type="hidden" name="items[' + uniqueArray + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
         var td3 = $('<td></td>');
-        var td4 = $('<td><input class="mainQuantity" type="number" name="items[' + uniqueArray + '][quantity]" value="" /></td>');
+        var td4 = $('<td><input style="width: 100px" class="mainQuantity" type="number" name="items[' + uniqueArray + '][quantity]" value="" /></td>');
         var td5 = $('<td></td>');
         var td6 = $('<td></td>');
         var td7 = $('<td></td>');
+        var td8 = $('<td></td>');
 
         td1.find('input').val($('tr.main').find('td:nth-child(1) > input').val());
         td2.text($('tr.main').find('td:nth-child(2)').text());
@@ -332,7 +342,9 @@
         
         td5.text( $('tr.main').find('td:nth-child(5)').text() );
         td6.text( $('tr.main').find('td:nth-child(6)').text() );
-        td7.text( $('tr.main').find('td:nth-child(7)').text() );
+        td7.text( $('tr.main').find('td:nth-child(7) select option:selected').text() );
+        td8.append( '<input type="hidden" data-store="'+$('tr.main').find('td:nth-child(8) select option:selected').data('store')+'" name="items[' + uniqueArray + '][warehouse]" value="'+$('tr.main').find('td:nth-child(8) select option:selected').val()+'" />');
+        td8.append($('tr.main').find('td:nth-child(8) select option:selected').text());
         
         newTr.append(td1);
         newTr.append(td2);
@@ -341,6 +353,7 @@
         newTr.append(td5);
         newTr.append(td6);
         newTr.append(td7);
+        newTr.append(td8);
 
         newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td');
         $('table.item-purchase tbody').append(newTr);
@@ -351,6 +364,7 @@
         // refreshAll();
     };
     var refreshAll = () => {
+        alert('dfgbvfd');
         isNew = false;
         $('#btnAdd').hide();
         $('#custom_item_select').val('');
@@ -359,12 +373,13 @@
         //console.log(trBar.find('td:nth-child(2) > input'));
         
         trBar.find('td:first > input').val("");
-        trBar.find('td:nth-child(2) > input').val('');
-        trBar.find('td:nth-child(3) > input').val(1);
+        trBar.find('td:nth-child(2) ').text('<?=_l('item_name')?>');
+        trBar.find('td:nth-child(3) ').text('');
         trBar.find('td:nth-child(4) > input').val('');
-        trBar.find('td:nth-child(5) > textarea').text('');
-
-
+        trBar.find('td:nth-child(5) ').text('<?=_l("item_price")?>');
+        trBar.find('td:nth-child(6) ').text('<?=_l("0")?>');
+        trBar.find('td:nth-child(7) > select').val('').selectpicker('refresh');
+        trBar.find('td:nth-child(8) > select').find('option:gt(0)').remove().selectpicker('refresh');
     };
     var deleteTrItem = (trItem) => {
         var current = $(trItem).parent().parent();
@@ -374,6 +389,7 @@
         refreshTotal();
     };
     var refreshTotal = () => {
+
         $('.total').text(formatNumber(total));
         var items = $('table.item-purchase tbody tr:gt(0)');
         totalPrice = 0;
@@ -384,6 +400,11 @@
     };
     $('#custom_item_select').change((e)=>{
         var id = $(e.currentTarget).val();
+        $('#select_kindof_warehouse').val('');
+        $('#select_kindof_warehouse').selectpicker('refresh');
+        var warehouse_id=$('#select_warehouse');
+        warehouse_id.find('option:gt(0)').remove();
+        warehouse_id.selectpicker('refresh');
         var itemFound = findItem(id);
         if(typeof(itemFound) != 'undefined') {
             var trBar = $('tr.main');
@@ -394,52 +415,112 @@
             trBar.find('td:nth-child(3)').text(itemFound.unit_name);
             trBar.find('td:nth-child(3) > input').val(itemFound.unit);
             trBar.find('td:nth-child(4) > input').val(1);
-            trBar.find('td:nth-child(5)').text(formatNumber(itemFound.price_buy));
-            trBar.find('td:nth-child(6)').text(  formatNumber(itemFound.price_buy * 1) );
-            trBar.find('td:nth-child(7)').text(itemFound.specification);
+            trBar.find('td:nth-child(5)').text(formatNumber(itemFound.price));
+            trBar.find('td:nth-child(6)').text(formatNumber(itemFound.price * 1) );
+            // trBar.find('td:nth-child(7)').text(itemFound.specification);
+            // trBar.find('td:nth-child(8)').text(itemFound.specification);
             isNew = true;
             $('#btnAdd').show();
         }
-        else {
+        else 
+        {
             isNew = false;
             $('#btnAdd').hide();
         }
     });
+
+    $('#select_warehouse').on('change', (e)=>{
+        if($(e.currentTarget).val() != '') {
+            $(e.currentTarget).parents('tr').find('input.mainQuantity').attr('data-store', $(e.currentTarget).find('option:selected').data('store'));
+        }
+    });
+
     $(document).on('keyup', '.mainQuantity',(e)=>{
         
         var currentQuantityInput = $(e.currentTarget);
+
+        let elementToCompare;
+        if(typeof(currentQuantityInput.attr('data-store')) == 'undefined' )
+            elementToCompare = currentQuantityInput.parents('tr').find('input:last');
+        else
+            elementToCompare = currentQuantityInput;
+        
+        if(parseInt(currentQuantityInput.val()) > parseInt(elementToCompare.attr('data-store'))){
+            currentQuantityInput.attr("style", "width: 100px;border: 1px solid red !important");
+            currentQuantityInput.attr('data-toggle', 'tooltip');
+            currentQuantityInput.attr('data-trigger', 'manual');
+            currentQuantityInput.attr('title', 'Số lượng vượt mức cho phép!');
+            // $('[data-toggle="tooltip"]').tooltip();
+            currentQuantityInput.off('focus', '**').off('hover', '**');
+            currentQuantityInput.tooltip('fixTitle').focus(()=>$(this).tooltip('show')).hover(()=>$(this).tooltip('show'));
+            // error flag
+            currentQuantityInput.addClass('error');
+            currentQuantityInput.focus();
+        }
+        else {
+            currentQuantityInput.attr('title', 'OK!').tooltip('fixTitle').tooltip('show');
+            currentQuantityInput.attr("style", "width: 100px;");
+            // remove flag
+            currentQuantityInput.removeClass('error');
+            currentQuantityInput.focus();
+        }
+
         var Gia = currentQuantityInput.parent().find(' + td');
         var Tong = Gia.find(' + td');
         Tong.text( formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
         refreshTotal();
     });
-    $('#warehouse_type').change(function(e){
-      var warehouse_type = $(e.currentTarget).val();
-      loadWarehouses(warehouse_type,'');
+
+
+    $('#select_kindof_warehouse').change(function(e){      
+        var warehouse_type = $(e.currentTarget).val();
+        var product = $(e.currentTarget).parents('tr').find('td:first input');
+        // alert(warehouse_type+'=='+product.val())
+        if(warehouse_type != '' && product.val() != '') {
+            loadWarehouses(warehouse_type,product.val()); 
+        }
     });
-    function loadWarehouses(warehouse_type,default_value=''){
-        var warehouse_id=$('#warehouse_id');
-        warehouse_id.find('option').remove()
-        warehouse_id.selectpicker("refresh");
-        if(warehouse_id != 0 && warehouse_id != '') {
-        $.ajax({
-          url : admin_url + 'warehouses/getWarehouses/' + warehouse_type,
-          dataType : 'json',
-        })
-        .done(function(data){          
-          warehouse_id.find('option').remove();
-          warehouse_id.append('<option value=""></option>');
-          $.each(data, function(key,value){
-            var stringSelected = "";
-            if(value.warehouseid == default_value) {
-              stringSelected = ' selected="selected"';
-            }
-            warehouse_id.append('<option value="' + value.warehouseid + '"'+stringSelected+'>' + value.warehouse + '</option>');
-          });
-          warehouse_id.selectpicker('refresh');
-        });
-      }
+    function loadWarehouses(warehouse_type, filter_by_product,default_value=''){
+        var warehouse_id=$('#select_warehouse');
+        warehouse_id.find('option:gt(0)').remove();
+        warehouse_id.selectpicker('refresh');
+        if(warehouse_id.length) {
+            $.ajax({
+                url : admin_url + 'warehouses/getWarehouses/' + warehouse_type + '/' + filter_by_product,
+                dataType : 'json',
+            })
+            .done(function(data){          
+                $.each(data, function(key,value){
+                    var stringSelected = "";
+                    if(value.warehouseid == default_value) {
+                        stringSelected = ' selected="selected"';
+                    }
+                    warehouse_id.append('<option data-store="'+value.items[0].product_quantity+'" value="' + value.warehouseid + '"'+stringSelected+'>' + value.warehouse + '(có '+value.items[0].product_quantity+')</option>');
+                });
+                warehouse_id.selectpicker('refresh');
+            });
+        }
     }
+
+     $('.customer-form-submiter').on('click', (e)=>{
+        if($('input.error').length) {
+            e.preventDefault();
+            alert('Giá trị không hợp lệ!');    
+        }
+        if(<?=json_encode($item)?>)
+        {
+            var a=confirm("Bạn có chắc muốn ");
+            if(a===false)
+            {
+                e.preventDefault();    
+            }
+            else
+            {
+                $('.sales-form').submit();
+            }
+
+        }
+    });
     
 </script>
 </body>

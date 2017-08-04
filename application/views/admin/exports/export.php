@@ -210,24 +210,17 @@
                                         <td>
                                         <input style="width: 100px; <?=$style?>" min="0" max="<?=$value->quantity-$value->export_quantity?>" class="mainQuantity <?=$err?>" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?=($value->quantity==$value->export_quantity)? 0 : $value->quantity-$value->export_quantity ?>">
                                         <?php 
+                                        $export_quantity=0;
                                             if($value->export_quantity!=NULL || $value->export_quantity!='')
-                                                echo "(".$value->export_quantity.'/'.$value->quantity.')';
+                                                $export_quantity=$value->export_quantity;
+                                                echo "(".$export_quantity.'/'.$value->quantity.')';
                                         ?>
                                         </td>
                                             
                                         <td><?php echo number_format($value->unit_cost); ?></td>
                                         <td><?php echo number_format($value->sub_total); ?></td>
-                                        <td>
-                                        <?php 
-                                            echo render_select2('items['.$i.'][kind_warehouse]','select_kindof_warehouse'.$i, $warehouse_types, array('id', 'name'),'','',array('onchange'=>'loadWarehouseByID(this.value,'.$value->product_id.','.$i.')'));
-                                        ?>
-                                                
-                                        </td>
-                                        <td>
-                                        <?php 
-                                            echo render_select2('items['.$i.'][warehouse]','select_warehouse'.$i, $warehouses, array('warehouseid', 'warehouse'));
-                                        ?>                                            
-                                        </td>
+                                        <td><?php echo $value->warehouse_type->kindof_warehouse_name ?></td>
+                                    <td><input type="hidden" data-store="<?=$value->warehouse_type->product_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(có <?=$value->warehouse_type->product_quantity?>)</td>
                                         <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php

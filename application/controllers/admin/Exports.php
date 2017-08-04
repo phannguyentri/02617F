@@ -88,6 +88,7 @@ class Exports extends Admin_controller
         }
         $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
         $data['warehouses']= $this->warehouse_model->getWarehouses();
+        // var_dump($data['warehouses']);die();
         $data['receivers'] = $this->staff_model->get('','',array('staffid<>'=>1));
         
         $data['customers'] = $this->clients_model->get('', $where_clients);
@@ -115,7 +116,6 @@ class Exports extends Admin_controller
 
                 $i++;
             }
-            // var_dump($data['item']);die();
             if (!$data['item']) {
                 blank_page('Export Not Found');
             }   
@@ -233,10 +233,9 @@ class Exports extends Admin_controller
         if (!$id) {
             redirect($_SERVER["HTTP_REFERER"]);
         }
-        $invoice        = $this->sales_model->getSaleByID($id);
+        $invoice        = $this->exports_model->getExportByID($id);
         $invoice_number = $invoice->prefix.$invoice->code;
-
-        $pdf            = sale_detail_pdf($invoice);
+        $pdf            = export_detail_pdf($invoice);
         $type           = 'D';
         if ($this->input->get('pdf') || $this->input->get('print')) {
             $type = 'I';
