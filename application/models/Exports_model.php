@@ -10,13 +10,16 @@ class Exports_model extends CRM_Model
 
     public function getExportByID($id = '')
     {
-        $this->db->select('tblexports.*,tblstaff.fullname as creater,(SELECT fullname  FROM tblstaff WHERE user_head_id=tblstaff.staffid) as head,(SELECT fullname  FROM tblstaff WHERE user_admin_id=tblstaff.staffid) as admin');
+        $this->db->select('tblexports.*,tblstaff.fullname as creater,(SELECT fullname  FROM tblstaff WHERE user_head_id=tblstaff.staffid) as head,(SELECT fullname  FROM tblstaff WHERE user_admin_id=tblstaff.staffid) as admin,(SELECT fullname  FROM tblstaff WHERE receiver_id=tblstaff.staffid) as receiver_name,(SELECT tblroles.name  FROM tblstaff JOIN tblroles ON tblroles.roleid=tblstaff.role WHERE receiver_id=tblstaff.staffid) as receiver_department,tblclients.company as customer_name,(SELECT tblsales.date  FROM tblsales  WHERE tblexports.rel_id=tblsales.id) as order_date');
         $this->db->from('tblexports');
-        $this->db->join('tblstaff','tblstaff.staffid=tblexports.create_by','left');
+        $this->db->join('tblstaff','tblstaff.staffid=tblexports.create_by','left');//,tblsales.date as order_date
+        $this->db->join('tblclients','tblclients.userid=tblexports.customer_id','left');
+        $this->db->join('tblroles','tblroles.roleid=tblstaff.role','left');
+        // $this->db->join('tblsales','tblsales.id=tblexports.rel_id','left');
         if (is_numeric($id)) {
             $this->db->where('id', $id);
             $invoice = $this->db->get()->row();
-
+            // var_dump($invoice);die();
             if ($invoice) {
                 $invoice->items       = $this->getExportItems($id);
             }
@@ -167,9 +170,6 @@ class Exports_model extends CRM_Model
                     logActivity('Insert Export Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                  }
             }
-            // var_dump($count.'--'.count($this->getSaleItems($data['rel_id'],$affect_product)));die();
-
-            // var_dump($this->getSaleItems($data['rel_id'],$affect_product));die();
                 if($count==count($this->getSaleItems($data['rel_id'],$affect_product)))
                 {
                     $this->db->update('tblsales',array('export_status'=>1),array('id'=>$data['rel_id']

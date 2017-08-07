@@ -3742,3 +3742,26 @@ $lang['purchase_constract_code'] = "Mã hợp đồng mua";
 $lang['purchase_constract_detail'] = "Chi tiết hợp đồng mua";
 $lang['purchase_contracts'] = "Hợp đồng mua";
 $lang['purchase_contracts_number_code'] = "Số";
+$lang['receiver'] = "Người nhận hàng";
+$lang['reason_export'] = "Lý do xuất";
+$lang['export_where1'] = "Xuất tại kho ";
+$lang['export_where2'] = "Địa điểm ";
+
+$lang['export_sale'] = "Xuất bán hàng ";
+$lang['export_to_sale_order'] = " theo hóa đơn ";
+$lang['str_money'] = "Số tiền bằng chữ: ";
+$lang['certificate_root'] = "Số chứng từ gốc kèm theo ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+// $lang['export_where2'] = "Xuất tại kho ";
+
+

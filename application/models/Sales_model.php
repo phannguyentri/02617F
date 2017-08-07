@@ -51,7 +51,6 @@ class Sales_model extends CRM_Model
 
     public function add($data)
    {
-    // var_dump($data);die();
         $import=array(
             'rel_type'=>$data['rel_type'],
             'prefix'=>$data['prefix'],
@@ -82,7 +81,8 @@ class Sales_model extends CRM_Model
                     'unit_id'=>$product->unit,
                     'quantity'=>$item['quantity'],
                     'unit_cost'=>$product->price,
-                    'sub_total'=>$sub_total
+                    'sub_total'=>$sub_total,
+                    'warehouse_id'=>$item['warehouse']
                     );
                  $this->db->insert('tblsale_items', $item_data);
                  if($this->db->affected_rows()>0)
@@ -115,6 +115,7 @@ class Sales_model extends CRM_Model
             $count=0;
             $affected=1;
         }
+        $this->setDafaultConfirm($id);
         if ($id) {
             $items=$data['items'];
             $total=0;
@@ -132,7 +133,8 @@ class Sales_model extends CRM_Model
                     'unit_id'=>$product->unit,
                     'quantity'=>$item['quantity'],
                     'unit_cost'=>$product->price,
-                    'sub_total'=>$sub_total
+                    'sub_total'=>$sub_total,
+                    'warehouse_id'=>$item['warehouse']
                     );
                 if($itm)
                 {
@@ -160,6 +162,23 @@ class Sales_model extends CRM_Model
 
             $this->db->update('tblsales',array('total'=>$total),array('id'=>$id));
             return $id;
+        }
+        return false;
+    }
+
+    public function setDafaultConfirm($id)
+    {
+        $data=array(
+            'user_head_id'=>NULL,
+            'user_admin_id'=>NULL,
+            'user_head_date'=>NULL,
+            'user_admin_date'=>NULL,
+            'status'=>0
+            );
+        $this->db->update('tblsales',$data,array('id'=>$id));
+        if($this->db->affected_rows()>0)
+        {
+            return true;
         }
         return false;
     }
