@@ -5,6 +5,7 @@
             <div class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body _buttons">
+                        <a href="<?php echo admin_url() . "invoice_items/summary" ?>" class="btn mright5 btn-info pull-left display-block"><?php echo _l('Danh sách sản phầm trong kho'); ?></a>
                         <a href="#" onclick="new_warehouse(); return false;" class="btn mright5 btn-info pull-left display-block"><?php echo _l('Thêm kho mới'); ?></a>
                         <a href="<?php echo admin_url() . "kind_of_warehouse" ?>" class="btn mright5 btn-info pull-left display-block"><?php echo _l('Loại kho'); ?></a>
                     </div>
@@ -74,6 +75,19 @@
                     <?php 
                         echo render_select('kindof_warehouse', $kind_of_warehouse, array('id', 'name'), 'Loại kho');
                     ?>
+
+                    <div class="form-group">
+                        <label for="warehouse_can_export"  class="control-label"><?php echo _l('Kho hàng có thể bán'); ?></label><br>
+                        <div class="radio radio-primary radio-inline">
+                            <input type="radio" name="warehouse_can_export" id="no" value="0"  />
+                            <label for="no">Không thể bán</label>
+                        </div>
+                        <div class="radio radio-primary radio-inline">
+                            <input type="radio" name="warehouse_can_export" id="yes" value="1" />
+                            <label for="yes">Có thể bán</label>
+                        </div>
+                    </div>
+
                     </div>
                 </div>
             </div>
@@ -139,11 +153,18 @@
                 var json = JSON.parse(data);
 //                if($data!="")
                 {
+                    $('input[id="yes"]').removeProp('checked');
+                    $('input[id="yes"]').val(1);
+                    $('input[id="no"]').prop('checked', 'checked');
+                    $('input[id="no"]').val(0);
                     $('#code').val(json.code);
                     $('#warehouse').val(json.warehouse);
                     $('#address').val(json.address);
                     $('#phone').val(json.phone);
                     $('#kindof_warehouse').selectpicker('val', json.kindof_warehouse);
+                    if(json.warehouse_can_export==1) {
+                        $('input[id="yes"]').prop('checked', 'checked');
+                    }
                     jQuery('#id_type').prop('action',admin_url+'warehouses/update_warehouse/'+id);
                 }
             }

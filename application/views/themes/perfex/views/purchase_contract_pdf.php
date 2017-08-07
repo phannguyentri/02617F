@@ -125,7 +125,7 @@ $tblTable = '
             <b>Đơn vị: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -133,7 +133,7 @@ $tblTable = '
             <b>Mã số thuế: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -141,7 +141,7 @@ $tblTable = '
             <b>Người đại diện: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -149,7 +149,7 @@ $tblTable = '
             <b>Chức vụ: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -157,7 +157,7 @@ $tblTable = '
             <b>Địa chỉ: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -165,7 +165,7 @@ $tblTable = '
             <b>Điện thoại: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
 </table>
@@ -184,7 +184,7 @@ $tblTable = '
             <b>Đơn vị: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -192,7 +192,7 @@ $tblTable = '
             <b>Mã số thuế: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -200,7 +200,7 @@ $tblTable = '
             <b>Người đại diện: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -208,7 +208,7 @@ $tblTable = '
             <b>Chức vụ: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -216,7 +216,7 @@ $tblTable = '
             <b>Địa chỉ: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -224,7 +224,7 @@ $tblTable = '
             <b>Điện thoại: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
     <tr>
@@ -232,7 +232,7 @@ $tblTable = '
             <b>Tài khoản: </b>
         </td>
         <td width="80%">
-            : sadasdasdsadsa
+            : 
         </td>
     </tr>
 </table>

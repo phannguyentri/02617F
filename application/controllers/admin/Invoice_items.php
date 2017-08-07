@@ -7,6 +7,7 @@ class Invoice_items extends Admin_controller
         parent::__construct();
         $this->load->model('invoice_items_model');
         $this->load->model('category_model');
+        $this->load->model('warehouse_model');
     }
     /* List all available items */
     public function index()
@@ -25,6 +26,17 @@ class Invoice_items extends Admin_controller
 
         $data['title'] = _l('invoice_items');
         $this->load->view('admin/invoice_items/manage', $data);
+    }
+    public function summary() {
+        if (!has_permission('items', '', 'view')) {
+            access_denied('Invoice Items');
+        }
+        if ($this->input->is_ajax_request()) {
+            $this->perfex_base->get_table_data('invoice_items_summary');
+        }
+        $data['warehouses']   = $this->warehouse_model->getWarehouses();
+        $data['title'] = _l('Kho hàng');
+        $this->load->view('admin/invoice_items/summary', $data);
     }
     public function get_tax($id_tax) {
         if (!has_permission('items', '', 'view')) {
