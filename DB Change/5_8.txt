@@ -1,0 +1,1 @@
+INSERT INTO `dudoffhoa`.`tbloptions` (`id`, `name`, `value`) VALUES (NULL, 'prefix_sale_order', 'PO-');

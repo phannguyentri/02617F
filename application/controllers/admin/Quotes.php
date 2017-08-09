@@ -9,7 +9,7 @@ class Quotes extends Admin_controller
     }
     public function index() 
     {
-
+        // echo "test";
     }
 
     public function imp_adjustment() 

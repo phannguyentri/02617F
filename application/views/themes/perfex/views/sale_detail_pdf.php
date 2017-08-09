@@ -170,7 +170,8 @@ if($customer->shipping_city){$adress2[]=_l('Tỉnh/tp ').getProvince($customer->
 $pdf->SetFont($font_name, '', $font_size);
 // $pdf->Cell(0, 0, _l('address').': '.'<div width="100%">'.$address.'</div>', 0, 1, 'L', 0, '', 0);
 // $pdf->writeHTMLCell(0, '', '', $y, $address, 0, 0, false, true, 'C', true);
-$pdf->writeHTML(_l('address').': '.'<div width="100%">'.$address.'</div>', true, false, false, false, '');
+// $pdf->writeHTML(_l('address').': '.'<div width="100%">'.$address.'</div>', true, false, false, false, '');
+$pdf->writeHTMLCell(0, '', '', '', '<div width="100%">'._l('address').': '.$address.'</div>', 0, 1, false, true, 'L', true);
 $pdf->ln(2);
 
 $pdf->SetFont($font_name, '', $font_size);
@@ -178,7 +179,7 @@ $pdf->Cell(0, 0, _l('tel').': '.$customer->phonenumber , 0, 1, 'L', 0, '', 0);
 $pdf->ln(2);
 
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('fax').': '.$customer->fax , 0, 1, 'L', 0, '', 0);
+$pdf->Cell(0, 0, _l('fax').':'.$customer->fax , 0, 1, 'L', 0, '', 0);
 $pdf->ln(2);
 
 $pdf->Cell(0, 0, _l('shipping_address').': '.implode(', ', $shipping_address) , 0, 1, 'L', 0, '', 0);

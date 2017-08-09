@@ -27,7 +27,7 @@
                             <div role="tabpanel" class="tab-pane active" id="sale_PO">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <a href="<?=admin_url('sale_orders/sale_detail')?>" class="btn btn-info pull-left display-block mbot15"><?php echo _l('add_sale_porder'); ?></a>
+                                        <a href="<?=admin_url('sales/sale_po_detail')?>" class="btn btn-info pull-left display-block mbot15"><?php echo _l('add_sale_porder'); ?></a>
                                         <div class="clearfix"></div>
                                         <div class="panel_s">
                                             <div class="panel-body">
@@ -50,7 +50,7 @@
                             <div role="tabpanel" class="tab-pane" id="sale_SO">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <a href="<?=admin_url('sales/sale_detail')?>" class="btn btn-info pull-left display-block mbot15"><?php echo _l('add_sale_order_'); ?></a>
+                                        <a href="<?=admin_url('sales/sale_detail')?>" class="btn btn-info pull-left display-block mbot15"><?php echo _l('add_sale_order'); ?></a>
                                         <div class="clearfix"></div>
                                         <div class="panel_s">
                                             <div class="panel-body">
@@ -163,18 +163,13 @@
 //     }
     $('body').on('click', '.delete-remind', function() {
         var r = confirm(confirm_action_prompt);
-        
+        var table='.table-sales';
         if (r == false) {
             return false;
         } else {
             $.get($(this).attr('href'), function(response) {
                 alert_float(response.alert_type, response.message);
                 // Looop throug all availble reminders table to reload the data
-                var table='.table-sales';
-                    if ($.fn.DataTable.isDataTable(table)) {
-                        $('body').find(table).DataTable().ajax.reload();
-                    }
-                var table='.table-sale_orders';
                     if ($.fn.DataTable.isDataTable(table)) {
                         $('body').find(table).DataTable().ajax.reload();
                     }
