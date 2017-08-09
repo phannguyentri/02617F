@@ -59,7 +59,6 @@ class Clients extends Admin_controller
     /* Edit client or add new client*/
     public function client($id = '')
     {
-
         if (!has_permission('customers', '', 'view')) {
             if ($id != '' && !is_customer_admin($id)) {
                 access_denied('customers');
@@ -106,7 +105,6 @@ class Clients extends Admin_controller
         if ($id == '') {
             $title = _l('add_new', _l('client_lowercase'));
         } else {
-
             $client = $this->clients_model->get($id);
 
             if (!$client) {
@@ -167,6 +165,30 @@ class Clients extends Admin_controller
         $data['areas']  = $this->clients_model->get_area();
         $data['title'] = $title;
         $this->load->view('admin/clients/client', $data);
+    }
+    public function modal($id = '') {
+        if (!has_permission('customers', '', 'view')) {
+            if ($id != '' && !is_customer_admin($id)) {
+                access_denied('customers');
+            }
+        }
+        if($id!='') {
+            $client = $this->clients_model->get($id);
+            if (!$client) {
+                blank_page('Client Not Found');
+            }
+            $data['customer_groups'] = $this->clients_model->get_customer_groups($id);
+            $this->load->model('currencies_model');
+            $data['currencies'] = $this->currencies_model->get();
+            $data['groups'] = $this->clients_model->get_groups();
+            $data['users'] = $this->clients_model->get();
+            $data['sources']  = $this->clients_model->get_source();
+            $data['areas']  = $this->clients_model->get_area();
+            $data['client'] = $client;
+        }
+        echo json_encode(array(
+            'data' => $this->load->view('admin/clients/modals/client', $data, TRUE),
+        ));
     }
     public function contact($customer_id, $contact_id = '')
     {

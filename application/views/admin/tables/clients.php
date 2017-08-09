@@ -162,7 +162,7 @@ foreach ($rResult as $aRow) {
             if ($aRow['company'] == '') {
                 $aRow['company'] = _l('no_company_view_profile');
             }
-            $_data = '<a href="' . admin_url('clients/client/' . $aRow['userid']) . '">' . $aRow['company'] . '</a>';
+            $_data = '<a onclick="init_client_modal_data('.$aRow['userid'].');return false;" href="' . admin_url('clients/client/' . $aRow['userid']) . '">' . $aRow['company'] . '</a>';
 
         } else if ($aColumns[$i] == 'phonenumber') {
             $_data = '<a href="tel:' . $_data . '">' . $_data . '</a>';

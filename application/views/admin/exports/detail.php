@@ -283,7 +283,7 @@
                             </table>
                         </div>
                     </div>
-                <!-- End Customize from invoice -->
+                    <!-- End Customize from invoice -->
                 </div>
                 
                 <?php if(isset($item) && $item->status != 2 || !isset($item)) { ?>

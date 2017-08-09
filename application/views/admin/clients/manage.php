@@ -292,86 +292,87 @@
           },50);
         }
     }
-    $(document).ready(()=>{
-        function init_client_modal_data(id, url) {
-            if (typeof(id) == 'undefined') {
-                id = '';
-            }
-            var _url = admin_url + 'clients/client/' + id;
-            if (typeof(url) != 'undefined') {
-                _url = url;
-            }
-            // get the current hash
-            var hash = window.location.hash;
-            // clean the modal
-            // $('.lead-modal .modal-content').html('');
-            $.get(_url, function(response) {
-                $('.lead-modal .modal-content').html(response.data);
-                $('#lead_reminder_modal').html(response.reminder_data);
-                $('.lead-modal').modal({
-                    show: true,
-                    backdrop: 'static'
-                });
-                init_selectpicker();
-                init_form_reminder();
-                init_datepicker();
-                init_color_pickers();
-                validate_lead_form(lead_profile_form_handler);
-
-                if (hash == '#tab_lead_profile' || hash == '#attachments' || hash == '#lead_notes') {
-                    window.location.hash = hash;
-                }
-                if (id != '') {
-
-                    if (typeof(Dropbox) != 'undefined') {
-                        document.getElementById("dropbox-chooser-lead").appendChild(Dropbox.createChooseButton({
-                            success: function(files) {
-                                $.post(admin_url + 'leads/add_external_attachment', {
-                                    files: files,
-                                    lead_id: id,
-                                    external: 'dropbox'
-                                }).done(function() {
-                                    init_lead_modal_data(id);
-                                });
-                            },
-                            linkType: "preview",
-                            extensions: allowed_files.split(','),
-                        }));
-                    }
-
-                    if (typeof(leadAttachmentsDropzone) != 'undefined') {
-                        leadAttachmentsDropzone.destroy();
-                    }
-
-                    leadAttachmentsDropzone = new Dropzone("#lead-attachment-upload", {
-                        addRemoveLinks: false,
-                        dictDefaultMessage: drop_files_here_to_upload,
-                        dictFallbackMessage: browser_not_support_drag_and_drop,
-                        dictRemoveFile: remove_file,
-                        dictMaxFilesExceeded: you_can_not_upload_any_more_files,
-                        sending: function(file, xhr, formData) {
-                            formData.append("leadid", id);
-                        },
-                        acceptedFiles: allowed_files,
-                        error: function(file, response) {
-                            alert_float('danger', response);
-                        },
-                        success: function(file) {
-                            if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-                                init_lead_modal_data(id);
-                            }
-                        }
-                    });
-
-                    $('body').find('.nav-tabs a[href="' + window.location.hash + '"]').tab('show');
-                    $('#lead-latest-activity').html($('#lead_activity').find('.feed-item:last-child .text').html());
-                }
-
-            }, 'json').fail(function(data) {
-                $('.lead-modal').modal('hide');
-                alert_float('danger', data.responseText);
-            });
+    function init_client_modal_data(id, url) {
+        if (typeof(id) == 'undefined') {
+            id = '';
         }
+        var _url = admin_url + 'clients/modal/' + id;
+        if (typeof(url) != 'undefined') {
+            _url = url;
+        }
+        // get the current hash
+        var hash = window.location.hash;
+        // clean the modal
+        // $('.lead-modal .modal-content').html('');
+        $.get(_url, function(response) {
+            $('.lead-modal .modal-content').html(response.data);
+            $('#lead_reminder_modal').html(response.reminder_data);
+            $('.lead-modal').modal({
+                show: true,
+                backdrop: 'static'
+            });
+            init_selectpicker();
+            init_form_reminder();
+            init_datepicker();
+            init_color_pickers();
+            validate_lead_form(lead_profile_form_handler);
+
+            if (hash == '#tab_lead_profile' || hash == '#attachments' || hash == '#lead_notes') {
+                window.location.hash = hash;
+            }
+            if (id != '') {
+
+                if (typeof(Dropbox) != 'undefined') {
+                    document.getElementById("dropbox-chooser-lead").appendChild(Dropbox.createChooseButton({
+                        success: function(files) {
+                            $.post(admin_url + 'leads/add_external_attachment', {
+                                files: files,
+                                lead_id: id,
+                                external: 'dropbox'
+                            }).done(function() {
+                                init_lead_modal_data(id);
+                            });
+                        },
+                        linkType: "preview",
+                        extensions: allowed_files.split(','),
+                    }));
+                }
+
+                if (typeof(leadAttachmentsDropzone) != 'undefined') {
+                    leadAttachmentsDropzone.destroy();
+                }
+
+                leadAttachmentsDropzone = new Dropzone("#lead-attachment-upload", {
+                    addRemoveLinks: false,
+                    dictDefaultMessage: drop_files_here_to_upload,
+                    dictFallbackMessage: browser_not_support_drag_and_drop,
+                    dictRemoveFile: remove_file,
+                    dictMaxFilesExceeded: you_can_not_upload_any_more_files,
+                    sending: function(file, xhr, formData) {
+                        formData.append("leadid", id);
+                    },
+                    acceptedFiles: allowed_files,
+                    error: function(file, response) {
+                        alert_float('danger', response);
+                    },
+                    success: function(file) {
+                        if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                            init_lead_modal_data(id);
+                        }
+                    }
+                });
+
+                $('body').find('.nav-tabs a[href="' + window.location.hash + '"]').tab('show');
+                $('#lead-latest-activity').html($('#lead_activity').find('.feed-item:last-child .text').html());
+            }
+
+        }, 'json').fail(function(data) {
+            $('.lead-modal').modal('hide');
+            alert_float('danger', data.responseText);
+        });
+    }
+    $(document).ready(()=>{
+        
     });
 </script>
 </body>

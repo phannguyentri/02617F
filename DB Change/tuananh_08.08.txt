@@ -1,0 +1,1 @@
+ALTER TABLE `tblorders_detail` ADD `warehouse_id` INT NOT NULL AFTER `currency_price`;
