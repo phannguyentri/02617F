@@ -109,11 +109,11 @@ foreach ($rResult as $aRow) {
                 $_data .= icon_btn('exports/sale_output/'. $aRow['id'] , 'file-o');
             }
 
-            if($aRow['delivery_status']!=1) 
-            {
-                //Tao Phieu Giao hang
-                $_data .= icon_btn('sales/sale_delivery/'. $aRow['id'] , 'truck');
-            }            
+            // if($aRow['delivery_status']!=1) 
+            // {
+            //     //Tao Phieu Giao hang
+            //     $_data .= icon_btn('sales/sale_delivery/'. $aRow['id'] , 'truck');
+            // }            
             
         }
         

@@ -883,7 +883,7 @@ function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = array(), $w
             $sWhere = '';
         }
     }
-
+    
     /*
      * SQL queries
      * Get data to display

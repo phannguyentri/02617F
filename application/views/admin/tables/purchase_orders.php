@@ -23,6 +23,7 @@ $join             = array(
     );
 $additionalSelect = array(
     'converted',
+    '(select tblstaff.fullname from tblstaff where tblstaff.staffid = tblorders.id_user_create) as creator',
     );
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect, $order_by);
 
@@ -47,7 +48,7 @@ foreach ($rResult as $aRow) {
                         'staff-profile-image-small mright5'
                     ), 'small', array(
                         'data-toggle' => 'tooltip',
-                        'data-title' => $_data
+                        'data-title' => $aRow["creator"],
                     )) . '</a>';
             }
             else {
