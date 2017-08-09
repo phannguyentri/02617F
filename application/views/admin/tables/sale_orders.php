@@ -100,7 +100,7 @@ foreach ($rResult as $aRow) {
     }
     $_data='';
     if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
-        $_data .= icon_btn('sales/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
+        $_data .= icon_btn('sale_orders/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
         if($aRow['status']==2)
         {           
             //Tao Phieu xuat kho
