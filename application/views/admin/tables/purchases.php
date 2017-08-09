@@ -22,6 +22,16 @@ $sTable       = 'tblpurchase_plan';
 $where        = array(
 //    'AND id_lead="' . $rel_id . '"'
 );
+if($this->_instance->input->post()) {
+    $filter_status = $this->_instance->input->post('filterStatus');
+    if(is_numeric($filter_status)) {
+        if($filter_status == 2)
+            array_push($where, 'AND status='.$filter_status);
+        else {
+            array_push($where, 'AND status<>2');
+        }
+    }
+}
 $join         = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblpurchase_plan.create_by'
 );

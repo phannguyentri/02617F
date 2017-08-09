@@ -207,8 +207,9 @@ $tblhtml = '
 <table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1px">
     <tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">
         <th scope="col"  width="5%" align="center">#</th>
-        <th scope="col"  width="20%" align="center">' . _l('Sản phẩm') . '</th>
-        <th scope="col"  width="15%" align="center">' . _l('Mô tả') . '</th>
+        <th scope="col"  width="15%" align="center">' . _l('Sản phẩm') . '</th>
+        <th scope="col"  width="10%" align="center">' . _l('Mô tả') . '</th>
+        <th scope="col"  width="10%" align="center">' . _l('Kho') . '</th>
         <th scope="col"  width="10%" align="center">' . _l('Số lượng yêu cầu') . '</th>
         <th scope="col"  width="10%" align="center">' . _l('Số lượng hiện tại') . '</th>
         <th scope="col"  width="10%" align="center">' . _l('Số lượng an toàn') . '</th>
@@ -220,17 +221,18 @@ $tblhtml .= '</tr>';
 $tblhtml .= '<tbody>';
 $grand_total=0;
 for ($i=0; $i < count($invoice->items) ; $i++) { 
-    $grand_total+=$invoice->items[$i]['sub_total'];
+    $grand_total+=$invoice->items[$i]['price_buy']*$invoice->items[$i]['quantity_required'];
     $tblhtml.='<tr>';
     $tblhtml.='<td align="center">'.($i+1).'</td>';
     $tblhtml.='<td>'.$invoice->items[$i]['name'].'</td>';
-    $tblhtml.='<td>'.$invoice->items[$i]['specifications'].'</td>';
+    $tblhtml.='<td>'.$invoice->items[$i]['specification'].'</td>';
+    $tblhtml.='<td>'.$invoice->items[$i]['warehouse'].'</td>';
     $tblhtml.='<td align="right">'.$invoice->items[$i]['quantity_required'].'</td>';
-    $tblhtml.='<td align="right">'.$invoice->items[$i]['quantity_current'].'</td>';
+    $tblhtml.='<td align="right">'.($invoice->items[$i]['current_quantity'] == "" ? 0 : $invoice->items[$i]['current_quantity']).'</td>';
     $tblhtml.='<td align="right">'.$invoice->items[$i]['minimum_quantity'].'</td>';
     $tblhtml.='<td align="right">'.$invoice->items[$i]['quantity_min'].'</td>';
-    $tblhtml.='<td align="right">'.$invoice->items[$i]['unit_cost'].'</td>';
-    $tblhtml.='<td align="right">'.$invoice->items[$i]['sub_total'].'</td>';
+    $tblhtml.='<td align="right">'.number_format($invoice->items[$i]['price_buy']).'</td>';
+    $tblhtml.='<td align="right">'.number_format($invoice->items[$i]['price_buy']*$invoice->items[$i]['quantity_required']).'</td>';
     $tblhtml.='</tr>';
 }
     $tblhtml.='<tr>';

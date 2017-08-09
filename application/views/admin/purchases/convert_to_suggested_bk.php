@@ -91,12 +91,13 @@
                     ?>
                 </div>
 
-                <!-- Edited -->
+                
+                
+                
                 <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
                     <!-- Cusstomize from invoice -->
                     <div class="panel-body mtop10">
-                    <?php if(!empty($item->rel_id) || !empty($item->rel_code)){ $display='style="display: none;"';  }?>
-                        <div class="row" <?=$display?> >
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group mbot25">
                                     <select class="selectpicker no-margin" data-width="100%" id="custom_item_select" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
@@ -107,10 +108,11 @@
                                         <?php 
                                         } ?>
 
-                                    <!-- <?php if (has_permission('items', '', 'create')) { ?>
+                                    <?php if (has_permission('items', '', 'create')) { ?>
                                     <option data-divider="true"></option>
                                     <option value="newitem" data-content="<span class='text-info'><?php echo _l('new_invoice_item'); ?></span>"></option>
-                                    <?php } ?> -->
+                                    <?php 
+                                } ?>
                                     </select>
                                 </div>
                             </div>
@@ -119,54 +121,46 @@
                                 
                             </div>
                         </div>
+                        
+
                         <div class="table-responsive s_table">
-                            <table class="table items item-export no-mtop">
+                            <table class="table items item-purchase no-mtop">
                                 <thead>
                                     <tr>
                                         <th><input type="hidden" id="itemID" value="" /></th>
-                                        <th width="" class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_name'); ?>"></i> <?php echo _l('item_name'); ?></th>
-                                        <th width="" class="text-left"><?php echo _l('item_unit'); ?></th>
-                                        <th width="" class="text-left"><?php echo _l('item_quantity'); ?></th>
+                                        <th width="20%" class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_name'); ?>"></i> <?php echo _l('item_code'); ?></th>
+                                        <th width="10%" class="text-left"><?php echo _l('item_unit'); ?></th>
+                                        <th width="10%" class="text-left"><?php echo _l('item_quantity'); ?></th>
                                         
-                                        <th width="" class="text-left"><?php echo _l('item_price_buy'); ?></th>
-                                        <th width="" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
-                                        <th width="" class="text-left"><?php echo _l('warehouse_type'); ?></th>
-                                        <th width="" class="text-left"><?php echo _l('warehouse_name'); ?></th>
+                                        <th width="10%" class="text-left"><?php echo _l('item_price_buy'); ?></th>
+                                        <th width="10%" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
+                                        <th width="15%" class="text-left"><?php echo _l('item_specification'); ?></th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 
                                 <tbody>
-                                    <tr class="main" <?=$display?> >
+                                    <tr class="main">
                                         <td><input type="hidden" id="itemID" value="" /></td>
                                         <td>
-                                            <?php echo _l('item_name'); ?>
+                                            <?php echo _l('item_code'); ?>
                                         </td>
                                         <td>
-                                            <input type="hidden" id="item_unit" value="" />
                                             <?php echo _l('item_unit'); ?>
                                         </td>
 
                                         <td>
-                                            <input style="width: 100px" class="mainQuantity" type="number" min="1" value="1"  class="form-control" placeholder="<?php echo _l('item_quantity'); ?>">
+                                            <input class="mainQuantity" type="number" min="1" value="1"  class="form-control" placeholder="<?php echo _l('item_quantity'); ?>">
                                         </td>
                                         
                                         <td>
-                                            <?php echo _l('item_price'); ?>
+                                            <?php echo _l('item_price_buy'); ?>
                                         </td>
                                         <td>
                                             0
                                         </td>
                                         <td>
-                                            <?php 
-                                                echo render_select('select_kindof_warehouse', $warehouse_types, array('id', 'name'));
-                                            ?>
-                                        
-                                        </td>
-                                        <td>
-                                        <?php 
-                                            echo render_select('select_warehouse', array(), array('id', 'name'));
-                                        ?>
+                                            <?php echo _l('item_specification'); ?>
                                         </td>
                                         <td>
                                             <button style="display:none" id="btnAdd" type="button" onclick="createTrItem(); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
@@ -175,11 +169,9 @@
                                     <?php
                                     $i=0;
                                     $totalPrice=0;
-                                    
                                     if(isset($item) && count($item->items) > 0) {
                                         
                                         foreach($item->items as $value) {
-                                            
                                         ?>
                                     <tr class="sortable item">
                                         <td>
@@ -187,26 +179,15 @@
                                         </td>
                                         <td class="dragger"><?php echo $value['name']; ?></td>
                                         <td><?php echo $value['unit_name']; ?></td>
-                                        <?php
-                                        $err='';
-                                            if($value['quantity_required']>$value['warehouse_type']->maximum_quantity)
-                                            {
-                                                $err='error';
-                                                $style='border: 1px solid red !important';
-                                            }
-                                        ?>
-                                        <td>
-                                        <input style="width: 100px; <?=$style?>" class="mainQuantity <?=$err?>" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value['quantity_required']; ?>">
-                                        </td>
+                                        <td><input class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value['quantity_required']; ?>"></td>
                                             
-                                        <td><?php echo number_format($value['price_buy']); ?></td>
-                                        <td><?php echo number_format($value['price_buy']*$value['quantity_required']); ?></td>
-                                        <td><?php echo $value['warehouse_type']->kindof_warehouse_name ?></td>
-                                        <td><input type="hidden" data-store="<?=$value['warehouse_type']->maximum_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value['warehouse_id']?>"><?php echo $value['warehouse_type']->warehouse ?>(tối đa <?=$value['warehouse_type']->maximum_quantity?>)</td>
+                                        <td><?php echo number_format($value['unit_cost']); ?></td>
+                                        <td><?php echo number_format($value['unit_cost']*$value['quantity_required']); ?></td>
+                                        <td><?php echo $value->description	; ?></td>
                                         <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php
-                                            $totalPrice += $value['price_buy']*$value['quantity_required'];
+                                            $totalPrice += $value['unit_cost']*$value['quantity_required'];
                                             $i++;
                                         }
                                     }
@@ -237,8 +218,6 @@
                     </div>
                     <!-- End Customize from invoice -->
                 </div>
-                <!-- End edited -->                               
-                
                 
                 <?php if(isset($item) && $item->status != 1 || !isset($item)) { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
@@ -292,9 +271,6 @@
     var totalPrice = <?php echo $totalPrice ?>;
     var uniqueArray = <?php echo $i ?>;
     var isNew = false;
-    // Remove select name
-	$('#select_kindof_warehouse').removeAttr('name');
-	$('#select_warehouse').removeAttr('name');
     var createTrItem = () => {
         if(!isNew) return;
         if( $('table.item-purchase tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').length ) {

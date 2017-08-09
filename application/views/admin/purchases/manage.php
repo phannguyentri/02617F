@@ -13,6 +13,19 @@
                 <div class="panel_s">
                     <div class="panel-body">
                         <div class="clearfix"></div>
+                        
+                        <div class="row">
+                            
+                        </div>
+
+                        <input type="hidden" id="filterStatus" value="" />
+                        <div data-toggle="btns" class="btn-group">
+                            <button type="button" id="btnDatatableFilterAll" data-toggle="tab" class="btn btn-info active">Tất cả</button>
+                            <button type="button" id="btnDatatableFilterNotApproval" data-toggle="tab" class="btn btn-info">Chưa duyệt</button>
+                            <button type="button" id="btnDatatableFilterApproval" data-toggle="tab" class="btn btn-info">Đã duyệt</button>
+                        </div>
+                        
+                        <p></p>
                         <?php render_datatable(array(
                             _l('#'),
                             _l('Mã kế hoạch'),
@@ -64,7 +77,7 @@
             cache: false,
             success: function (data) {
                 var json = JSON.parse(data);
-//                if($data!="")
+                //if($data!="")
                 {
                     $('#unit').val(json.unit);
                     jQuery('#id_type').prop('action',admin_url+'units/update_unit/'+id);
@@ -74,7 +87,32 @@
     }
 
     $(function(){
-        initDataTable('.table-purchases', window.location.href, [1], [1]);
+        $('[data-toggle="btns"] .btn').on('click', function(){
+            var $this = $(this);
+            $this.parent().find('.active').removeClass('active');
+            $this.addClass('active');
+        });
+        $('#btnDatatableFilterAll').click(() => {
+            $('#filterStatus').val('');
+            $('#filterStatus').change();
+        });
+        $('#btnDatatableFilterNotApproval').click(() => {
+            $('#filterStatus').val(1);
+            $('#filterStatus').change();
+        });
+        $('#btnDatatableFilterApproval').click(() => {
+            $('#filterStatus').val(2);
+            $('#filterStatus').change();
+        });
+        var filterList = {
+            'filterStatus' : '[id="filterStatus"]',
+        };
+        initDataTable('.table-purchases', window.location.href, [1], [1], filterList);
+        $.each(filterList, (filterIndex, filterItem) => {
+            $('input' + filterItem).on('change', () => {
+                $('.table-purchases').DataTable().ajax.reload();
+            });
+        });
         _validate_form($('form'),{unit:'required'},manage_contract_types);
         $('#type').on('hidden.bs.modal', function(event) {
             $('#additional').html('');

@@ -44,7 +44,12 @@ class Purchases_model extends CRM_Model
      */
     public function get_invoice_items($id)
     {
-        $this->db->select('tblpurchase_plan_details.*,tblitems.name, tblitems.price_buy,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id');
+        $this->db->select('tblpurchase_plan_details.*,tblitems.name, tblitems.price_buy, 
+        (select tblwarehouses_products.product_quantity from tblwarehouses_products where tblwarehouses_products.product_id = tblpurchase_plan_details.product_id and tblwarehouses_products.warehouse_id = tblpurchase_plan_details.warehouse_id) as current_quantity,
+        tblitems.minimum_quantity,
+        tblitems.specification,
+        (select tblwarehouses.warehouse from tblwarehouses where tblwarehouses.warehouseid = tblpurchase_plan_details.warehouse_id) as warehouse,
+        tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id');
         $this->db->from('tblpurchase_plan_details');
         $this->db->join('tblitems','tblitems.id=tblpurchase_plan_details.product_id','left');
         $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
@@ -441,31 +446,34 @@ class Purchases_model extends CRM_Model
             'name'=>$data['name'],
             'reason'=>$data['reason'],
             'date'=>to_sql_date($data['date']),
+            'status' => 0,
+            'user_head_id' => 0,
+            'user_admin_id' => 0,
         );
-
+        
         if($this->db->update('tblpurchase_plan',$purchase,array('id'=>$id)))
         {
             logActivity('Purchase Plan Update [ID: ' . $id . ']');
             $count=0;
         }
+
         $items=$data['item'];
+        
         if($this->db->affected_rows())
-        {  
-            print_r($items);
+        {
             $affected_id = array();
-            for ($i=0; $i < count($items['id']); $i++) { 
-                $affected_id[]=$items['id'][$i];
-                $it=$this->db->get_where('tblpurchase_plan_details',array('purchase_plan_id'=>$id,'product_id'=>$items['id'][$i]),1)->row();
-                $product=$this->getItemByID($items['id'][$i]);
+            for ($i=0; $i < count($items); $i++) { 
+                if(isset($items[$i]))
+                    $affected_id[] = $items[$i]['id'];
+                
+                $it=$this->db->get_where('tblpurchase_plan_details',array('purchase_plan_id'=>$id,'product_id'=>$items[$i]['id']),1)->row();
+                $product=$this->getItemByID($items[$i]['id']);
                 // var_dump($product);die();
                 if($it)
                 {
-                    $item=array(
-                    'specifications'=>$product->description,
-                    'quantity_required'=>$items['quantity_required'][$i],
-                    'quantity_current'=>$items['quantity_current'][$i],
-                    'minimum_quantity'=>$items['minimum_quantity'][$i],
-                    'quantity_min'=>$items['quantity_min'][$i]
+                    $item = array(
+                    'quantity_required'=>$items[$i]['quantity'],
+                    'warehouse_id' => $items[$i]['warehouse'],
                     );
 
                     $this->db->update('tblpurchase_plan_details',$item,array('id'=>$it->id));
@@ -481,12 +489,9 @@ class Purchases_model extends CRM_Model
 
                     $item=array(
                     'purchase_plan_id'=>$id,
-                    'product_id'=>$items['id'][$i],
-                    'specifications'=>$product->description,
-                    'quantity_required'=>$items['quantity_required'][$i],
-                    'quantity_current'=>$items['quantity_current'][$i],
-                    'minimum_quantity'=>$items['minimum_quantity'][$i],
-                    'quantity_min'=>$items['quantity_min'][$i]
+                    'product_id'=>$items[$i]['id'],
+                    'quantity_required'=>$items[$i]['quantity'],
+                    'warehouse_id' => $items[$i]['warehouse'],
                     );
                     $this->db->insert('tblpurchase_plan_details',$item);
                     if($this->db->affected_rows())
@@ -503,6 +508,8 @@ class Purchases_model extends CRM_Model
             }
             else
             {
+                // print_r($affected_id);
+                // exit();
                 $this->db->where('purchase_plan_id', $id);
                 $this->db->where_not_in('product_id', $affected_id);
                 $this->db->delete('tblpurchase_plan_details');

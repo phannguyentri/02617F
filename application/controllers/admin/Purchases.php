@@ -73,8 +73,8 @@ class Purchases extends Admin_controller
                         access_denied('customers');
                     }
                 }
-                print_r($this->input->post());
-                exit();
+                // print_r($this->input->post());
+                // exit();
                 $success = $this->purchases_model->update($this->input->post(), $id);
                 if ($success == true) {
                     set_alert('success', _l('updated_successfuly', _l('Kế hoạch')));
@@ -117,9 +117,14 @@ class Purchases extends Admin_controller
 
     /* Convert to Suggested */
     public function convert_to_suggested($id)
-    {   
+    {
         $data['items'] = $this->invoice_items_model->get_full();
         $data['item'] = $this->purchases_model->getPurchaseByID($id);
+        foreach ($data['item']->items as $key => $value) {
+            $data['item']->items[$key]['warehouse_type']=$this->warehouse_model->getWarehouseProduct($value['warehouse_id'],$value['product_id'], true);
+        }
+        // print_r($data['item']);
+        // exit();
         // var_dump($data['item']);die();
 
         $this->load->view('admin/purchases/convert_to_suggested', $data);
@@ -159,6 +164,8 @@ class Purchases extends Admin_controller
             redirect(admin_url('purchases/list_invoices'));
         }
         $invoice        = $this->purchases_model->getPurchaseByID($id);
+        // print_r($invoice);
+        // exit();
         $invoice_number = get_option('prefix_purchase_suggested').$invoice->code;
         $pdf            = purchase_plan_pdf($invoice);
         $type           = 'D';

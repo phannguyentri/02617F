@@ -220,7 +220,7 @@
 												<td><?php echo number_format($value['price_buy']); ?></td>
 												<td><?php echo number_format($value['price_buy']*$value['quantity_required']); ?></td>
 												<td><?php echo $value['warehouse_type']->kindof_warehouse_name ?></td>
-												<td><input type="hidden" data-store="<?=$value['warehouse_type']->product_quantity ?>" name="item[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value['warehouse_type']->warehouse ?>(tối đa <?=$value['warehouse_type']->maximum_quantity?>)</td>
+												<td><input type="hidden" data-store="<?=$value['warehouse_type']->maximum_quantity ?>" name="item[<?=$i?>][warehouse]" value="<?=$value['warehouse_id']?>"><?php echo $value['warehouse_type']->warehouse ?>(tối đa <?=$value['warehouse_type']->maximum_quantity?>)</td>
 												<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
 											</tr>
 												<?php
@@ -312,6 +312,9 @@
     var totalPrice = <?php echo $totalPrice ?>;
     var uniqueArray = <?php echo $i ?>;
     var isNew = false;
+	// Remove select name
+	$('#select_kindof_warehouse').removeAttr('name');
+	$('#select_warehouse').removeAttr('name');
     var createTrItem = () => {
         if(!isNew) return;
         if(!$('tr.main #select_warehouse option:selected').length || $('tr.main #select_warehouse option:selected').val() == '') {
