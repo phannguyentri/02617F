@@ -41,7 +41,7 @@ foreach ($rResult as $aRow) {
     for ($i = 0; $i < count($aColumns); $i++) {
         $_data = $aRow[$aColumns[$i]];
         if ($aColumns[$i] == 'code') {
-            $_data=get_option('prefix_purchase_plan').$aRow['code'];
+            $_data=$aRow['code'];
         }
         if ($aColumns[$i] == 'status') {
             $_data='<span class="inline-block label label-'.get_status_label($aRow['status']).'" task-status-table="'.$aRow['status'].'">' . format_status_purchase_plan($aRow['status'],false,true).'';
@@ -107,11 +107,10 @@ foreach ($rResult as $aRow) {
     }
     $_data.=icon_btn('purchases/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
     if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
-        if($aRow['status']!=2)
-        {
-
+        // if($aRow['status']!=2)
+        // {
             $_data .= '<a href="'.admin_url('purchases/purchase/'.$aRow['id']).'" class="btn btn-default btn-icon" ><i class="fa fa-eye"></i></a>';
-        }
+        // }
         $row[] =$_data.icon_btn('purchases/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-reminders');
     } else {
         $row[] = '';

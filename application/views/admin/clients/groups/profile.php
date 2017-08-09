@@ -41,20 +41,20 @@
                    
                    <?php } ?>
                    <div class="col-md-12">
-                       <?php 
-                       $s_attrs = array('data-none-selected-text'=>_l('system_default_string'));
-                       $client_type_value = array(
-                           array(
-                               'id' => 1,
-                               'name' => 'Cá nhân',
-                           ),
-                           array(
-                               'id' => 2,
-                               'name' => 'Tổ chức',
-                           ),
-                       );
-                       
-                    echo render_select('client_type', $client_type_value, array('id','name'),'client_type', (isset($client) ? $client->client_type : 1), array(), array(), '', '', false); ?>
+                    <?php 
+                        $s_attrs = array('data-none-selected-text'=>_l('system_default_string'));
+                        $client_type_value = array(
+                            array(
+                                'id' => 1,
+                                'name' => 'Cá nhân',
+                            ),
+                            array(
+                                'id' => 2,
+                                'name' => 'Tổ chức',
+                            ),
+                        );
+                        echo render_select('client_type', $client_type_value, array('id','name'),'client_type', (isset($client) ? $client->client_type : 1), array(), array(), '', '', false);
+                    ?>
                     
                     <?php
                     $value= ( isset($client) ? $client->company : ''); 
@@ -128,7 +128,6 @@
                     
 
                     <?php
-                    
                         $value_type_of_organization = ( isset($client) ? $client->type_of_organization : "" );
                         $type_of_organization = array(
                             array(
@@ -226,7 +225,7 @@
                     if(isset($client) && client_have_transactions($client->userid)){
                       $s_attrs['disabled'] = true;
                   }
-                  foreach($currencies as $currency){
+            foreach($currencies as $currency){
                     if(isset($client)){
                       if($currency['id'] == $client->default_currency){
                         $selected = $currency['id'];

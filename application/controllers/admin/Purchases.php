@@ -7,6 +7,7 @@ class Purchases extends Admin_controller
         parent::__construct();
         $this->load->model('purchases_model');
         $this->load->model('invoice_items_model');
+        $this->load->model('warehouse_model');
     }
     /* Get all invoices in case user go on index page */
     public function index($id = false)
@@ -55,8 +56,10 @@ class Purchases extends Admin_controller
                 }
 
                 $data                 = $this->input->post();
+
                 if(isset($data['item']) && count($data['item']) > 0)
                 {
+                    
                     $id = $this->purchases_model->add($data);
                 }
                 
@@ -70,6 +73,8 @@ class Purchases extends Admin_controller
                         access_denied('customers');
                     }
                 }
+                print_r($this->input->post());
+                exit();
                 $success = $this->purchases_model->update($this->input->post(), $id);
                 if ($success == true) {
                     set_alert('success', _l('updated_successfuly', _l('Kế hoạch')));
@@ -82,12 +87,16 @@ class Purchases extends Admin_controller
 
         } else {
             $data['purchase'] = $this->purchases_model->getPurchaseByID($id);
-
+            foreach ($data['purchase']->items as $key => $value) {
+                $data['purchase']->items[$key]['warehouse_type']=$this->warehouse_model->getWarehouseProduct($value['warehouse_id'],$value['product_id'], true);
+            }
+            
             if (!$data['purchase']) {
                 blank_page('Purchase Not Found');
             }
         }
-
+        $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
+        $data['warehouses']= $this->warehouse_model->getWarehouses();
         $data['bodyclass'] = 'customer-profile';
         $this->load->model('taxes_model');
         $data['taxes']        = $this->taxes_model->get();
@@ -95,17 +104,12 @@ class Purchases extends Admin_controller
         $data['items_groups'] = $this->invoice_items_model->get_groups();
         $data['items_units'] = $this->invoice_items_model->get_units();
         // $data['items']        = $this->invoice_items_model->get_grouped();
-               $items= $this->invoice_items_model->get_full();
-               for ($i=0; $i < count($items); $i++) { 
-                // var_dump($items[$i]);die();
-                   $items[$i]['quantity_required']=$item->quantity-$item->minimum_quantity;
-                   $items[$i]['quantity_min']=$item->quantity-$item->minimum_quantity;
-               }
-               $data['items'] =$items;
-        // echo "<pre>";
-        //     var_dump($data['items']);die();
-
-
+        $items= $this->invoice_items_model->get_full();
+        for ($i=0; $i < count($items); $i++) { 
+            $items[$i]['quantity_required']=$item->quantity-$item->minimum_quantity;
+            $items[$i]['quantity_min']=$item->quantity-$item->minimum_quantity;
+        }
+        $data['items'] =$items;
 
         $data['title'] = $title;
         $this->load->view('admin/purchases/purchase', $data);

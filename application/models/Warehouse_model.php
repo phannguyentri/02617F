@@ -82,55 +82,69 @@ class Warehouse_model extends CRM_Model
         return false;
     }
 
-    public function getWarehouseProduct($warehouse_id = '',$product_id = '')
+    public function getWarehouseProduct($warehouse_id = '',$product_id = '', $includeDoesntContain = false)
     {
         // var_dump($product_id);die();
-        $this->db->select('tblwarehouses.*,tbl_kindof_warehouse.name as kindof_warehouse_name,tblwarehouses_products.product_quantity');
+        $this->db->select('tblwarehouses.*,tbl_kindof_warehouse.name as kindof_warehouse_name,tblwarehouses_products.product_quantity, tblitems.maximum_quantity');
         $this->db->join('tbl_kindof_warehouse', 'tbl_kindof_warehouse.id = tblwarehouses.kindof_warehouse', 'left');
         $this->db->join('tblwarehouses_products', 'tblwarehouses_products.warehouse_id = tblwarehouses.warehouseid', 'left');
+        $this->db->join('tblitems', 'tblitems.id = tblwarehouses_products.product_id', 'left');
         $this->db->from('tblwarehouses');
         if (is_numeric($product_id)) 
         {
             $this->db->where('product_id', $product_id);
         }
+        $result = array();
         if (is_numeric($warehouse_id)) 
         {
             $this->db->where('warehouseid', $warehouse_id);
-            return $this->db->get()->row();
+            $result = $this->db->get()->row();
         }
         else 
         {
-            return $this->db->get()->result_array();
+            $result = $this->db->get()->result_array();
+        }
+        if(!isset($result) || count($result) == 0) {
+            $this->db->select('tblwarehouses.*,tbl_kindof_warehouse.name as kindof_warehouse_name, (select 0 ) as product_quantity,, tblitems.maximum_quantity');
+            $this->db->where('warehouseid', $warehouse_id);
+            $this->db->join('tbl_kindof_warehouse', 'tbl_kindof_warehouse.id = tblwarehouses.kindof_warehouse', 'left');
+            $this->db->join('tblitems', 'tblitems.id='.$product_id, 'right');
+            $result = $this->db->get('tblwarehouses')->row();
         }
 
-        return false;
+        return $result;
     }
 
-    public function getWarehousesByType($warehouse_type = '', $filter_product='')
+    public function getWarehousesByType($warehouse_type = '', $filter_product='', $includeDoesntContain = false)
     {
         $this->db->select('tblwarehouses.*');
         $this->db->from('tblwarehouses');
         $this->db->where('tblwarehouses.kindof_warehouse', $warehouse_type);
         if (is_numeric($warehouse_type) && is_numeric($filter_product) && $filter_product > 0) 
         {
-            $this->db->join('tblwarehouses_products', 'tblwarehouses_products.warehouse_id=tblwarehouses.warehouseid');
+            // Khi cần các kho không chứa thì sẽ không lọc
+            if(!$includeDoesntContain){
+                $this->db->join('tblwarehouses_products', 'tblwarehouses_products.warehouse_id=tblwarehouses.warehouseid');
+                $this->db->where('tblwarehouses_products.product_id', $filter_product);
+            }
             
-            $this->db->where('tblwarehouses_products.product_id', $filter_product);
             $warehouses = $this->db->get()->result();
             
             foreach($warehouses as $warehouse) {
-                
                 $this->db->where('warehouse_id', $warehouse->warehouseid);
                 $this->db->where('product_id', $filter_product);
+                $this->db->join('tblitems', 'tblitems.id = tblwarehouses_products.product_id', 'left');
                 $warehouse->items = $this->db->get('tblwarehouses_products')->result();
+                if(count($warehouse->items) == 0 && $includeDoesntContain) {
+                    $warehouse->items = $this->db->get_where('tblitems', array('id' => $filter_product))->result();
+                $warehouse->items[0]->product_quantity = 0;
+                }
             }
-            
         }
         else {
             $warehouses = $this->db->get()->result();
         }
         return $warehouses;
-        return false;
     }
 
     public function add_warehouse($data)

@@ -168,9 +168,9 @@ class Warehouses extends Admin_controller
         }
     }
 
-    public function getWarehouses($warehouse_type,$filterByProduct='') {
+    public function getWarehouses($warehouse_type,$filterByProduct='', $includeDoesntContain=false) {
         if(is_numeric($warehouse_type) && $this->input->is_ajax_request()) {
-            echo json_encode($this->warehouse_model->getWarehousesByType($warehouse_type,$filterByProduct));
+            echo json_encode($this->warehouse_model->getWarehousesByType($warehouse_type, $filterByProduct, $includeDoesntContain));
         }
     }
 }

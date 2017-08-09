@@ -44,14 +44,13 @@ class Purchases_model extends CRM_Model
      */
     public function get_invoice_items($id)
     {
-        $this->db->select('tblpurchase_plan_details.*,tblitems.name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id');
+        $this->db->select('tblpurchase_plan_details.*,tblitems.name, tblitems.price_buy,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id');
         $this->db->from('tblpurchase_plan_details');
         $this->db->join('tblitems','tblitems.id=tblpurchase_plan_details.product_id','left');
         $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
         $this->db->where('purchase_plan_id', $id);
         $items = $this->db->get()->result_array();
         return $items;
-
     }
     public function get_invoice_item($id)
     {
@@ -203,7 +202,7 @@ class Purchases_model extends CRM_Model
     public function add($data, $expense = false)
     {
         $purchase = array(
-            'code'=>$data['number'],
+            'code'=>get_option('prefix_purchase_plan').$data['number'],
             'name'=>$data['name'],
             'reason'=>$data['reason'],
             'date'=>to_sql_date($data['date']),
@@ -213,31 +212,30 @@ class Purchases_model extends CRM_Model
         {
             $id=$this->db->insert_id();
             logActivity('Purchase Plan Insert [ID: ' . $id . ']');
-            
+
             $count=0;
         }
 
         $items=$data['item'];
+
         if($id)
         {
-            for ($i=0; $i < count($items['id']); $i++) { 
-            $product=$this->getItemByID($items['id'][$i]);
-            $item=array(
-                'purchase_plan_id'=>$id,
-                'product_id'=>$items['id'][$i],
-                'specifications'=>$product->description,
-                'quantity_required'=>$items['quantity_required'][$i],
-                'quantity_current'=>$items['quantity_current'][$i],
-                'minimum_quantity'=>$items['minimum_quantity'][$i],
-                'quantity_min'=>$items['quantity_min'][$i]
+            
+            for ($i=0; $i < count($items); $i++) { 
+                $item=array(
+                    'purchase_plan_id'=>$id,
+                    'product_id'=>$items[$i]['id'],
+                    'quantity_required'=>$items[$i]['quantity'],
+                    'warehouse_id'=>$items[$i]['warehouse'],
                 );
-
-            if($this->db->insert('tblpurchase_plan_details',$item))
-            {
-                logActivity('Purchase plan detail insert [ID Purchase: ' . $id . ', ID Product: ' . $items['id'][$i] . ']');
-                $count++;
-
-            }
+                if($this->db->insert('tblpurchase_plan_details',$item))
+                {
+                    logActivity('Purchase plan detail insert [ID Purchase: ' . $id . ', ID Product: ' . $items[$i]['id'] . ']');
+                    $count++;
+                }
+                else {
+                    exit("error");
+                }
             }
         }
 
@@ -453,7 +451,8 @@ class Purchases_model extends CRM_Model
         $items=$data['item'];
         if($this->db->affected_rows())
         {  
-            $affected_id=array();
+            print_r($items);
+            $affected_id = array();
             for ($i=0; $i < count($items['id']); $i++) { 
                 $affected_id[]=$items['id'][$i];
                 $it=$this->db->get_where('tblpurchase_plan_details',array('purchase_plan_id'=>$id,'product_id'=>$items['id'][$i]),1)->row();
@@ -496,7 +495,6 @@ class Purchases_model extends CRM_Model
                         $count++;
                     }
                 }
-                
             }
             if(empty($affected_id))
             {
