@@ -23,7 +23,8 @@ $where        = array(
 );
 $join         = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblsale_orders.create_by',
-    'LEFT JOIN tblclients  ON tblclients.userid=tblsale_orders.customer_id'
+    'LEFT JOIN tblclients  ON tblclients.userid=tblsale_orders.customer_id',
+    // 'LEFT JOIN tblsales  ON tblsales.rel_id=tblsale_orders.id'
 );
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where, array(
     'id',
@@ -100,13 +101,17 @@ foreach ($rResult as $aRow) {
     }
     $_data='';
     if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
-        $_data .= icon_btn('sales/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
-        if($aRow['status']==2)
+        $_data .= icon_btn('sale_orders/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
+        if($aRow['status']==2 && $aRow['export_status']!=1)
         {           
             //Tao Phieu xuat kho
             $_data .= icon_btn('sale_orders/sale_output/'. $aRow['id'] , 'exchange');           
             
         }
+
+        // list SO export
+
+        $_data .= icon_btn('sales/'. $aRow['id'] , 'list');
         
 
         // if($aRow['status']!=2)

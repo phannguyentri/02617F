@@ -123,6 +123,7 @@ class Sale_orders extends Admin_controller
 
                 $i++;
             }
+            // var_dump($data['item']);die();
             if (!$data['item']) {
                 blank_page('Export Not Found');
             }   
@@ -243,7 +244,7 @@ class Sale_orders extends Admin_controller
         $invoice        = $this->sale_oders_model->getSaleByID($id);
         $invoice_number = $invoice->prefix.$invoice->code;
 
-        $pdf            = sale_detail_pdf($invoice);
+        $pdf            = sale_order_detail_pdf($invoice);
         $type           = 'D';
         if ($this->input->get('pdf') || $this->input->get('print')) {
             $type = 'I';
