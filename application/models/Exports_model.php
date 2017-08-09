@@ -164,8 +164,7 @@ class Exports_model extends CRM_Model
                         if($this->db->affected_rows()>0 && $export_quantity==$sale->quantity)
                         {
                             $count++;
-                        }
-                        
+                        }                        
                     }                            
                     logActivity('Insert Export Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                  }

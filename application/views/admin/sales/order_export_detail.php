@@ -12,31 +12,12 @@
       <div class="clearfix"></div>
         <?php 
         } ?>
-  <h4 class="bold no-margin"><?php echo (isset($item) ? _l('edit_sale_order_') : _l('add_sale_order_')); ?></h4>
+  <h4 class="bold no-margin"><?php echo _l('add_sale_order_'); ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
     <div class="col-md-12">
         <?php
-         if(isset($item))
-            {
-                if($item->status==0)
-                {
-                    $type='warning';
-                    $status='Chưa duyệt';
-                }
-                elseif($item->status==1)
-                {
-                    $type='info';
-                    $status='Đã xác nhận';
-                }
-                else
-                {
-                    $type='success';
-                    $status='Đã duyệt';
-                }
-            }
-            else
             {
                 $type='warning';
                 $status='Phiếu mới';
@@ -60,7 +41,7 @@
                 </div>
                 
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 _buttons">
-                    <div class="pull-right">
+                    <div class="pull-right" style="display: none;">
                         <?php if( isset($item) ) { ?>
                         <a href="<?php echo admin_url('sales/pdf/' . $item->id . '?print=true') ?>" target="_blank" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="In" aria-describedby="tooltip652034"><i class="fa fa-print"></i></a>
                         <a href="<?php echo admin_url('sales/pdf/' . $item->id  ) ?>" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" title="" data-placement="bottom" data-original-title="Xem PDF"><i class="fa fa-file-pdf-o"></i></a>
@@ -79,17 +60,12 @@
                          <label for="number"><?php echo _l('sale_code'); ?></label>
                          <div class="input-group">
                           <span class="input-group-addon">
-                          <?php $prefix =($item) ? $item->prefix : get_option('prefix_sale'); ?>
+                          <?php $prefix =get_option('prefix_sale'); ?>
                             <?=$prefix?>
-                            <?php echo form_hidden('rel_type', 'sale_order_direct'); ?>
+                            <?php echo form_hidden('rel_type', 'sale_order'); ?>
                             <?=form_hidden('prefix',$prefix)?>    
                             </span>
                             <?php 
-                                if($item)
-                                {
-                                    $number=$item->code;
-                                }
-                                else
                                 {
                                     $number=sprintf('%05d',getMaxID('id','tblsales')+1);
                                 }

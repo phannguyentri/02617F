@@ -230,6 +230,11 @@ function format_money($total, $symbol = '')
         }
     }
 
+    // if($symbol=='')
+    // {
+    //     $symbol=get_option('default_currency');
+    // }
+
     $total = number_format($total, $d, $decimal_separator, $thousand_separator);
     $total = do_action('money_after_format_without_currency',$total);
 

@@ -287,7 +287,7 @@ $tblhtml .= '</table>';
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
 
 
-$strmoney='<div class=""><ul>';
+$strmoney='<div class="col-md-12"><ul>';
 $strmoney.='<li>'._l('str_money').'</li>';
 $strmoney.='<li>'._l('certificate_root').'</li>';;
 $strmoney.='</ul></div>';

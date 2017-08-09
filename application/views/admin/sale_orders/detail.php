@@ -12,7 +12,7 @@
       <div class="clearfix"></div>
         <?php 
         } ?>
-  <h4 class="bold no-margin"><?php echo (isset($item) ? _l('edit_sale_order_') : _l('add_sale_order_')); ?></h4>
+  <h4 class="bold no-margin"><?php echo (isset($item) ? _l('edit_sale_order') : _l('add_sale_order')); ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
@@ -81,7 +81,7 @@
                           <span class="input-group-addon">
                           <?php $prefix =($item) ? $item->prefix : get_option('prefix_sale'); ?>
                             <?=$prefix?>
-                            <?php echo form_hidden('rel_type', 'sale_order_direct'); ?>
+                            <?php echo form_hidden('rel_type', 'sale_order'); ?>
                             <?=form_hidden('prefix',$prefix)?>    
                             </span>
                             <?php 
