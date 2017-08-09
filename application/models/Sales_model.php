@@ -53,6 +53,8 @@ class Sales_model extends CRM_Model
    {
         $import=array(
             'rel_type'=>$data['rel_type'],
+            'rel_id'=>$data['rel_id'],
+            'rel_code'=>$data['rel_code'],
             'prefix'=>$data['prefix'],
             'name'=>$data['name'],
             'code'=>$data['code'],
@@ -68,7 +70,8 @@ class Sales_model extends CRM_Model
             logActivity('New Sale Added [ID:' . $insert_id . ', ' . $data['date'] . ']');
             $items=$data['items'];
              $total=0;
-
+             $count=0;
+             $affect_product=array();
             foreach ($items as $key => $item) {
                 $product=$this->getProductById($item['id']);
                 $sub_total=$product->price*$item['quantity'];
@@ -87,13 +90,66 @@ class Sales_model extends CRM_Model
                  $this->db->insert('tblsale_items', $item_data);
                  if($this->db->affected_rows()>0)
                  {
+                    $affect_product[]=$item['id'];  
                     logActivity('Insert Sale Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
+                    if(!empty($data['rel_id']))
+                    {
+                        $sale=$this->getSaleOrderItemByID($data['rel_id'],$item['id']);
+                        $export_quantity=$sale->export_quantity+$item['quantity'];
+                        $this->db->update('tblsale_order_items',array('export_quantity'=>$export_quantity),array('id'=>$sale->id));                       
+                    }   
                  }
             }
+            $this->checkExportOrder($data['rel_id']);
             $this->db->update('tblsales',array('total'=>$total),array('id'=>$insert_id));
             return $insert_id;
         }
         return false;
+    }
+    public function checkExportOrder($id)
+    {
+        if(!$id)
+        {
+            return false;
+        }
+
+        $items=$this->getSaleOrderItems($id);
+        $count=0;
+        foreach ($items as $key => $item) {
+            if($item->quantity==$item->export_quantity)
+            {
+                $count++;
+            }
+        }
+        if($count==count($items))
+        {
+            $this->db->update('tblsale_orders',array('export_status'=>1),array('id'=>$id));
+            return true;
+        }
+        return false;
+    }
+
+    public function getSaleOrderItems($id)
+    {       
+        $this->db->where('sale_id', $id);
+        $q=$this->db->get('tblsale_order_items');
+        if($q->num_rows() > 0)
+        {
+            return $q->result();
+        }
+        return false;
+    }
+
+    public function getSaleOrderItemByID($id,$product_id)
+    {       
+            $this->db->where('sale_id', $id);
+            $this->db->where('product_id', $product_id);
+            $q=$this->db->get('tblsale_order_items');
+            if($q->num_rows() > 0)
+            {
+                return $q->row();
+            }
+            return false;
     }
 
      public function update($data,$id)
@@ -220,7 +276,7 @@ class Sales_model extends CRM_Model
 
     public function delete($id)
     {
-        if($this->db->update('tblsales',array('id'=>$id)) && $this->db->update('tblsale_items',array('sale_id'=>$id)));
+        if($this->db->delete('tblsales',array('id'=>$id)) && $this->db->delete('tblsale_items',array('sale_id'=>$id)));
         if ($this->db->affected_rows() > 0) {
             return true;
         }

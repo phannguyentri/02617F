@@ -50,7 +50,7 @@
                 </div>
             </div>
             
-            <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'sales-form', 'autocomplete' => 'off')); ?>
+            <?php echo form_open_multipart(admin_url('sales/sale_detail'), array('class' => 'sales-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
                   <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">            
                     <?php
@@ -73,6 +73,14 @@
                             <input type="text" name="code" class="form-control" id="code" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
                           </div>
                     </div>
+
+                    <?php $value = (isset($item) ? $item->prefix.$item->code : '');?>
+                    <?php echo render_input('rel_code','rel_code_order',$value,'text',array('readonly'=>true)); ?>
+
+                    <?php
+                    $default_name = (isset($item) ? $item->id : NULL);
+                    echo form_hidden('rel_id',  $default_name);
+                    ?>
 
                     <?php $value = (isset($item) ? _d($item->date) : _d(date('Y-m-d')));?>
                     <?php echo render_date_input('date','view_date',$value); ?>
@@ -111,13 +119,13 @@
                     <!-- Cusstomize from invoice -->
                     <div class="panel-body mtop10">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4" style="display: none;">
                                 <div class="form-group mbot25">
                                     <select class="selectpicker no-margin" data-width="100%" id="custom_item_select" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
                                         <option value=""></option>
 
-                                        <?php foreach ($items as $product) { ?>
-                                        <option value="<?php echo $product['id']; ?>" data-subtext="">(<?php echo $product['code']; ?>) <?php echo $product['name']; ?></option>
+                                        <?php foreach ($item->items as $product) { ?>
+                                        <option value="<?php echo $product->product_id; ?>" data-subtext="">(<?php echo $product->code; ?>) <?php echo $product->product_name; ?></option>
                                         <?php 
                                         } ?>
 
@@ -153,7 +161,7 @@
                                 </thead>
                                 
                                 <tbody>
-                                    <tr class="main">
+                                    <tr class="main" style="display: none;">
                                         <td><input type="hidden" id="itemID" value="" /></td>
                                         <td>
                                             <?php echo _l('item_name'); ?>
@@ -194,26 +202,43 @@
                                         
                                         foreach($item->items as $value) {
                                         ?>
+                                        <?php
+                                        $max=0;
+                                        $export=0;
+                                        $strexport='';
+                                        if($value->export_quantity!=$value->quantity)
+                                        {
+                                            $max=$value->quantity-$value->export_quantity;
+                                            $export=(empty($value->export_quantity) ? 0 : $value->export_quantity);
+                                            $sub_total=$max*$value->unit_cost;                                               
+                                        }
+                                        $strexport='('.$export.'/'.$value->quantity.')';
+                                            
+                                        ?>
+                                        <?php if($value->quantity!=$value->export_quantity) { ?>
+                                        
                                     <tr class="sortable item">
                                         <td>
                                             <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
                                         </td>
                                         <td class="dragger"><?php echo $value->product_name.' ('.$value->prefix.$value->code.')'; ?></td>
                                         <td><?php echo $value->unit_name; ?></td>
-                                        <td><input style="width: 100px" class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
+                                        
+                                        <td><input style="width: 100px" class="mainQuantity" type="number" min="0" max="<?=$max?>" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $max ?>"><?=$strexport?></td>
                                             
                                         <td><?php echo number_format($value->unit_cost); ?></td>
-                                        <td><?php echo number_format($value->sub_total); ?></td>
+                                        <td><?php echo number_format($sub_total); ?></td>
                                         <td><?php echo $value->warehouse_type->kindof_warehouse_name ?></td>
                                     <td><input type="hidden" data-store="<?=$value->warehouse_type->product_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(có <?=$value->warehouse_type->product_quantity?>)</td>
                                         <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php
-                                            $totalPrice += $value->sub_total;
+                                            $totalPrice += $sub_total;
                                             $i++;
                                         }
                                     }
                                     ?>
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -489,7 +514,7 @@
         }
         if(<?=json_encode($item)?>)
         {
-            var a=confirm("Bạn có chắc muốn ");
+            var a=confirm("Bạn có chắc muốn lưu?");
             if(a===false)
             {
                 e.preventDefault();    

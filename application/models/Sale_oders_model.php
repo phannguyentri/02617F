@@ -117,8 +117,10 @@ class Sale_oders_model extends CRM_Model
             'code'=>$data['code'],
             'customer_id'=>$data['customer_id'],
             'reason'=>$data['reason'],
-            'date'=>to_sql_date($data['date'])
+            'date'=>to_sql_date($data['date']),
+            'export_status'=>NULL
             );
+         // var_dump($import);die();
         
         if($this->db->update('tblsale_orders',$import,array('id'=>$id)) && $this->db->affected_rows()>0)
         {
@@ -208,7 +210,7 @@ class Sale_oders_model extends CRM_Model
                      }
                 }
             }
-            
+
             if(!empty($affected_idR))
                 {
                     $this->db->where('reject_id', $id);
@@ -291,6 +293,7 @@ class Sale_oders_model extends CRM_Model
     {
         if($this->db->delete('tblsale_orders',array('id'=>$id)) && $this->db->delete('tblsale_order_items',array('sale_id'=>$id)));
         if ($this->db->affected_rows() > 0) {
+            $this->db->delete('tblsale_order_items',array('reject_id'=>$id));
             return true;
         }
         return false;

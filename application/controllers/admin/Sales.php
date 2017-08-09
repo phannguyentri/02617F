@@ -12,14 +12,19 @@ class Sales extends Admin_controller
     }
     
 
-    public function index()
+    public function index($order_id=NULL)
     {
-       
-        if ($this->input->is_ajax_request()) {
-            $this->perfex_base->get_table_data('sales');
-        }
+        // var_dump($order_id);die();
+        $this->list_sales($order_id=NULL);
         $data['title'] = _l('sale_orders');
         $this->load->view('admin/sales/manage', $data);
+    }
+
+    public function list_sales($order_id=NULL)
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->perfex_base->get_table_data('sales',array('order_id'=>$order_id));
+        }
     }
 
 
@@ -37,7 +42,7 @@ class Sales extends Admin_controller
                 }
 
                 $data                 = $this->input->post();
-                // var_dump($data);die();
+
                 if(isset($data['items']) && count($data['items']) > 0)
                 {
                     $id = $this->sales_model->add($data);
@@ -46,6 +51,10 @@ class Sales extends Admin_controller
                 if ($id) {
                     set_alert('success', _l('added_successfuly', _l('sale')));
                     redirect(admin_url('sales'));
+                    }
+                else{
+                    set_alert('warning', _l('problem_adding'));
+                    redirect($_SERVER["HTTP_REFERER"]);
                 }
             } else {
 

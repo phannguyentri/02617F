@@ -21,6 +21,10 @@ $sTable       = 'tblsales';
 $where        = array(
     // 'AND rel_type="'.$rel_type.'"',
 );
+if(!empty($order_id))
+{
+    $where[]='AND rel_id="'.$order_id.'"',
+}
 $join         = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblsales.create_by',
     'LEFT JOIN tblclients  ON tblclients.userid=tblsales.customer_id'
