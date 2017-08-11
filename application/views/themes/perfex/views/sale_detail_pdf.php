@@ -300,23 +300,24 @@ $pdf->writeHTML($tblhtml, true, false, false, false, '');
 $pdf->Ln(20);
 $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         <tr>
-            <td><b>" . mb_ucfirst(_l('creater'), "UTF-8") . "</b></td>
-            <td><b>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</b></td>
-            <td><b>" . mb_ucfirst(_l('user_admin'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('buyers'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('billers'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('unit_heads'), "UTF-8") . "</b></td>
+        </tr>   
+        <tr>
+            <td>(ký, ghi rõ họ tên)</td>
+            <td>(ký, ghi rõ họ tên)</td>
+            <td>(ký, ghi rõ họ tên)</td>
         </tr>
         <tr>
             <td style=\"height: 100px\" colspan=\"3\"></td>
         </tr>
         <tr>
+            <td>" . mb_ucfirst($customer->company,"UTF-8") . "</td>
             <td>" . mb_ucfirst($invoice->creater,"UTF-8") . "</td>
-            <td>" . mb_ucfirst($invoice->head,"UTF-8") . "</td>
             <td>" . mb_ucfirst($invoice->admin,"UTF-8") . "</td>
         </tr>
-        <tr>
-            <td>(ký, ghi rõ họ tên)</td>
-            <td>(ký, ghi rõ họ tên)</td>
-            <td>(ký, ghi rõ họ tên)</td>
-        </tr>
+        
 </table>";
 $pdf->writeHTML($table, true, false, false, false, '');
 

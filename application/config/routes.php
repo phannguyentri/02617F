@@ -84,4 +84,5 @@ $route['knowledge-base/(:any)']  = "clients/knowledge_base/$1";
 
 // Staff rewrites
 $route['admin/sales/(:num)']  = "admin/sales/index/$1";
+$route['admin/exports/(:num)']  = "admin/exports/index/$1";
 

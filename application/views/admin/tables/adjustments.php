@@ -33,6 +33,8 @@ $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where
 $output       = $result['output'];
 $rResult      = $result['rResult'];
 //var_dump($rResult);die();
+// print_r($output);die();
+
 
 
 $j=0;

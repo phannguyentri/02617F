@@ -15,13 +15,16 @@ $aColumns     = array(
     'status',
     'CONCAT((SELECT fullname FROM tblstaff  WHERE user_head_id=tblstaff.staffid),",",(SELECT fullname FROM tblstaff  WHERE user_admin_id=tblstaff.staffid)) as confirm',
     'date'
-
 );
 $sIndexColumn = "id";
 $sTable       = 'tblexports';
 $where        = array(
     // 'AND rel_type="'.$rel_type.'"',
 );
+if(!empty($sale_id))
+{
+    $where[]='AND rel_id="'.$sale_id.'"';
+}
 $join         = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblexports.create_by',
     'LEFT JOIN tblclients  ON tblclients.userid=tblexports.customer_id'

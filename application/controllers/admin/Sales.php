@@ -15,8 +15,9 @@ class Sales extends Admin_controller
     public function index($order_id=NULL)
     {
         // var_dump($order_id);die();
-        $this->list_sales($order_id=NULL);
+        $this->list_sales($order_id);
         $data['title'] = _l('sale_orders');
+        $data['order_id'] = $order_id;
         $this->load->view('admin/sales/manage', $data);
     }
 

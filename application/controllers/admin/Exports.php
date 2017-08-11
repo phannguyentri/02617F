@@ -11,11 +11,10 @@ class Exports extends Admin_controller
         $this->load->model('warehouse_model');
         $this->load->model('sales_model');
     }
-    public function index()
+    public function index($sale_id=NULL)
     {
-       
         if ($this->input->is_ajax_request()) {
-            $this->perfex_base->get_table_data('exports');
+            $this->perfex_base->get_table_data('exports',array('sale_id'=>$sale_id));
         }
         $data['title'] = _l('export_orders');
         $this->load->view('admin/exports/manage', $data);

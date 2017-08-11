@@ -115,13 +115,23 @@ class Sales_model extends CRM_Model
 
         $items=$this->getSaleOrderItems($id);
         $count=0;
+        $pending=0;
         foreach ($items as $key => $item) {
             if($item->quantity==$item->export_quantity)
             {
                 $count++;
             }
+            else
+            {
+                $pending=1;
+            }
         }
         if($count==count($items))
+        {
+            $this->db->update('tblsale_orders',array('export_status'=>2),array('id'=>$id));
+            return true;
+        }
+        if($pending)
         {
             $this->db->update('tblsale_orders',array('export_status'=>1),array('id'=>$id));
             return true;

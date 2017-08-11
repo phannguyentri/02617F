@@ -158,7 +158,7 @@
                                 </thead>
                                 
                                 <tbody>
-                                    <!-- <tr class="main hide">
+                                    <tr class="main hide">
                                         <td><input type="hidden" id="itemID" value="" /></td>
                                         <td>
                                             <?php echo _l('item_name'); ?>
@@ -192,7 +192,7 @@
                                         <td>
                                             <button style="display:none" id="btnAdd" type="button" onclick="createTrItem(); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
                                         </td>
-                                    </tr> -->
+                                    </tr>
                                     <?php
                                     $i=0;
                                     $totalPrice=0;
@@ -277,6 +277,7 @@
 </div>
 <?php init_tail(); ?>
 <script>
+
     _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required',receiver_id:'required'});
     
     var itemList = <?php echo json_encode($items);?>;
@@ -456,7 +457,7 @@
         
         var Gia = currentQuantityInput.parent().find(' + td');
         var Tong = Gia.find(' + td');
-        Tong.text( formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
+        Tong.text(formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
         refreshTotal();
     });
     $('#select_kindof_warehouse').change(function(e){
@@ -515,14 +516,14 @@
             alert_float('warning','Giá trị không hợp lệ!');    
         }
         // alert($('select[id^="select_warehouse"]').selectpicker('val'));
-        $.each($('select[id^="select_warehouse"]'), function(key,value){
-            // alert($(value).selectpicker('val'))
-            if($(value).selectpicker('val')=='')
-            {
-                e.preventDefault();
-                alert_float('warning','Vui lòng chọn kho sản phẩm');  
-            }
-        });
+        // $.each($('select[id^="select_warehouse"]'), function(key,value){
+        //     // alert($(value).selectpicker('val'))
+        //     if($(value).selectpicker('val')=='')
+        //     {
+        //         e.preventDefault();
+        //         alert_float('warning','Vui lòng chọn kho sản phẩm');  
+        //     }
+        // });
     });
     
 </script>

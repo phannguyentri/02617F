@@ -160,25 +160,53 @@ class Exports_model extends CRM_Model
                     {
                         $sale=$this->getSaleItemByID($data['rel_id'],$item['id']);
                         $export_quantity=$sale->export_quantity+$item['quantity'];
-                        $this->db->update('tblsale_items',array('export_quantity'=>$export_quantity),array('id'=>$sale->id));
-                        if($this->db->affected_rows()>0 && $export_quantity==$sale->quantity)
-                        {
-                            $count++;
-                        }                        
+                        $this->db->update('tblsale_items',array('export_quantity'=>$export_quantity),array('id'=>$sale->id));                       
                     }                            
                     logActivity('Insert Export Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                  }
             }
-                if($count==count($this->getSaleItems($data['rel_id'],$affect_product)))
-                {
-                    $this->db->update('tblsales',array('export_status'=>1),array('id'=>$data['rel_id']
-                        ));
-                }
+                
+            $this->checkExportSale($data['rel_id']);
             $this->db->update('tblexports',array('total'=>$total),array('id'=>$insert_id));
             return $insert_id;
         }
         return false;
     }
+
+    public function checkExportSale($id)
+    {
+        if(!$id)
+        {
+            return false;
+        }
+
+        $items=$this->getSaleItems($id);
+        $count=0;
+        $pending=0;
+        foreach ($items as $key => $item) {
+            if($item->quantity==$item->export_quantity)
+            {
+                $count++;
+            }
+            else
+            {
+                $pending=1;
+            }
+        }
+        if($count==count($items))
+        {
+            $this->db->update('tblsales',array('export_status'=>2),array('id'=>$id));
+            return true;
+        }
+        if($pending)
+        {
+            $this->db->update('tblsales',array('export_status'=>1),array('id'=>$id));
+            return true;
+        }
+        return false;
+    }
+
+    
 
     public function getSaleItemByID($id,$product_id)
     {       

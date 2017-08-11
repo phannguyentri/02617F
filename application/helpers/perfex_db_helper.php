@@ -914,6 +914,7 @@ function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = array(), $w
     $groupBy
     $sLimit
     ";
+
     $rResult = $CI->db->query($sQuery)->result_array();
 
     /* Data set length after filtering */
@@ -940,6 +941,7 @@ function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = array(), $w
         "iTotalDisplayRecords" => $iFilteredTotal,
         "aaData" => array()
     );
+    
     return array(
         'rResult' => $rResult,
         'output' => $output

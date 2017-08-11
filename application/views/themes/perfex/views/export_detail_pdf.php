@@ -286,6 +286,7 @@ $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
 
+$pdf->writeHTML(_l('blank_date'), true, false, false, false, 'R');
 
 $strmoney='<div class="col-md-12"><ul>';
 $strmoney.='<li>'._l('str_money').'</li>';
@@ -296,12 +297,16 @@ $strmoney.='</ul></div>';
 // $pdf->writeHTML($strmoney, true, false, false, false, '');
 $pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
 
-$pdf->Ln(10);
 $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         <tr>
             <td><b>" . mb_ucfirst(_l('creater'), "UTF-8") . "</b></td>
             <td><b>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</b></td>
             <td><b>" . mb_ucfirst(_l('user_admin'), "UTF-8") . "</b></td>
+        </tr>
+        <tr>
+            <td>(ký, ghi rõ họ tên)</td>
+            <td>(ký, ghi rõ họ tên)</td>
+            <td>(ký, ghi rõ họ tên)</td>
         </tr>
         <tr>
             <td style=\"height: 100px\" colspan=\"3\"></td>
@@ -311,11 +316,7 @@ $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
             <td>" . mb_ucfirst($invoice->head,"UTF-8") . "</td>
             <td>" . mb_ucfirst($invoice->admin,"UTF-8") . "</td>
         </tr>
-        <tr>
-            <td>(ký, ghi rõ họ tên)</td>
-            <td>(ký, ghi rõ họ tên)</td>
-            <td>(ký, ghi rõ họ tên)</td>
-        </tr>
+        
 </table>";
 $pdf->writeHTML($table, true, false, false, false, '');
 

@@ -3660,7 +3660,7 @@ $lang['als_imp_transfers'] = "Chuyển kho";
 $lang['als_imp_adjustments'] = "Điều chỉnh kho";
 $lang['als_imp_internals'] = "Nội địa";
 $lang['als_imp_returns'] = "Hàng trả về";
-$lang['als_quotation'] = "Báo giá";
+$lang['als_quotation'] = "Bảng báo giá";
 $lang['als_contracts'] = "Hợp đồng bán";
 $lang['als_sale_orders'] = "Đơn hàng bán";
 $lang['als_quotations'] = "Báo giá";
@@ -3680,7 +3680,7 @@ $lang['address'] = "Địa chỉ";
 $lang['vat_no'] = "Mã số thuế";
 $lang['Tel'] = "Tel";
 $lang['Fax'] = "Fax";
-$lang['creater']                   = "Người lập";
+$lang['creater']                   = "Người lập phiếu";
 $lang['warehouse_info'] = "Thông tin kho";
 
 $lang['pdf_date_print'] = "Ngày in phiếu";
@@ -3695,7 +3695,7 @@ $lang['orders_user_create'] = "Người lập phiếu";
 
 $lang['sale_orders'] = "Đơn đặt hàng";
 $lang['add_sale_order_'] = "Thêm đơn hàng bán lẻ";
-$lang['sales'] = "Đơn hàng";
+$lang['sales'] = "Đơn hàng bán";
 $lang['sale'] = "Đơn đặt hàng";
 $lang['sale_detail'] = "Chi tiết đơn hàng";
 $lang['sale_code'] = "Mã phiếu đặt hàng";
@@ -3762,16 +3762,31 @@ $lang['billers'] = "Người bán hàng";
 $lang['buyers'] = "Người mua hàng";
 $lang['unit_heads'] = "Thủ trưởng đơn vị";
 $lang['rel_code_order'] = "Mã đơn đặt hàng";
-// $lang['export_where2'] = "Xuất tại kho ";
-// $lang['export_where2'] = "Xuất tại kho ";
-// $lang['export_where2'] = "Xuất tại kho ";
-// $lang['sale_orders'] = "Đơn đặt hàng";
+$lang['create_sale'] = "Tạo đơn hàng";
+$lang['sale_list'] = "Danh sách đơn hàng";
+$lang['create_export'] = "Tạo phiếu xuất kho";
+$lang['warehouseman'] = "Thủ kho";
 $lang['add_sale_order'] = "Thêm đơn đặt hàng";
-// $lang['sales'] = "Đơn đặt hàng";
-// $lang['sale'] = "Đơn đặt hàng";
-// $lang['sale_detail'] = "Chi tiết đơn hàng";
-// $lang['sale_code'] = "Mã phiếu đặt hàng";
-// $lang['sale_name'] = "Phiếu Đặt Hàng";
+$lang['export_list'] = "Danh sách phiếu xuất kho";
+$lang['blank_date'] = "Ngày ..... tháng ..... năm .....";
+$lang['quotes'] = "Báo giá";
+$lang['quote'] = "Báo giá";
+$lang['quote_add'] = "Thêm báo giá";
+$lang['quote_edit'] = "Sửa báo giá";
+$lang['quote_list'] = "Danh sách báo giá";
+$lang['quote_code'] = "Mã phiếu báo giá";
+$lang['quote_name'] = "Bảng báo giá";
+$lang['first_1st'] = "Trước tiên thay mặt cho Công Ty TNHH Dudoff Việt Nam - Đối tác chiến lược của Dudoff London,  xin trân thành cám ơn sự quan tâm của quý khách hàng đến thương hiệu và sản phẩm Dudoff London. Chúng tôi xin gửi đến quý khách  bảng báo giá sản phẩm như sau: ";
+$lang['dear'] = "Kính gửi: ";
+$lang['date_'] = " ngày %s ";
+$lang['month_'] = " tháng %s";
+$lang['year_'] = " năm %s";
+$lang['sumary_note'] = "Ghi chú chung";
+$lang['sumary_'] = "Đơn giá đã bao gồm chi phí vận chuyển, chi phí vật tư, vật liệu phụ và chi phí lắp đặt hoàn thiện thiết bị. Hiệu lực báo giá trong vòng 12 tháng.
+Dudoff London rất mong nhận được sự hợp tác của quý Công Ty.		
+Xin cảm ơn và trân trọng kính chào! ";
+$lang['sale_department'] = "Phòng bán hàng";
 $lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+
 
 

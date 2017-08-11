@@ -55,7 +55,8 @@ $info_left_column  = '';
 //     </tbody>
 //     </table>';
 // }
-$info_right_column=$info_right_column .= '<a href="' . admin_url('#') . '" style="color:#4e4e4e;text-decoration:none;"><b> ' . date('Y-m-d H:i:s') . '</b></a>';
+// $info_right_column=$info_right_column .= '<a href="' . admin_url('#') . '" style="color:#4e4e4e;text-decoration:none;"><b> ' . date('Y-m-d H:i:s') . '</b></a>';
+$info_right_column=get_option('invoice_company_city').', '._l('date_',date('d'))._l('month_',date('m'))._l('date_',date('Y'));
 
 $invoice_info='';
 $invoice_info = '<b>' . get_option('invoice_company_name') . '</b><br />';
@@ -97,7 +98,7 @@ $pdf->ln(5);
 $pdf->writeHTMLCell((true ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 $pdf->ln(20);
 // Set Head
-$plan_name=_l('sale_orders');
+$plan_name=_l('als_quotation');
 
 $pdf->SetFont($font_name, 'B', 20);
 $pdf->Cell(0, 0, mb_strtoupper($plan_name, 'UTF-8') , 0, 1, 'C', 0, '', 0);
@@ -149,44 +150,11 @@ $pdf->ln(4);
 
 //Set detail
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('customer_name').': '.$customer->company , 0, 1, 'L', 0, '', 0);
-$pdf->ln(2);
-$adress1='';
-$adress2=array();
-if($customer->address_building){$adress2[]=_l('Tòa nhà ').$customer->address_building;}
-if($customer->address_home_number){$adress2[]=_l('Số ').$customer->address_home_number;}
-if($customer->address_town){$adress2[]=_l('Đường ').$customer->address_town;}
-if($customer->address_ward){$adress2[]=_l('Phường/xã ').getWard($customer->address_ward)->name;}
-if($customer->state){$adress2[]=_l('Quận/huyện ').getDistrict($customer->state)->name;}
-if($customer->city){$adress2[]=_l('Tỉnh/tp ').getProvince($customer->city)->name;}
-$address=($adress1)? $adress1 : implode(', ', $adress2);
-$shipping_address=array();
-if($customer->shipping_building){$adress2[]=_l('Tòa nhà ').$customer->shipping_building;}
-if($customer->shipping_home_number){$adress2[]=_l('Số ').$customer->shipping_home_number;}
-if($customer->shipping_street){$adress2[]=_l('Đường ').$customer->shipping_street;}
-if($customer->shipping_ward){$adress2[]=_l('Phường/xã ').getWard($customer->shipping_ward)->name;}
-if($customer->shipping_state){$adress2[]=_l('Quận/huyện ').getDistrict($customer->shipping_state)->name;}
-if($customer->shipping_city){$adress2[]=_l('Tỉnh/tp ').getProvince($customer->shipping_city);}
-$pdf->SetFont($font_name, '', $font_size);
-// $pdf->Cell(0, 0, _l('address').': '.'<div width="100%">'.$address.'</div>', 0, 1, 'L', 0, '', 0);
-// $pdf->writeHTMLCell(0, '', '', $y, $address, 0, 0, false, true, 'C', true);
-// $pdf->writeHTML(_l('address').': '.'<div width="100%">'.$address.'</div>', true, false, false, false, '');
-$pdf->writeHTMLCell(0, '', '', '', '<div width="100%">'._l('address').': '.$address.'</div>', 0, 1, false, true, 'L', true);
+$pdf->writeHTMLCell(0, '', '', '', _l('dear').'<b>'.$invoice->customer_name.'</b>', 0, 1, false, true, 'L', true);
 $pdf->ln(2);
 
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('tel').': '.$customer->phonenumber , 0, 1, 'L', 0, '', 0);
-$pdf->ln(2);
-
-$pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('fax').':'.$customer->fax , 0, 1, 'L', 0, '', 0);
-$pdf->ln(2);
-
-$pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('email').':'.$customer->emails , 0, 1, 'L', 0, '', 0);
-$pdf->ln(2);
-
-$pdf->Cell(0, 0, _l('shipping_address').': '.implode(', ', $shipping_address) , 0, 1, 'L', 0, '', 0);
+$pdf->writeHTMLCell(0, '', '', '', '<div style="padding-left: 100px">'._l('first_1st').'</div>', 0, 1, false, true, 'L', true);
 $pdf->ln(2);
 
 // Bill to
@@ -301,29 +269,39 @@ $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
 
-$pdf->Ln(20);
+// $pdf->writeHTML(_l('blank_date'), true, false, false, false, 'R');
+
+// $strmoney='<div class="col-md-12"><ul>';
+// $strmoney.='<li>'._l('str_money').'</li>';
+// $strmoney.='<li>'._l('certificate_root').'</li>';;
+// $strmoney.='</ul></div>';
+// $pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
+// var_dump('<b>'.mb_strtoupper(_l('sumary_note').': </b>', 'UTF-8'));die();
+$pdf->SetFont($font_name, '', $font_size);
+$pdf->writeHTMLCell(0, '', '', '', '<b>'.mb_strtoupper(_l('sumary_note').': </b>', 'UTF-8').clear_textarea_breaks($invoice->reason), 0, 1, false, true, 'L', true);
+$pdf->ln(5);
+
+$pdf->SetFont($font_name, '', $font_size);
+$pdf->writeHTMLCell(0, '', '', '', '<b>'.mb_strtoupper(_l('(*)').': </b>', 'UTF-8').clear_textarea_breaks(_l('sumary_')), 0, 1, false, true, 'L', true);
+$pdf->ln(5);
+// $abcccc = "<b>".$invoice->reason."</b>";
+// $pdf->writeHTML(clear_textarea_breaks($invoice->reason), true, false, false, false, '');
+// $pdf->Cell(0, 0, clear_textarea_breaks($invoice->reason) , 0, 1, 'C', 0, '', 0);
+
+
 $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         <tr>
-            <td><b>" . mb_ucfirst(_l('buyers'), "UTF-8") . "</b></td>
-            <td><b>" . mb_ucfirst(_l('billers'), "UTF-8") . "</b></td>
-            <td><b>" . mb_ucfirst(_l('unit_heads'), "UTF-8") . "</b></td>
-        </tr>        
-        <tr>
-            <td>(ký, ghi rõ họ tên)</td>
-            <td>(ký, ghi rõ họ tên)</td>
-            <td>(ký, đóng dấu, ghi rõ họ tên)</td>
+            <td>" . mb_ucfirst('', "UTF-8") . "</td>
+            <td><b>" . mb_strtoupper(get_option('invoice_company_name'), "UTF-8") . "</b></td>
         </tr>
         <tr>
-            <td style=\"height: 100px\" colspan=\"3\"></td>
+            <td>" . mb_ucfirst('', "UTF-8") . "</td>
+            <td><i>" . mb_ucfirst(_l('sale_department'), "UTF-8") . "</i></td>
         </tr>
-        <tr>
-            <td><i><b>" . mb_ucfirst($customer->company,"UTF-8") . "</b></i></td>
-            <td><i><b>" . mb_ucfirst($invoice->creater,"UTF-8") . "</b></i></td>
-            <td><i><b>" . mb_ucfirst($invoice->admin,"UTF-8") . "</b></i></td>
-        </tr>
+        
 </table>";
-// var_dump($invoice);die();
 $pdf->writeHTML($table, true, false, false, false, '');
+
 
 
 // $pdf->Ln(8);

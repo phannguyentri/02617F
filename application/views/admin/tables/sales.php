@@ -19,11 +19,27 @@ $aColumns     = array(
 $sIndexColumn = "id";
 $sTable       = 'tblsales';
 $where        = array(
-    // 'AND rel_type="'.$rel_type.'"',
+    
 );
 if(!empty($order_id))
 {
-    $where[]='AND rel_id="'.$order_id.'"',
+    $where[]='AND rel_id="'.$order_id.'"';
+}
+if($this->_instance->input->post()) {
+    $filter_status = $this->_instance->input->post('filterStatus');
+    if(is_numeric($filter_status)) {
+        if($filter_status == 2)
+            array_push($where, 'AND status='.$filter_status);
+        elseif($filter_status == 5)
+            array_push($where, 'AND export_status=2');
+        elseif($filter_status == 4)
+            array_push($where, 'AND export_status=1');
+        elseif($filter_status == 3)
+            array_push($where, 'AND export_status=0');
+        else {
+            array_push($where, 'AND status<>2');
+        }
+    }
 }
 $join         = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblsales.create_by',
@@ -104,13 +120,19 @@ foreach ($rResult as $aRow) {
     }
     $_data='';
     if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
-        $_data .= icon_btn('sales/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank'));
+        $_data .= icon_btn('sales/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank','data-toggle'=>'tooltip',
+            'title'=>_l('dt_button_print'),
+            'data-placement'=>'top'));
         if($aRow['status']==2)
         {           
-            if($aRow['export_status']!=1) 
+            if($aRow['export_status']!=2) 
             {
                 //Tao Phieu xuat kho
-                $_data .= icon_btn('exports/sale_output/'. $aRow['id'] , 'file-o');
+                $_data .= icon_btn('exports/sale_output/'. $aRow['id'] , 'file-o','btn-default',array(
+            'data-toggle'=>'tooltip',
+            'title'=>_l('create_export'),
+            'data-placement'=>'top'
+            ));
             }
 
             // if($aRow['delivery_status']!=1) 
@@ -120,17 +142,35 @@ foreach ($rResult as $aRow) {
             // }            
             
         }
+
+        // list SO export
+        if($aRow['export_status']!=0)
+        {
+        $_data .= icon_btn('exports/'. $aRow['id'] , 'list','btn-default',array(
+            'data-toggle'=>'tooltip',
+            'title'=>_l('export_list'),
+            'data-placement'=>'top'
+            ));
+        }
         
 
         // if($aRow['status']!=2)
         {            
-            $_data .= icon_btn('sales/sale_detail/'. $aRow['id'] , 'edit');
+            $_data .= icon_btn('sales/sale_detail/'. $aRow['id'] , 'edit','btn-default',array(
+            'data-toggle'=>'tooltip',
+            'title'=>_l('edit'),
+            'data-placement'=>'top'
+            ));
         }
         // else
         // {
         //     $_data .= icon_btn('sales/sale_detail/'. $aRow['id'] , 'eye');
         // }       
-        $row[] =$_data.icon_btn('sales/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-remind');
+        $row[] =$_data.icon_btn('sales/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-remind',array(
+            'data-toggle'=>'tooltip',
+            'title'=>_l('delete'),
+            'data-placement'=>'top'
+            ));
     } else {
         $row[] = '';
     }
