@@ -292,8 +292,6 @@ $strmoney='<div class="col-md-12"><ul>';
 $strmoney.='<li>'._l('str_money').'</li>';
 $strmoney.='<li>'._l('certificate_root').'</li>';;
 $strmoney.='</ul></div>';
-
-
 // $pdf->writeHTML($strmoney, true, false, false, false, '');
 $pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
 

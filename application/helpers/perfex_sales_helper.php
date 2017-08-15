@@ -239,9 +239,9 @@ function format_money($total, $symbol = '')
     $total = do_action('money_after_format_without_currency',$total);
 
     if ($currency_placement === 'after') {
-        $_formated = $total . '' . $symbol;
+        $_formated = $total . ' ' . $symbol;
     } else {
-        $_formated = $symbol . '' . $total;
+        $_formated = $symbol . ' ' . $total;
     }
 
     $_formated = do_action('money_after_format_with_currency',$_formated);
@@ -982,9 +982,14 @@ function do_curl_pdf_image($url)
  * @param  string $option_name
  * @return array
  */
-function get_pdf_format($option_name)
+function get_pdf_format($option_name,$default=false)
 {
     $oFormat = strtoupper(get_option($option_name));
+    if($default)
+    {
+        $oFormat=$option_name;
+    }
+    
     $data    = array(
         'orientation' => '',
         'format' => ''
@@ -1355,7 +1360,8 @@ function quote_detail_pdf($invoice, $tag = '')
     //     $i++;
     // }
 
-    $formatArray = get_pdf_format('pdf_format_invoice');
+    $formatArray = get_pdf_format('A4-LANDSCAPE',true);
+    // var_dump($formatArray);die();
     $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false,false,'invoice');
 
     $pdf->SetTitle($invoice_number);

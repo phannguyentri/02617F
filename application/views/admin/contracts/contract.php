@@ -20,7 +20,8 @@
             </div>
             <?php
             $selected = (isset($contract) ? $contract->client :'');
-            if($selected == ''){
+            if($selected == '')
+            {
               $selected = (isset($customer_id) ? $customer_id: '');
             }
             ?>
@@ -221,7 +222,7 @@
           <?php } ?>
         </div>
         <div role="tabpanel" class="tab-pane" id="tab_tasks">
-          <?php init_relation_tasks_table(array('data-new-rel-id'=>$contract->id,'data-new-rel-type'=>'contract')); ?>
+        <?php init_relation_tasks_table(array('data-new-rel-id'=>$contract->id,'data-new-rel-type'=>'contract')); ?>
         </div>
       </div>
     </div>

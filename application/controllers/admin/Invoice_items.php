@@ -62,6 +62,7 @@ class Invoice_items extends Admin_controller
                     access_denied('items');
                 }
                 $data                 = $this->input->post();
+
                 $data['price']=str_replace('.','',$data['price']);
                 $data['price_buy']=str_replace('.','',$data['price_buy']);
                 $data['minimum_quantity']=str_replace('.','',$data['minimum_quantity']);

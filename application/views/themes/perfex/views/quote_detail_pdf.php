@@ -88,6 +88,10 @@ if (get_option('main_domain') != '') {
 
 // write the first column
 $info_left_column .= pdf_logo_url();
+// var_dump($info_left_column);die();
+// var_dump(FCPATH.'uploads/client_profile_images/55/Penguins.jpg');die();
+// var_dump('<img width="' . 100 . 'px" src="' . FCPATH.'uploads/client_profile_images/55/Penguins.jpg' . '">');die();
+// var_dump();
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_column, 0, 'J', 0, 0, '', '', true, 0, true, true, 0);
 // write the second column
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
@@ -154,7 +158,7 @@ $pdf->writeHTMLCell(0, '', '', '', _l('dear').'<b>'.$invoice->customer_name.'</b
 $pdf->ln(2);
 
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->writeHTMLCell(0, '', '', '', '<div style="padding-left: 100px">'._l('first_1st').'</div>', 0, 1, false, true, 'L', true);
+$pdf->writeHTMLCell(0, '', '', '', '<div style="padding-left: 100px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'._l('first_1st').'</div>', 0, 1, false, true, 'L', true);
 $pdf->ln(2);
 
 // Bill to
@@ -233,28 +237,40 @@ $pdf->Ln(5);
 $tblhtml = '
 <table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1px">
     <tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">
-        <th scope="col"  width="5%" align="center">STT</th>
-        <th scope="col"  width="20%" align="center">' . _l('Sản phẩm') . '</th>
-        <th scope="col"  width="15%" align="center">' . _l('Mã số') . '</th>
-        <th scope="col"  width="10%" align="center">' . _l('Quy cách') . '</th>
-        <th scope="col"  width="10%" align="center">' . _l('Đơn vị tính') . '</th>
-        <th scope="col"  width="10%" align="center">' . _l('Số lượng') . '</th>';
-$tblhtml .='<th  width="15%" align="center">' . _l('Đơn giá') . '</th>
-            <th  width="15%" align="center">' . _l('Thành tiền') . '</th>';
+        <th scope="col"  width="5%" align="center" valign="middle">STT</th>
+        <th scope="col"  width="15%" align="center" valign="middle">' . _l('Sản phẩm') . '</th>
+        <th scope="col"  width="8%" align="center" valign="middle">' . _l('Mã số') . '</th>
+        <th scope="col"  width="15%" align="center" valign="middle">' . _l('Chức năng/Đặc tính/Quy cách') . '</th>
+        <th scope="col"  width="8%" align="center" valign="middle">' . _l('Hình ảnh') . '</th>
+        <th scope="col"  width="10%" align="center" valign="middle">' . _l('Xuất xứ') . '</th>
+        <th scope="col" width="8%" align="center" valign="middle">' . _l('Bảo hành').'('.get_option('default_warranty_time').')' . '</th>
+        <th scope="col" width="8%" align="center" valign="middle">' . _l('Số lượng').'</th>
+        <th scope="col" width="5%" align="center" valign="middle">' . _l('Đơn vị tính'). '</th>
+        <th scope="col" width="8%" align="center" valign="middle">' . _l('Đơn giá').'('.get_option('default_currency').')' . '</th>
+        <th scope="col" width="10%" align="center" valign="middle">' . _l('Thành tiền').'('.get_option('default_currency').')' . '</th>';
 $tblhtml .= '</tr>';
 // Items
+
+
 $tblhtml .= '<tbody>';
 $grand_total=0;
 for ($i=0; $i < count($invoice->items) ; $i++) { 
-    // var_dump($invoice->items[$i]);die();
     $grand_total+=$invoice->items[$i]->sub_total;
+    $img='';
+    if($invoice->items[$i]->image)
+    {
+        $img=FCPATH .$invoice->items[$i]->image;
+    }
     $tblhtml.='<tr>';
     $tblhtml.='<td align="center">'.($i+1).'</td>';
     $tblhtml.='<td>'.$invoice->items[$i]->product_name.'</td>';
-    $tblhtml.='<td>'.$invoice->items[$i]->prefix.$invoice->items[$i]->code.'</td>';
-    $tblhtml.='<td align="right">'.$invoice->items[$i]->specifications.'</td>';
+    $tblhtml.='<td align="center">'.$invoice->items[$i]->prefix.$invoice->items[$i]->code.'</td>';
+    $tblhtml.='<td align="right" nowrap>'.$invoice->items[$i]->specification.'</td>';
+    $tblhtml.='<td align="right" >'.'<img width="80px" src="' .$img.'" style="padding: 5px">'.'</td>';
+    $tblhtml.='<td align="right">'.$invoice->items[$i]->made_in.'</td>';
+    $tblhtml.='<td align="right">'.$invoice->items[$i]->warranty.'</td>';
+    $tblhtml.='<td align="right">'.$invoice->items[$i]->quantity.'</td>';
     $tblhtml.='<td align="right">'.$invoice->items[$i]->unit_name.'</td>';
-    $tblhtml.='<td align="right">'._format_number($invoice->items[$i]->quantity).'</td>';
     $tblhtml.='<td align="right">'.format_money($invoice->items[$i]->unit_cost).'</td>';
     $tblhtml.='<td align="right">'.format_money($invoice->items[$i]->sub_total).'</td>';
     $tblhtml.='</tr>';
@@ -262,8 +278,12 @@ for ($i=0; $i < count($invoice->items) ; $i++) {
 
 
     $tblhtml.='<tr>';
-    $tblhtml.='<td colspan="6" align="right">Tổng tiền</td>';
-    $tblhtml.='<td colspan="2" align="right">'.format_money($grand_total).'</td>';
+    $tblhtml.='<td colspan="9" align="right">'._l('Số sản phẩm').'</td>';
+    $tblhtml.='<td colspan="2" align="right">'._format_number(count($invoice->items)).'</td>';
+    $tblhtml.='</tr>';
+    $tblhtml.='<tr>';
+    $tblhtml.='<td colspan="9" align="right">'._l('Tổng tiền').'</td>';
+    $tblhtml.='<td colspan="2" align="right">'.format_money($grand_total,get_option('default_currency')).'</td>';
     $tblhtml.='</tr>';
 $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
@@ -277,17 +297,30 @@ $pdf->writeHTML($tblhtml, true, false, false, false, '');
 // $strmoney.='</ul></div>';
 // $pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
 // var_dump('<b>'.mb_strtoupper(_l('sumary_note').': </b>', 'UTF-8'));die();
-$pdf->SetFont($font_name, '', $font_size);
-$pdf->writeHTMLCell(0, '', '', '', '<b>'.mb_strtoupper(_l('sumary_note').': </b>', 'UTF-8').clear_textarea_breaks($invoice->reason), 0, 1, false, true, 'L', true);
-$pdf->ln(5);
+
+if (get_option('total_to_words_enabled') == 1) {
+    // Set the font again to normal like the rest of the pdf
+    $pdf->SetFont($font_name, '', $font_size);
+    $strmoney='<div class="col-md-12"><ul>';
+    $strmoney.='<li>'._l('str_money').'<i>'.$CI->numberword->convert(14631200, get_option('default_currency')).'</i>'.'</li>';
+    $strmoney.='<li>'._l('certificate_root').'</li>';;
+    $strmoney.='</ul></div>';
+    $pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
+}
+
 
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->writeHTMLCell(0, '', '', '', '<b>'.mb_strtoupper(_l('(*)').': </b>', 'UTF-8').clear_textarea_breaks(_l('sumary_')), 0, 1, false, true, 'L', true);
+$pdf->writeHTMLCell(0, '', '', '', '<b>'.mb_strtoupper(_l('sumary_note').': </b>', 'UTF-8').(($invoice->reason)? $invoice->reason : _l('sumary_detail_html')), 0, 1, false, true, 'L', true);
 $pdf->ln(5);
-// $abcccc = "<b>".$invoice->reason."</b>";
-// $pdf->writeHTML(clear_textarea_breaks($invoice->reason), true, false, false, false, '');
-// $pdf->Cell(0, 0, clear_textarea_breaks($invoice->reason) , 0, 1, 'C', 0, '', 0);
 
+// $pdf->SetFont($font_name, '', $font_size);
+// $pdf->writeHTMLCell(0, '', '', '', '<b>'.mb_strtoupper(_l('(*)').': </b>', 'UTF-8').clear_textarea_breaks(_l('sumary_detail')), 0, 1, false, true, 'L', true);
+// $pdf->ln(5);
+
+
+// $pdf->SetFont($font_name, '', $font_size);
+// $pdf->writeHTMLCell(0, '', '', '', '<b>'.mb_strtoupper(_l('(*)').': </b>', 'UTF-8').(_l('sumary_detail_html')), 0, 1, false, true, 'L', true);
+// $pdf->ln(5);
 
 $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         <tr>
@@ -301,8 +334,6 @@ $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         
 </table>";
 $pdf->writeHTML($table, true, false, false, false, '');
-
-
 
 // $pdf->Ln(8);
 // $tbltotal = '';

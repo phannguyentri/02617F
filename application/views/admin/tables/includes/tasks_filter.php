@@ -1,7 +1,6 @@
 <?php
 $filter = array();
 
-
 if ($this->_instance->input->post('my_tasks')) {
     array_push($filter,'OR (tblstafftasks.id IN (SELECT taskid FROM tblstafftaskassignees WHERE staffid = ' . get_staff_user_id() . '))');
 }

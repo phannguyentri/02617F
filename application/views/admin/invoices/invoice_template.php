@@ -419,7 +419,7 @@ if(isset($invoice) && ($invoice->recurring !== 0 && $invoice->last_recurring_dat
      $qty_heading = _l('invoice_table_quantity_heading') .'/'._l('invoice_table_hours_heading');
    }
    ?>
-   <th width="10%" class="text-left qty"><?php echo $qty_heading; ?></th>
+   <th width="10%" class="text-left qty" ><?php echo $qty_heading; ?></th>
    <th width="15%" class="text-left"><?php echo _l('invoice_table_rate_heading'); ?></th>
    <th width="20%" class="text-left"><?php echo _l('invoice_table_tax_heading'); ?></th>
    <th width="10%" class="text-left"><?php echo _l('invoice_table_amount_heading'); ?></th>
@@ -583,8 +583,7 @@ echo $select;
 <tr>
   <td><span class="bold"><?php echo _l('invoice_total'); ?> :</span>
   </td>
-  <td class="total">
-  </td>
+  <td class="total"></td>
 </tr>
 </tbody>
 </table>

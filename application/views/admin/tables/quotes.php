@@ -108,6 +108,16 @@ foreach ($rResult as $aRow) {
         $_data .= icon_btn('quotes/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank','data-toggle'=>'tooltip',
             'title'=>_l('dt_button_print'),
             'data-placement'=>'top'));
+        if($aRow['status']==2 && $aRow['export_status']!=2)
+        {           
+            //Tao Phieu xuat kho
+            $_data .= icon_btn('quotes/contract_output/'. $aRow['id'] , 'exchange','btn-default',array(
+            'data-toggle'=>'tooltip',
+            'title'=>_l('create_contract'),
+            'data-placement'=>'top'
+            ));           
+            
+        }
           
         $_data .= icon_btn('quotes/quote_detail/'. $aRow['id'] , 'edit','btn-default',array('data-toggle'=>'tooltip',
         'title'=>_l('edit'),

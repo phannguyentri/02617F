@@ -56,8 +56,8 @@ class Numberword
         $this->original_val = $in_val;
         $this->val       = $in_val;
         $this->currency0 = _l('num_word_' . mb_strtoupper($in_currency0,'UTF-8'));
-
         // Currency not found
+
         if (strpos($this->currency0, 'num_word_') !== false) {
             $this->currency0 = '';
         }
@@ -68,6 +68,7 @@ class Numberword
         }
         // remove commas from comma separated numbers
         $this->val = abs(floatval(str_replace(",", "", $this->val)));
+
         if ($this->val > 0) {
             // convert to number format
             $this->val       = number_format($this->val, '2', ',', ',');
@@ -81,6 +82,7 @@ class Numberword
                 // convert decimal part to word;
                 $this->dec_word = $w_and . '' . $this->word_array[$this->dec_value] . " " . $this->currency1;
             }
+            
             // loop through all 3(s) digits in VAL array
             $t              = 0;
             // initialize the number to word variable
@@ -89,12 +91,11 @@ class Numberword
             for ($i = count($this->val_array) - 2; $i >= 0; $i--) {
                 // separate each element in VAL array to 1 and 2 digits
                 $this->num_value = intval($this->val_array[$i]);
-
                 // if VAL = 0 then no word
+                
                 if ($this->num_value == 0) {
                     $this->num_word = " " . $this->num_word;
                 }
-
                 // if 0 < VAL < 100 or 2 digits
                 elseif (strlen($this->num_value . "") <= 2) {
                     $this->num_word = $this->word_array[$this->num_value] . " " . $this->thousand[$t] . $this->num_word;
@@ -110,6 +111,7 @@ class Numberword
                     @$this->num_word = $this->word_array[mb_substr($this->num_value, 0, 1) . "00"] . (intval(mb_substr($this->num_value, 1, 2)) > 0 ? (_l('number_word_and') != " " ? " " . _l('number_word_and') . " " : " ") : "") . $this->word_array[intval(mb_substr($this->num_value, 1, 2))] . " " . $this->thousand[$t] . $this->num_word;
                 }
                 $t++;
+
             }
             // add currency to word
             if (!empty($this->num_word)) {
@@ -124,7 +126,11 @@ class Numberword
         } else {
             $final_val = trim($this->val_word);
         }
-
+        if(stripos($final_val, ' và'))
+        {
+            $final_val=str_replace(' và', '', $final_val);
+        }
+        
         $hook_data = array();
         $hook_data['formated_value'] = $final_val;
         $hook_data['total'] = $this->original_val;

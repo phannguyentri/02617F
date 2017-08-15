@@ -25,7 +25,8 @@
                     <?php if(has_permission('contracts','','create')){ ?>
                     <a href="<?php echo admin_url('contracts/contract'); ?>" class="btn btn-info pull-left display-block"><?php echo _l('new_contract'); ?></a>
                     <?php } ?>
-                    <div class="btn-group pull-right btn-with-tooltip-group _filter_data" data-toggle="tooltip" data-title="<?php echo _l('filter_by'); ?>">
+                    <div class="display-block text-right">
+                        <div class="btn-group pull-right btn-with-tooltip-group _filter_data" data-toggle="tooltip" data-title="<?php echo _l('filter_by'); ?>">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-filter" aria-hidden="true"></i>
                         </button>
@@ -87,9 +88,13 @@
                             <?php } ?>
                         </ul>
                     </div>
-                    <div class="clearfix"></div>
-                    <div class="row" id="contract_summary">
-                        <hr />
+
+                    <a href="#" class="btn btn-default btn-with-tooltip invoices-total mright5" onclick="slideToggle('#stats-top'); init_invoices_total(true); return false;" data-toggle="tooltip" title="<?php echo _l('view_stats_tooltip'); ?>"><i class="fa fa-bar-chart"></i></a>
+
+                    </div>
+                    
+                    <div class="clearfix mbot10"></div>
+                    <hr />
                         <?php $minus_7_days = date('Y-m-d', strtotime("-7 days")); ?>
                         <?php $plus_7_days = date('Y-m-d', strtotime("+7 days"));
                         $where_own = array();
@@ -125,6 +130,28 @@
                                 </div>
                                 <div class="clearfix"></div>
                                 <hr />
+                    <?php echo form_hidden('custom_view'); ?>
+                            <?php
+                            $table_data = array('#',
+                               _l('contract_list_subject'),
+                               _l('contract_list_client'),
+                               _l('contract_types_list_name'),
+                               _l('contract_list_start_date'),
+                               _l('contract_list_end_date'),
+                               );
+                            $custom_fields = get_custom_fields('contracts',array('show_on_table'=>1));
+                            foreach($custom_fields as $field){
+                               array_push($table_data,$field['name']);
+                           }
+                           array_push($table_data,_l('options'));
+                           render_datatable($table_data,'contracts'); ?>                    
+                        </div>
+                    </div>
+
+                    <div class="panel_s" id="stats-top">                        
+                        <div class="panel-body">
+                        <div class="row" id="contract_summary">                       
+                                
                                 <div class="col-md-6 border-right">
                                     <h4><?php echo _l('contract_summary_by_type'); ?></h4>
                                     <div class="relative" style="max-height:400px">
@@ -138,26 +165,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="panel_s">
-                        <?php echo form_hidden('custom_view'); ?>
-                        <div class="panel-body">
-                            <?php
-                            $table_data = array(
-                               '#',
-                               _l('contract_list_subject'),
-                               _l('contract_list_client'),
-                               _l('contract_types_list_name'),
-                               _l('contract_list_start_date'),
-                               _l('contract_list_end_date'),
-                               );
-                            $custom_fields = get_custom_fields('contracts',array('show_on_table'=>1));
-                            foreach($custom_fields as $field){
-                               array_push($table_data,$field['name']);
-                           }
-                           array_push($table_data,_l('options'));
-                           render_datatable($table_data,'contracts'); ?>
                        </div>
                    </div>
                </div>

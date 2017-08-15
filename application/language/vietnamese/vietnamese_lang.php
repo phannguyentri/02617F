@@ -3590,7 +3590,7 @@ $lang['als_import_goods']                   = "Nhập hàng";
 
 //$lang['als_sale']               = "Bán hàng";
 $lang['als_orders']             = "Đơn đặt hàng";
-$lang['als_receipts']           = "Phiếu thu";
+$lang['als_receipts']           = "Phiếu thu/Báo có";
 $lang['als_report']             = "Báo cáo";
 $lang['item_date_item']         = "Date sản phẩm";
 
@@ -3782,10 +3782,25 @@ $lang['date_'] = " ngày %s ";
 $lang['month_'] = " tháng %s";
 $lang['year_'] = " năm %s";
 $lang['sumary_note'] = "Ghi chú chung";
-$lang['sumary_'] = "Đơn giá đã bao gồm chi phí vận chuyển, chi phí vật tư, vật liệu phụ và chi phí lắp đặt hoàn thiện thiết bị. Hiệu lực báo giá trong vòng 12 tháng.
+$lang['sumary_detail'] = "Đơn giá đã bao gồm chi phí vận chuyển, chi phí vật tư, vật liệu phụ và chi phí lắp đặt hoàn thiện thiết bị. Hiệu lực báo giá trong vòng 12 tháng.
 Dudoff London rất mong nhận được sự hợp tác của quý Công Ty.		
 Xin cảm ơn và trân trọng kính chào! ";
+$lang['sumary_detail_html']='<ul><li>Đơn giá đã bao gồm chi phí vận chuyển, chi phí vật tư, vật liệu phụ và chi phí lắp đặt hoàn thiện thiết bị.</li><li>Hiệu lực báo giá trong vòng 12 tháng.</li><li>Dudoff London rất mong nhận được sự hợp tác của quý Công Ty.</li><li>Xin cảm ơn và trân trọng kính chào !</li></ul>';
 $lang['sale_department'] = "Phòng bán hàng";
+$lang['contract_type_name'] = "Tên loại hợp đồng";
+$lang['name'] = "Loại hợp đồng";
+$lang['contract_types_list_name'] = "Loại hợp đồng";
+$lang['tasks_dt_name'] = "Tên nhiệm vụ";
+$lang['create_contract'] = "Tạo hợp đồng";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
 $lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
 
 

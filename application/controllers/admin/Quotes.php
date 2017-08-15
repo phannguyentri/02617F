@@ -16,7 +16,16 @@ class Quotes extends Admin_controller
         }
         $data['title'] = _l('quote_list');
         $this->load->view('admin/quotes/manage', $data);
-    }   
+    } 
+
+    public function contract_output($id) 
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->perfex_base->get_table_data('quotes');
+        }
+        $data['title'] = _l('quote_list');
+        $this->load->view('admin/quotes/manage', $data);
+    }    
 
     public function quote_detail($id='') 
     {
@@ -136,7 +145,7 @@ class Quotes extends Admin_controller
         if($success) {
             echo json_encode(array(
                 'success' => $success,
-                'message' => _l('Xác nhận phiếu xuất kho thành công')
+                'message' => _l('Xác nhận phiếu báo giá thành công')
             ));
         }
         else
@@ -157,6 +166,7 @@ class Quotes extends Admin_controller
         if (!$id) {
             redirect($_SERVER["HTTP_REFERER"]);
         }
+        // var_dump(get_option('active_language'));die();
         $invoice        = $this->quotes_model->getQuoteByID($id);
         $invoice_number = $invoice->prefix.$invoice->code;
         $pdf            = quote_detail_pdf($invoice);

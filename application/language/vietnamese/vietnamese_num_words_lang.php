@@ -108,10 +108,10 @@ $lang["num_word_600"] ="Sáu trăm";
 $lang["num_word_700"] ="Bảy trăm";
 $lang["num_word_800"] ="Tám trăm";
 $lang["num_word_900"] ="Chín trăm";
-$lang["num_word_thousand"] ="Một ngàn";
-$lang["num_word_million"] ="Một triệu";
-$lang["num_word_billion"] ="Một tỷ";
-$lang["num_word_trillion"] ="Một nghìn tỷ";
+$lang["num_word_thousand"] ="Ngàn";
+$lang["num_word_million"] ="Triệu";
+$lang["num_word_billion"] ="Tỷ";
+$lang["num_word_trillion"] ="Nghìn tỷ";
 $lang["num_word_zillion"] ="Zillion";
 $lang["num_word_cents"] ="đồng";
 $lang["number_word_and"] ="Và";
@@ -122,6 +122,7 @@ $lang["num_word"] ="Với từ";
 $currencies = array(
     'USD'=>'Dollars',
     'EUR'=>'Euros',
+    'VNĐ'=>'đồng',
 );
 
 $currencies = do_action('before_number_format_render_languge_currencies',$currencies);

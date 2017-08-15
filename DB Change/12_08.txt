@@ -1,0 +1,1 @@
+INSERT INTO `dudoffhoa`.`tbloptions` (`id`, `name`, `value`) VALUES (NULL, 'default_warranty_time', 'Tháng');

@@ -122,6 +122,7 @@ $lang["num_word"] ="With words";
 $currencies = array(
     'USD'=>'Dollars',
     'EUR'=>'Euros',
+    'VNĐ'=>'VNĐ',
 );
 
 $currencies = do_action('before_number_format_render_languge_currencies',$currencies);

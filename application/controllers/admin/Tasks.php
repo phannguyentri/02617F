@@ -20,17 +20,17 @@ class Tasks extends Admin_controller
         if ($this->input->get('custom_view')) {
             $_custom_view = $this->input->get('custom_view');
         }
+        
+        // if ($this->input->is_ajax_request()) {
+        //     if ($this->input->get('kanban')) {
+        //         $data['statuses'] = $this->tasks_model->get_statuses();
+        //         echo $this->load->view('admin/tasks/kan_ban', $data, true);
+        //         die();
+        //     } else {
+        //         $this->perfex_base->get_table_data('tasks');
 
-        if ($this->input->is_ajax_request()) {
-            if ($this->input->get('kanban')) {
-                $data['statuses'] = $this->tasks_model->get_statuses();
-                echo $this->load->view('admin/tasks/kan_ban', $data, true);
-                die();
-            } else {
-                $this->perfex_base->get_table_data('tasks');
-
-            }
-        }
+        //     }
+        // }
         $data['taskid'] = '';
         if (is_numeric($id)) {
             $data['taskid'] = $id;
