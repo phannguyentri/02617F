@@ -90,10 +90,12 @@ $info_left_column .= pdf_logo_url();
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_column, 0, 'J', 0, 0, '', '', true, 0, true, true, 0);
 // write the second column
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
-// $pdf->MultiCell(0, 0, $invoice_info, 0, 'C', 0, 1, '', '', true, 0, true, false, 0);
-// $y            = $pdf->getY();
-$pdf->ln(5);
-
+$divide='<hr style="margin-top: 20px;margin-bottom: 20px;border: 0;border-top: 1px solid #eee;" />';
+$pdf->ln(6);
+$y            = $pdf->getY();
+$pdf->writeHTMLCell('', '', '', $y, $divide, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+$pdf->ln(2);
+$y            = $pdf->getY();
 $pdf->writeHTMLCell((true ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 $pdf->ln(20);
 // Set Head
@@ -175,11 +177,7 @@ $pdf->writeHTMLCell(0, '', '', '', '<div width="100%">'._l('address').': '.$addr
 $pdf->ln(2);
 
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('tel').': '.$customer->phonenumber , 0, 1, 'L', 0, '', 0);
-$pdf->ln(2);
-
-$pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('fax').':'.$customer->fax , 0, 1, 'L', 0, '', 0);
+$pdf->Cell(0, 0, _l('tel').': '.$customer->phonenumber.'     '. _l('fax').':'.$customer->fax , 0, 1, 'L', 0, '', 0);
 $pdf->ln(2);
 
 $pdf->SetFont($font_name, '', $font_size);
@@ -260,19 +258,19 @@ $pdf->ln(2);
 //     }
 //     $pdf->writeHTMLCell(0, '', '', '', $field['name'] . ': ' . $value, 0, 1, false, true, ($swap == '1' ? 'J' : 'R'), true);
 // }
+//<th scope="col"  width="10%" align="center">' . _l('Quy cách') . '</th>
+// <th scope="col"  width="10%" align="center">' . _l('Đơn vị tính') . '</th>
 // The Table
 $pdf->Ln(5);
 $tblhtml = '
 <table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="5" border="1px">
     <tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">
         <th scope="col"  width="5%" align="center">STT</th>
-        <th scope="col"  width="20%" align="center">' . _l('Sản phẩm') . '</th>
-        <th scope="col"  width="15%" align="center">' . _l('Mã số') . '</th>
-        <th scope="col"  width="10%" align="center">' . _l('Quy cách') . '</th>
-        <th scope="col"  width="10%" align="center">' . _l('Đơn vị tính') . '</th>
-        <th scope="col"  width="10%" align="center">' . _l('Số lượng') . '</th>';
-$tblhtml .='<th  width="15%" align="center">' . _l('Đơn giá') . '</th>
-            <th  width="15%" align="center">' . _l('Thành tiền') . '</th>';
+        <th scope="col"  width="25%" align="center">' . _l('Sản phẩm') . '</th>
+        <th scope="col"  width="15%" align="center">' . _l('Mã số') . '</th>        
+        <th scope="col"  width="17%" align="center">' . _l('Số lượng') . '</th>';
+$tblhtml .='<th  width="18%" align="center">' . _l('Đơn giá') . '</th>
+            <th  width="20%" align="center">' . _l('Thành tiền') . '</th>';
 $tblhtml .= '</tr>';
 // Items
 $tblhtml .= '<tbody>';
@@ -284,8 +282,6 @@ for ($i=0; $i < count($invoice->items) ; $i++) {
     $tblhtml.='<td align="center">'.($i+1).'</td>';
     $tblhtml.='<td>'.$invoice->items[$i]->product_name.'</td>';
     $tblhtml.='<td>'.$invoice->items[$i]->prefix.$invoice->items[$i]->code.'</td>';
-    $tblhtml.='<td align="right">'.$invoice->items[$i]->specifications.'</td>';
-    $tblhtml.='<td align="right">'.$invoice->items[$i]->unit_name.'</td>';
     $tblhtml.='<td align="right">'._format_number($invoice->items[$i]->quantity).'</td>';
     $tblhtml.='<td align="right">'.format_money($invoice->items[$i]->unit_cost).'</td>';
     $tblhtml.='<td align="right">'.format_money($invoice->items[$i]->sub_total).'</td>';
@@ -294,14 +290,32 @@ for ($i=0; $i < count($invoice->items) ; $i++) {
 
 
     $tblhtml.='<tr>';
-    $tblhtml.='<td colspan="6" align="right">Tổng tiền</td>';
-    $tblhtml.='<td colspan="2" align="right">'.format_money($grand_total).'</td>';
+    $tblhtml.='<td colspan="4" align="right">'._l('amount').'</td>';
+    $tblhtml.='<td colspan="2" align="right">'.format_money($grand_total,get_option('default_currency'));
+    $tblhtml.='</td>';
     $tblhtml.='</tr>';
+
+    $tblhtml.='<tr>';
+    $tblhtml.='<td colspan="4" align="right">'._l('payment_amount').'</td>';
+    $tblhtml.='<td colspan="2" align="right">'.format_money($invoice->payment_amount,get_option('default_currency'));
+    $tblhtml.='</td>';
+    $tblhtml.='</tr>';
+
+    $tblhtml.='<tr>';
+    $tblhtml.='<td colspan="4" align="right">'._l('left_amount').'</td>';
+    $tblhtml.='<td colspan="2" align="right">'.format_money($grand_total-$invoice->payment_amount,get_option('default_currency'));
+    $tblhtml.='</td>';
+    $tblhtml.='</tr>';
+    
 $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
 
-$pdf->Ln(20);
+$pdf->Ln(1);
+$check_note='<div style="width:100%"><b>'._l('invoice_note').'</b>'._l('check_note').'</div>';
+$pdf->writeHTML($check_note, true, false, false, false, '');
+
+$pdf->Ln(1);
 $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         <tr>
             <td><b>" . mb_ucfirst(_l('buyers'), "UTF-8") . "</b></td>
@@ -324,7 +338,6 @@ $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
 </table>";
 // var_dump($invoice);die();
 $pdf->writeHTML($table, true, false, false, false, '');
-
 
 // $pdf->Ln(8);
 // $tbltotal = '';

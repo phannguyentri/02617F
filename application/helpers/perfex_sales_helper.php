@@ -941,7 +941,8 @@ function pdf_logo_url()
         $logo_url = '<img width="' . $width . 'px" src="' . $cimg . '">';
 
     } else {
-        $logo_url = '<img width="' . $width . 'px" src="' . get_upload_path_by_type('company') . get_option('company_logo') . '">';
+        // var_dump(get_upload_path_by_type('company') . get_option('company_logo_header'));die();
+        $logo_url = '<img width="' . $width . 'px" src="' . get_upload_path_by_type('company') . get_option('company_logo_dark') . '">';
     }
     return $logo_url;
 }

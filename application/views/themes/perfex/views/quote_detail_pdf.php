@@ -302,8 +302,8 @@ if (get_option('total_to_words_enabled') == 1) {
     // Set the font again to normal like the rest of the pdf
     $pdf->SetFont($font_name, '', $font_size);
     $strmoney='<div class="col-md-12"><ul>';
-    $strmoney.='<li>'._l('str_money').'<i>'.$CI->numberword->convert(14631200, get_option('default_currency')).'</i>'.'</li>';
-    $strmoney.='<li>'._l('certificate_root').'</li>';;
+    $strmoney.='<li>'._l('str_money').'<i>'.$CI->numberword->convert($grand_total, get_option('default_currency')).'</i>'.'</li>';
+    $strmoney.='<li>'._l('certificate_root').'</li>';
     $strmoney.='</ul></div>';
     $pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
 }

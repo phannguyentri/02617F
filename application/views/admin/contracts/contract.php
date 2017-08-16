@@ -84,11 +84,11 @@
                   <?php echo _l('no_contract_renewals_history_heading'); ?>
                 </a>
               </li>
-              <li role="presentation">
+              <!-- <li role="presentation">
                 <a href="#tab_tasks" aria-controls="tab_tasks" role="tab" data-toggle="tab">
                   <?php echo _l('tasks'); ?>
                 </a>
-              </li>
+              </li> -->
               <li role="presentation">
                 <a href="#" onclick="contract_full_view(); return false;" data-toggle="tooltip" data-title="<?php echo _l('toggle_full_view'); ?>" class="toggle_view">
                   <i class="fa fa-expand"></i></a>
@@ -221,9 +221,9 @@
           </div>
           <?php } ?>
         </div>
-        <div role="tabpanel" class="tab-pane" id="tab_tasks">
+        <!-- <div role="tabpanel" class="tab-pane" id="tab_tasks">
         <?php init_relation_tasks_table(array('data-new-rel-id'=>$contract->id,'data-new-rel-type'=>'contract')); ?>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

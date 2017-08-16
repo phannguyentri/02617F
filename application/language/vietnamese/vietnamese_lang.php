@@ -3735,9 +3735,10 @@ $lang['convert_to_purchase_contract'] = "Chuyển sang hợp đồng mua";
 $lang['purchase_contract'] = "Hợp đồng mua";
 
 $lang['company_deputation'] = "Người đại diện trên hợp đồng";
-$lang['company_contract_role'] = "Vai trò người đại diện trên hợp đòng";
-$lang['company_contract_blank_account'] = "Số tài khoản ngân hàng người đại diện";
-
+$lang['company_contract_role'] = "Vai trò người đại diện trên hợp đồng";
+$lang['company_contract_blank_account'] = "Số tài khoản ngân hàng";
+$lang['company_contract_bank'] = "Thông tin ngân hàng";
+$lang['company_contract_bank_branch'] = "Địa chỉ ngân hàng";
 $lang['purchase_contract_create'] = "Tạo hợp đồng mua";
 $lang['purchase_constract_code'] = "Mã hợp đồng mua";
 $lang['purchase_constract_detail'] = "Chi tiết hợp đồng mua";
@@ -3758,9 +3759,9 @@ $lang['add_sale_porder'] = "Thêm đơn đặt hàng";
 $lang['list_returns'] = "Danh sách sản phẩm trả lại";
 $lang['list_products'] = "Danh sách sản phẩm";
 $lang['no_items_return'] = "Không có hàng trả lại";
-$lang['billers'] = "Người bán hàng";
+$lang['billers'] = "Nhân viên bán hàng";
 $lang['buyers'] = "Người mua hàng";
-$lang['unit_heads'] = "Thủ trưởng đơn vị";
+$lang['unit_heads'] = "Trưởng bộ phận";
 $lang['rel_code_order'] = "Mã đơn đặt hàng";
 $lang['create_sale'] = "Tạo đơn hàng";
 $lang['sale_list'] = "Danh sách đơn hàng";
@@ -3792,16 +3793,16 @@ $lang['name'] = "Loại hợp đồng";
 $lang['contract_types_list_name'] = "Loại hợp đồng";
 $lang['tasks_dt_name'] = "Tên nhiệm vụ";
 $lang['create_contract'] = "Tạo hợp đồng";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
-$lang['edit_sale_order_'] = "Sửa đơn hàng bán lẻ";
+$lang['amount'] = "Số tiền";
+$lang['payment_amount'] = "Đã thanh toán";
+$lang['left_amount'] = "Còn lại";
+$lang['check_note'] = "<ul><li>Khách hàng kiểm tra trước khi ký nhận: hàng còn nguyên vẹn và đầy đủ phụ kiện kèm theo.</li><li>Khách hàng vui lòng thanh toán đủ số tiền ngay khi nhận hàng.</li><li>Công ty không chịu trách nhiệm đổi trả hàng và hoàn lại tiền với  bất kì lí do nào.</li><li>Khách hàng có nhu cầu lắp đặt vui long báo trước 01 ngày. </li></ul>";
+$lang['template_name'] = "Mẫu email";
+$lang['template_fromname'] = "Người gửi";
+$lang['contract_templates'] = "Mẫu hợp đồng";
+$lang['contract_template_sale'] = "Bán hàng";
+$lang['contract_template_purchase'] = "Mua hàng";
+$lang['contract_templates_table_heading_name'] = "Các mẫu hợp đồng";
 
 
 
