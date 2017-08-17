@@ -8,6 +8,9 @@ class Quotes extends Admin_controller
         $this->load->model('quotes_model'); 
         $this->load->model('invoice_items_model');
         $this->load->model('warehouse_model');
+        $this->load->model('currencies_model');
+        $this->load->model('contracts_model');
+        $this->load->model('contract_templates_model');
     }
     public function index() 
     {
@@ -20,11 +23,53 @@ class Quotes extends Admin_controller
 
     public function contract_output($id) 
     {
-        if ($this->input->is_ajax_request()) {
-            $this->perfex_base->get_table_data('quotes');
+        if(!$id)
+        {
+            set_alert('warning', _l('info_not_found'));
+            redirect(admin_url('quotes'));
         }
-        $data['title'] = _l('quote_list');
-        $this->load->view('admin/quotes/manage', $data);
+        else
+        {
+           $data['quote']        = $this->quotes_model->getQuoteByID($id);      
+           // var_dump($data['customer_id'])  ;die();     
+        }
+        if ($data['quote']->customer_id) {
+            $data['customer_id']        = $data['quote']->customer_id;
+            $data['do_not_auto_toggle'] = true;
+        }
+        $where_clients = 'tblclients.active=1';
+
+        if (!has_permission('customers', '', 'view')) {
+            $where_clients .= ' AND tblclients.userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id=' . get_staff_user_id() . ')';
+        }
+        $contract_merge_fields  = get_available_merge_fields();
+            $_contract_merge_fields = array();
+            foreach ($contract_merge_fields as $key => $val) {
+                foreach ($val as $type => $f) {
+                    if ($type == 'contract') {
+                        foreach ($f as $available) {
+                            foreach ($available['available'] as $av) {
+                                if ($av == 'contract') {
+                                    array_push($_contract_merge_fields, $f);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    } else if ($type == 'other') {
+                        array_push($_contract_merge_fields, $f);
+                    } else if ($type == 'clients') {
+                        array_push($_contract_merge_fields, $f);
+                    }
+                }
+            }
+        $data['contract_template']=$this->contract_templates_model->get_contract_template_by_id(1);        
+        $data['contract_merge_fields'] = $_contract_merge_fields;
+        $data['base_currency'] = $this->currencies_model->get_base_currency();
+        $data['types']         = $this->contracts_model->get_contract_types();
+        $data['clients'] = $this->clients_model->get('', $where_clients);
+        $data['title'] = _l('add_new', _l('contract_lowercase'));
+        $this->load->view('admin/quotes/contract', $data);
     }    
 
     public function quote_detail($id='') 

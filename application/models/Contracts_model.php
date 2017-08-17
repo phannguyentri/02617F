@@ -48,6 +48,19 @@ class Contracts_model extends CRM_Model
         }
         return $contracts;
     }
+
+    public function getContractItems($id)
+    {
+        $this->db->select('tblcontract_items.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id, tblitems.prefix,tblitems.code, tblitems.warranty, tblitems.specification,tblcountries.short_name as made_in,tblitems.avatar as image');
+        $this->db->from('tblcontract_items');
+        $this->db->join('tblitems','tblitems.id=tblcontract_items.product_id','left');
+        $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
+        $this->db->join('tblcountries','tblcountries.country_id=tblitems.country_id','left');
+        $this->db->where('contract_id', $id);
+        $items = $this->db->get()->result();
+        return $items;
+
+    }
     /**
      * Select unique contracts years
      * @return array

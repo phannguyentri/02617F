@@ -20,20 +20,34 @@ class Contract_templates_model extends CRM_Model
      * @return array
      * Get email template by type
      */
-    public function get($where = array())
+    public function get($id_type)
     {
-        $this->db->where($where);
-        return $this->db->get('tblemailtemplates')->result_array();
+        $this->db->select('tblcontract_templates.*,tblcontracttypes.name as name_type');
+        $this->db->join('tblcontracttypes','tblcontracttypes.id=tblcontract_templates.type','left');
+        $this->db->where('tblcontract_templates.type',$id_type);
+        $result=$this->db->get('tblcontract_templates')->result();
+        return $result;
+    }
+
+    public function getContractTypes()
+    {
+        $result=$this->db->get('tblcontracttypes')->result();
+        $i=0;
+        foreach ($result as $key => $value) 
+        {
+            $value->items=$this->get($value->id);
+        }
+        return $result;
     }
     /**
      * @param  integer
      * @return object
      * Get email template by id
      */
-    public function get_email_template_by_id($id)
+    public function get_contract_template_by_id($id)
     {
-        $this->db->where('emailtemplateid', $id);
-        return $this->db->get('tblemailtemplates')->row();
+        $this->db->where('id', $id);
+        return $this->db->get('tblcontract_templates')->row();
     }
     /**
      * Create new email template
@@ -41,7 +55,7 @@ class Contract_templates_model extends CRM_Model
      */
     public function add_template($data)
     {
-        $this->db->insert('tblemailtemplates', $data);
+        $this->db->insert('tblcontract_templates', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
             return $insert_id;
@@ -55,49 +69,17 @@ class Contract_templates_model extends CRM_Model
      * @return boolean
      * Update email template
      */
-    public function update($data)
+    public function update($data,$id)
     {
-        if (isset($data['plaintext'])) {
-            $data['plaintext'] = 1;
-        } else {
-            $data['plaintext'] = 0;
+        
+        $affectedRows=0;       
+        $this->db->where('id', $id);
+        $this->db->update('tblcontract_templates', $data);
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
         }
-
-        if (isset($data['disabled'])) {
-            $data['active'] = 0;
-            unset($data['disabled']);
-        } else {
-            $data['active'] = 1;
-        }
-        $main_id      = false;
-        $affectedRows = 0;
-        $i            = 0;
-        foreach ($data['subject'] as $id => $val) {
-            if ($i == 0) {
-                $main_id = $id;
-            }
-
-            $_data              = array();
-            $_data['subject']   = $val;
-            $_data['fromname']  = $data['fromname'];
-            $_data['fromemail'] = $data['fromemail'];
-            $_data['message']   = $data['message'][$id];
-            $_data['plaintext'] = $data['plaintext'];
-            $_data['active']    = $data['active'];
-
-            $this->db->where('emailtemplateid', $id);
-            $this->db->update('tblemailtemplates', $_data);
-            if ($this->db->affected_rows() > 0) {
-                $affectedRows++;
-            }
-
-            $i++;
-        }
-
-        $main_template = $this->get_email_template_by_id($main_id);
-
-        if ($affectedRows > 0 && $main_template) {
-            logActivity('Email Template Updated [' . $main_template->name . ']');
+        if ($affectedRows > 0) {
+            logActivity('Contract Template Updated [ID '.$id .' Name'. $data['name'] . ']');
             return true;
         }
 

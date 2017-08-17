@@ -3797,12 +3797,26 @@ $lang['amount'] = "Số tiền";
 $lang['payment_amount'] = "Đã thanh toán";
 $lang['left_amount'] = "Còn lại";
 $lang['check_note'] = "<ul><li>Khách hàng kiểm tra trước khi ký nhận: hàng còn nguyên vẹn và đầy đủ phụ kiện kèm theo.</li><li>Khách hàng vui lòng thanh toán đủ số tiền ngay khi nhận hàng.</li><li>Công ty không chịu trách nhiệm đổi trả hàng và hoàn lại tiền với  bất kì lí do nào.</li><li>Khách hàng có nhu cầu lắp đặt vui long báo trước 01 ngày. </li></ul>";
-$lang['template_name'] = "Mẫu email";
+$lang['template_name'] = "Tên mẫu";
 $lang['template_fromname'] = "Người gửi";
 $lang['contract_templates'] = "Mẫu hợp đồng";
 $lang['contract_template_sale'] = "Bán hàng";
 $lang['contract_template_purchase'] = "Mua hàng";
 $lang['contract_templates_table_heading_name'] = "Các mẫu hợp đồng";
+$lang['als_contract_templates'] = "Mẫu hợp đồng";
+$lang['contract_template'] = "Mẫu hợp đồng";
+$lang['contract_template_content'] = "Nội dung hợp đồng";
+$lang['day_'] = " ngày %s";
+$lang['month_'] = " tháng %s";
+$lang['year_'] = " năm %s";
+$lang['stt'] = "TT";
+$lang['item_name'] = "Tên hàng hóa";
+$lang['item_code'] = "Mã số SP";
+$lang['sl'] = "S.L";
+$lang['unit_cost'] = "Đơn giá";
+$lang['item_amount'] = "Thành tiền";
+$lang['info_not_found'] = "Không tìm thấy thông tin";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
 
 
 

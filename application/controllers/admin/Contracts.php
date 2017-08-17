@@ -34,6 +34,7 @@ class Contracts extends Admin_controller
                 if (!has_permission('contracts', '', 'create')) {
                     access_denied('contracts');
                 }
+                // var_dump($this->input->post());die();
                 $id = $this->contracts_model->add($this->input->post());
                 if ($id) {
                     set_alert('success', _l('added_successfuly', _l('contract')));
@@ -92,7 +93,6 @@ class Contracts extends Admin_controller
             $data['template']      = get_email_template_for_sending($template_name, $email);
             $data['template_name'] = 'send-contract';
         }
-
         if ($this->input->get('customer_id')) {
             $data['customer_id']        = $this->input->get('customer_id');
             $data['do_not_auto_toggle'] = true;

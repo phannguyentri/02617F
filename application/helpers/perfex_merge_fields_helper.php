@@ -14,6 +14,14 @@ function get_other_merge_fields()
     $fields['{admin_url}']           = site_url('admin');
     $fields['{main_domain}']         = get_option('main_domain');
     $fields['{companyname}']         = get_option('companyname');
+    $fields['{invoice_company_city}']         = get_option('invoice_company_city');
+    $fields['{invoice_company_name}']         = get_option('invoice_company_name');
+    $fields['{company_vat}']                  = get_option('company_vat');
+    $fields['{company_deputation}']           = get_option('company_deputation');
+    $fields['{company_contract_role}']        = get_option('company_contract_role');
+    $fields['{invoice_company_address}']      = get_option('invoice_company_address');
+    $fields['{invoice_company_phonenumber}']  = get_option('invoice_company_phonenumber');
+    $fields['{company_contract_bank_account}']= get_option('company_contract_blank_account');
     if (!is_staff_logged_in() || is_client_logged_in()) {
         $fields['{email_signature}'] = get_option('email_signature');
     } else {
@@ -261,7 +269,7 @@ function get_client_contact_merge_fields($client_id, $contact_id = '', $password
     $fields['{client_address}']     = '';
     $fields['{password}']           = '';
     $fields['{client_vat_number}']  = '';
-
+    $fields['{contact_position}']   = '';
     $CI =& get_instance();
     $CI->db->where('userid', $client_id);
     $CI->db->join('tblcountries', 'tblcountries.country_id=tblclients.country', 'left');
@@ -278,6 +286,7 @@ function get_client_contact_merge_fields($client_id, $contact_id = '', $password
         $fields['{contact_firstname}'] = $contact->firstname;
         $fields['{contact_lastname}']  = $contact->lastname;
         $fields['{contact_email}']     = $contact->email;
+        $fields['{contact_position}']  = $contact->title;
     }
     if (!empty($client->vat)) {
         $fields['{client_vat_number}'] = $client->vat;
@@ -450,6 +459,7 @@ function get_contract_merge_fields($contract_id)
     $CI =& get_instance();
     $CI->db->where('id', $contract_id);
     $contract = $CI->db->get('tblcontracts')->row();
+    // var_dump($contract);die();
 
     if (!$contract) {
         return $fields;
@@ -459,12 +469,67 @@ function get_contract_merge_fields($contract_id)
     $currency = $CI->currencies_model->get_base_currency();
 
     $fields['{contract_id}']             = $contract->id;
+    $fields['{contract_code}']           = $contract->prefix.$contract->code;
     $fields['{contract_subject}']        = $contract->subject;
     $fields['{contract_description}']    = $contract->description;
     $fields['{contract_datestart}']      = _d($contract->datestart);
     $fields['{contract_dateend}']        = _d($contract->dateend);
+    $date=($contract->datestart)? explode('-', $contract->datestart) : NULL ;
     $fields['{contract_contract_value}'] = format_money($contract->contract_value, $currency->symbol);
+    $contract_value_vat=$contract->contract_value+($contract->contract_value*10/100);
+    $fields['{contract_value_vat}'] = format_money($contract_value_vat, $currency->symbol);
 
+    $CI->load->library('numberword', array(
+        'clientid' => $contract->client
+    ));
+    // var_dump($currency);die();
+    $fields['{contract_value_words}'] = $CI->numberword->convert($contract_value_vat);
+    $strdate='';
+    $item_list='';
+    if(is_array($date))
+    {
+        $strdate=_l('day_',$date[2])._l('month_',$date[1])._l('year_',$date[0]);
+    }
+    $fields['{contract_date}']        = $strdate;
+    
+    // Item List
+    $CI->load->model('contracts_model');
+    $items = $CI->contracts_model->getContractItems($contract_id);
+    
+    // var_dump($items);die();
+    
+    $item_list.='<div style="align: center;" ><table width="100%" class="table table-bordered" height="80" style="height: 80px; margin-left: auto; margin-right: auto;" border="1">';
+
+        $item_list.='<thead>';
+            $item_list.='<tr style="height: 40px;text-align: center;font-weight:bold">';
+                $item_list.='<td>'._l('stt').'</td>';
+                $item_list.='<td>'._l('item_name').'</td>';    
+                $item_list.='<td>'._l('item_code').'</td>';  
+                $item_list.='<td>'._l('sl').'</td>';  
+                $item_list.='<td>'._l('unit_cost').'</td>';  
+                $item_list.='<td>'._l('item_amount').'</td>';  
+            $item_list.='</tr>';
+        $item_list.='</thead>';
+
+        $item_list.='<tbody>';
+        $i=1;
+        foreach ($items as $key => $item) 
+        {
+            $item_list.='<tr style="height: 40px;text-align: center;">';
+                $item_list.='<td style="text-align: center;">'._l($i).'</td>';
+                $item_list.='<td style="text-align: left;">'._l($item->product_name).'</td>';
+                $item_list.='<td style="text-align: left;">'._l($item->prefix.$item->code).'</td>';
+                $item_list.='<td style="text-align: right;">'._format_number($item->quantity).'</td>';
+                $item_list.='<td style="text-align: right;">'.format_money($item->unit_cost).'</td>';
+                $item_list.='<td style="text-align: right;">'.format_money($item->sub_total).'</td>';
+            $item_list.='</tr>';
+            $i++;
+        }
+        $item_list.='</tbody>';
+
+    $item_list.='</table></div>';
+
+    $fields['{contract_item_list}']        = $item_list;
     $custom_fields = get_custom_fields('contracts');
     foreach ($custom_fields as $field) {
         $fields['{' . $field['slug'] . '}'] = get_custom_field_value($contract_id, $field['id'], 'contracts');
@@ -702,7 +767,7 @@ function get_available_merge_fields()
                     )
                 )
             )
-        ),
+        ),        
         array(
             'clients' => array(
                 array(
@@ -930,6 +995,15 @@ function get_available_merge_fields()
                         'contract'
                     )
                 ),
+
+                array(
+                    'name' => 'Contract Code',
+                    'key' => '{contract_code}',
+                    'available' => array(
+                        'contract'
+                    )
+                ),
+
                 array(
                     'name' => 'Contract Subject',
                     'key' => '{contract_subject}',
@@ -961,6 +1035,34 @@ function get_available_merge_fields()
                 array(
                     'name' => 'Contract Value',
                     'key' => '{contract_contract_value}',
+                    'available' => array(
+                        'contract'
+                    )
+                ),
+                array(
+                    'name' => 'Contract Date',
+                    'key' => '{contract_date}',
+                    'available' => array(
+                        'contract'
+                    )
+                ),
+                array(
+                    'name' => 'Item List',
+                    'key' => '{contract_item_list}',
+                    'available' => array(
+                        'contract'
+                    )
+                ),
+                array(
+                    'name' => 'Contract Value(VAT)',
+                    'key' => '{contract_value_vat}',
+                    'available' => array(
+                        'contract'
+                    )
+                ),
+                array(
+                    'name' => 'Contract Value(Words)',
+                    'key' => '{contract_value_words}',
                     'available' => array(
                         'contract'
                     )
@@ -1579,6 +1681,46 @@ function get_available_merge_fields()
                     )
                 ),
                 array(
+                    'name' => 'Company Full Name',
+                    'key' => '{invoice_company_name}',
+                    'available' => array('contract')
+                ),
+                array(
+                    'name' => 'Company City',
+                    'key' => '{invoice_company_city}',
+                    'available' => array('contract')
+                ),
+                array(
+                    'name' => 'Company Phone Number',
+                    'key' => '{invoice_company_phonenumber}',
+                    'available' => array('contract')
+                ),
+                array(
+                    'name' => 'Company Address',
+                    'key' => '{invoice_company_address}',
+                    'available' => array('contract')
+                ),
+                array(
+                    'name' => 'Company VAT No',
+                    'key' => '{company_vat}',
+                    'available' => array('contract')
+                ),
+                array(
+                    'name' => 'Company Representative',
+                    'key' => '{company_deputation}',
+                    'available' => array('contract')
+                ),
+                array(
+                    'name' => 'Company Contract Role',
+                    'key' => '{company_contract_role}',
+                    'available' => array('contract')
+                ),
+                array(
+                    'name' => 'Company Bank Account',
+                    'key' => '{company_contract_bank_account}',
+                    'available' => array('contract')
+                ),
+                array(
                     'name' => 'Email Signature',
                     'key' => '{email_signature}',
                     'fromoptions' => true,
@@ -1588,7 +1730,6 @@ function get_available_merge_fields()
                         'staff',
                         'invoice',
                         'estimate',
-                        'contract',
                         'tasks',
                         'proposals',
                         'project',

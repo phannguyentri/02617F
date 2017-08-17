@@ -72,6 +72,15 @@ function getWard($id)
     }
     return $CI->perfex_base->getWard($id);
 }
+function getClient($id)
+{
+   
+    $CI =& get_instance();
+    if (!class_exists('perfex_base')) {
+        $CI->load->library('perfex_base');
+    }
+    return $CI->perfex_base->getClient($id);
+}
 /**
  * Check if contact id passed is primary contact
  * If you dont pass $contact_id the current logged in contact will be checked

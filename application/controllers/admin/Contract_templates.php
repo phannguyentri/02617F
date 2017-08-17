@@ -13,41 +13,8 @@ class Contract_templates extends Admin_controller
         if (!has_permission('contract_templates', '', 'view')) {
             access_denied('contract_templates');
         }
-
-        $this->db->where('language', 'english');
-        $contract_templates_english = $this->db->get('tblemailtemplates')->result_array();
-        foreach ($this->perfex_base->get_available_languages() as $av_language) {
-            if ($av_language != 'english') {
-                foreach ($contract_templates_english as $template) {
-                    if (total_rows('tblemailtemplates', array(
-                        'slug' => $template['slug'],
-                        'language' => $av_language
-                    )) == 0) {
-                        $data              = array();
-                        $data['slug']      = $template['slug'];
-                        $data['type']      = $template['type'];
-                        $data['language']  = $av_language;
-                        $data['name']      = $template['name'] . ' [' . $av_language . ']';
-                        $data['subject']   = $template['subject'];
-                        $data['message']   = '';
-                        $data['fromname']  = $template['fromname'];
-                        $data['plaintext'] = $template['plaintext'];
-                        $data['active']    = $template['active'];
-                        $data['order']     = $template['order'];
-                        $this->db->insert('tblemailtemplates', $data);
-                    }
-                }
-            }
-        }
-        $data['tickets']   = $this->contract_templates_model->get(array(
-            'type' => 'ticket',
-            'language' => 'english'
-        ));
-        $data['estimate']  = $this->contract_templates_model->get(array(
-            'type' => 'estimate',
-            'language' => 'english'
-        ));
         
+        $data['templates']   = $this->contract_templates_model->getContractTypes();
         $data['title']     = _l('contract_templates');
 
         $this->load->view('admin/contract_templates/contract_templates', $data);
@@ -61,7 +28,6 @@ class Contract_templates extends Admin_controller
         if (!$id) {
             redirect(admin_url('contract_templates'));
         }
-
         if ($this->input->post()) {
 
             if (!has_permission('contract_templates', '', 'edit')) {
@@ -73,16 +39,31 @@ class Contract_templates extends Admin_controller
             }
             redirect(admin_url('contract_templates/contract_template/' . $id));
         }
-
-        // English is not included here
-        $data['available_languages'] = $this->perfex_base->get_available_languages();
-
-        if (($key = array_search('english', $data['available_languages'])) !== false) {
-            unset($data['available_languages'][$key]);
-        }
-
-        $data['available_merge_fields'] = get_available_merge_fields();
+        // echo "<pre>";var_dump($contract_merge_fields);die();
+        $contract_merge_fields  = get_available_merge_fields();
+            $_contract_merge_fields = array();
+            foreach ($contract_merge_fields as $key => $val) {
+                foreach ($val as $type => $f) {
+                    if ($type == 'contract') {
+                        foreach ($f as $available) {
+                            foreach ($available['available'] as $av) {
+                                if ($av == 'contract') {
+                                    array_push($_contract_merge_fields, $f);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    } else if ($type == 'other') {
+                        array_push($_contract_merge_fields, $f);
+                    } else if ($type == 'clients') {
+                        array_push($_contract_merge_fields, $f);
+                    }
+                }
+            }
+        $data['contract_merge_fields'] = $_contract_merge_fields;
         $data['template']               = $this->contract_templates_model->get_contract_template_by_id($id);
+
         $title                          = _l('edit', _l('contract_template'));
         $data['title']                  = $title;
         $this->load->view('admin/contract_templates/template', $data);

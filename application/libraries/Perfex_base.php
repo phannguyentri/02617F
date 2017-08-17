@@ -154,6 +154,14 @@ class Perfex_Base
         }
         return false;
     }
+    public function getClient($id)
+    {        
+        if (isset($id)) {
+            $this->_instance->db->where('userid',$id);
+            return $this->_instance->db->get('tblclients')->row();
+        }
+        return false;
+    }
     /**
      * Function that gets option based on passed name
      * @param  string $name
@@ -181,19 +189,6 @@ class Perfex_Base
         }
         return '';
     }
-
-    
-
-    // public function getAward($id)
-    // {
-        
-    //     if (is_numeric($id) 
-    //     {           
-    //         $this->_instance->db->where('districtid', $id);
-    //         return $this->_instance->db->get('district')->row();
-    //     }
-    //     return false;
-    // }
 
     /**
      * Add new quick action data
