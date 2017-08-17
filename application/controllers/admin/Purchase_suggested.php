@@ -7,8 +7,13 @@ class Purchase_suggested extends Admin_controller
         parent::__construct();
         $this->load->model('purchase_suggested_model');
         $this->load->model('invoice_items_model');
+        $this->load->model('warehouse_model');
+        $this->load->model('currencies_model');
     }
     public function index() {
+        if (!has_permission('invoices', '', 'view') && !has_permission('invoices', '', 'view_own')) {
+            access_denied('invoices');
+        }
         if ($this->input->is_ajax_request()) {
             $this->perfex_base->get_table_data('purchase_suggested');
         }
@@ -17,24 +22,24 @@ class Purchase_suggested extends Admin_controller
     }
     public function detail($id='') {
         $data = array();
-        $data['items'] = $this->invoice_items_model->get_full();
+        $data['products'] = $this->invoice_items_model->get_full();
+        $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
+        $data['warehouses']= $this->warehouse_model->getWarehouses();
+        $data['currencies'] = $this->currencies_model->get();
         if($this->input->post()) {
             if( $id == '' ) {
                 $data_post = $this->input->post();
                 
-                // print_r($data_post);
-                // exit();
-
                 if(isset($data_post['items']) && count($data_post['items']) > 0) {
                     $data_post['create_by'] = get_staff_user_id();
                     $data_post['code'] = get_option('prefix_purchase_suggested') . $data_post['code'];
+
                     $result_id = $this->purchase_suggested_model->add($data_post);
                     set_alert('success', _l('added_successfuly', _l('purchase_suggested')));
                     redirect(admin_url('purchase_suggested/detail/' . $result_id));
                 }
             }
             else {
-                
                 $result = $this->purchase_suggested_model->edit($this->input->post(),$id);
                 if($result)
                     set_alert('success', _l('updated_successfuly', _l('purchase_suggested')));
@@ -45,7 +50,11 @@ class Purchase_suggested extends Admin_controller
         }
         else {
             $data['title'] = _l('purchase_suggested_edit_heading');
-            $data['item'] = $this->purchase_suggested_model->get($id);
+            $data['purchase_suggested'] = $this->purchase_suggested_model->get($id);
+            
+            foreach($data['purchase_suggested']->items as $key=>$value) {
+                $data['purchase_suggested']->items[$key]->warehouse_type = (object)$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id, true);
+            }
         }
         
         $this->load->view('admin/purchase_suggested/detail', $data);
@@ -98,7 +107,9 @@ class Purchase_suggested extends Admin_controller
         $staff_id=get_staff_user_id();
         $date=date('Y-m-d H:i:s');
         $data=array('status'=>$status);
+        
         $inv=$this->purchase_suggested_model->get($id);
+        
         if(is_admin() && $status==0)
         {
             $data['user_head_id']=$staff_id;

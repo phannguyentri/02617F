@@ -221,9 +221,13 @@
                  $table_data = array();
                  $_table_data = array(
                     _l('clients_list_company'),
+                    _l('clients_list_phone'),
                     _l('contact_primary'),
                     _l('company_primary_email'),
-                    _l('clients_list_phone'),
+                    
+                    _l('clients_address'),
+                    _l('als_staff'),
+                    
                     _l('customer_active'),
                     _l('customer_groups'),
                     );

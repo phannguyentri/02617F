@@ -34,7 +34,6 @@ class Purchases_model extends CRM_Model
             }
             return $invoice;
         }
-
         return false;
     }
     /**
@@ -44,7 +43,7 @@ class Purchases_model extends CRM_Model
      */
     public function get_invoice_items($id)
     {
-        $this->db->select('tblpurchase_plan_details.*,tblitems.name, tblitems.price_buy, 
+        $this->db->select('tblpurchase_plan_details.*,tblitems.name,  
         (select tblwarehouses_products.product_quantity from tblwarehouses_products where tblwarehouses_products.product_id = tblpurchase_plan_details.product_id and tblwarehouses_products.warehouse_id = tblpurchase_plan_details.warehouse_id) as current_quantity,
         tblitems.minimum_quantity,
         tblitems.specification,
@@ -232,6 +231,8 @@ class Purchases_model extends CRM_Model
                     'product_id'=>$items[$i]['id'],
                     'quantity_required'=>$items[$i]['quantity'],
                     'warehouse_id'=>$items[$i]['warehouse'],
+                    'currency_id'=>$items[$i]['currency'],
+                    'price_buy'=>$items[$i]['price_buy'],
                 );
                 if($this->db->insert('tblpurchase_plan_details',$item))
                 {
@@ -474,11 +475,15 @@ class Purchases_model extends CRM_Model
                     $item = array(
                     'quantity_required'=>$items[$i]['quantity'],
                     'warehouse_id' => $items[$i]['warehouse'],
+                    'currency_id'=>$items[$i]['currency'],
+                    'price_buy'=>$items[$i]['price_buy'],
                     );
 
                     $this->db->update('tblpurchase_plan_details',$item,array('id'=>$it->id));
                     if($this->db->affected_rows())
                     {
+                        // Cập nhật đề xuất
+                        $this->update_purchase_suggested($id,$items[$i]['id']);
                         logActivity('Purchase plan detail updateted [ID Purchase: ' . $id . ', ID Product: ' . $it->product_id . ']');
                         $count++;
                     }
@@ -492,10 +497,15 @@ class Purchases_model extends CRM_Model
                     'product_id'=>$items[$i]['id'],
                     'quantity_required'=>$items[$i]['quantity'],
                     'warehouse_id' => $items[$i]['warehouse'],
+                    'currency_id'=>$items[$i]['currency'],
+                    'price_buy'=>$items[$i]['price_buy'],
                     );
                     $this->db->insert('tblpurchase_plan_details',$item);
                     if($this->db->affected_rows())
                     {
+                        // Cập nhật đề xuất
+                        $this->update_purchase_suggested($id,$items[$i]['id']);
+
                         logActivity('Purchase plan detail inserted [ID Purchase: ' . $id . ', ID Product: ' . $items['id'][$i] . ']');
                         $count++;
                     }
@@ -520,6 +530,64 @@ class Purchases_model extends CRM_Model
         
         if ($count > 0) {
             return true;
+        }
+        return false;
+    }
+    public function update_purchase_suggested($purchase_id, $product_id) {
+        if(is_numeric($purchase_id)) {
+            $purchase_full = $this->db->select("*")
+                                ->join('tblpurchase_plan','tblpurchase_plan.id = tblpurchase_plan_details.purchase_plan_id','left')
+                                ->join('tblitems', 'tblitems.id = tblpurchase_plan_details.product_id', 'left')
+                                ->where('tblpurchase_plan_details.purchase_plan_id', $purchase_id)
+                                ->where('tblpurchase_plan_details.product_id', $product_id)
+                                ->get('tblpurchase_plan_details')
+                                ->row();
+            if($purchase_full) {
+                $purchase_suggested_full = $this->db->select("*,tblpurchase_suggested_details.id as PSD_ID, tblpurchase_suggested.id as PS_ID")
+                                ->join('tblpurchase_suggested','tblpurchase_suggested.id = tblpurchase_suggested_details.purchase_suggested_id','left')
+                                ->join('tblitems', 'tblitems.id = tblpurchase_suggested_details.product_id', 'left')
+                                ->where('tblpurchase_suggested.purchase_plan_id', $purchase_id)
+                                ->where('product_id', $product_id)
+                                ->get('tblpurchase_suggested_details')
+                                ->row();
+                $purchase_suggested = $this->db->where('purchase_plan_id', $purchase_id)
+                                                ->get('tblpurchase_suggested')
+                                                ->row();
+                // var_dump($purchase_suggested_full, $purchase_suggested);
+                // exit();
+                if($purchase_suggested_full && $purchase_suggested) {
+                    $data_edit = array(
+                        'product_quantity' => $purchase_full->quantity_required,
+                    );
+                    // print_r($data_edit);
+                    // print_r($purchase_suggested_full->PSD_ID);
+                    // exit();
+                    $this->db->where('id', $purchase_suggested_full->PSD_ID);
+                    $this->db->update('tblpurchase_suggested_details', $data_edit);
+
+                    // After that :v
+                    $data_purchase_suggested_edit = array(
+                        'user_head_id' => 0,
+                        'user_admin_id' => 0,
+                        'status'        => 0,
+                    );
+                    $this->db->where('id', $purchase_suggested_full->PS_ID);
+                    $this->db->update('tblpurchase_suggested', $data_purchase_suggested_edit);
+                }
+                else if($purchase_suggested) {
+                    $data_new = array(
+                        'purchase_suggested_id'     => $purchase_suggested->id,
+                        'product_id'                => $purchase_full->product_id,
+                        'product_name'              => $purchase_full->name,
+                        'product_quantity'          => $purchase_full->quantity_required,
+                        'product_unit'              => $purchase_full->unit,
+                        'product_price_buy'         => $purchase_full->price_buy,
+                        'product_specifications'    => $purchase_full->specification,
+                        'warehouse_id'              => $purchase_full->warehouse_id,
+                    );
+                    $this->db->insert('tblpurchase_suggested_details', $data_new);
+                }
+            }
         }
         return false;
     }

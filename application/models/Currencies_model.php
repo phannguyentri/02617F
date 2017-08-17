@@ -135,4 +135,14 @@ class Currencies_model extends CRM_Model
         $this->db->where('id', $id);
         return $this->db->get()->row()->symbol;
     }
+    public function getCurrencyIDFromSupplier($idSupplier) {
+        if(is_numeric($idSupplier)) {
+            $this->db->where('userid', $idSupplier);
+            $supplier = $this->db->get('tblsuppliers')->row();
+            if($supplier) {
+                return $supplier->default_currency;
+            }
+        }
+        return 0;
+    }
 }

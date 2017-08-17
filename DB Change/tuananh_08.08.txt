@@ -1,1 +1,10 @@
 ALTER TABLE `tblorders_detail` ADD `warehouse_id` INT NOT NULL AFTER `currency_price`;
+
+ALTER TABLE `tblpurchase_plan_details` ADD `unit_id` INT NOT NULL AFTER `warehouse_id`;
+ALTER TABLE `tblpurchase_plan_details` ADD `price_buy` INT NOT NULL AFTER `unit_id`;
+ALTER TABLE `tblpurchase_plan_details` CHANGE `unit_id` `currency_id` INT(11) NOT NULL;
+
+ALTER TABLE `tblpurchase_suggested_details` ADD `currency_id` INT NOT NULL AFTER `warehouse_id`, ADD `price_buy` DECIMAL(11,2) NOT NULL AFTER `currency_id`;
+
+ALTER TABLE `tblpurchase_suggested_details` CHANGE `converted` `order_id` INT NOT NULL;
+ALTER TABLE `tblorders` ADD `currency_id` INT NOT NULL AFTER `converted`;
