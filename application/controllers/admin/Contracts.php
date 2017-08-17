@@ -6,6 +6,7 @@ class Contracts extends Admin_controller
     {
         parent::__construct();
         $this->load->model('contracts_model');
+        $this->load->model('contract_templates_model');
     }
     /* List all contracts */
     public function index($clientid = false)
@@ -34,8 +35,17 @@ class Contracts extends Admin_controller
                 if (!has_permission('contracts', '', 'create')) {
                     access_denied('contracts');
                 }
-                // var_dump($this->input->post());die();
-                $id = $this->contracts_model->add($this->input->post());
+                $data=$this->input->post();
+                if($data['contract_type']==2)
+                {
+                    $data['content']=$this->contract_templates_model->get_contract_template_by_id(1)->content;
+                }
+                else
+                {
+                    $data['content']=$this->contract_templates_model->get_contract_template_by_id(2)->content;
+                }
+                // var_dump($data);die();
+                $id = $this->contracts_model->add($data);
                 if ($id) {
                     set_alert('success', _l('added_successfuly', _l('contract')));
                     redirect(admin_url('contracts/contract/' . $id));
@@ -44,6 +54,7 @@ class Contracts extends Admin_controller
                 if (!has_permission('contracts', '', 'edit')) {
                     access_denied('contracts');
                 }
+                
                 $success = $this->contracts_model->update($this->input->post(), $id);
                 if ($success) {
                     set_alert('success', _l('updated_successfuly', _l('contract')));

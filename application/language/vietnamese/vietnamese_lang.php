@@ -3816,7 +3816,27 @@ $lang['sl'] = "S.L";
 $lang['unit_cost'] = "Đơn giá";
 $lang['item_amount'] = "Thành tiền";
 $lang['info_not_found'] = "Không tìm thấy thông tin";
+
+$lang['contract_code'] = "Mã hợp đồng";
+$lang['no_item_data'] = "Không có thông tin sản phẩm";
 $lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['sale_contract'] = "Hợp đồng bán hàng";
+
 
 
 

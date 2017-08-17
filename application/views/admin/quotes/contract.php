@@ -18,6 +18,22 @@
                 <label for="not_visible_to_client"><?php echo _l('contract_not_visible_to_client'); ?></label>
               </div>
             </div>
+            <div class="form-group">
+                 <label for="number"><?php echo _l('contract_code'); ?></label>
+                 <div class="input-group">
+                  <span class="input-group-addon">
+                  <?php $prefix =($item) ? $item->prefix : get_option('prefix_contract'); ?>
+                    <?=$prefix?>
+                    <?=form_hidden('prefix',$prefix)?> 
+                    <?=form_hidden('rel_id',$quote->id)?>   
+                    </span>
+                    <?php 
+                        $number=sprintf('%05d',getMaxID('id','tblcontracts')+1);
+                    ?>
+                    <input type="text" name="code" class="form-control" id="code" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
+                  </div>
+            </div>
+            
             <?php
             $selected = (isset($contract) ? $contract->client :'');
             if($selected == '')
@@ -26,7 +42,7 @@
             }
             ?>
             <?php $auto_toggle_class = (isset($contract) || isset($do_not_auto_toggle) ? '' : 'auto-toggle'); ?>
-            <?php echo render_select('client',$clients,array('userid','company'),'contract_client_string',$selected,array('disabled'=>true),array(),'',$auto_toggle_class); ?>
+            <?php echo render_select('client',$clients,array('userid','company'),'contract_client_string',$selected,array(),array(),'',$auto_toggle_class); ?>
             <?php $value = _l('sale_contract').' - '.getClient($customer_id)->company; ?>
             <?php echo render_input('subject','contract_subject',$value,'text',array('data-toggle'=>'tooltip','title'=>'contract_subject_tooltip')); ?>
             <div class="form-group">
@@ -39,7 +55,7 @@
               </div>
             </div>
             <?php $selected = (isset($quote) ? '2' : ''); ?>
-            <?php echo render_select('contract_type',$types,array('id','name'),'contract_type',$selected,array('disabled'=>true)); ?>
+            <?php echo render_select('contract_type',$types,array('id','name'),'contract_type',$selected,array()); ?>
             <div class="row">
               <div class="col-md-6">
                 <?php $value = (isset($contract) ? _d($contract->datestart) : _d(date('Y-m-d'))); ?>
@@ -59,7 +75,7 @@
           </div>
         </div>
       </div>
-      <?php if(isset($quote)) { ?>
+      <?php if(isset($contract)) { ?>
       <div class="col-md-7 right-column">
         <div class="panel_s">
           <div class="panel-body">
@@ -120,10 +136,10 @@
                 </div>
                 <hr />
                 <div class="editable tc-content" style="border:1px solid #f0f0f0;">
-                  <?php if(empty($quote)){
+                  <?php if(empty($contract)){
                    echo '<span class="text-danger text-uppercase mtop15 editor-add-content-notice"> ' . _l('click_to_add_content') . '</span>';
                  } else {
-                   echo $contract_template->content;
+                   echo $contract->content;
                  }
                  ?>
                </div>

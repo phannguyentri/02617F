@@ -476,7 +476,8 @@ function get_contract_merge_fields($contract_id)
     $fields['{contract_dateend}']        = _d($contract->dateend);
     $date=($contract->datestart)? explode('-', $contract->datestart) : NULL ;
     $fields['{contract_contract_value}'] = format_money($contract->contract_value, $currency->symbol);
-    $contract_value_vat=$contract->contract_value+($contract->contract_value*10/100);
+    $contract_value_vat=$contract->contract_value;
+    // $contract_value_vat=$contract->contract_value+($contract->contract_value*10/100);
     $fields['{contract_value_vat}'] = format_money($contract_value_vat, $currency->symbol);
 
     $CI->load->library('numberword', array(
@@ -496,7 +497,7 @@ function get_contract_merge_fields($contract_id)
     $CI->load->model('contracts_model');
     $items = $CI->contracts_model->getContractItems($contract_id);
     
-    // var_dump($items);die();
+    // var_dump($contract_id);die();
     
     $item_list.='<div style="align: center;" ><table width="100%" class="table table-bordered" height="80" style="height: 80px; margin-left: auto; margin-right: auto;" border="1">';
 
@@ -513,6 +514,10 @@ function get_contract_merge_fields($contract_id)
 
         $item_list.='<tbody>';
         $i=1;
+        if(empty($items))
+        {
+            $item_list.='<tr><td  colspan="6" style="text-align: center;">'._l('no_item_data').'</td></tr>';
+        }
         foreach ($items as $key => $item) 
         {
             $item_list.='<tr style="height: 40px;text-align: center;">';

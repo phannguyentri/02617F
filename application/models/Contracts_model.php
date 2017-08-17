@@ -117,9 +117,14 @@ class Contracts_model extends CRM_Model
             unset($data['custom_fields']);
         }
         $data = do_action('before_contract_added', $data);
+
         $this->db->insert('tblcontracts', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
+            if(isset($data['rel_id']))
+            {            
+                $this->AddContractItems($data['rel_id'],$insert_id);
+            }
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields);
             }
@@ -128,6 +133,40 @@ class Contracts_model extends CRM_Model
             return $insert_id;
         }
         return false;
+    }
+    public function AddContractItems($rel_id,$contract_id)
+    {
+
+        if(!$rel_id)
+        {
+            return false;
+        }
+        else
+        {
+            $this->db->select('"contract_id",product_id, serial_no, unit_id, quantity, tax, discount, unit_cost, sub_total, warehouse_id');
+            $items=$this->db->get_where('tblquote_items',array('quote_id'=>$rel_id))->result_array();
+            if(!$items)
+            {
+                return false;
+            }
+            else
+            {
+                $affected=0;
+                foreach ($items as $key => $item) {
+                    $item['contract_id']=$contract_id;
+                    $this->db->insert('tblcontract_items',$item);
+                    if($this->db->affected_rows()>0)
+                    {
+                        $affected++;
+                    }
+                }
+                if($affected)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
     /**
      * @param  array $_POST data
