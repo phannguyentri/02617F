@@ -14,6 +14,16 @@
         <div class="panel_s">
           <div class="panel-body">
             <div class="clearfix"></div>
+            <input type="hidden" id="filterStatus" value="" />
+            <div data-toggle="btns" class="btn-group">
+                <button type="button" id="btnDatatableFilterAll" data-toggle="tab" class="btn btn-info active">Tất cả</button>
+                <button type="button" id="btnDatatableFilterNotApproval" data-toggle="tab" class="btn btn-info">Chưa duyệt</button>
+                <button type="button" id="btnDatatableFilterApproval" data-toggle="tab" class="btn btn-info">Đã duyệt</button>
+                <button type="button" id="btnDatableFilterDidntConvert" data-toggle="tab" class="btn btn-info">Chưa chuyển hết</button>
+                <button type="button" id="btnDatableFilterConverted" data-toggle="tab" class="btn btn-info">Đã chuyển hết</button>
+            </div>
+            
+            <p></p>
             <?php render_datatable(array(
               "ID",
               _l('purchase_suggested_code'),
@@ -54,7 +64,7 @@
           <?php } ?>
           <div class="row">
            <div class="container-fluid">
-            <table class="table table-striped dt-table table-purchase-suggested" data-order-col="0" data-order-type="asc">
+            <table class="table table-striped dt-table table-purchase" data-order-col="0" data-order-type="asc">
               <thead>
                 <tr>
                   <th><?php echo _l('item_group_name'); ?></th>
@@ -107,16 +117,49 @@
                     $('.table-purchase-suggested').DataTable().ajax.reload();
                     alert_float('success', response.message);
                 }
-                return false;
             }
         });
-
+        return false;
     }
 
 
   $(function(){
-    initDataTable('.table-purchase-suggested', '<?=admin_url('purchase_suggested')?>', [], [],'undefined',[0,'DESC']);
-
+    $('[data-toggle="btns"] .btn').on('click', function(){
+        var $this = $(this);
+        $this.parent().find('.active').removeClass('active');
+        $this.addClass('active');
+    });
+    $('#btnDatatableFilterAll').click(() => {
+        $('#filterStatus').val('');
+        $('#filterStatus').change();
+    });
+    $('#btnDatatableFilterNotApproval').click(() => {
+        $('#filterStatus').val(1);
+        $('#filterStatus').change();
+    });
+    $('#btnDatatableFilterApproval').click(() => {
+        $('#filterStatus').val(2);
+        $('#filterStatus').change();
+    });
+    $('#btnDatableFilterDidntConvert').click(() => {
+        $('#filterStatus').val(3);
+        $('#filterStatus').change();
+    });
+    $('#btnDatableFilterConverted').click(() => {
+        $('#filterStatus').val(4);
+        $('#filterStatus').change();
+    });
+    
+    var filterList = {
+        'filterStatus' : '[id="filterStatus"]',
+    };
+    //initDataTable('.table-purchase-suggested', '<?=admin_url('purchase_suggested')?>', [1], [1], filterList,[0,'DESC']);
+    initDataTable('.table-purchase-suggested', window.location.href, [0], [0], filterList);
+    $.each(filterList, (filterIndex, filterItem) => {
+      $('input' + filterItem).on('change', () => {
+          $('.table-purchase-suggested').DataTable().ajax.reload();
+      });
+    });
   });
 </script>
 </body>

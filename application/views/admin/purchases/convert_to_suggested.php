@@ -183,30 +183,30 @@
                                         ?>
                                     <tr class="sortable item">
                                         <td>
-                                            <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value['product_id']; ?>">
+                                            <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
                                         </td>
-                                        <td class="dragger"><?php echo $value['name']; ?></td>
-                                        <td><?php echo $value['unit_name']; ?></td>
+                                        <td class="dragger"><?php echo $value->name; ?></td>
+                                        <td><?php echo $value->unit_name; ?></td>
                                         <?php
                                         $err='';
-                                            if($value['quantity_required']>$value['warehouse_type']->maximum_quantity)
+                                            if($value->quantity_required>$value->warehouse_type->maximum_quantity)
                                             {
                                                 $err='error';
                                                 $style='border: 1px solid red !important';
                                             }
                                         ?>
                                         <td>
-                                        <input style="width: 100px; <?=$style?>" class="mainQuantity <?=$err?>" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value['quantity_required']; ?>">
+                                        <input style="width: 100px; <?=$style?>" class="mainQuantity <?=$err?>" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity_required; ?>">
                                         </td>
                                             
-                                        <td><?php echo number_format($value['price_buy']); ?></td>
-                                        <td><?php echo number_format($value['price_buy']*$value['quantity_required']); ?></td>
-                                        <td><?php echo $value['warehouse_type']->kindof_warehouse_name ?></td>
-                                        <td><input type="hidden" data-store="<?=$value['warehouse_type']->maximum_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value['warehouse_id']?>"><?php echo $value['warehouse_type']->warehouse ?>(tối đa <?=$value['warehouse_type']->maximum_quantity?>)</td>
+                                        <td><?php echo number_format($value->price_buy); ?></td>
+                                        <td><?php echo number_format($value->price_buy*$value->quantity_required); ?></td>
+                                        <td><?php echo $value->warehouse_type->kindof_warehouse_name ?></td>
+                                        <td><input type="hidden" data-store="<?=$value->warehouse_type->maximum_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(tối đa <?=$value->warehouse_type->maximum_quantity?>)</td>
                                         <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php
-                                            $totalPrice += $value['price_buy']*$value['quantity_required'];
+                                            $totalPrice += $value->price_buy*$value->quantity_required;
                                             $i++;
                                         }
                                     }

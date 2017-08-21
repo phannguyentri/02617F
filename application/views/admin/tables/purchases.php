@@ -27,6 +27,12 @@ if($this->_instance->input->post()) {
     if(is_numeric($filter_status)) {
         if($filter_status == 2)
             array_push($where, 'AND status='.$filter_status);
+        else if($filter_status == 3) {
+            array_push($where, 'AND converted=0');
+        }
+        else if($filter_status == 4) {
+            array_push($where, 'AND converted=1');
+        }
         else {
             array_push($where, 'AND status<>2');
         }

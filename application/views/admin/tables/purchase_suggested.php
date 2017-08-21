@@ -21,6 +21,22 @@ $sIndexColumn = "id";
 $sTable       = 'tblpurchase_suggested';
 
 $where = array();
+if($this->_instance->input->post()) {
+    $filter_status = $this->_instance->input->post('filterStatus');
+    if(is_numeric($filter_status)) {
+        if($filter_status == 2)
+            array_push($where, 'AND status='.$filter_status);
+        else if($filter_status == 3) {
+            array_push($where, 'AND converted=0');
+        }
+        else if($filter_status == 4) {
+            array_push($where, 'AND converted=1');
+        }
+        else {
+            array_push($where, 'AND status<>2');
+        }
+    }
+}
 $order_by = 'tblpurchase_suggested.id ASC';
 
 $join             = array(
@@ -90,7 +106,7 @@ foreach ($rResult as $aRow) {
             if(has_permission('invoices', '', 'view') && has_permission('invoices', '', 'view_own'))
             {
                 if($aRow['tblpurchase_suggested.status']!=2){
-                    $_data.='<a href="javacript:void(0)" onclick="var_status('.$aRow['tblpurchase_suggested.status'].','.$aRow['tblpurchase_suggested.id'].')">
+                    $_data.='<a href="javacript:void(0)" onclick="return var_status('.$aRow['tblpurchase_suggested.status'].','.$aRow['tblpurchase_suggested.id'].')">
                     <i class="fa fa-check task-icon task-unfinished-icon" data-toggle="tooltip" title="' . _l( $plan_status[$aRow['tblpurchase_suggested.status']]) . '"></i>                    
                     ';
                 }

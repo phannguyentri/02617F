@@ -8,6 +8,8 @@ class Purchase_orders extends Admin_controller
         $this->load->model('purchase_suggested_model');
         $this->load->model('invoice_items_model');
         $this->load->model('orders_model');
+        $this->load->model('currencies_model');
+        $this->load->model('warehouse_model');
     }
     public function index() {
 
@@ -25,11 +27,17 @@ class Purchase_orders extends Admin_controller
             redirect(admin_url() . 'purchase_orders');
         }
 
+        $data['currencies'] = $this->currencies_model->get();
         $data['purchase_suggested'] = $purchase_suggested;
+        foreach($data['purchase_suggested']->items as $key=>$value) {
+            $data['purchase_suggested']->items[$key]->warehouse_type = (object)$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id, true);
+        }
         $data['product_list'] = $purchase_suggested->items;
         $data['suppliers'] = $this->orders_model->get_suppliers();
         if($this->input->post()) {
             $data = $this->input->post();
+            print_r($data);
+            exit();
             $data['code'] = get_option('prefix_purchase_order') . $data['code'];
             $data['id_user_create'] = get_staff_user_id();
             $this->purchase_suggested_model->convert_to_order($id, $data);
@@ -111,7 +119,6 @@ class Purchase_orders extends Admin_controller
         else {
             $data['title'] = _l('purchase_suggested_edit_heading');
             $data['item'] = $this->purchase_suggested_model->get($id);
-            // var_dump($data['item']);die();
             
         }
         
@@ -195,5 +202,11 @@ class Purchase_orders extends Admin_controller
             ));
         }
         exit();
+    }
+    public function getCurrencyIDFromSupplier($idSupplier) {
+        $value = $this->currencies_model->getCurrencyIDFromSupplier($idSupplier);
+        $result = new stdClass();
+        $result->id = $value;
+        echo json_encode($result);
     }
 }

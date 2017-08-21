@@ -8,6 +8,7 @@ class Purchases extends Admin_controller
         $this->load->model('purchases_model');
         $this->load->model('invoice_items_model');
         $this->load->model('warehouse_model');
+        $this->load->model('currencies_model');
     }
     /* Get all invoices in case user go on index page */
     public function index($id = false)
@@ -50,6 +51,8 @@ class Purchases extends Admin_controller
             }
         }
         if ($this->input->post() && !$this->input->is_ajax_request()) {
+            // print_r($this->input->post());
+            // exit();
             if ($id == '') {
                 if (!has_permission('customers', '', 'create')) {
                     access_denied('customers');
@@ -101,6 +104,8 @@ class Purchases extends Admin_controller
         $this->load->model('taxes_model');
         $data['taxes']        = $this->taxes_model->get();
         $this->load->model('invoice_items_model');
+        
+        $data['currencies'] = $this->currencies_model->get();
         $data['items_groups'] = $this->invoice_items_model->get_groups();
         $data['items_units'] = $this->invoice_items_model->get_units();
         // $data['items']        = $this->invoice_items_model->get_grouped();
@@ -121,7 +126,9 @@ class Purchases extends Admin_controller
         $data['items'] = $this->invoice_items_model->get_full();
         $data['item'] = $this->purchases_model->getPurchaseByID($id);
         foreach ($data['item']->items as $key => $value) {
-            $data['item']->items[$key]['warehouse_type']=$this->warehouse_model->getWarehouseProduct($value['warehouse_id'],$value['product_id'], true);
+
+            $data['item']->items[$key]['warehouse_type']= (object)$this->warehouse_model->getWarehouseProduct($value['warehouse_id'],$value['product_id'], true);
+            $data['item']->items[$key] = (object)$data['item']->items[$key];
         }
         // print_r($data['item']);
         // exit();
