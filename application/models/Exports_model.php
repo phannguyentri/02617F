@@ -53,34 +53,6 @@ class Exports_model extends CRM_Model
         return false;
     }
 
-    // $export=$this->getExportByID($id);
-        
-    //     if($data['status']==2 && isset($export->rel_id))
-    //     {
-    //         $sale=$this->getSaleByID($export->rel_id);
-    //         $saleitem=$sale->items;
-    //         foreach ($saleitem as $key => $value) {
-    //             $export_quantity=0;
-    //             $export_quantity=$value->export_quantity+
-    //             # code...
-    //         }
-
-    //         var_dump($sale);die();
-    //     }
-    // if(!empty($data['rel_id']))
-    // {
-    //     $sale=$this->getSaleByID($data['rel_id']);
-    //     $export_quantity=$sale->export_quantity+$item['quantity'];
-    //     $this->db->update('tblsale_items',array('export_quantity'=>$export_quantity),array('sale_id'=>$sale->id));
-    //     if($this->db->affected_rows()>0)
-    //     {
-    //         if($export_quantity==$sale->quantity)
-    //         {
-    //             $this->db->update('tblsales',array('export_status'=>1),array('id'=>$sale->id));
-    //         }
-    //     }
-    // }
-
     public function updateWarehouse($id)
     {
         $export=$this->getExportByID($id);
@@ -222,14 +194,14 @@ class Exports_model extends CRM_Model
 
     public function getSaleItems($id,$product_id)
     {       
-            $this->db->where('sale_id', $id);
-            $this->db->where_in('product_id', $product_id);
-            $q=$this->db->get('tblsale_items');
-            if($q->num_rows() > 0)
-            {
-                return $q->result();
-            }
-            return false;
+        $this->db->where('sale_id', $id);
+        $this->db->where_in('product_id', $product_id);
+        $q=$this->db->get('tblsale_items');
+        if($q->num_rows() > 0)
+        {
+            return $q->result();
+        }
+        return false;
     }
 
     public function getSaleByID($id)
@@ -259,6 +231,8 @@ class Exports_model extends CRM_Model
             'reason'=>$data['reason'],
             'date'=>to_sql_date($data['date'])
             );
+
+        var_dump($export);die();
         
         if($this->db->update('tblexports',$export,array('id'=>$id)) && $this->db->affected_rows()>0)
         {
@@ -313,6 +287,29 @@ class Exports_model extends CRM_Model
             $this->db->update('tblexports',array('total'=>$total),array('id'=>$id));
             return $id;
         }
+        return false;
+    }
+
+    public function update_delivery($data,$id)
+   {
+        $affected=false;
+        $delivery=array(
+            'delivery_code'=>$data['delivery_code'],
+            'deliverer_id'=>$data['deliverer_id'],
+            'note'=>$data['note'],
+            'delivery_date'=>to_sql_date($data['delivery_date'])
+            );
+        
+        if($this->db->update('tblexports',$delivery,array('id'=>$id)) && $this->db->affected_rows()>0)
+        {
+            logActivity('Edit Delivery From Export Updated [ID:' . $id . ', ' . date('Y-m-d') . ']');
+            $affected=true;
+        }
+        if($affected)
+        {
+            return true;
+        }
+        
         return false;
     }
 

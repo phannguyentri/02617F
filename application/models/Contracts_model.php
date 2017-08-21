@@ -124,6 +124,7 @@ class Contracts_model extends CRM_Model
             if(isset($data['rel_id']))
             {            
                 $this->AddContractItems($data['rel_id'],$insert_id);
+                $this->UpdateQuoteStatus(1,$data['rel_id']);
             }
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields);
@@ -133,6 +134,11 @@ class Contracts_model extends CRM_Model
             return $insert_id;
         }
         return false;
+    }
+
+    public function UpdateQuoteStatus($status,$id)
+    {
+        $this->db->update('tblquotes',array('export_status'=>$status),array('id'=>$id));
     }
     public function AddContractItems($rel_id,$contract_id)
     {
@@ -157,6 +163,7 @@ class Contracts_model extends CRM_Model
                     $this->db->insert('tblcontract_items',$item);
                     if($this->db->affected_rows()>0)
                     {
+                        logActivity('Add Contract Item Added [ID:' . $contract_id .' Item ID:'.$item['product_id'].']');
                         $affected++;
                     }
                 }

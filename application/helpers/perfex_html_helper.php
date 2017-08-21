@@ -1396,6 +1396,25 @@ function format_status_export($id)
             return '<span class="inline-block ' . $class . '">' . $status_name . '</span>';
 }
 
+function format_status_delivery($id)
+{
+
+        $label = get_status_label($id);
+        if ($id == 2) {
+            $label = 'light-green';
+            $status_name="Phiếu giao hàng đã giao";
+        }
+        else if ($id == 1) {
+                $label = 'info';
+                $status_name="Phiếu giao hàng đang giao";
+            } else if ($id == 0) {
+                $label = 'warning';
+                $status_name="Phiếu giao hàng chưa giao";
+            }
+            $class = 'label label-' . $label;
+            return '<span class="inline-block ' . $class . '">' . $status_name . '</span>';
+}
+
 function format_status_quote($id)
 {
 

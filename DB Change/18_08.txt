@@ -1,0 +1,3 @@
+ALTER TABLE `tblexports` ADD `delivery_code` VARCHAR(50) NULL AFTER `code`, ADD `deliverer_id` TINYINT NULL AFTER `delivery_code`;
+
+INSERT INTO `dudoffhoa`.`tbloptions` (`id`, `name`, `value`) VALUES (NULL, 'prefix_delivery', 'GH-');

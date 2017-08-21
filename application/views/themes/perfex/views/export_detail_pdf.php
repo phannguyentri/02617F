@@ -60,9 +60,9 @@ $info_right_column=$info_right_column .= '<a href="' . admin_url('#') . '" style
 $invoice_info='';
 $invoice_info = '<b>' . get_option('invoice_company_name') . '</b><br />';
 $invoice_info .= _l('address').': '.get_option('invoice_company_address') . '<br/>';
-// if (get_option('invoice_company_city') != '') {
-//     $invoice_info .= get_option('invoice_company_city') . ', ';
-// }
+if (get_option('invoice_company_city') != '') {
+    $invoice_info .= get_option('invoice_company_city') . ', ';
+}
 if(get_option('company_vat') != ''){
     $invoice_info .= _l('vat_no').': '.get_option('company_vat').'<br/>';
 }
@@ -90,9 +90,13 @@ $info_left_column .= pdf_logo_url();
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_column, 0, 'J', 0, 0, '', '', true, 0, true, true, 0);
 // write the second column
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
-// $pdf->MultiCell(0, 0, $invoice_info, 0, 'C', 0, 1, '', '', true, 0, true, false, 0);
-// $y            = $pdf->getY();
-$pdf->ln(5);
+$divide=_l('divider');
+
+$pdf->ln(6);
+$y            = $pdf->getY();
+$pdf->writeHTMLCell('', '', '', $y, $divide, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+$pdf->ln(2);
+$y            = $pdf->getY();
 
 $pdf->writeHTMLCell((true ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 $pdf->ln(20);
@@ -166,12 +170,21 @@ if($invoice->rel_type=='export_sale_order')
 }
 $pdf->writeHTMLCell(0, '', '', '', _l('reason_export').': '.$reason ._l('export_to_sale_order').$invoice->rel_code.' ('._d($invoice->order_date).')', 0, 1, false, true, 'L', true);
 $pdf->ln(2);
-
+$warehouses=array();
+foreach ($invoice->items as $key => $item) {
+    $warehouses[]=$item->warehouse_id;
+}
+if(count(array_unique ($warehouses))==1)
+{
+    $warehouse=getWareHouse($warehouses[0]);
+    $warehouse_name=$warehouse->warehouse;
+    $warehouse_address=$warehouse->address;
+}
 $pdf->SetFont($font_name, '', $font_size);
-$pdf->Cell(0, 0, _l('export_where1').': '.$customer->fax , 0, 1, 'L', 0, '', 0);
+$pdf->Cell(0, 0, _l('export_where1').': '.$warehouse_name , 0, 1, 'L', 0, '', 0);
 $pdf->ln(2);
 
-$pdf->Cell(0, 0, _l('export_where2').': '.implode(', ', $shipping_address) , 0, 1, 'L', 0, '', 0);
+$pdf->Cell(0, 0, _l('export_where2').': '.$warehouse_address , 0, 1, 'L', 0, '', 0);
 $pdf->ln(2);
 
 // Bill to
@@ -280,28 +293,37 @@ for ($i=0; $i < count($invoice->items) ; $i++) {
 
     $tblhtml.='<tr>';
     $tblhtml.='<td colspan="6" align="right">Tổng tiền</td>';
-    $tblhtml.='<td colspan="2" align="right">'.format_money($grand_total).'</td>';
+    $tblhtml.='<td colspan="2" align="right">'.format_money($grand_total,get_option('default_currency')).'</td>';
     $tblhtml.='</tr>';
 $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
 
-$pdf->writeHTML(_l('blank_date'), true, false, false, false, 'R');
 
-$strmoney='<div class="col-md-12"><ul>';
-$strmoney.='<li>'._l('str_money').'</li>';
-$strmoney.='<li>'._l('certificate_root').'</li>';;
-$strmoney.='</ul></div>';
+$strmoney='<ul>';
+$strmoney.='<li>'._l('str_money').$CI->numberword->convert($grand_total,get_option('default_currency')).'</li>';
+$strmoney.='<li>'._l('certificate_root').($invoice->certificate_root?$invoice->certificate_root:_l('blank___')).'</li>';;
+$strmoney.='</ul>';
 // $pdf->writeHTML($strmoney, true, false, false, false, '');
-$pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
+// $pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
+$pdf->writeHTML($strmoney, true, false, false, false, 'L');
+$pdf->Ln(5);
+$pdf->writeHTML(_l('date__', date('d'))._l('month_', date('m'))._l('year_', date('Y')), true, false, false, false, 'R');
+$pdf->Ln(5);
+// $pdf->writeHTMLCell(0, '', '', '', _l('blank_date'), 0, 1, false, true, 'R', true);
+
 
 $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         <tr>
             <td><b>" . mb_ucfirst(_l('creater'), "UTF-8") . "</b></td>
-            <td><b>" . mb_ucfirst(_l('user_head'), "UTF-8") . "</b></td>
-            <td><b>" . mb_ucfirst(_l('user_admin'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('receiver'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('warehouseman'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('chief_accountant'), "UTF-8") . "</b></td>
+            <td><b>" . mb_ucfirst(_l('director'), "UTF-8") . "</b></td>
         </tr>
         <tr>
+            <td>(ký, ghi rõ họ tên)</td>
+            <td>(ký, ghi rõ họ tên)</td>
             <td>(ký, ghi rõ họ tên)</td>
             <td>(ký, ghi rõ họ tên)</td>
             <td>(ký, ghi rõ họ tên)</td>
@@ -311,8 +333,10 @@ $table = "<table style=\"width: 100%;text-align: center\" border=\"0\">
         </tr>
         <tr>
             <td>" . mb_ucfirst($invoice->creater,"UTF-8") . "</td>
-            <td>" . mb_ucfirst($invoice->head,"UTF-8") . "</td>
-            <td>" . mb_ucfirst($invoice->admin,"UTF-8") . "</td>
+            <td>" . mb_ucfirst(get_staff_full_name($invoice->receiver_id),"UTF-8") . "</td>
+            <td>" . mb_ucfirst(get_staff_full_name($invoice->warehouseman_id),"UTF-8") . "</td>
+            <td>" . mb_ucfirst(get_staff_full_name($invoice->chief_accountant_id),"UTF-8") . "</td>
+            <td>" . mb_ucfirst(get_staff_full_name($invoice->director_id),"UTF-8") . "</td>
         </tr>
         
 </table>";

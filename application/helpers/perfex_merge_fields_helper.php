@@ -480,11 +480,8 @@ function get_contract_merge_fields($contract_id)
     // $contract_value_vat=$contract->contract_value+($contract->contract_value*10/100);
     $fields['{contract_value_vat}'] = format_money($contract_value_vat, $currency->symbol);
 
-    $CI->load->library('numberword', array(
-        'clientid' => $contract->client
-    ));
-    // var_dump($currency);die();
-    $fields['{contract_value_words}'] = $CI->numberword->convert($contract_value_vat);
+    $CI->load->library('numberword', array('clientid' => $contract->client));
+    $fields['{contract_value_words}'] = $CI->numberword->convert($contract_value_vat,$currency->symbol);
     $strdate='';
     $item_list='';
     if(is_array($date))

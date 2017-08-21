@@ -5,9 +5,9 @@
             <div class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body _buttons">                   
-                    <h4 class="bold no-margin"><?=_l('export_orders')?></h4>
-                    <hr class="no-mbot no-border">
-                    <a href="<?=admin_url('exports/export_detail')?>" class="btn btn-info pull-left display-block"><?php echo _l('add_export_order'); ?></a>
+                    <h4 class="bold no-margin"><?=_l('deliveries')?></h4>
+                    <!-- <hr class="no-mbot no-border">
+                    <a href="<?=admin_url('deliveries/export_detail')?>" class="btn btn-info pull-left display-block"><?php echo _l('add_export_order'); ?></a> -->
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -15,16 +15,16 @@
                     <div class="panel-body">
                     <?php render_datatable(array(
                             _l('#'),
-                            _l('Mã phiếu xuất kho'),
+                            _l('Mã phiếu giao hàng'),
                             _l('Mã đơn hàng'),
                             _l('Khách hàng'),
-                            _l('Người tạo'),
+                            _l('Nhân viên giao hàng'),
                             _l('Trạng thái'),
                             // _l('Giao hàng'),
-                            _l('Được duyệt bởi'),
-                            _l('Ngày tạo'),
+                            // _l('Được duyệt bởi'),
+                            _l('Ngày giao hàng'),
                             _l('options')
-                        ),'exports'); ?>
+                        ),'deliveries'); ?>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
 <?php init_tail(); ?>
 <script type="text/javascript">
     $(function(){
-        initDataTable('.table-exports', window.location.href, [1], [1]);
+        initDataTable('.table-deliveries', window.location.href, [1], [1]);
     //     _validate_form($('form'),{unit:'required'},manage_contract_types);
     //     $('#adjustment_type').on('hidden.bs.modal', function(event) {
     //         $('#additional').html('');
@@ -58,17 +58,17 @@
     });
     function var_status(status,id)
     {
-        // alert("<?=admin_url()?>exports/update_status")
+        // alert("<?=admin_url()?>deliveries/update_status");
         dataString={id:id,status:status};
         jQuery.ajax({
             type: "post",
-            url:"<?=admin_url()?>exports/update_status",
+            url:"<?=admin_url()?>deliveries/update_status",
             data: dataString,
             cache: false,
             success: function (response) {
                 response = JSON.parse(response);
                 if (response.success == true) {
-                    $('.table-exports').DataTable().ajax.reload();
+                    $('.table-deliveries').DataTable().ajax.reload();
                     alert_float('success', response.message);
                 }
                 return false;
@@ -97,7 +97,7 @@
 //     }
     $('body').on('click', '.delete-remind', function() {
         var r = confirm(confirm_action_prompt);
-        var table='.table-exports';
+        var table='.table-deliveries';
         if (r == false) {
             return false;
         } else {

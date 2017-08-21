@@ -18,6 +18,28 @@
                 <label for="not_visible_to_client"><?php echo _l('contract_not_visible_to_client'); ?></label>
               </div>
             </div>
+            <div class="form-group">
+                 <label for="number"><?php echo _l('contract_code'); ?></label>
+                 <div class="input-group">
+                  <span class="input-group-addon">
+                  <?php $prefix =($contract) ? $contract->prefix : get_option('prefix_contract'); ?>
+                    <?=$prefix?>
+                    <?=form_hidden('prefix',$prefix)?> 
+                    <?=form_hidden('rel_id',$contract->rel_id)?>   
+                    </span>
+                    <?php 
+                      if($contract)
+                      {
+                        $number=$contract->code;
+                      }
+                      else
+                      {
+                        $number=sprintf('%05d',getMaxID('id','tblcontracts')+1);
+                      }
+                    ?>
+                    <input type="text" name="code" class="form-control" id="code" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
+                  </div>
+            </div>
             <?php
             $selected = (isset($contract) ? $contract->client :'');
             if($selected == '')

@@ -1335,6 +1335,63 @@ function export_detail_pdf($invoice, $tag = '')
     return $pdf;
 }
 
+
+function delivery_detail_pdf($invoice, $tag = '')
+{
+
+    $CI =& get_instance();
+    // load_pdf_language($invoice->clientid);
+    $CI->load->library('pdf');
+    $invoice_number = $invoice->delivery_code.$invoice->code;
+    $font_name      = get_option('pdf_font');
+    $font_size      = get_option('pdf_font_size');
+
+    if ($font_size == '') {
+        $font_size = 10;
+    }
+
+    $CI->load->model('clients_model');
+    $customer = $CI->clients_model->get($invoice->customer_id);
+    $contact=$CI->clients_model->get_contacts($invoice->customer_id);
+    
+    $formatArray = get_pdf_format('pdf_format_invoice');
+    $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false,false,'invoice');
+
+    $pdf->SetTitle($invoice_number);
+    $CI->pdf->SetMargins(PDF_MARGIN_LEFT, 25, PDF_MARGIN_RIGHT);
+
+    $CI->pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    $pdf->SetAuthor(get_option('company'));
+    $pdf->SetFont($font_name, '', $font_size);
+    $pdf->setImageScale(1.53);
+    $pdf->setJPEGQuality(100);
+    $pdf->AddPage($formatArray['orientation'], $formatArray['format']);
+
+    if ($CI->input->get('print') == 'true') {
+        // force print dialog
+        $js = 'print(true);';
+        $pdf->IncludeJS($js);
+    }
+
+    $status = $invoice->status;
+    $swap   = get_option('swap_pdf_info');
+    $CI->load->library('numberword', array(
+        'clientid' => $invoice->customer_id
+    ));
+
+    $CI->load->model('clients_model');
+    $customer=$CI->clients_model->get($invoice->customer_id);
+
+    $invoice = do_action('invoice_html_pdf_data', $invoice);
+    if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_delivery_detail_pdf.php')) {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_delivery_detail_pdf.php');
+    } else {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/delivery_detail_pdf.php');
+    }
+    return $pdf;
+}
+
 function quote_detail_pdf($invoice, $tag = '')
 {
 
@@ -1781,6 +1838,7 @@ function contract_pdf($contract)
         $js = 'print(true);';
         $pdf->IncludeJS($js);
     }
+    
     # Dont remove these lines - important for the PDF layout
     // Add <br /> tag and wrap over div element every image to prevent overlaping over text
     $contract->content = preg_replace('/(<img[^>]+>(?:<\/img>)?)/i', '<div>$1</div>', $contract->content);
@@ -1795,6 +1853,8 @@ function contract_pdf($contract)
     $contract->content = str_replace('float: left', 'text-align: left', $contract->content);
     // Image center
     $contract->content = str_replace('margin-left: auto; margin-right: auto;', 'text-align:center;', $contract->content);
+
+
 
     if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_contractpdf.php')) {
         include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_contractpdf.php');
