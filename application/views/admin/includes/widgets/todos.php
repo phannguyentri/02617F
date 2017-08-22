@@ -9,7 +9,7 @@
       </a>
       <div class="clearfix"></div>
       <hr class="no-mtop">
-      <?php $total_todos = count($todos); ?>
+      <?php $total_todos = count($todos);?>
       <h4 class="todo-title text-warning"><i class="fa fa-warning"></i> <?php echo _l('home_latest_todos'); ?></h4>
       <ul class="list-unstyled todo unfinished-todos todos-sortable sortable">
          <?php foreach($todos as $todo) { ?>

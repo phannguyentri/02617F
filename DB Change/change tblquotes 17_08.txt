@@ -1,0 +1,1 @@
+ALTER TABLE `tblquotes` ADD `export_status` TINYINT NULL DEFAULT '0' AFTER `status`;

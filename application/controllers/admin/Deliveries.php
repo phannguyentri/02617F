@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Exports extends Admin_controller
+class Deliveries extends Admin_controller
 {
     function __construct()
     {
@@ -14,13 +14,13 @@ class Exports extends Admin_controller
     public function index($sale_id=NULL)
     {
         if ($this->input->is_ajax_request()) {
-            $this->perfex_base->get_table_data('exports',array('sale_id'=>$sale_id));
+            $this->perfex_base->get_table_data('deliveries',array('sale_id'=>$sale_id));
         }
         $data['title'] = _l('export_orders');
-        $this->load->view('admin/exports/manage', $data);
+        $this->load->view('admin/deliveries/manage', $data);
     }
 
-    public function export_detail($id='') 
+    public function delivery_detail($id='') 
     {
         if (!has_permission('export_items', '', 'view')) {
             if ($id != '' && !is_customer_admin($id)) {
@@ -91,7 +91,7 @@ class Exports extends Admin_controller
         $data['customers'] = $this->clients_model->get('', $where_clients);
         $data['items']= $this->invoice_items_model->get_full(); 
         $data['title'] = $title;
-        $this->load->view('admin/exports/detail', $data);
+        $this->load->view('admin/deliveries/delivery_detail', $data);
     }
 
     public function sale_output($id)
@@ -208,56 +208,42 @@ class Exports extends Admin_controller
 
     public function update_status()
     {
-        
         $id=$this->input->post('id');
         $status=$this->input->post('status');
         $staff_id=get_staff_user_id();
         $date=date('Y-m-d H:i:s');
-        $data=array('status'=>$status);
-
+        $data=array('delivery_status'=>$status);
         $inv=$this->exports_model->getExportByID($id);
-        if(is_admin() && $status==0)
+        if($status==0 && is_admin() || $status==0 && is_head($inv->deliverer_id))
         {
-            $data['user_head_id']=$staff_id;
-            $data['user_head_date']=$date;
+            $data['delivery_status']=1;
+        } 
 
-            $data['user_admin_id']=$staff_id;
-            $data['user_admin_date']=$date;
-
-            $data['status']=2;
-        }
-        elseif(is_admin() && $status==1)
+        elseif((is_admin() || is_head($inv->deliverer_id) || $inv->deliverer_id==get_staff_user_id()) && $status==1)
         {
-            $data['status']=2;
-            if($inv->user_head_id==NULL || $inv->user_head_id=='')
-            {
-                $data['user_head_id']=$staff_id;
-                $data['user_head_date']=$date;
-            }
-            if($inv->user_admin_id==NULL || $inv->user_admin_id=='')
-            {
-                $data['user_admin_id']=$staff_id;
-                $data['user_admin_date']=$date;
-            }
-        }
-        elseif(is_head($inv->create_by))
-        {
-            $data['status']+=1;
-            $data['user_head_id']=$staff_id;
-            $data['user_head_date']=$date;
-        }
-
+            $data['delivery_status']=2;
+        }       
         $success=fale;
         
-        if(is_admin() || is_head($inv->create_by))
+        if(is_admin() || is_head($inv->deliverer_id) || get_staff_user_id()==$inv->deliverer_id)
         {
             $success=$this->exports_model->update_status($id,$data);
         }
         if($success) {
-            echo json_encode(array(
+            if($data['delivery_status']==2)
+            {
+                echo json_encode(array(
                 'success' => $success,
-                'message' => _l('Xác nhận phiếu xuất kho thành công')
+                'message' => _l('Xác nhận giao hàng thành công')
             ));
+            }
+            else
+            {
+                echo json_encode(array(
+                'success' => $success,
+                'message' => _l('Xác nhận phiếu giao hàng thành công')
+            ));                
+            }            
         }
         else
         {

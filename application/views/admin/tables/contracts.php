@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-$aColumns = array('tblcontracts.id','subject', 'CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblclients.userid and is_primary = 1) ELSE company END as company', 'contract_type', 'datestart','dateend');
+$aColumns = array('tblcontracts.id','subject', 'CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblclients.userid and is_primary = 1) ELSE company END as company', 'contract_type', 'contract_value' , 'datestart','dateend');
 $sIndexColumn = "id";
 $sTable = 'tblcontracts';
 $additionalSelect = array('tblcontracts.id','tblcontracttypes.name','trash','client');
@@ -100,6 +100,10 @@ foreach ( $rResult as $aRow )
             $_data = $aRow[ strafter($aColumns[$i],'as ')];
         } else {
             $_data = $aRow[ $aColumns[$i] ];
+        }
+        if($aColumns[$i]=='contract_value')
+        {
+            $_data = format_money($aRow['contract_value'],get_option('default_currency'));
         }
         if($i == 2){
             $_data = '<a href="'.admin_url('clients/client/'.$aRow['client']).'">'. $aRow['company'] . '</a>';

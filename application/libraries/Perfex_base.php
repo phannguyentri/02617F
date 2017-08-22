@@ -154,11 +154,55 @@ class Perfex_Base
         }
         return false;
     }
-    public function getClient($id)
+    public function getClient($id,$address_type=NULL)
     {        
-        if (isset($id)) {
+        if (isset($id) && empty($address_type)) {
             $this->_instance->db->where('userid',$id);
             return $this->_instance->db->get('tblclients')->row();
+        }
+        elseif(isset($id) && isset($address_type))
+        {
+
+            //1: DChi KH
+            //2: DChi giao hang
+            $address=array();
+            $client=$this->_instance->db->where('userid',$id)->get('tblclients')->row();
+            if($address_type==1)
+            {
+                $address[]=$client->address_home_number ? _l('Số '.$client->address_home_number) : '' ;
+                $address[]=$client->address ? _l('Đường '.$client->address) : '' ;
+                $address[]=$client->address_town ? _l('Khu phố/thôn/ấp '.$client->address_town) : '' ;
+                $ward=getWard($client->address_ward);
+                $address[]=$client->address_ward ? _l("$ward->type ".$ward->name) : '' ;
+                $district=getDistrict($client->state);
+                $address[]=$client->state ? _l("$district->type ".$district->name) : '' ;
+                $province=getProvince($client->city);
+                $address[]=$client->city ? _l("$province->type ".$province->name) : '' ;
+            }
+            elseif($address_type==2)
+            {
+                $address[]=$client->shipping_home_number ? _l('Số '.$client->shipping_home_number) : '' ;
+                $address[]=$client->shipping_street ? _l('Đường '.$client->shipping_street) : '' ;
+                $address[]=$client->shipping_town ? _l('Khu phố/thôn/ấp '.$client->shipping_town) : '' ;
+                $ward=getWard($client->shipping_ward);
+                $address[]=$client->address_ward ? _l("$ward->type ".$ward->name) : '' ;
+                $district=getDistrict($client->shipping_state);
+                $address[]=$client->state ? _l("$district->type ".$district->name) : '' ;
+                $province=getProvince($client->shipping_city);
+                $address[]=$client->city ? _l("$province->type ".$province->name) : '' ;
+            }
+            foreach ($address as $key => $value) {
+                if(empty($value)) unset($address[$key]);
+            }
+            return implode(', ', $address);
+        }
+        return false;
+    }
+    public function getWareHouse($id)
+    {        
+        if (isset($id)) {
+            $this->_instance->db->where('warehouseid',$id);
+            return $this->_instance->db->get('tblwarehouses')->row();
         }
         return false;
     }

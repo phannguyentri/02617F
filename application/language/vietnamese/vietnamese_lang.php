@@ -3769,7 +3769,7 @@ $lang['create_export'] = "Tạo phiếu xuất kho";
 $lang['warehouseman'] = "Thủ kho";
 $lang['add_sale_order'] = "Thêm đơn đặt hàng";
 $lang['export_list'] = "Danh sách phiếu xuất kho";
-$lang['blank_date'] = "Ngày ..... tháng ..... năm .....";
+$lang['blank_date'] = "Ngày %s tháng ..... năm .....";
 $lang['quotes'] = "Báo giá";
 $lang['quote'] = "Báo giá";
 $lang['quote_add'] = "Thêm báo giá";
@@ -3780,6 +3780,7 @@ $lang['quote_name'] = "Bảng báo giá";
 $lang['first_1st'] = "Trước tiên thay mặt cho Công Ty TNHH Dudoff Việt Nam - Đối tác chiến lược của Dudoff London,  xin trân thành cám ơn sự quan tâm của quý khách hàng đến thương hiệu và sản phẩm Dudoff London. Chúng tôi xin gửi đến quý khách  bảng báo giá sản phẩm như sau: ";
 $lang['dear'] = "Kính gửi: ";
 $lang['date_'] = " ngày %s ";
+$lang['date__'] = "Ngày %s ";
 $lang['month_'] = " tháng %s";
 $lang['year_'] = " năm %s";
 $lang['sumary_note'] = "Ghi chú chung";
@@ -3819,23 +3820,40 @@ $lang['info_not_found'] = "Không tìm thấy thông tin";
 
 $lang['contract_code'] = "Mã hợp đồng";
 $lang['no_item_data'] = "Không có thông tin sản phẩm";
+$lang['contract_value'] = "Giá trị hợp đồng";
 $lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['create_delivery'] = "Phiếu giao hàng";
+$lang['view'] = "Xem chi tiết";
 
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['add_delivery_order'] = "Thêm phiếu giao hàng";
+$lang['edit_delivery_order'] = "Sửa phiếu giao hàng";
+$lang['delivery_detail'] = "Chi tiết phiếu giao hàng";
+$lang['delivery_info'] = "Thông tin phiếu giao hàng";
+$lang['delivery_code'] = "Mã phiếu giao hàng";
+$lang['deliver'] = "Nhân viên giao hàng";
+$lang['delivery_date'] = "Ngày giao hàng";
 
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['sale_contract'] = "Hợp đồng bán hàng";
+$lang['deliveries'] = "Phiếu giao hàng";
+$lang['print_export'] = "In phiếu xuất kho";
+$lang['print_delivery'] = "In phiếu giao hàng";
+$lang['more_blank'] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+$lang['deliveries'] = "Phiếu giao hàng";
+$lang['buyer'] = "Người mua hàng";
+$lang['biller'] = "Lập biểu";
+$lang['saler'] = "Người bán hàng";
+$lang['blank___'] = "..........................................................................................................................................................";
+$lang['chief_accountant'] = "Kế toán trưởng";
+
+$lang['director'] = "Giám đốc";
+$lang['divider'] = '<hr style="margin-top: 20px;margin-bottom: 20px;border: 0;border-top: 1px solid #eee;" />';
+$lang['print_delivery'] = "In phiếu giao hàng";
+
+$lang['print_delivery'] = "In phiếu giao hàng";
+$lang['print_delivery'] = "In phiếu giao hàng";
+
+$lang['print_delivery'] = "In phiếu giao hàng";
+$lang['print_delivery'] = "In phiếu giao hàng";
+
 
 
 

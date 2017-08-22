@@ -31,6 +31,7 @@ $join         = array(
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable,$join, $where, array(
     'id',
     'prefix',
+    'export_status',
     'tblstaff.fullname',
     'CONCAT(user_head_id,",",user_admin_id) as confirm_ids'
 ));
@@ -108,9 +109,9 @@ foreach ($rResult as $aRow) {
         $_data .= icon_btn('quotes/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank','data-toggle'=>'tooltip',
             'title'=>_l('dt_button_print'),
             'data-placement'=>'top'));
-        if($aRow['status']==2 && $aRow['export_status']!=2)
+        if($aRow['status']==2 && $aRow['export_status']!=1)
         {           
-            //Tao Phieu xuat kho
+            //Tao Hop Dong
             $_data .= icon_btn('quotes/contract_output/'. $aRow['id'] , 'exchange','btn-default',array(
             'data-toggle'=>'tooltip',
             'title'=>_l('create_contract'),
