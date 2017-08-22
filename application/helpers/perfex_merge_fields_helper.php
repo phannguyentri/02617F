@@ -727,6 +727,36 @@ function get_available_merge_fields()
 {
     $available_merge_fields = array(
         array(
+            'suppliers' => array(
+                array(
+                    'name' => 'Supplier Name',
+                    'key' => '{supplier_name}',
+                    'available' => array(
+                        'contract',
+                    )
+                ),
+                
+            )
+        ),
+        array(
+            'contract_purchase' => array(
+                array(
+                    'name' => 'Terms of sale',
+                    'key' => '{terms_of_sale}',
+                    'available' => array(
+                        'contract',
+                    )
+                ),
+                array(
+                    'name' => 'Terms of payment',
+                    'key' => '{terms_of_payment}',
+                    'available' => array(
+                        'contract',
+                    )
+                ),
+            )
+        ),
+        array(
             'staff' => array(
                 array(
                     'name' => 'Staff Firstname',

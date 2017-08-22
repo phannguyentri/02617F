@@ -74,7 +74,7 @@
             
             <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'client-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">            
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">            
                     <?php
                       // config
                     $attrs_not_select = array('data-none-selected-text' => _l('system_default_string'));
@@ -126,11 +126,16 @@
                         $default_date = ( isset($purchase_suggested) ? _d($purchase_suggested->date) : _d(date('Y-m-d')));
                         echo render_date_input( 'date', 'project_datecreated' , $default_date , 'date'); 
                     ?>
+                    
+                </div>
+                
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                     <?php 
                     $reason = (isset($purchase_suggested) ? $purchase_suggested->reason : "");
                     echo render_textarea('reason', 'purchase_suggested_reason', $reason, array(), array(), '', 'tinymce');
                     ?>
                 </div>
+                
 
                 <!-- Edited -->
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">

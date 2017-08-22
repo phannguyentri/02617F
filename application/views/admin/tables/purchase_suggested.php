@@ -27,10 +27,10 @@ if($this->_instance->input->post()) {
         if($filter_status == 2)
             array_push($where, 'AND status='.$filter_status);
         else if($filter_status == 3) {
-            array_push($where, 'AND converted=0');
+            array_push($where, 'AND (select IF(COUNT(*)>0, 1, 0) as converted from tblpurchase_suggested_details where tblpurchase_suggested_details.purchase_suggested_id = tblpurchase_suggested.id and tblpurchase_suggested_details.order_id = 0)=1');
         }
         else if($filter_status == 4) {
-            array_push($where, 'AND converted=1');
+            array_push($where, 'AND (select IF(COUNT(*)>0, 1, 0) as converted from tblpurchase_suggested_details where tblpurchase_suggested_details.purchase_suggested_id = tblpurchase_suggested.id and tblpurchase_suggested_details.order_id = 0)=0');
         }
         else {
             array_push($where, 'AND status<>2');
@@ -44,8 +44,8 @@ $join             = array(
     );
 $additionalSelect = array(
     'CONCAT(user_head_id,",",user_admin_id) as confirm_ids',
-    'converted'
-    );
+    '(select IF(COUNT(*)>0, 1, 0) as converted from tblpurchase_suggested_details where tblpurchase_suggested_details.purchase_suggested_id = tblpurchase_suggested.id and tblpurchase_suggested_details.order_id = 0)',
+);
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect, $order_by);
 
 $output           = $result['output'];
@@ -134,7 +134,7 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     $options = '';
-    if(is_admin() && $aRow['tblpurchase_suggested.status']==2 && $aRow['converted']==0)
+    if(is_admin() && $aRow['tblpurchase_suggested.status']==2 && $aRow['(select IF(COUNT(*)>0, 1, 0) as converted from tblpurchase_suggested_details where tblpurchase_suggested_details.purchase_suggested_id = tblpurchase_suggested.id and tblpurchase_suggested_details.order_id = 0)']==1)
     {
         $options=icon_btn('purchase_orders/convert/'. $aRow['tblpurchase_suggested.id'] , 'exchange', 'btn-default');
     }

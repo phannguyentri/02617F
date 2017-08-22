@@ -52,7 +52,7 @@
             
             <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'client-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">            
+                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">            
                     <?php
                       // config
                     $attrs_not_select = array('data-none-selected-text' => _l('system_default_string'));
@@ -108,15 +108,18 @@
                         $default_date_create = ( isset($item) ? _d($item->date_create) : _d(date('Y-m-d')));
                         echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , 'date'); 
                     ?>
-                    <?php
-                        $default_date_import = ( isset($item) ? _d($item->date_import) : _d(date('Y-m-d')));
-                        echo render_date_input( 'date_import', 'orders_date_import' , $default_date_import , 'date'); 
-                    ?>
-                    <?php 
-                    $reason = (isset($item) ? $item->reason : "");
-                    echo render_textarea('explan', 'orders_explan', $reason, array(), array(), '', 'tinymce');
-                    ?>
-                </div>
+                    
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <?php
+                    $default_date_import = ( isset($item) ? _d($item->date_import) : _d(date('Y-m-d')));
+                    echo render_date_input( 'date_import', 'orders_date_import' , $default_date_import , 'date'); 
+                ?>
+                <?php 
+                $reason = (isset($item) ? $item->reason : "");
+                echo render_textarea('explan', 'orders_explan', $reason, array(), array(), '', 'tinymce');
+                ?>
+            </div>
                 <div class="row">
 
                     <!-- Edited -->
@@ -159,10 +162,11 @@
                                             
                                             foreach($purchase_suggested->items as $value) {
                                                 $value = (array)$value;
+                                                if($value['order_id']!=0) continue;
                                             ?>
                                         <tr class="sortable item">
                                             <td>
-                                                <input type="hidden" name="items[<?php echo $i; ?>][id]" id="items[<?php echo $i; ?>][id]" value="<?php echo $value['product_id']; ?>">
+                                                <input type="hidden" name="items[<?php echo $i; ?>][product_id]" id="items[<?php echo $i; ?>][product_id]" value="<?php echo $value['product_id']; ?>">
                                             </td>
                                             <td class="dragger"><?php echo $value['name']; ?></td>
                                             <td><?php echo $value['unit_name']; ?></td>

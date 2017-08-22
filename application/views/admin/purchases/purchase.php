@@ -53,11 +53,12 @@
 						<?php 
 							}
 						?>
-				 		<div class="col-md-12">
-				 			<h4 class="bold no-margin font-medium">
+						<h4 class="bold no-margin font-medium">
 						     <?php echo _l('Thông tin kế hoạch'); ?>
 						   </h4>
 						   <hr />
+				 		<div class="col-md-6">
+				 			
 						   <div class="form-group">
 				                 <label for="number"><?php echo _l('Số kế hoạch'); ?></label>
 				                 <div class="input-group">
@@ -70,16 +71,16 @@
 									<?php } ?>
 									<?php 
 				                    	// var_dump($purchase);
-																								if ($purchase)
-																									{
+										if ($purchase)
+											{
 
-																									$number = $purchase->code;
-																								}
-																								else
-																									{
-																									$number = sprintf('%05d', getMaxID('id', 'tblpurchase_plan') + 1);
-																								}
-																								?>
+											$number = $purchase->code;
+										}
+										else
+											{
+											$number = sprintf('%05d', getMaxID('id', 'tblpurchase_plan') + 1);
+										}
+										?>
 				                    <input type="text" name="number" class="form-control" value="<?= $number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>" readonly>
 				                  </div>
 			                </div>
@@ -88,21 +89,25 @@
                   			<?php echo render_date_input('date', 'Ngày kế hoạch', $value); ?>
 
                   			<?php
-																					$value = (isset($purchase) ? $purchase->name : "");
-																					echo render_input('name', _l('Tên kế hoạch'), $value);
-																					?>
+							$value = (isset($purchase) ? $purchase->name : "");
+							echo render_input('name', _l('Tên kế hoạch'), $value);
+							?>
 
-		                    <?php 
-																						$value = (isset($purchase) ? $purchase->reason : "");
-																						echo render_textarea('reason', 'Lý do', $value, array(), array(), '', 'tinymce');
-																						?>
+		                    
 
 		                    <!-- <?php
-																											$status = array(array('id' => 0, 'text' => 'Chưa duyệt'), array('id' => 1, 'text' => 'Đã duyệt'));
-																											$value = (isset($purchase) ? $purchase->status : "0");
-																											echo render_select('status', $status, array('id', 'text'), 'Trạng thái', $value, array(), array(), '', '', false);
-																											?> -->
+							$status = array(array('id' => 0, 'text' => 'Chưa duyệt'), array('id' => 1, 'text' => 'Đã duyệt'));
+							$value = (isset($purchase) ? $purchase->status : "0");
+							echo render_select('status', $status, array('id', 'text'), 'Trạng thái', $value, array(), array(), '', '', false);
+							?> -->
 				 		</div>
+						
+						<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+							<?php 
+							$value = (isset($purchase) ? $purchase->reason : "");
+							echo render_textarea('reason', 'Lý do', $value, array(), array(), '', 'tinymce');
+							?>
+						</div>
 						
 
 						

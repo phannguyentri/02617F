@@ -10,6 +10,7 @@ class Purchase_orders extends Admin_controller
         $this->load->model('orders_model');
         $this->load->model('currencies_model');
         $this->load->model('warehouse_model');
+        $this->load->model('contract_templates_model');
     }
     public function index() {
 
@@ -26,7 +27,6 @@ class Purchase_orders extends Admin_controller
         if(!$purchase_suggested || $purchase_suggested->status != 2 || $this->orders_model->check_exists($purchase_suggested->id)) {
             redirect(admin_url() . 'purchase_orders');
         }
-
         $data['currencies'] = $this->currencies_model->get();
         $data['purchase_suggested'] = $purchase_suggested;
         foreach($data['purchase_suggested']->items as $key=>$value) {
@@ -36,10 +36,10 @@ class Purchase_orders extends Admin_controller
         $data['suppliers'] = $this->orders_model->get_suppliers();
         if($this->input->post()) {
             $data = $this->input->post();
-            print_r($data);
-            exit();
+            
             $data['code'] = get_option('prefix_purchase_order') . $data['code'];
             $data['id_user_create'] = get_staff_user_id();
+
             $this->purchase_suggested_model->convert_to_order($id, $data);
             redirect(admin_url() . 'purchase_orders');
         }
@@ -52,8 +52,34 @@ class Purchase_orders extends Admin_controller
         if(!$order || $order->user_head_id == 0) {
             redirect(admin_url() . 'purchase_orders');
         }
-
+        $contract_merge_fields  = get_available_merge_fields();
+        $_contract_merge_fields = array();
+        foreach ($contract_merge_fields as $key => $val) {
+            foreach ($val as $type => $f) {
+                if ($type == 'contract') {
+                    foreach ($f as $available) {
+                        foreach ($available['available'] as $av) {
+                            if ($av == 'contract') {
+                                array_push($_contract_merge_fields, $f);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                } else if ($type == 'other') {
+                    array_push($_contract_merge_fields, $f);
+                } else if ($type == 'clients') {
+                    array_push($_contract_merge_fields, $f);
+                }
+            }
+        }
+        $data['contract_merge_fields'] = $_contract_merge_fields;
         $data['order'] = $order;
+        $data['default_template'] = $this->contract_templates_model->get_contract_template_by_id(2)->content;
+        foreach($data['order']->products as $key=>$value) {
+            $data['order']->products[$key]->warehouse_type = (object)$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id, true);
+        }
+        $data['currencies'] = $this->currencies_model->get();
         $data['product_list'] = $order->items;
         $data['suppliers'] = $this->orders_model->get_suppliers();
 
@@ -62,6 +88,9 @@ class Purchase_orders extends Admin_controller
             $data['code'] = get_option('prefix_contract') . $data['code'];
             $data['id_user_create'] = get_staff_user_id();
             $data['id_supplier'] = $order->id_supplier;
+            unset($data['items']);
+            $data['template'] = $this->contract_templates_model->get_contract_template_by_id(2)->content;
+
             $result = $this->orders_model->convert_to_contact($id, $data);
             redirect(admin_url() . 'purchase_contracts');
         }
@@ -71,10 +100,18 @@ class Purchase_orders extends Admin_controller
         if(is_numeric($id)) {
             $order = $this->orders_model->get($id);
             if($order) {
+                if($this->input->post()) {
+                    $data = $this->input->post();
+                    $this->orders_model->update($id, $data);
+                    $order = $this->orders_model->get($id);
+                }
                 $data = array();
                 $data['title'] = _l('orders_view_heading');
                 $data['suppliers'] = $this->orders_model->get_suppliers();
                 $data['warehouses'] = $this->orders_model->get_warehouses();
+                $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
+                $data['currencies'] = $this->currencies_model->get();
+                $data['products'] = $this->invoice_items_model->get_full();
                 // get purchase suggested id
                 $this->db->where('id', $order->id_purchase_suggested);
                 $ps = $this->db->get('tblpurchase_suggested')->row();
@@ -85,6 +122,9 @@ class Purchase_orders extends Admin_controller
                     $order->code_purchase_suggested = "";
                 }
                 $data['item'] = $order;
+                foreach($data['item']->products as $key=>$value) {
+                    $data['item']->products[$key]->warehouse_type = (object)$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id, true);
+                }
                 $content = $this->load->view('admin/orders/view', $data, true);
                 exit($content);
             }
@@ -138,7 +178,19 @@ class Purchase_orders extends Admin_controller
         }
         $pdf->Output(mb_strtoupper(slug_it($purchase_order_code)) . '.pdf', $type);
     }
-
+    public function lock($id) {
+        if (!has_permission('invoices', '', 'delete')) {
+            access_denied('invoices');
+        }
+        if (!$id || !is_numeric($id)) {
+            redirect(admin_url('purchase_orders'));
+        }
+        $item = $this->purchase_suggested_model->get($id);
+        if($item) {
+            $this->db->update('tblorders', array('isLock' => 1), array('id' => $id));
+        }
+        redirect(admin_url('purchase_orders'));
+    }
     /* Delete purchase */
     public function delete($id)
     {

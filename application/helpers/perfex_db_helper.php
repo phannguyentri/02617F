@@ -296,18 +296,27 @@ function get_option($name)
     }
     return $CI->perfex_base->get_option($name);
 }
+<<<<<<< HEAD
+function check_option($name) {
+=======
 
 
 function getWareHouse($id)
 {
    
+>>>>>>> 71769fe620af02ac2d7dbbee9e1d09b052773095
     $CI =& get_instance();
     if (!class_exists('perfex_base')) {
         $CI->load->library('perfex_base');
     }
+<<<<<<< HEAD
+    return $CI->perfex_base->check_option($name);
+}
+=======
     return $CI->perfex_base->getWareHouse($id);
 }
 
+>>>>>>> 71769fe620af02ac2d7dbbee9e1d09b052773095
 // function getProvince($id)
 // {
    

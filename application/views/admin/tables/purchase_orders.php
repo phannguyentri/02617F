@@ -23,6 +23,7 @@ $join             = array(
     );
 $additionalSelect = array(
     'converted',
+    'isLock',
     '(select tblstaff.fullname from tblstaff where tblstaff.staffid = tblorders.id_user_create) as creator',
     );
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable ,$join, $where, $additionalSelect, $order_by);
@@ -98,9 +99,12 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     $options = '';
-    if(is_admin() && $aRow['IF(tblorders.user_head_id=0,0,1)']==1 && $aRow['converted']==0)
+    if(is_admin() && $aRow['IF(tblorders.user_head_id=0,0,1)']==1 && $aRow['converted']==0 && $aRow['isLock'] == 1)
     {
         $options=icon_btn('purchase_orders/convert_to_contract/'. $aRow['tblorders.id'] , 'exchange', 'btn-default');
+    }
+    else if(is_admin() && $aRow['IF(tblorders.user_head_id=0,0,1)']==1 && $aRow['converted']==0 && $aRow['isLock'] == 0) {
+        $options=icon_btn('purchase_orders/lock/'. $aRow['tblorders.id'] , 'lock', 'btn-default');
     }
     $options .= icon_btn('purchase_orders/detail_pdf/'. $aRow['tblorders.id'] .'?pdf=true' , 'file-pdf-o', 'btn-default', array('target'=>'_blank'));
     $options .= icon_btn('purchase_orders/detail_pdf/'. $aRow['tblorders.id'] .'?print=true' , 'print', 'btn-default', array('target'=>'_blank'));
