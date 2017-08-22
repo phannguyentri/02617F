@@ -106,7 +106,6 @@
                     $default_name = (isset($item) ? $item->name : _l('quote_name'));
                     echo form_hidden('name', _l('quote_name'), $default_name);
                     ?>
-
                     <?php
                     $selected=(isset($item) ? $item->customer_id : '');
                     echo render_select('customer_id',$customers,array('userid','company'),'client',$selected,$frmattrs);
@@ -157,6 +156,7 @@
                                         <th width="" class="text-left"><?php echo _l('item_quantity'); ?></th>
                                         
                                         <th width="" class="text-left"><?php echo _l('item_price'); ?></th>
+                                        <th width="" class="text-left"><?php echo _l('tax'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('warehouse_type'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('warehouse_name'); ?></th>
@@ -181,6 +181,9 @@
                                         
                                         <td>
                                             <?php echo _l('item_price'); ?>
+                                        </td>
+                                        <td>
+                                            <?php echo _l('tax'); ?>
                                         </td>
                                         <td>
                                             0
@@ -226,6 +229,7 @@
                                         </td>
                                             
                                         <td><?php echo number_format($value->unit_cost); ?></td>
+                                        <td><?=form_input('items['.$i.'][taxrate]',$value->taxrate)?><?php echo number_format($value->tax); ?></td>
                                         <td><?php echo number_format($value->sub_total); ?></td>
                                         <td><?php echo $value->warehouse_type->kindof_warehouse_name ?></td>
                                         <td><input type="hidden" data-store="<?=$value->warehouse_type->product_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(có <?=$value->warehouse_type->product_quantity?>)</td>
@@ -460,8 +464,8 @@
         }
         
         var Gia = currentQuantityInput.parent().find(' + td');
-        var Tong = Gia.find(' + td');
-        Tong.text( formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
+        var Tax = Gia.find(' + td');
+        Tax.innerText  =(formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
         refreshTotal();
     });
     $('#select_kindof_warehouse').change(function(e){

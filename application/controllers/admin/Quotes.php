@@ -116,6 +116,7 @@ class Quotes extends Admin_controller
 
         } else {
             $data['item'] = $this->quotes_model->getQuoteByID($id);
+            // var_dump($data['item']);die();
             $i=0;
             foreach ($data['item']->items as $key => $value) {       
                 $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
@@ -127,7 +128,7 @@ class Quotes extends Admin_controller
             }
         }
         $data['items']= $this->invoice_items_model->get_full();
-        
+
         $where_clients = 'tblclients.active=1';
 
         if (!has_permission('customers', '', 'view')) {

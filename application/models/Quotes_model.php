@@ -32,11 +32,12 @@ class Quotes_model extends CRM_Model
 
     public function getQuoteItems($id)
     {
-        $this->db->select('tblquote_items.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id, tblitems.prefix,tblitems.code, tblitems.warranty, tblitems.specification,tblcountries.short_name as made_in,tblitems.avatar as image');
+        $this->db->select('tblquote_items.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id, tblitems.prefix,tblitems.code, tblitems.warranty, tblitems.specification,tblcountries.short_name as made_in,tblitems.avatar as image,tbltaxes.name as tax_name,tbltaxes.taxrate as taxrate');
         $this->db->from('tblquote_items');
         $this->db->join('tblitems','tblitems.id=tblquote_items.product_id','left');
         $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
         $this->db->join('tblcountries','tblcountries.country_id=tblitems.country_id','left');
+        $this->db->join('tbltaxes','tbltaxes.id=tblitems.tax','left');
         $this->db->where('quote_id', $id);
         $items = $this->db->get()->result();
         return $items;

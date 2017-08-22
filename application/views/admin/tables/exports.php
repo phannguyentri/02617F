@@ -118,12 +118,12 @@ foreach ($rResult as $aRow) {
         $_data .= icon_btn('exports/pdf/' . $aRow['id'].'?pdf=true', 'print', 'btn-default',array('target' => '_blank','data-toggle'=>'tooltip',
             'title'=>_l('print_export'),
             'data-placement'=>'top'));
-        if(isset($aRow['delivery_code']))
-        {            
-            $_data .= icon_btn('exports/pdf/' . $aRow['id'].'?pdf=true&type=delivery', 'print', 'btn-default',array('target' => '_blank','data-toggle'=>'tooltip',
-            'title'=>_l('print_delivery'),
-            'data-placement'=>'top'));
-        } 
+        // if(isset($aRow['delivery_code']))
+        // {            
+        //     $_data .= icon_btn('exports/pdf/' . $aRow['id'].'?pdf=true&type=delivery', 'print', 'btn-default',array('target' => '_blank','data-toggle'=>'tooltip',
+        //     'title'=>_l('print_delivery'),
+        //     'data-placement'=>'top'));
+        // } 
 
         if($aRow['status']!=2)
         {            
@@ -132,10 +132,16 @@ foreach ($rResult as $aRow) {
             'data-placement'=>'top'));
         }  
         else
-        {            
+        {   $type='file-o';
+            $view=_l('view_delivery');
+            if(empty($aRow['delivery_code']))     
+            {
+                $type='plus-square-o';
+                $view=_l('create_delivery');
+            }
             //Tao Phieu Giao hang
-            $_data .= icon_btn('exports/sale_delivery/'. $aRow['id'] , 'file-o', 'btn-default',array('data-toggle'=>'tooltip',
-            'title'=>_l('create_delivery'),
+            $_data .= icon_btn('exports/sale_delivery/'. $aRow['id'] , $type, 'btn-default',array('data-toggle'=>'tooltip',
+            'title'=>$view,
             'data-placement'=>'top'));
             $_data .= icon_btn('exports/export_detail/'. $aRow['id'] , 'eye', 'btn-default',array('data-toggle'=>'tooltip',
             'title'=>_l('view'),

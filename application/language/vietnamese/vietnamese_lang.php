@@ -3822,7 +3822,7 @@ $lang['contract_code'] = "Mã hợp đồng";
 $lang['no_item_data'] = "Không có thông tin sản phẩm";
 $lang['contract_value'] = "Giá trị hợp đồng";
 $lang['sale_contract'] = "Hợp đồng bán hàng";
-$lang['create_delivery'] = "Phiếu giao hàng";
+$lang['create_delivery'] = "Tạo hiếu giao hàng";
 $lang['view'] = "Xem chi tiết";
 
 $lang['add_delivery_order'] = "Thêm phiếu giao hàng";
@@ -3846,9 +3846,9 @@ $lang['chief_accountant'] = "Kế toán trưởng";
 
 $lang['director'] = "Giám đốc";
 $lang['divider'] = '<hr style="margin-top: 20px;margin-bottom: 20px;border: 0;border-top: 1px solid #eee;" />';
-$lang['print_delivery'] = "In phiếu giao hàng";
+$lang['edit_sale_order_'] = "Sửa đơn hàng";
 
-$lang['print_delivery'] = "In phiếu giao hàng";
+$lang['view_delivery'] = "Xem phiếu giao hàng";
 $lang['print_delivery'] = "In phiếu giao hàng";
 
 $lang['print_delivery'] = "In phiếu giao hàng";

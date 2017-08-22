@@ -232,7 +232,6 @@ class Exports_model extends CRM_Model
             'date'=>to_sql_date($data['date'])
             );
 
-        var_dump($export);die();
         
         if($this->db->update('tblexports',$export,array('id'=>$id)) && $this->db->affected_rows()>0)
         {

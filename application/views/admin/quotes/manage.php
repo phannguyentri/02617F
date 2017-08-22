@@ -13,6 +13,15 @@
                 <div class="clearfix"></div>
                 <div class="panel_s">
                     <div class="panel-body">
+                    <input type="hidden" id="filterStatus" value="" />
+                    <div data-toggle="btn" class="btn-group mbot15">
+                        <button style=" font-size: 11px;" type="button" id="btnDatatableFilterAll" data-toggle="tab" class="btn btn-info active">Tất cả</button>
+                        <button style=" font-size: 11px;" type="button" id="btnDatatableFilterNotApproval" data-toggle="tab" class="btn btn-info">Chưa duyệt</button>
+                        <button style=" font-size: 11px;" type="button" id="btnDatatableFilterApproval" data-toggle="tab" class="btn btn-info">Đã duyệt</button>
+                        <button style=" font-size: 11px;" type="button" id="btnDatatableFilterNotCreateContract" data-toggle="tab" class="btn btn-info">Chưa tạo hợp đồng</button>
+                        <!-- <button style=" font-size: 11px;" type="button" id="btnDatatableFilterCreatingOrder" data-toggle="tab" class="btn btn-info">Đang tạo hợp đồng</button> -->
+                        <button style=" font-size: 11px;" type="button" id="btnDatatableFilterCreateContract" data-toggle="tab" class="btn btn-info">Đã tạo hợp đồng</button>
+                    </div>
                     <?php render_datatable(array(
                             _l('#'),
                             _l('Mã phiếu báo giá'),
@@ -31,28 +40,44 @@
 </div>
 <?php init_tail(); ?>
 <script type="text/javascript">
-    $(function(){
-        initDataTable('.table-quotes', window.location.href, [1], [1]);
-    //     _validate_form($('form'),{unit:'required'},manage_contract_types);
-    //     $('#adjustment_type').on('hidden.bs.modal', function(event) {
-    //         $('#additional').html('');
-    //         $('#adjustment_type input').val('');
-    //         $('.add-title').removeClass('hide');
-    //         $('.edit-title').removeClass('hide');
-    //     });
-    //     function manage_contract_types(form) {
-    //     var data = $(form).serialize();
-    //     var url = form.action;
-    //     $.post(url, data).done(function(response) {
-    //         response = JSON.parse(response);
-    //         if(response.success == true){
-    //             alert_float('success',response.message);
-    //         }
-    //         $('.table-units').DataTable().ajax.reload();
-    //         $('#type').modal('hide');
-    //     });
-    //     return false;
-    // }
+        $(function(){
+         $('[data-toggle="btn"] .btn').on('click', function(){
+            var $this = $(this);
+            $this.parent().find('.active').removeClass('active');
+            $this.addClass('active');
+        });
+        $('#btnDatatableFilterAll').click(() => {
+            $('#filterStatus').val('');
+            $('#filterStatus').change();
+        });
+        $('#btnDatatableFilterNotApproval').click(() => {
+            $('#filterStatus').val(1);
+            $('#filterStatus').change();
+        });
+        $('#btnDatatableFilterApproval').click(() => {
+            $('#filterStatus').val(2);
+            $('#filterStatus').change();
+        });
+        $('#btnDatatableFilterNotCreateContract').click(() => {
+            $('#filterStatus').val(3);
+            $('#filterStatus').change();
+        });
+        $('#btnDatatableFilterCreateContract').click(() => {
+            $('#filterStatus').val(4);
+            $('#filterStatus').change();
+        });
+        var filterList = {
+            'filterStatus' : '[id="filterStatus"]',
+        };
+
+        initDataTable('.table-quotes', window.location.href, [1], [1], filterList);
+        console.log(filterList)
+        $.each(filterList, (filterIndex, filterItem) => {
+            $('input' + filterItem).on('change', () => {
+                $('.table-quotes').DataTable().ajax.reload();
+            });
+        });
+
     });
     function var_status(status,id)
     {

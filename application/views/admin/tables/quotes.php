@@ -24,6 +24,23 @@ if(!empty($sale_id))
 {
     $where[]='AND rel_id="'.$sale_id.'"';
 }
+if($this->_instance->input->post()) {
+    $filter_status = $this->_instance->input->post('filterStatus');
+    if(is_numeric($filter_status)) {
+        if($filter_status == 2)
+            array_push($where, 'AND status='.$filter_status);
+        elseif($filter_status == 5)
+            array_push($where, 'AND export_status=2');
+        elseif($filter_status == 4)
+            array_push($where, 'AND export_status=1');
+        elseif($filter_status == 3)
+            array_push($where, 'AND export_status=0');
+        else {
+            array_push($where, 'AND status<>2');
+        }
+    }
+}
+
 $join         = array(
     'LEFT JOIN tblstaff  ON tblstaff.staffid=tblquotes.create_by',
     'LEFT JOIN tblclients  ON tblclients.userid=tblquotes.customer_id'

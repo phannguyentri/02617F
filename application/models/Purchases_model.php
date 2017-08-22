@@ -29,6 +29,7 @@ class Purchases_model extends CRM_Model
         if (is_numeric($id)) {
             $this->db->where('id', $id);
             $invoice = $this->db->get()->row();
+
             if ($invoice) {
                 $invoice->items       = $this->get_invoice_items($id);
             }
@@ -54,6 +55,7 @@ class Purchases_model extends CRM_Model
         $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
         $this->db->where('purchase_plan_id', $id);
         $items = $this->db->get()->result_array();
+
         return $items;
     }
     public function get_invoice_item($id)
@@ -216,7 +218,6 @@ class Purchases_model extends CRM_Model
         {
             $id=$this->db->insert_id();
             logActivity('Purchase Plan Insert [ID: ' . $id . ']');
-
             $count=0;
         }
 

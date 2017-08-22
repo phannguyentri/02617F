@@ -44,7 +44,7 @@ class Purchases extends Admin_controller
     /* Edit client or add new client*/
     public function purchase($id = '')
     {
-        // var_dump('AA'.sprintf('%05d',getMaxID('id','tblpurchase_plan')));die();
+        
         if (!has_permission('customers', '', 'view')) {
             if ($id != '' && !is_customer_admin($id)) {
                 access_denied('customers');
@@ -59,7 +59,6 @@ class Purchases extends Admin_controller
                 }
 
                 $data                 = $this->input->post();
-
                 if(isset($data['item']) && count($data['item']) > 0)
                 {
                     
@@ -85,11 +84,13 @@ class Purchases extends Admin_controller
                 redirect(admin_url('purchases/purchase/' . $id));
             }
         }
+
         if ($id == '') {
             $title = _l('add_new', _l('kế hoạch mua'));
 
         } else {
             $data['purchase'] = $this->purchases_model->getPurchaseByID($id);
+            
             foreach ($data['purchase']->items as $key => $value) {
                 $data['purchase']->items[$key]['warehouse_type']=$this->warehouse_model->getWarehouseProduct($value['warehouse_id'],$value['product_id'], true);
             }
