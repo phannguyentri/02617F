@@ -28,6 +28,7 @@ class Orders_model extends CRM_Model
     }
     public function get_detail($order_id) {
         if(is_numeric($order_id)) {
+            $this->db->select('tblorders_detail.*, tblunits.*, tblitems.*, tblorders_detail.product_price_buy as price_buy');
             $this->db->where('order_id', $order_id);
             $this->db->join('tblitems',     'tblitems.id = tblorders_detail.product_id', 'left');
             $this->db->join('tblunits',     'tblunits.unitid = tblitems.unit', 'left');
@@ -35,6 +36,44 @@ class Orders_model extends CRM_Model
             return $items;
         }
         return array();
+    }
+    public function update($id, $data) {
+        if(is_numeric($id)) {
+            $order = $this->db->where('id', $id)->get('tblorders')->row();
+            if($order) {
+                $items = $data['items'];
+                unset($data['items']);
+                $this->db->where('id', $id);
+                $this->db->update('tblorders', $data);
+                if(count($items) > 0) {
+                    foreach($items as $key => $value) {
+                        $item_exists = $this->db->where('order_id', $id)->where('product_id', $value['product_id'])->get('tblorders_detail')->row();
+                        if($item_exists) {
+                            $data = array(
+                                'product_quantity' => $value['quantity'],
+                                'product_price_buy' => $value['price_buy'],
+                                'currency_id' => $value['currency'],
+                                'warehouse_id' => $value['warehouse'],
+                            );
+                            $this->db->where('id', $item_exists->id);
+                            $this->db->update('tblorders_detail', $data);
+                        }
+                        else {
+                            $data = array(
+                                'order_id' => $id,
+                                'product_id' => $value['product_id'],
+                                'product_quantity' => $value['quantity'],
+                                'product_price_buy' => $value['price_buy'],
+                                'currency_id' => $value['currency'],
+                                'warehouse_id' => $value['warehouse'],
+                            );
+                            $this->db->insert('tblorders_detail', $data);
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
     public function get_suppliers() {
         return $this->db->get('tblsuppliers')->result_array();
@@ -83,9 +122,10 @@ class Orders_model extends CRM_Model
     }
     public function check_exists($purchase_suggested_id) {
         if(is_numeric($purchase_suggested_id)) {
-            $this->db->where('id_purchase_suggested', $purchase_suggested_id);
-            $items = $this->db->get('tblorders')->result_array();
-            if(count($items) > 0) {
+            $this->db->where('purchase_suggested_id', $purchase_suggested_id);
+            $this->db->where('order_id', 0);
+            $items = $this->db->get('tblpurchase_suggested_details')->result_array();
+            if(count($items) == 0) {
                 return true;
             }
         }

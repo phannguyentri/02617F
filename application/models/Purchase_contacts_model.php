@@ -11,7 +11,8 @@ class Purchase_contacts_model extends CRM_Model
             $this->db->select('tblpurchase_contracts.*,tblsuppliers.company as suppliers_company
             ,tblsuppliers.address as suppliers_address
             ,tblsuppliers.vat as suppliers_vat
-            ,tblstaff.fullname as user_fullname');
+            ,tblstaff.fullname as user_fullname
+            ,(select tblcurrencies.name from tblcurrencies where tblcurrencies.id = tblpurchase_contracts.currency_id) as currency_name');
             $this->db->where('id', $id);
             $this->db->join('tblsuppliers', 'tblsuppliers.userid = tblpurchase_contracts.id_supplier', 'left');
             $this->db->join('tblstaff', 'tblstaff.staffid = tblpurchase_contracts.id_user_create', 'left');
@@ -25,9 +26,11 @@ class Purchase_contacts_model extends CRM_Model
     }
     public function get_detail($order_id) {
         if(is_numeric($order_id)) {
+            $this->db->select('*, tblorders_detail.product_price_buy as price_buy, tbltaxes.name as tax_name, tblitems.id as id, tblitems.name as name');
             $this->db->where('order_id', $order_id);
             $this->db->join('tblitems',     'tblitems.id = tblorders_detail.product_id', 'left');
             $this->db->join('tblunits',     'tblunits.unitid = tblitems.unit', 'left');
+            $this->db->join('tbltaxes',     'tbltaxes.id = tblitems.tax', 'left');
             $items = $this->db->get('tblorders_detail')->result();
             return $items;
         }

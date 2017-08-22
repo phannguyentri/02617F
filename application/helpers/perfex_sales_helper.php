@@ -1803,6 +1803,182 @@ function contract_pdf($contract)
     }
     return $pdf;
 }
+
+function contract_purchase_pdf($contract) {
+    $CI =& get_instance();
+    $CI->load->library('pdf');
+
+    $formatArray = get_pdf_format('pdf_format_invoice');
+    $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false,false,'contract');
+
+    $font_name = get_option('pdf_font');
+    $font_size = 8;//get_option('pdf_font_size');
+    if ($font_size == '') {
+        $font_size = 10;
+    }
+    $CI->pdf->SetMargins(PDF_MARGIN_LEFT, 25, PDF_MARGIN_RIGHT);
+
+    $CI->pdf->SetAutoPageBreak(TRUE, 15);
+    $pdf->setImageScale(1.53);
+    $pdf->SetAuthor(get_option('company'));
+    $pdf->SetFont($font_name, '', $font_size);
+    $pdf->AddPage($formatArray['orientation'], $formatArray['format']);
+    if ($CI->input->get('print') == 'true') {
+        // force print dialog
+        $js = 'print(true);';
+        $pdf->IncludeJS($js);
+    }
+    # Dont remove these lines - important for the PDF layout
+    // Add <br /> tag and wrap over div element every image to prevent overlaping over text
+    $contract->template = preg_replace('/(<img[^>]+>(?:<\/img>)?)/i', '<div>$1</div>', $contract->template);
+    // Add cellpadding to all tables inside the html
+    $contract->template = preg_replace('/(<table\b[^><]*)>/i', '$1 cellpadding="4">', $contract->template);
+    // Remove white spaces cased by the html editor ex. <td>  item</td>
+    $contract->template = preg_replace('/[\t\n\r\0\x0B]/', '', $contract->template);
+    $contract->template = preg_replace('/([\s])\1+/', ' ', $contract->template);
+    function convert_vi_to_en($str) {
+        $str = preg_replace("/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/", 'a', $str);
+        $str = preg_replace("/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/", 'e', $str);
+        $str = preg_replace("/(ì|í|ị|ỉ|ĩ)/", 'i', $str);
+        $str = preg_replace("/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/", 'o', $str);
+        $str = preg_replace("/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/", 'u', $str);
+        $str = preg_replace("/(ỳ|ý|ỵ|ỷ|ỹ)/", 'y', $str);
+        $str = preg_replace("/(đ)/", 'd', $str);
+        $str = preg_replace("/(À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ)/", 'A', $str);
+        $str = preg_replace("/(È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ)/", 'E', $str);
+        $str = preg_replace("/(Ì|Í|Ị|Ỉ|Ĩ)/", 'I', $str);
+        $str = preg_replace("/(Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ)/", 'O', $str);
+        $str = preg_replace("/(Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ)/", 'U', $str);
+        $str = preg_replace("/(Ỳ|Ý|Ỵ|Ỷ|Ỹ)/", 'Y', $str);
+        $str = preg_replace("/(Đ)/", 'D', $str);
+        //$str = str_replace(" ", "-", str_replace("&*#39;","",$str));
+        return $str;
+    }
+    // auto get from option
+    
+    preg_match_all('/\{([A-Za-z\_]*)\}/', $contract->template, $list_options);
+    foreach($list_options[1] as $value) {
+        if(check_option($value))
+            $contract->template = str_replace("{".$value."}", convert_vi_to_en(get_option($value)), $contract->template);    
+    }
+    // Another replacement
+    $contract->template = str_replace("{contract_id}", $contract->code, $contract->template);
+    $htmlTable = <<<EOL
+<table style="width: 100%;border-collapse: collapse;" border="1">
+<tbody>
+<tr style="width: 50%;font-weight: bold;font-family: 'trebuchet ms', geneva, sans-serif; font-size: 10pt;background-color: #800000;color: white;">
+<td>
+PART NUMBER
+</td>
+<td>
+UNIT OF MEASURE
+</td>
+<td>
+DESCRIPTION
+</td>
+<td>
+QTY
+</td>
+<td>
+UNIT PRICE
+</td>
+<td>
+TAX
+</td>
+<td>
+TOTAL AMOUNT
+</td>
+</tr>
+{contract_item_list}
+</tbody>
+</table>
+EOL;
+    $contract->template = str_replace("{contract_item_list}", $htmlTable, $contract->template);
+    // print_r($contract);
+    // exit();
+    $htmlTable = "";
+    $i=0;
+    $total = 0;
+    foreach($contract->products as $value) {
+        $total += $value->product_quantity * $value->product_price_buy + $value->product_quantity * $value->product_price_buy * $value->taxrate / 100;
+        $htmlTable .= '
+<tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
+
+<td>
+'.(++$i).'
+</td>
+
+<td>
+'.($value->unit).'
+</td>
+
+<td>
+'.($value->description).'
+</td>
+
+<td>
+'.($value->product_quantity).'
+</td>
+
+<td>
+'.number_format($value->product_price_buy).'
+</td>
+
+<td>
+'.($value->taxrate).' %
+</td>
+
+<td>
+'.number_format($value->product_quantity * $value->product_price_buy + $value->product_quantity * $value->product_price_buy * $value->taxrate / 100).'
+</td>
+</tr>
+';
+    }
+    $htmlTable .= '
+    <tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
+    
+    
+    <td colspan="4">
+    </td>
+    <td colspan="2">
+    Subtotal
+    </td>
+    
+    <td>
+    '.number_format($total).'
+    </td>
+    </tr>
+    <tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
+    
+    
+    <td colspan="4">
+    </td>
+    <td colspan="2">
+    Currency
+    </td>
+    
+    <td>
+    '.$contract->currency_name.'
+    </td>
+    </tr>
+    ';
+    $contract->template = str_replace("{contract_item_list}", $htmlTable, $contract->template);
+    $contract->template = str_replace("{terms_of_sale}",    $contract->terms_of_sale, $contract->template);
+    $contract->template = str_replace("{terms_of_payment}", $contract->shipping_terms, $contract->template);
+
+    // Tcpdf does not support float css we need to adjust this here
+    $contract->template = str_replace('float: right', 'text-align: right', $contract->template);
+    $contract->template = str_replace('float: left', 'text-align: left', $contract->template);
+    // Image center
+    $contract->template = str_replace('margin-left: auto; margin-right: auto;', 'text-align:center;', $contract->template);
+
+    if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_contractpdf.php')) {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_contractpdf.php');
+    } else {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/contractpdf.php');
+    }
+    return $pdf;
+}
 /**
  * Generate payment pdf
  * @since  Version 1.0.1

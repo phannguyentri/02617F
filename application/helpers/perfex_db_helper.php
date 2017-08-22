@@ -296,7 +296,13 @@ function get_option($name)
     }
     return $CI->perfex_base->get_option($name);
 }
-
+function check_option($name) {
+    $CI =& get_instance();
+    if (!class_exists('perfex_base')) {
+        $CI->load->library('perfex_base');
+    }
+    return $CI->perfex_base->check_option($name);
+}
 // function getProvince($id)
 // {
    

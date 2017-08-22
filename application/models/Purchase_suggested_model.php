@@ -151,6 +151,7 @@ class Purchase_suggested_model extends CRM_Model
     public function get_detail($purchase_suggested_id) {
         if(is_numeric($purchase_suggested_id)) {
             $this->db->select("*,
+            tblpurchase_suggested_details.id as id,
             tblpurchase_suggested_details.price_buy as price_buy,
             (select unit from tblunits where tblunits.unitid=tblitems.unit) as unit_name,
             ");
@@ -193,29 +194,32 @@ class Purchase_suggested_model extends CRM_Model
             $this->db->where('id', $id);
             $purchase_suggested = $this->db->get('tblpurchase_suggested')->row();
             if($purchase_suggested) {
-                $data_suggested = array(
-                    'converted' => '1',
-                );
-                $this->db->where('id', $id);
-                $this->db->update('tblpurchase_suggested', $data_suggested);
-                // Get products
-                $this->db->where('purchase_suggested_id', $id);
-                $this->db->join('tblitems', 'tblitems.id = tblpurchase_suggested_details.product_id', 'left');
-                $purchase_suggested_products = $this->db->get('tblpurchase_suggested_details')->result();
+                
+                // Doesn't update
+                // $data_suggested = array(
+                //     'converted' => '1',
+                // );
+                // $this->db->where('id', $id);
+                // $this->db->update('tblpurchase_suggested', $data_suggested);
+
+                $items = $data['items'];
+                unset($data['items']);
                 $this->db->insert('tblorders', $data);
                 if ($this->db->affected_rows() > 0) {
                     $new_id = $this->db->insert_id();
-                    foreach($purchase_suggested_products as $key=>$value) {
+                    foreach($items as $key=>$value) {
                         $data_order = array(
                             'order_id' => $new_id,
-                            'product_id' => $value->id,
-                            'product_code' => $value->code,
-                            'product_quantity' => $value->product_quantity,
-                            'product_price_buy' => $value->product_price_buy,
-                            'product_discount' => $value->discount,
-                            'product_taxrate' => $value->rate,
+                            'product_id' => $value['product_id'],
+                            'product_quantity' => $value['quantity'],
+                            'currency_id' => $value['currency'],
+                            'warehouse_id' => $value['warehouse'],
+                            'product_price_buy' => $value['price_buy'],
+                            'purchase_suggested_detail_id' => $value['id'],
                         );
                         $this->db->insert('tblorders_detail', $data_order);
+                        // Update suggested detail
+                        $this->db->update('tblpurchase_suggested_details', array('order_id' => $new_id),array('id' => $value['id']));
                     }
                     return true;
                 }

@@ -189,6 +189,24 @@ class Perfex_Base
         }
         return '';
     }
+    public function check_option($name) {
+        if ($name == 'number_padding_invoice_and_estimate') {
+            $name = 'number_padding_prefixes';
+
+        }
+
+        $name = trim($name);
+        
+        if (isset($this->options[$name])) {
+            if (in_array($name, $this->dynamic_options)) {
+                $this->_instance->db->where('name', $name);
+                return true;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Add new quick action data

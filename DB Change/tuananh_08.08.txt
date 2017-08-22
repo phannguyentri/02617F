@@ -8,3 +8,11 @@ ALTER TABLE `tblpurchase_suggested_details` ADD `currency_id` INT NOT NULL AFTER
 
 ALTER TABLE `tblpurchase_suggested_details` CHANGE `converted` `order_id` INT NOT NULL;
 ALTER TABLE `tblorders` ADD `currency_id` INT NOT NULL AFTER `converted`;
+ALTER TABLE `tblorders_detail` ADD `purchase_suggested_detail_id` INT NOT NULL AFTER `warehouse_id`;
+ALTER TABLE `tblorders_detail` CHANGE `product_price_buy` `product_price_buy` DECIMAL(11,2) NOT NULL;
+ALTER TABLE `tblorders_detail` CHANGE `purchase_suggested_detail_id` `purchase_suggested_detail_id` INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE `tblorders` ADD `isLock` BOOLEAN NOT NULL DEFAULT FALSE AFTER `converted`;
+
+ALTER TABLE `tblpurchase_contracts` ADD `terms_of_sale` LONGTEXT NOT NULL AFTER `date_create`;
+ALTER TABLE `tblpurchase_contracts` ADD `shipping_terms` LONGTEXT NOT NULL AFTER `terms_of_sale`;
+ALTER TABLE `tblpurchase_contracts` ADD `template` LONGTEXT NOT NULL AFTER `shipping_terms`;

@@ -41,26 +41,32 @@ class Contract_templates extends Admin_controller
         }
         // echo "<pre>";var_dump($contract_merge_fields);die();
         $contract_merge_fields  = get_available_merge_fields();
-            $_contract_merge_fields = array();
-            foreach ($contract_merge_fields as $key => $val) {
-                foreach ($val as $type => $f) {
-                    if ($type == 'contract') {
-                        foreach ($f as $available) {
-                            foreach ($available['available'] as $av) {
-                                if ($av == 'contract') {
-                                    array_push($_contract_merge_fields, $f);
-                                    break;
-                                }
+        $_contract_merge_fields = array();
+        foreach ($contract_merge_fields as $key => $val) {
+            foreach ($val as $type => $f) {
+                if ($type == 'contract') {
+                    foreach ($f as $available) {
+                        foreach ($available['available'] as $av) {
+                            if ($av == 'contract') {
+                                array_push($_contract_merge_fields, $f);
+                                break;
                             }
-                            break;
                         }
-                    } else if ($type == 'other') {
-                        array_push($_contract_merge_fields, $f);
-                    } else if ($type == 'clients') {
-                        array_push($_contract_merge_fields, $f);
+                        break;
                     }
-                }
+                } else if ($type == 'contract_purchase') {
+                    array_push($_contract_merge_fields, $f);
+                } else if ($type == 'suppliers') {
+                    array_push($_contract_merge_fields, $f);
+                } else if ($type == 'other') {
+                    array_push($_contract_merge_fields, $f);
+                } else if ($type == 'clients') {
+                    array_push($_contract_merge_fields, $f);
+                } 
             }
+        }
+        // print_r($_contract_merge_fields);
+        // exit();
         $data['contract_merge_fields'] = $_contract_merge_fields;
         $data['template']               = $this->contract_templates_model->get_contract_template_by_id($id);
 
