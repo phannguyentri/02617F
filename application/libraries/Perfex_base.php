@@ -192,7 +192,7 @@ class Perfex_Base
                 $address[]=$client->city ? _l("$province->type ".$province->name) : '' ;
             }
             foreach ($address as $key => $value) {
-                if(empty($value)) unset($address[$key]);
+                if(empty($value) || empty(trim($value))) unset($address[$key]);
             }
             return implode(', ', $address);
         }

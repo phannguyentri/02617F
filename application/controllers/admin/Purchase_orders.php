@@ -29,6 +29,8 @@ class Purchase_orders extends Admin_controller
         }
         $data['currencies'] = $this->currencies_model->get();
         $data['purchase_suggested'] = $purchase_suggested;
+        $data['warehouses'] = $this->orders_model->get_warehouses();
+        $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
         foreach($data['purchase_suggested']->items as $key=>$value) {
             $data['purchase_suggested']->items[$key]->warehouse_type = (object)$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id, true);
         }
@@ -217,6 +219,9 @@ class Purchase_orders extends Admin_controller
 
     public function update_status()
     {
+        if (!has_permission('invoices', '', 'delete')) {
+            access_denied('invoices');
+        }
         $id = $this->input->post('id');
         $status = $this->input->post('status');
         
@@ -256,9 +261,46 @@ class Purchase_orders extends Admin_controller
         exit();
     }
     public function getCurrencyIDFromSupplier($idSupplier) {
+        if (!has_permission('invoices', '', 'delete')) {
+            access_denied('invoices');
+        }
         $value = $this->currencies_model->getCurrencyIDFromSupplier($idSupplier);
         $result = new stdClass();
         $result->id = $value;
         echo json_encode($result);
+    }
+    public function getExchangeRate($id_currency) {
+        if (!has_permission('invoices', '', 'delete')) {
+            access_denied('invoices');
+        }
+        $value = $this->currencies_model->get($id_currency);
+        function get_currency($from_Currency, $to_Currency, $amount) {
+            $amount = urlencode($amount);
+            $from_Currency = urlencode($from_Currency);
+            $to_Currency = urlencode($to_Currency);
+        
+            $url = "http://www.google.com/finance/converter?a=$amount&from=$from_Currency&to=$to_Currency";
+        
+            $ch = curl_init();
+            $timeout = 0;
+            curl_setopt ($ch, CURLOPT_URL, $url);
+            curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+        
+            curl_setopt ($ch, CURLOPT_USERAGENT,
+                         "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)");
+            curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+            $rawdata = curl_exec($ch);
+            curl_close($ch);
+            var_dump($data);
+            $data = explode('bld>', $rawdata);
+            $data = explode($to_Currency, $data[1]);
+        
+            return round($data[0], 2);
+        }
+        
+        if($value) {
+            //$content = file_get_contents("https://www.google.com/finance/converter?a=1&from=".$value->name."&to=VND");
+            exit(get_currency($value->name, 'VND', 1));
+        }
     }
 }

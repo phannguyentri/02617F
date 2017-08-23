@@ -208,6 +208,8 @@ class Purchase_suggested_model extends CRM_Model
                 if ($this->db->affected_rows() > 0) {
                     $new_id = $this->db->insert_id();
                     foreach($items as $key=>$value) {
+                        $product = $this->db->where('id', $value['product_id'])->get('tblitems')->row();
+                        $tax = $this->db->where('id', $product->tax)->get('tbltaxes')->row();
                         $data_order = array(
                             'order_id' => $new_id,
                             'product_id' => $value['product_id'],
@@ -216,7 +218,9 @@ class Purchase_suggested_model extends CRM_Model
                             'warehouse_id' => $value['warehouse'],
                             'product_price_buy' => $value['price_buy'],
                             'purchase_suggested_detail_id' => $value['id'],
-                        );
+                            'exchange_rate' => $value['exchage_rate'],
+                            'taxrate' => $tax->taxrate,
+                        );                       
                         $this->db->insert('tblorders_detail', $data_order);
                         // Update suggested detail
                         $this->db->update('tblpurchase_suggested_details', array('order_id' => $new_id),array('id' => $value['id']));

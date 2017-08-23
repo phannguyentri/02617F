@@ -1,0 +1,2 @@
+ALTER TABLE `tblorders_detail` ADD `taxrate` DECIMAL(11,2) NOT NULL AFTER `product_id`;
+ALTER TABLE `tblorders_detail` ADD `exchange_rate` DECIMAL(11,2) NOT NULL AFTER `currency_id`;

@@ -105,6 +105,9 @@
                         echo render_select('currency_id', $currencies, array('id', 'name'), 'currency', $default_currency);
                     ?>
                     <?php
+                        
+                    ?>
+                    <?php
                         $default_date_create = ( isset($item) ? _d($item->date_create) : _d(date('Y-m-d')));
                         echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , 'date'); 
                     ?>
