@@ -91,7 +91,7 @@ $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_colum
 // write the second column
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
 
-$divide='<hr style="margin-top: 20px;margin-bottom: 20px;border: 0;border-top: 1px solid #eee;" />';
+$divide=_l('divider');
 $pdf->ln(6);
 $y            = $pdf->getY();
 $pdf->writeHTMLCell('', '', '', $y, $divide, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);

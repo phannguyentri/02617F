@@ -29,8 +29,6 @@ if($this->_instance->input->post()) {
     if(is_numeric($filter_status)) {
         if($filter_status == 2)
             array_push($where, 'AND status='.$filter_status);
-        elseif($filter_status == 5)
-            array_push($where, 'AND export_status=2');
         elseif($filter_status == 4)
             array_push($where, 'AND export_status=1');
         elseif($filter_status == 3)

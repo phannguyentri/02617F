@@ -98,6 +98,7 @@
                         <?php $minus_7_days = date('Y-m-d', strtotime("-7 days")); ?>
                         <?php $plus_7_days = date('Y-m-d', strtotime("+7 days"));
                         $where_own = array();
+
                         if(!has_permission('contracts','','view')){
                             $where_own = array('addedfrom'=>get_staff_user_id());
                         }

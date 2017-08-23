@@ -1,0 +1,3 @@
+ALTER TABLE `tblcontracts` ADD `status` TINYINT NULL DEFAULT '0' AFTER `not_visible_to_client`;
+
+ALTER TABLE `tblcontracts` ADD `export_status` TINYINT NULL DEFAULT '0' AFTER `status`;

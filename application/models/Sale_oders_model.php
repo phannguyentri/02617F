@@ -64,6 +64,8 @@ class Sale_oders_model extends CRM_Model
    {
         $import=array(
             'rel_type'=>$data['rel_type'],
+            'rel_id'=>$data['rel_id'],
+            'rel_code'=>$data['rel_code'],
             'prefix'=>$data['prefix'],
             'name'=>$data['name'],
             'code'=>$data['code'],
@@ -102,6 +104,7 @@ class Sale_oders_model extends CRM_Model
                  }
             }
             $this->db->update('tblsale_orders',array('total'=>$total),array('id'=>$insert_id));
+            $this->db->update('tblcontracts',array('export_status'=>1),array('id'=>$data['rel_id']));
             return $insert_id;
         }
         return false;
