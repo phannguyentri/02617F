@@ -97,8 +97,12 @@ $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['lm'], 0, $info_left_colum
 $pdf->MultiCell(($dimensions['wk'] / 2) - $dimensions['rm'], 0, $info_right_column, 0, 'R', 0, 1, '', '', true, 0, true, false, 0);
 // $pdf->MultiCell(0, 0, $invoice_info, 0, 'C', 0, 1, '', '', true, 0, true, false, 0);
 // $y            = $pdf->getY();
-$pdf->ln(5);
-
+$divide=_l('divider');
+$pdf->ln(6);
+$y            = $pdf->getY();
+$pdf->writeHTMLCell('', '', '', $y, $divide, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
+$pdf->ln(1);
+$y            = $pdf->getY();
 $pdf->writeHTMLCell((true ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
 $pdf->ln(20);
 // Set Head
@@ -303,7 +307,7 @@ if (get_option('total_to_words_enabled') == 1) {
     $pdf->SetFont($font_name, '', $font_size);
     $strmoney='<div class="col-md-12"><ul>';
     $strmoney.='<li>'._l('str_money').'<i>'.$CI->numberword->convert($grand_total, get_option('default_currency')).'</i>'.'</li>';
-    $strmoney.='<li>'._l('certificate_root').'</li>';
+    $strmoney.='<li>'._l('certificate_root')._l('blank___').'</li>';
     $strmoney.='</ul></div>';
     $pdf->writeHTMLCell(0, '', '', '', $strmoney, 0, 1, false, true, 'L', true);
 }

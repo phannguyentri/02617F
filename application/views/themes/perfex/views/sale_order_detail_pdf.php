@@ -68,7 +68,7 @@ if(get_option('company_vat') != ''){
 }
 $invoice_info .= get_option('invoice_company_country_code') . ' ';
 $invoice_info .= get_option('invoice_company_postal_code') . ' ';
-
+$invoice_info .= _l('company_bank_account').get_option('company_contract_blank_account') . '<br />';
 if (get_option('invoice_company_phonenumber') != '') {
     $invoice_info .= _l('Tel').': '.get_option('invoice_company_phonenumber').'  ';
 }
@@ -97,12 +97,14 @@ $pdf->writeHTMLCell('', '', '', $y, $divide, 0, 0, false, true, ($swap == '1' ? 
 $pdf->ln(2);
 $y            = $pdf->getY();
 $pdf->writeHTMLCell((true ? ($dimensions['wk']) - ($dimensions['lm'] * 2) : ($dimensions['wk'] / 2) - $dimensions['lm']), '', '', $y, $invoice_info, 0, 0, false, true, ($swap == '1' ? 'R' : 'J'), true);
-$pdf->ln(20);
+$pdf->ln(23);
+$y            = $pdf->getY();
 // Set Head
 $plan_name=_l('sale_orders');
 
 $pdf->SetFont($font_name, 'B', 20);
 $pdf->Cell(0, 0, mb_strtoupper($plan_name, 'UTF-8') , 0, 1, 'C', 0, '', 0);
+// $pdf->writeHTMLCell('', '', '', $y, mb_strtoupper($plan_name,'UTF-8'), 0, 1, false, true, 'C', true);
 // $pdf->ln(10);
 //Set purchase no
 // var_dump($pdf->get_fonts_list());die();

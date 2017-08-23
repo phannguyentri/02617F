@@ -7,6 +7,7 @@ class Contracts extends Admin_controller
         parent::__construct();
         $this->load->model('contracts_model');
         $this->load->model('contract_templates_model');
+        $this->load->model('warehouse_model');
     }
     /* List all contracts */
     public function index($clientid = false)
@@ -134,6 +135,53 @@ class Contracts extends Admin_controller
 
         $data['title'] = $title;
         $this->load->view('admin/contracts/contract', $data);
+    }
+    public function create_order($id)
+    {
+        if (!has_permission('sale_items', '', 'view')) {
+            if ($id != '' && !is_customer_admin($id)) {
+                access_denied('sale_items');
+            }
+        }
+       
+        if ($id == '') {
+            $title = _l('add_new', _l('sales'));
+
+        } else {
+            $title = _l('add_new', _l('sale_orders'));
+            $data['item'] = $this->contracts_model->getContractByID($id);
+            // $data['item_returns'] = $this->sale_oders_model->getReturnSaleItems($id);
+            // var_dump($data['item']);die();
+
+            $i=0;
+            foreach ($data['item']->items as $key => $value) { 
+                $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+                $i++;
+            }
+
+            // var_dump($data['item']);die();
+            
+            if (!$data['item']) {
+                blank_page('Sale Not Found');
+            }
+        }       
+        $where_clients = 'tblclients.active=1';
+
+        if (!has_permission('customers', '', 'view')) {
+            $where_clients .= ' AND tblclients.userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id=' . get_staff_user_id() . ')';
+        }
+
+        $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
+        $data['warehouses']= $this->warehouse_model->getWarehouses();
+        $data['customers'] = $this->clients_model->get('', $where_clients);
+        // $data['items']= $this->invoice_items_model->get_full();
+        
+        // $data['warehouse_types']= $this->sale_oders_model->getWarehouseTypes();
+        
+        $data['convert']= $data['item']->export_status ? false : true ;
+        
+        $data['title'] = $title;
+        $this->load->view('admin/contracts/export_order_detail', $data);
     }
     public function pdf($id)
     {

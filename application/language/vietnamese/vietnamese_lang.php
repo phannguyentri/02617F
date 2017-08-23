@@ -3849,9 +3849,9 @@ $lang['divider'] = '<hr style="margin-top: 20px;margin-bottom: 20px;border: 0;bo
 $lang['edit_sale_order_'] = "Sửa đơn hàng";
 
 $lang['view_delivery'] = "Xem phiếu giao hàng";
-$lang['print_delivery'] = "In phiếu giao hàng";
+$lang['converted_contract'] = "Hóa đơn đã tạo đơn đặt hàng";
 
-$lang['print_delivery'] = "In phiếu giao hàng";
+$lang['company_bank_account'] = "Số tài khoản: ";
 $lang['print_delivery'] = "In phiếu giao hàng";
 
 

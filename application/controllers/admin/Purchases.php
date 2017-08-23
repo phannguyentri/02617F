@@ -124,12 +124,13 @@ class Purchases extends Admin_controller
     /* Convert to Suggested */
     public function convert_to_suggested($id)
     {
+        $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
+        $data['warehouses']= $this->warehouse_model->getWarehouses();
         $data['items'] = $this->invoice_items_model->get_full();
+        $data['currencies'] = $this->currencies_model->get();
         $data['item'] = $this->purchases_model->getPurchaseByID($id);
         foreach ($data['item']->items as $key => $value) {
-
             $data['item']->items[$key]['warehouse_type']= (object)$this->warehouse_model->getWarehouseProduct($value['warehouse_id'],$value['product_id'], true);
-            $data['item']->items[$key] = (object)$data['item']->items[$key];
         }
         // print_r($data['item']);
         // exit();

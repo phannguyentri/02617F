@@ -43,7 +43,6 @@ class Sale_orders extends Admin_controller
                 }
 
                 $data                 = $this->input->post();
-                // var_dump($data);die();
                 if(isset($data['items']) && count($data['items']) > 0)
                 {
                     $id = $this->sale_oders_model->add($data);

@@ -182,9 +182,9 @@
                                         <td>
                                             <?php echo _l('item_price'); ?>
                                         </td>
-                                        <td>
+                                        <!-- <td>
                                             <?php echo _l('tax'); ?>
-                                        </td>
+                                        </td> -->
                                         <td>
                                             0
                                         </td>
@@ -229,7 +229,7 @@
                                         </td>
                                             
                                         <td><?php echo number_format($value->unit_cost); ?></td>
-                                        <td><?=form_input('items['.$i.'][taxrate]',$value->taxrate)?><?php echo number_format($value->tax); ?></td>
+                                        <!-- <td><?=form_input('items['.$i.'][taxrate]',$value->taxrate)?><?php echo number_format($value->tax); ?></td> -->
                                         <td><?php echo number_format($value->sub_total); ?></td>
                                         <td><?php echo $value->warehouse_type->kindof_warehouse_name ?></td>
                                         <td><input type="hidden" data-store="<?=$value->warehouse_type->product_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value->warehouse_id?>"><?php echo $value->warehouse_type->warehouse ?>(có <?=$value->warehouse_type->product_quantity?>)</td>
@@ -464,8 +464,8 @@
         }
         
         var Gia = currentQuantityInput.parent().find(' + td');
-        var Tax = Gia.find(' + td');
-        Tax.innerText  =(formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
+        var Tong = Gia.find(' + td');
+        Tong.text(formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
         refreshTotal();
     });
     $('#select_kindof_warehouse').change(function(e){

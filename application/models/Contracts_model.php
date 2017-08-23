@@ -49,6 +49,26 @@ class Contracts_model extends CRM_Model
         return $contracts;
     }
 
+    public function getContractByID($id = '')
+    {
+        
+        $this->db->select('*,tblcontracttypes.name as type_name,tblcontracts.id as id');
+        $this->db->join('tblcontracttypes', 'tblcontracttypes.id = tblcontracts.contract_type', 'left');
+        $this->db->join('tblclients', 'tblclients.userid = tblcontracts.client');
+        $this->db->from('tblcontracts');
+        // $this->db->join('tblstaff','tblstaff.staffid=tblcontracts.create_by','left');
+        if (is_numeric($id)) {
+            $this->db->where('tblcontracts.id', $id);
+            $invoice = $this->db->get()->row();
+            if ($invoice) {
+                $invoice->items       = $this->getContractItems($id);
+            }
+            return $invoice;
+        }
+
+        return false;
+    }
+
     public function getContractItems($id)
     {
         $this->db->select('tblcontract_items.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id, tblitems.prefix,tblitems.code, tblitems.warranty, tblitems.specification,tblcountries.short_name as made_in,tblitems.avatar as image');

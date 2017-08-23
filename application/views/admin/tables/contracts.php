@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $aColumns = array('tblcontracts.id','subject', 'CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblclients.userid and is_primary = 1) ELSE company END as company', 'contract_type', 'contract_value' , 'datestart','dateend');
 $sIndexColumn = "id";
 $sTable = 'tblcontracts';
-$additionalSelect = array('tblcontracts.id','tblcontracttypes.name','trash','client');
+$additionalSelect = array('tblcontracts.id','tblcontracttypes.name','trash','client','export_status');
 $join = array(
     'LEFT JOIN tblclients ON tblclients.userid = tblcontracts.client',
     'LEFT JOIN tblcontracttypes ON tblcontracttypes.id = tblcontracts.contract_type'
@@ -126,10 +126,14 @@ foreach ( $rResult as $aRow )
     }
 
     $options = '';
+    if($aRow['export_status']==0){
+        $options .= icon_btn('contracts/create_order/'.$aRow['id'],'exchange','btn-default');
+    }
     $options .= icon_btn('contracts/contract/'.$aRow['id'],'pencil-square-o');
     if(has_permission('contracts','','delete')){
         $options .= icon_btn('contracts/delete/'.$aRow['id'],'remove','btn-danger _delete');
     }
+
     $row[] = $options;
 
     if(!empty($aRow['dateend'])){
