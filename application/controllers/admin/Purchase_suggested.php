@@ -30,6 +30,11 @@ class Purchase_suggested extends Admin_controller
             if( $id == '' ) {
                 $data_post = $this->input->post();
                 
+                if(isset($data_post['item']) && is_array($data_post['item'])) {
+                    $data_post['items'] = $data_post['item'];
+                    unset($data_post['item']);
+                }
+
                 if(isset($data_post['items']) && count($data_post['items']) > 0) {
                     $data_post['create_by'] = get_staff_user_id();
                     $data_post['code'] = get_option('prefix_purchase_suggested') . $data_post['code'];

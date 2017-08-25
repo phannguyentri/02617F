@@ -735,7 +735,27 @@ function get_available_merge_fields()
                         'contract',
                     )
                 ),
-                
+                array(
+                    'name' => 'Supplier Address',
+                    'key' => '{supplier_address}',
+                    'available' => array(
+                        'contract',
+                    )
+                ),
+                array(
+                    'name' => 'Supplier City',
+                    'key' => '{supplier_city}',
+                    'available' => array(
+                        'contract',
+                    )
+                ),
+                array(
+                    'name' => 'Supplier Phone',
+                    'key' => '{supplier_phone}',
+                    'available' => array(
+                        'contract',
+                    )
+                ),
             )
         ),
         array(

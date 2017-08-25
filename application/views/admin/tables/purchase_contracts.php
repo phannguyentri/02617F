@@ -59,9 +59,9 @@ foreach ($rResult as $aRow) {
         $row[] = $_data;
     }
     $options = '';
-    $options .= icon_btn('purchase_contracts/detail_pdf/'. $aRow['tblpurchase_contracts.id'] .'?pdf=true' , 'file-pdf-o', 'btn-default', array('target'=>'_blank'));
-    $options .= icon_btn('purchase_contracts/detail_pdf/'. $aRow['tblpurchase_contracts.id'] .'?print=true' , 'print', 'btn-default', array('target'=>'_blank'));
-    $options .= icon_btn('purchase_contracts/detail_pdf/'. $aRow['tblpurchase_contracts.id'] , 'download', 'btn-default', array('target'=>'_blank'));
+    $options .= icon_btn('purchase_contracts/pdf/'. $aRow['tblpurchase_contracts.id'] .'?pdf=true' , 'file-pdf-o', 'btn-default', array('target'=>'_blank'));
+    $options .= icon_btn('purchase_contracts/pdf/'. $aRow['tblpurchase_contracts.id'] .'?print=true' , 'print', 'btn-default', array('target'=>'_blank'));
+    $options .= icon_btn('purchase_contracts/pdf/'. $aRow['tblpurchase_contracts.id'] , 'download', 'btn-default', array('target'=>'_blank'));
     $row[] = $options;
 
     $output['aaData'][] = $row;

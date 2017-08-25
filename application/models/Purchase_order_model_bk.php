@@ -156,8 +156,6 @@ class Purchase_order_mode extends CRM_Model
         }
         return false;
     }
-    
-
     public function update_status($id,$data)
     {
         $this->db->where('id',$id);

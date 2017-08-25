@@ -154,7 +154,7 @@
         'filterStatus' : '[id="filterStatus"]',
     };
     //initDataTable('.table-purchase-suggested', '<?=admin_url('purchase_suggested')?>', [1], [1], filterList,[0,'DESC']);
-    initDataTable('.table-purchase-suggested', window.location.href, [0], [0], filterList);
+    initDataTable('.table-purchase-suggested', window.location.href, [0], [0], filterList, [0,'DESC']);
     $.each(filterList, (filterIndex, filterItem) => {
       $('input' + filterItem).on('change', () => {
           $('.table-purchase-suggested').DataTable().ajax.reload();

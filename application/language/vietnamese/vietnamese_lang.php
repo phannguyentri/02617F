@@ -3693,6 +3693,10 @@ $lang['orders_date_create'] = "Ngày lập phiếu";
 $lang['orders_date_import'] = "Ngày nhập dự kiến";
 $lang['orders_user_create'] = "Người lập phiếu";
 
+$lang['cost_add_heading'] = "Thêm Phiếu chi phí mua hàng";
+$lang['cost_edit_heading'] = "Thêm Phiếu chi phí mua hàng";
+$lang['cost_code'] = "Mã phiếu chi phí";
+
 $lang['sale_orders'] = "Đơn đặt hàng";
 $lang['add_sale_order_'] = "Thêm đơn hàng bán lẻ";
 $lang['sales'] = "Đơn hàng bán";

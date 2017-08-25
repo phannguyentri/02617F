@@ -18,6 +18,21 @@ class Purchase_cost extends Admin_controller
             $this->perfex_base->get_table_data('purchase_contracts');
         }
         $data['title'] = _l('purchase_contract');
-        $this->load->view('admin/purchase_contracts/manage', $data);
+        $this->load->view('admin/purchase_cost/manage', $data);
+    }
+    public function detail($id='') {
+        if (!has_permission('customers', '', 'view')) {
+            if ($id != '' && !is_customer_admin($id)) {
+                access_denied('customers');
+            }
+        }
+        if($id=='') {
+            
+
+        }
+        else {
+
+        }
+        $this->load->view('admin/purchase_cost/detail', $data);
     }
 }

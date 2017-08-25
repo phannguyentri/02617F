@@ -163,6 +163,7 @@
                                         
                                         <th width="" class="text-left"><?php echo _l('warehouse_type'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('warehouse_name'); ?></th>
+                                        <th class="text-left">Tỷ giá</th>
                                         <th width="" class="text-left"><?php echo _l('Tiền tệ'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('item_price_buy'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
@@ -193,6 +194,11 @@
                                         <td>
                                         <?php 
                                             echo render_select('select_warehouse', array(), array('id', 'name'));
+                                        ?>
+                                        </td>
+                                        <td>
+                                        <?php
+                                            echo render_input('items['.$i.'][exchange_rate]', '', 1);
                                         ?>
                                         </td>
                                         <td>
@@ -241,7 +247,16 @@
                                         <td><?php echo $value['warehouse_type']->kindof_warehouse_name ?></td>
                                         <td><input type="hidden" data-store="<?=$value['warehouse_type']->maximum_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value['warehouse_id']?>"><?php echo $value['warehouse_type']->warehouse ?>(tối đa <?=$value['warehouse_type']->maximum_quantity?>)</td>
                                         <td>
-                                            <?php echo render_select('items['.$i.'][currency]', $currencies, array('id', 'name'), '', $value['currency_id'], array('disabled'=>'disabled')); ?>
+                                        <?php
+                                            $array_disabled = array();
+                                            if($lock) {
+                                                $array_disabled = array('disabled'=>'disabled');
+                                            }
+                                            echo render_input('items['.$i.'][exchange_rate]', '', $value['exchange_rate'], 'text', array(), $array_disabled, '', "mainExchange_Rate");
+                                        ?>
+                                        </td>
+                                        <td>
+                                            <?php echo render_select('items['.$i.'][currency]', $currencies, array('id', 'name'), '', $value['currency_id'], array(), array('disabled'=>'disabled')); ?>
                                         </td>
                                         <td>
                                             <input <?=($lock ? "disabled=\"disabled\"":"")?> style="width: 100px" class="mainPriceBuy" name="items[<?php echo $i ?>][price_buy]" step="0.01" type="number" value="<?php echo $value['price_buy'] ?>"  class="form-control" placeholder="<?php echo _l('item_price_buy'); ?>">
@@ -362,9 +377,10 @@
         var td4 = $('<td><input style="width: 100px" class="mainQuantity" type="number" name="items[' + uniqueArray + '][quantity]" value="" /></td>');
         var td5 = $('<td></td>');
         var td6 = $('<td></td>');
-        var td7 = $('<td></td>');
+        var td7 = $('<td><input class="mainExchange_Rate" type="number" name="items[' + uniqueArray + '][exchange_rate]" value="" /></td>');
         var td8 = $('<td></td>');
 		var td9 = $('<td></td>');
+        var td10 = $('<td></td>')
 
         td1.find('input').val($('tr.main').find('td:nth-child(1) > input').val());
         td2.text($('tr.main').find('td:nth-child(2)').text());
@@ -376,16 +392,20 @@
 		td5.text( $('tr.main').find('td:nth-child(5) select option:selected').text());
         td6.append('<input type="hidden" data-store="'+$('tr.main').find('td:nth-child(6) select option:selected').data('store')+'" name="items[' + uniqueArray + '][warehouse]" value="'+$('tr.main').find('td:nth-child(6) select option:selected').val()+'" />');
         td6.append($('tr.main').find('td:nth-child(6) select option:selected').text());
-        let objCurrency = $('tr.main').find('td:nth-child(7)').find('select').clone(); 
-		objCurrency.attr('name', 'items[' + uniqueArray + '][currency]');
-		objCurrency.removeAttr('id').val($('tr.main').find('td:nth-child(7)').find('select').selectpicker('val'));
+        
+        console.log($('tr.main').find('td:nth-child(7) input'));
+        td7.find('input').val($('tr.main').find('td:nth-child(7) input').val());
 
-		td7.append(objCurrency);
-		let objPriceBuy = $('tr.main').find('td:nth-child(8)').find('input').clone(); 
+        let objCurrency = $('tr.main').find('td:nth-child(8)').find('select').clone(); 
+		objCurrency.attr('name', 'items[' + uniqueArray + '][currency]');
+		objCurrency.removeAttr('id').val($('tr.main').find('td:nth-child(8)').find('select').selectpicker('val'));
+
+		td8.append(objCurrency);
+		let objPriceBuy = $('tr.main').find('td:nth-child(9)').find('input').clone(); 
 		objPriceBuy.attr('name', 'items[' + uniqueArray + '][price_buy]');
 		objPriceBuy.removeAttr('id');
-		td8.append(objPriceBuy);
-        td9.append($('tr.main').find('td:nth-child(9)').text());
+		td9.append(objPriceBuy);
+        td10.append($('tr.main').find('td:nth-child(10)').text());
 
 		newTr.append(td1);
         newTr.append(td2);
@@ -396,6 +416,7 @@
         newTr.append(td7);
         newTr.append(td8);
 		newTr.append(td9);
+        newTr.append(td10);
 
         newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td');
         $('table.item-export tbody').append(newTr);

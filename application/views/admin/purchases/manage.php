@@ -118,7 +118,7 @@
         var filterList = {
             'filterStatus' : '[id="filterStatus"]',
         };
-        initDataTable('.table-purchases', window.location.href, [1], [1], filterList);
+        initDataTable('.table-purchases', window.location.href, [1], [1], filterList, [0,'DESC']);
         $.each(filterList, (filterIndex, filterItem) => {
             $('input' + filterItem).on('change', () => {
                 $('.table-purchases').DataTable().ajax.reload();

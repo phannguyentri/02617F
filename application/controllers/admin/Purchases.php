@@ -44,21 +44,22 @@ class Purchases extends Admin_controller
     /* Edit client or add new client*/
     public function purchase($id = '')
     {
-        
         if (!has_permission('customers', '', 'view')) {
             if ($id != '' && !is_customer_admin($id)) {
                 access_denied('customers');
             }
         }
+        
         if ($this->input->post() && !$this->input->is_ajax_request()) {
-            // print_r($this->input->post());
-            // exit();
+            
             if ($id == '') {
                 if (!has_permission('customers', '', 'create')) {
                     access_denied('customers');
                 }
 
                 $data                 = $this->input->post();
+                print_r($data);
+                exit();
                 if(isset($data['item']) && count($data['item']) > 0)
                 {
                     

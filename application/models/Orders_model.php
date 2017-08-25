@@ -54,6 +54,7 @@ class Orders_model extends CRM_Model
                                 'product_price_buy' => $value['price_buy'],
                                 'currency_id' => $value['currency'],
                                 'warehouse_id' => $value['warehouse'],
+                                'exchange_rate' => $value['exchange_rate'],
                             );
                             $this->db->where('id', $item_exists->id);
                             $this->db->update('tblorders_detail', $data);

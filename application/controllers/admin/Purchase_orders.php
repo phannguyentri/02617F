@@ -104,6 +104,7 @@ class Purchase_orders extends Admin_controller
             if($order) {
                 if($this->input->post()) {
                     $data = $this->input->post();
+
                     $this->orders_model->update($id, $data);
                     $order = $this->orders_model->get($id);
                 }
@@ -269,38 +270,46 @@ class Purchase_orders extends Admin_controller
         $result->id = $value;
         echo json_encode($result);
     }
-    public function getExchangeRate($id_currency) {
+    public function getExchangeRate() {
         if (!has_permission('invoices', '', 'delete')) {
             access_denied('invoices');
         }
-        $value = $this->currencies_model->get($id_currency);
-        function get_currency($from_Currency, $to_Currency, $amount) {
-            $amount = urlencode($amount);
-            $from_Currency = urlencode($from_Currency);
-            $to_Currency = urlencode($to_Currency);
-        
-            $url = "http://www.google.com/finance/converter?a=$amount&from=$from_Currency&to=$to_Currency";
-        
-            $ch = curl_init();
-            $timeout = 0;
-            curl_setopt ($ch, CURLOPT_URL, $url);
-            curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-        
-            curl_setopt ($ch, CURLOPT_USERAGENT,
-                         "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)");
-            curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-            $rawdata = curl_exec($ch);
-            curl_close($ch);
-            var_dump($data);
-            $data = explode('bld>', $rawdata);
-            $data = explode($to_Currency, $data[1]);
-        
-            return round($data[0], 2);
+        $currencies = $this->currencies_model->get();
+        header('Content-type: application/json');
+        $array_currencies = array();
+        if(count($currencies) > 0) {
+            
+            
+            $url = "http://www.mycurrency.net/service/rates";
+            $content = file_get_contents($url);
+            $result = new stdClass();
+            $result->error = false;
+            $result->currencies = array();
+            $data_currencies = array();
+            if($content) {
+                $object_currencies = json_decode($content);
+                
+                foreach($currencies as $key=>$value) {
+                    foreach($object_currencies as $item_currency) {
+                        if(str_replace("Đ", "D", $value['name']) == $item_currency->currency_code) {
+                            $data_currencies[$item_currency->currency_code] = $item_currency->rate;
+                            break;
+                        }
+                    }
+                }
+                $result->currencies['USD'] = $data_currencies['VND'];
+                foreach($currencies as $key=>$value) {
+                    if($key != 'VND' && isset($data_currencies[$value['name']])) {
+                        if($key != 'USD') {
+                            $result->currencies[$value['name']] = $result->currencies['USD'] / $data_currencies[$value['name']];
+                        }
+                    }
+                }
+            }
+            else {
+                $result->error = true;
+            }
         }
-        
-        if($value) {
-            //$content = file_get_contents("https://www.google.com/finance/converter?a=1&from=".$value->name."&to=VND");
-            exit(get_currency($value->name, 'VND', 1));
-        }
+        exit(json_encode($result));
     }
 }

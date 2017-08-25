@@ -128,6 +128,7 @@
                                         
                                         <th width="" class="text-left"><?php echo _l('warehouse_type'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('warehouse_name'); ?></th>
+                                        <th class="text-left">Tỷ giá</th>
                                         <th width="" class="text-left"><?php echo _l('Tiền tệ'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('item_price_buy'); ?></th>
                                         <th width="" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
@@ -167,6 +168,15 @@
                                             
                                         <td><?php echo $value['warehouse_type']->kindof_warehouse_name ?></td>
                                         <td><input type="hidden" data-store="<?=$value['warehouse_type']->maximum_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value['warehouse_id']?>"><?php echo $value['warehouse_type']->warehouse ?>(tối đa <?=$value['warehouse_type']->maximum_quantity?>)</td>
+                                        <td>
+                                        <?php
+                                            $array_disabled = array();
+                                            if($lock) {
+                                                $array_disabled = array('disabled'=>'disabled');
+                                            }
+                                            echo render_input('items['.$i.'][exchange_rate]', '', $value['exchange_rate'], 'text', array(), $array_disabled, '', "mainExchange_Rate");
+                                        ?>
+                                        </td>
                                         <td>
                                             <?php echo render_select('items['.$i.'][currency]', $currencies, array('id', 'name'), '', $value['currency_id'], array('disabled'=>'disabled')); ?>
                                         </td>

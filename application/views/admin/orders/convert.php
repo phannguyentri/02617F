@@ -104,9 +104,7 @@
                         $default_currency = "";
                         echo render_select('currency_id', $currencies, array('id', 'name'), 'currency', $default_currency);
                     ?>
-                    <?php
-                        
-                    ?>
+                    
                     <?php
                         $default_date_create = ( isset($item) ? _d($item->date_create) : _d(date('Y-m-d')));
                         echo render_date_input( 'date_create', 'project_datecreated' , $default_date_create , 'date'); 
@@ -148,6 +146,7 @@
                                             
                                             <th width="" class="text-left"><?php echo _l('warehouse_type'); ?></th>
                                             <th width="" class="text-left"><?php echo _l('warehouse_name'); ?></th>
+                                            <th class="text-left">Tỷ giá</th>
                                             <th width="" class="text-left"><?php echo _l('Tiền tệ'); ?></th>
                                             <th width="" class="text-left"><?php echo _l('item_price_buy'); ?></th>
                                             <th width="" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
@@ -188,6 +187,11 @@
                                                 
                                             <td><?php echo $value['warehouse_type']->kindof_warehouse_name ?></td>
                                             <td><input type="hidden" data-store="<?=$value['warehouse_type']->maximum_quantity ?>" name="items[<?=$i?>][warehouse]" id="items[<?=$i?>][warehouse]" value="<?=$value['warehouse_id']?>"><?php echo $value['warehouse_type']->warehouse ?>(tối đa <?=$value['warehouse_type']->maximum_quantity?>)</td>
+                                            <td>
+                                            <?php
+                                                echo render_input('items['.$i.'][exchange_rate]', '', 1);
+                                            ?>
+                                            </td>
                                             <td>
                                                 <?php echo render_select('items['.$i.'][currency]', $currencies, array('id', 'name'), '', $value['currency_id'], array('disabled' => 'disabled')); ?>
                                             </td>
@@ -249,6 +253,7 @@
                                             
                                             <th width="" class="text-left"><?php echo _l('warehouse_type'); ?></th>
                                             <th width="" class="text-left"><?php echo _l('warehouse_name'); ?></th>
+                                            <th class="text-left">Tỷ giá</th>
                                             <th width="" class="text-left"><?php echo _l('Tiền tệ'); ?></th>
                                             <th width="" class="text-left"><?php echo _l('item_price_buy'); ?></th>
                                             <th width="" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
@@ -287,6 +292,11 @@
                                                 
                                             <td><?php echo $value['warehouse_type']->kindof_warehouse_name ?></td>
                                             <td><input type="hidden" data-store="<?=$value['warehouse_type']->maximum_quantity ?>" name="items[<?=$i?>][warehouse]" value="<?=$value['warehouse_id']?>"><?php echo $value['warehouse_type']->warehouse ?>(tối đa <?=$value['warehouse_type']->maximum_quantity?>)</td>
+                                            <td>
+                                            <?php
+                                                echo render_input('items['.$i.'][exchange_rate]', '');
+                                            ?>
+                                            </td>
                                             <td>
                                                 <?php echo render_select('items['.$i.'][currency]', $currencies, array('id', 'name'), '', $value['currency_id'], array('disabled' => 'disabled')); ?>
                                             </td>
@@ -344,6 +354,24 @@
 </div>
 <?php init_tail(); ?>
 <script>
+    var currentRate = {error: true};
+    var loadCurrencyRate = () => {
+        $.ajax({
+            url: admin_url + '/purchase_orders/getExchangeRate/',
+            dataType: 'json',
+        }).done((data) => {
+            currentRate = data;
+            if(!currentRate.error) {
+                
+                $('select[id*="[currency]"]').toArray().forEach(v => {
+                    console.log($(v).find('option:selected').text());
+                    $(v).parents('td').prev().find('input').val( currentRate.currencies[$(v).find('option:selected').text()].toFixed(2).replace('.', ',') );
+                });
+            }
+            $('select[id*="[currency]"]')
+        });
+    };
+    loadCurrencyRate();
     $(function() {
         _validate_form($('.client-form'), {
             id_supplier: 'required',
@@ -367,6 +395,11 @@
         }
         return x1 + x2;
     }
+    var getCurrencyExchangeRate = (id_currency) => {
+        $.ajax({
+            
+        });
+    };
     // get currency from supplier
     var getCurrencyFromSupplier = (idSupplier) => {
         $.ajax({
