@@ -6,6 +6,18 @@ class Purchase_contacts_model extends CRM_Model
     {
         parent::__construct();
     }
+    public function get_list() {
+        $this->db->select('tblpurchase_contracts.*,tblsuppliers.company as suppliers_company
+        ,tblsuppliers.address as suppliers_address
+        ,tblsuppliers.vat as suppliers_vat
+        ,tblstaff.fullname as user_fullname
+        ,(select tblcurrencies.name from tblcurrencies where tblcurrencies.id = tblpurchase_contracts.currency_id) as currency_name');
+        $this->db->join('tblsuppliers', 'tblsuppliers.userid = tblpurchase_contracts.id_supplier', 'left');
+        $this->db->join('tblstaff', 'tblstaff.staffid = tblpurchase_contracts.id_user_create', 'left');
+        $items = $this->db->get('tblpurchase_contracts')->result();
+        
+        return $items;
+    }
     public function get($id) {
         if(is_numeric($id)) {
             $this->db->select('tblpurchase_contracts.*,tblsuppliers.company as suppliers_company

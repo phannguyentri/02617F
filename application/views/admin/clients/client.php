@@ -112,7 +112,7 @@
     var vat                           = $('#vat2');
     var short_name                    = $('#short_name');
     var billing_col                   = $('.shipping_address_lane');
-    var website                       = $('#website');
+    var website                       = $('#website,#business');
     var zip                           = $('#zip');
     var default_language              = $('#default_language');
 

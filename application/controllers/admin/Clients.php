@@ -706,10 +706,38 @@ class Clients extends Admin_controller
                         $import_result = true;
                         $fd            = fopen($newFilePath, 'r');
                         $rows          = array();
-                        while ($row = fgetcsv($fd)) {
-                            $rows[] = $row;
+                        if($ext == 'csv') {
+                            while ($row = fgetcsv($fd)) {
+                                $rows[] = $row;
+                            }
                         }
+                        else if($ext == 'xlsx' || $ext == 'xls') {
+                            if($type == "application/octet-stream" || $type == "application/vnd.ms-excel" || $type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                                require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . 'PHPExcel' . DIRECTORY_SEPARATOR . 'PHPExcel.php');
 
+                                $inputFileType = PHPExcel_IOFactory::identify($newFilePath);
+                                
+                                $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                                
+                                $objReader->setReadDataOnly(true);
+                                
+                                /**  Load $inputFileName to a PHPExcel Object  **/
+                            $objPHPExcel =           $objReader->load($newFilePath);
+                                $allSheetName       = $objPHPExcel->getSheetNames();
+                                $objWorksheet       = $objPHPExcel->setActiveSheetIndex(0);
+                                $highestRow         = $objWorksheet->getHighestRow();
+                                $highestColumn      = $objWorksheet->getHighestColumn();
+                                
+                                $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
+                                
+                                for ($row = 2; $row <= $highestRow; ++$row) {
+                                    for ($col = 0; $col < $highestColumnIndex; ++$col) {
+                                        $value                     = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
+                                        $rows[$row - 2][$col] = $value;
+                                    }
+                                }
+                            }
+                        }
                         $data['total_rows_post'] = count($rows);
                         fclose($fd);
                         if (count($rows) <= 1) {

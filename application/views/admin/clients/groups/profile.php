@@ -168,6 +168,10 @@
                     echo render_input( 'legal_representative', 'legal_representative' , $legal_representative, 'text', array(), $c_attrs_personal ); ?>
 
                     <?php
+                    $fax = ( isset($client) ? $client->fax : "" );
+                    echo render_input( 'fax', 'fax' , $fax ,'text', array('autocomplete'=>'off')); ?>
+                    
+                    <?php
                     $email = ( isset($client) ? $client->email : "" );
                     echo render_input( 'email', 'email' , $email ,'email',array('autocomplete'=>'off')); ?>
                     
@@ -191,6 +195,9 @@
 
                     <?php $value=( isset($client) ? $client->website : ''); ?>
                     <?php echo render_input( 'website', 'client_website',$value, 'text', array(), $group_attrs_company); ?>
+                    
+                    <?php $value=( isset($client) ? $client->business : ''); ?>
+                    <?php echo render_input( 'business', 'Lĩnh vực kinh doanh',$value, 'text', array(), $group_attrs_company); ?>
 
                     <?php
                     $c_attrs_personal = (isset($client) ? ($client->client_type == 2 ? array() : array('style' => 'display:none')) : array('style' => 'display:none'));

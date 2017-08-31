@@ -1,4 +1,5 @@
 <?php init_head(); ?>
+<link rel="stylesheet" href="<?=base_url('assets/treegrid/')?>css/jquery.treegrid.css">
 <div id="wrapper">
     <div class="content">
         <div class="row">
@@ -36,12 +37,63 @@
                 <div class="panel_s">
                     <div class="panel-body">
                         <div class="clearfix"></div>
-                        <?php render_datatable(array(
-                            _l('id'),
-                            _l('Tên danh mục'),
-                            _l('Danh mục cha'),
-                            _l('options')
-                        ),'categories'); ?>
+                        <table class="table tree">
+                            <thead>
+                                <th>Tên danh mục</th>
+                                <th>Cấp danh mục</th>
+                                <th>Tác vụ</th>
+                            </thead>
+                            <tbody>
+                            <?php
+                                foreach($full_categories as $categories_1) {
+                                ?>
+                            <tr class="treegrid-<?=$categories_1->id?>">
+                                <td><h5 style="display: inline-block;"><?=$categories_1->category?></h5></td>
+                                <td>Cấp 1</td>
+                                <td><?=icon_btn('categories/delete_category/'. $categories_1->id , 'remove', 'btn-danger delete-reminder')?></td>
+                            </tr>
+                                <?php
+                                    if(isset($categories_1->items) && count($categories_1->items) > 0) {
+                                        foreach($categories_1->items as $categories_2) {
+                                            ?>
+                            <tr class="treegrid-<?=$categories_2->id?> treegrid-parent-<?=$categories_1->id?>">
+                                <td><?=$categories_2->category?></td>
+                                <td>Cấp 2</td>
+                                <td><?=icon_btn('categories/delete_category/'. $categories_2->id , 'remove', 'btn-danger delete-reminder')?></td>
+                            </tr>
+                                            <?php
+                                            if(isset($categories_2->items) && count($categories_2->items) > 0) {
+                                                foreach($categories_2->items as $categories_3) {
+                                                ?>
+                            <tr class="treegrid-<?=$categories_3->id?> treegrid-parent-<?=$categories_2->id?>">
+                                <td><h5 style="display: inline-block;"><?=$categories_3->category?></h5></td>
+                                <td>Cấp 3</td>
+                                <td><?=icon_btn('categories/delete_category/'. $categories_3->id , 'remove', 'btn-danger delete-reminder')?></td>
+                            </tr>
+                                            <?php
+                                                    if(isset($categories_3->items) && count($categories_3->items) > 0) {
+                                                        foreach($categories_3->items as $categories_4) {
+                                                            ?>
+                            <tr class="treegrid-<?=$categories_4->id?> treegrid-parent-<?=$categories_3->id?>">
+                                <td><?=$categories_4->category?></td>
+                                <td>Cấp 4</td>
+                                <td><?=icon_btn('categories/delete_category/'. $categories_4->id , 'remove', 'btn-danger delete-reminder')?></td>
+                            </tr>
+                                                            <?php
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                            ?>
+                            </tbody>
+                        
+                        
+                        </table>
+                            
                     </div>
                 </div>
             </div>
@@ -77,8 +129,15 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <?php init_tail(); ?>
-<script>
+<script type="text/javascript" src="<?=base_url('assets/treegrid/')?>js/jquery.treegrid.js"></script>
 
+<script type="text/javascript">
+  $('.tree').treegrid({
+    initialState: 'collapsed',
+  });
+</script>
+
+<script>
     function view_init_department(id)
     {
         $('#type').modal('show');
@@ -107,12 +166,12 @@
             "category_2" : "[name='category_2']",
             "category_3" : "[name='category_3']",
         };
-        initDataTable('.table-categories', window.location.href, [1], [1], filterList);
-        $.each(filterList, (key,value)=>{
-            $('select' + value).on('change', () => {
-                $('.table-categories').DataTable().ajax.reload();
-            });
-        });
+        // initDataTable('.table-categories', window.location.href, [1], [1], filterList);
+        // $.each(filterList, (key,value)=>{
+        //     $('select' + value).on('change', () => {
+        //         $('.table-categories').DataTable().ajax.reload();
+        //     });
+        // });
         _validate_form($('form'),{category:'required'},manage_contract_types);
         $('#type').on('hidden.bs.modal', function(event) {
             $('#additional').html('');
@@ -125,14 +184,14 @@
     function manage_contract_types(form) {
         var data = $(form).serialize();
         var url = form.action;
-        alert('reload000');
         $.post(url, data).done(function(response) {
             response = JSON.parse(response);
             if(response.success == true){
                 alert_float('success',response.message);
+                location.reload();
             }
-            alert('reload');
-            $('.table-categories').DataTable().ajax.reload();
+            
+            // $('.table-categories').DataTable().ajax.reload();
             $('#type').modal('hide');
         });
         return false;

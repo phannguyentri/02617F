@@ -1896,6 +1896,7 @@ function contract_purchase_pdf($contract) {
     // Remove white spaces cased by the html editor ex. <td>  item</td>
     $contract->template = preg_replace('/[\t\n\r\0\x0B]/', '', $contract->template);
     $contract->template = preg_replace('/([\s])\1+/', ' ', $contract->template);
+    
     function convert_vi_to_en($str) {
         $str = preg_replace("/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/", 'a', $str);
         $str = preg_replace("/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/", 'e', $str);
@@ -1924,103 +1925,102 @@ function contract_purchase_pdf($contract) {
     // Another replacement
     $contract->template = str_replace("{contract_id}", $contract->code, $contract->template);
     $htmlTable = <<<EOL
-<table style="width: 100%;border-collapse: collapse;" border="1">
-<tbody>
-<tr style="width: 50%;font-weight: bold;font-family: 'trebuchet ms', geneva, sans-serif; font-size: 10pt;background-color: #800000;color: white;">
-<td>
-PART NUMBER
-</td>
-<td>
-UNIT OF MEASURE
-</td>
-<td>
-DESCRIPTION
-</td>
-<td>
-QTY
-</td>
-<td>
-UNIT PRICE
-</td>
-<td>
-TAX
-</td>
-<td>
-TOTAL AMOUNT
-</td>
-</tr>
-{contract_item_list}
-</tbody>
-</table>
+        <table style="width: 100%;border-collapse: collapse;" border="1">
+        <tbody>
+        <tr style="width: 50%;font-weight: bold;font-family: 'trebuchet ms', geneva, sans-serif; font-size: 10pt;background-color: #800000;color: white;">
+        <td>
+        PART NUMBER
+        </td>
+        <td>
+        UNIT OF MEASURE
+        </td>
+        <td>
+        DESCRIPTION
+        </td>
+        <td>
+        QTY
+        </td>
+        <td>
+        UNIT PRICE
+        </td>
+        <td>
+        TAX
+        </td>
+        <td>
+        TOTAL AMOUNT
+        </td>
+        </tr>
+        {contract_item_list}
+        </tbody>
+        </table>
 EOL;
     $contract->template = str_replace("{contract_item_list}", $htmlTable, $contract->template);
-    // print_r($contract);
-    // exit();
+
     $htmlTable = "";
     $i=0;
     $total = 0;
     foreach($contract->products as $value) {
         $total += $value->product_quantity * $value->product_price_buy + $value->product_quantity * $value->product_price_buy * $value->taxrate / 100;
         $htmlTable .= '
-<tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
+            <tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
 
-<td>
-'.(++$i).'
-</td>
+            <td>
+            '.(++$i).'
+            </td>
 
-<td>
-'.($value->unit).'
-</td>
+            <td>
+            '.($value->unit).'
+            </td>
 
-<td>
-'.($value->description).'
-</td>
+            <td>
+            '.($value->description).'
+            </td>
 
-<td>
-'.($value->product_quantity).'
-</td>
+            <td>
+            '.($value->product_quantity).'
+            </td>
 
-<td>
-'.number_format($value->product_price_buy).'
-</td>
+            <td>
+            '.number_format($value->product_price_buy).'
+            </td>
 
-<td>
-'.($value->taxrate).' %
-</td>
+            <td>
+            '.($value->taxrate).' %
+            </td>
 
-<td>
-'.number_format($value->product_quantity * $value->product_price_buy + $value->product_quantity * $value->product_price_buy * $value->taxrate / 100).'
-</td>
-</tr>
-';
+            <td>
+            '.number_format($value->product_quantity * $value->product_price_buy + $value->product_quantity * $value->product_price_buy * $value->taxrate / 100).'
+            </td>
+            </tr>
+        ';
     }
     $htmlTable .= '
-    <tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
-    
-    
-    <td colspan="4">
-    </td>
-    <td colspan="2">
-    Subtotal
-    </td>
-    
-    <td>
-    '.number_format($total).'
-    </td>
-    </tr>
-    <tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
-    
-    
-    <td colspan="4">
-    </td>
-    <td colspan="2">
-    Currency
-    </td>
-    
-    <td>
-    '.$contract->currency_name.'
-    </td>
-    </tr>
+        <tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
+        
+        
+        <td colspan="4">
+        </td>
+        <td colspan="2">
+        Subtotal
+        </td>
+        
+        <td>
+        '.number_format($total).'
+        </td>
+        </tr>
+        <tr style="width: 50%;font-weight: bold;font-family: \'trebuchet ms\', geneva, sans-serif; font-size: 8pt;">
+        
+        
+        <td colspan="4">
+        </td>
+        <td colspan="2">
+        Currency
+        </td>
+        
+        <td>
+        '.$contract->currency_name.'
+        </td>
+        </tr>
     ';
     $contract->template = str_replace("{contract_item_list}", $htmlTable, $contract->template);
     $contract->template = str_replace("{terms_of_sale}",    $contract->terms_of_sale, $contract->template);
@@ -2029,9 +2029,11 @@ EOL;
     // Tcpdf does not support float css we need to adjust this here
     $contract->template = str_replace('float: right', 'text-align: right', $contract->template);
     $contract->template = str_replace('float: left', 'text-align: left', $contract->template);
+    $contract->template = str_replace('small', 'span', $contract->template);
+    $contract->template = preg_replace('/class="([A-Za-z0-9 \-]*)"/', '', $contract->template);
     // Image center
     $contract->template = str_replace('margin-left: auto; margin-right: auto;', 'text-align:center;', $contract->template);
-
+    
     if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_contractpdf.php')) {
         include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_contractpdf.php');
     } else {

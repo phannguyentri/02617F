@@ -14,4 +14,7 @@ $html = <<<EOF
 EOF;
 }
 
+// var_dump($html);
+// exit();
+
 $pdf->writeHTML($html, true, false, true, false, '');

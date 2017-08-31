@@ -3,19 +3,28 @@
   <div class="content">
     <div class="row">
       <div class="col-md-12">
-        
+      <?php if(has_permission('items','','create')){ ?>
+        <div class="panel_s">
+          <div class="panel-body _buttons">
+            <a href="<?php echo admin_url('purchase_cost/detail') ?>" class="btn btn-info pull-left"><?php echo _l('cost_add_heading'); ?></a>
+          </div>
+        </div>
+        <?php } ?>
         <div class="panel_s">
           <div class="panel-body">
             <div class="clearfix"></div>
             <?php render_datatable(array(
               "ID",
+              _l('cost_code'),
               _l('purchase_constract_code'),
-              _l('orders_code'),
               _l('orders_user_create'),
               _l('orders_date_create'),
+              _l('purchase_suggested_status'),
+              _l('Được duyệt bởi'),
+              _l('Ngày duyệt'),
               _l('actions'),              
               ),
-              'purchase-contracts'); ?>
+              'purchase-cost'); ?>
             </div>
           </div>
         </div>
@@ -83,9 +92,29 @@
 </div>
 <?php init_tail(); ?>
 <script>
-
+  var change_status = (id) => {
+    if(typeof(id) != 'undefined' && id != '' && !isNaN(id)) {
+      $.ajax({
+        url: admin_url + 'purchase_cost/change_status/' + id,
+        method: 'GET',
+        dataType: 'json'
+      }).done((data) => {
+        if(!data.success) {
+          alert_float('danger', 'Không thể duyệt!');
+        }
+        else {
+          alert_float('success', 'Duyệt thành công!');
+          $('.table-purchase-cost').DataTable().ajax.reload();
+        }
+      });
+    }
+    return false;
+  };
   $(function(){
-    initDataTable('.table-purchase-contracts', '<?=admin_url('purchase_contracts')?>', [], [],'undefined',[0,'DESC']);
+
+    
+
+    initDataTable('.table-purchase-cost', '<?=admin_url('purchase_cost')?>', [], [],'undefined',[0,'DESC']);
   });
 </script>
 </body>

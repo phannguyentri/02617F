@@ -32,9 +32,6 @@ $pdf->SetFont($font_name,'',$font_size+2);
 $y            = $pdf->getY();
 
 
-
-
-
 $info_right_column = '';
 $info_left_column  = '';
 

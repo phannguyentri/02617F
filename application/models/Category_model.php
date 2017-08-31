@@ -22,6 +22,26 @@ class Category_model extends CRM_Model
             return $this->db->get('tblcategories')->result_array();
         }
     }
+    public function get_full_detail($id='') {
+        $categories = array();
+        if($id == '') {
+            $this->db->where('category_parent', '0');
+            $categories = $this->db->get('tblcategories')->result();
+        }
+        else {
+            $this->db->where('category_parent', $id);
+            $categories = $this->db->get('tblcategories')->result();
+        }
+        if(count($categories) == 0) {
+            return array();
+        }
+        else {
+            foreach($categories as $key=>$category) {
+                $categories[$key]->items = $this->get_full_detail($category->id);
+            }
+            return $categories;
+        }
+    }
     public function get_level1() {
         $this->db->where('category_parent', '0');
         $items = $this->db->get('tblcategories')->result_array();
@@ -129,10 +149,14 @@ class Category_model extends CRM_Model
     public function delete_category($id)
     {
         if (is_admin()) {
-            $this->db->where('id', $id);
-            $this->db->delete('tblcategories');
-            if ($this->db->affected_rows() > 0) {
-                return true;
+            
+            $childs = $this->db->where('category_parent', $id)->get('tblcategories')->result();
+            if(count($childs) == 0) {
+                $this->db->where('id', $id);
+                $this->db->delete('tblcategories');
+                if ($this->db->affected_rows() > 0) {
+                    return true;
+                }
             }
             return false;
         }
