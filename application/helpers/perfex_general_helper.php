@@ -119,7 +119,6 @@ function get_current_date_format($php = false)
 {
     $format = get_option('dateformat');
     $format = explode('|', $format);
-
     $hook_data = do_action('get_current_date_format', array(
         'format' => $format,
         'php' => $php
@@ -447,6 +446,8 @@ function get_locale_key($language = 'english')
  */
 function has_permission($permission, $staffid = '', $can = '')
 {
+
+    
     $_permission = $permission;
     $CI =& get_instance();
     // check for passed is_admin function
@@ -461,7 +462,7 @@ function has_permission($permission, $staffid = '', $can = '')
     if ($staffid != '') {
         $_userid = $staffid;
     }
-
+    
     if ($can == '') {
         return false;
     }

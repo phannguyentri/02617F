@@ -119,106 +119,142 @@ class Admin_controller extends CRM_Controller
     {
 
         $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_invoice'),
-            'permission' => 'invoices',
-            'url' => 'invoices/invoice'
+            'name' => _l('Chức vụ'),
+            // 'permission' => 'invoices',
+            'url' => 'positions'
         ));
 
         $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_estimate'),
-            'permission' => 'estimates',
-            'url' => 'estimates/estimate'
+            'name' => _l('Nơi làm việc'),
+            // 'permission' => 'invoices',
+            'url' => 'workplaces'
         ));
 
         $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_new_expense'),
-            'permission' => 'expenses',
-            'url' => 'expenses/expense'
+            'name' => _l('Hình thức làm việc'),
+            // 'permission' => 'invoices',
+            'url' => 'workforms'
         ));
 
         $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('new_proposal'),
-            'permission' => 'proposals',
-            'url' => 'proposals/proposal'
+            'name' => _l('Đơn vị tính'),
+            // 'permission' => 'invoices',
+            'url' => 'units'
         ));
 
         $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('new_project'),
-            'url' => 'projects/project',
-            'permission' => 'projects'
-        ));
-
-
-        $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_task'),
-            'url' => '#',
-            'custom_url' => true,
-            'href_attributes' => array(
-                'onclick' => 'new_task();return false;'
-            ),
-            'permission' => 'tasks'
+            'name' => _l('Kệ hàng'),
+            // 'permission' => 'invoices',
+            'url' => 'racks'
         ));
 
         $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_client'),
-            'permission' => 'customers',
-            'url' => 'clients/client'
+            'name' => _l('Kho'),
+            // 'permission' => 'invoices',
+            'url' => 'warehouses'
         ));
 
         $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_contract'),
-            'permission' => 'contracts',
-            'url' => 'contracts/contract'
+            'name' => _l('Công trình'),
+            // 'permission' => 'invoices',
+            'url' => '#'
         ));
 
-        $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_lead'),
-            'url' => '#',
-            'custom_url' => true,
-            'permission' => 'is_staff_member',
-            'href_attributes' => array(
-                'onclick' => 'init_lead(); return false;'
-            )
-        ));
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_create_estimate'),
+        //     'permission' => 'estimates',
+        //     'url' => 'estimates/estimate'
+        // ));
 
-        $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_new_goal'),
-            'url' => 'goals/goal',
-            'permission' => 'goals'
-        ));
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_new_expense'),
+        //     'permission' => 'expenses',
+        //     'url' => 'positions'
+        // ));
 
-        $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_kba'),
-            'permission' => 'knowledge_base',
-            'url' => 'knowledge_base/article'
-        ));
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('new_proposal'),
+        //     'permission' => 'proposals',
+        //     'url' => 'proposals/proposal'
+        // ));
 
-        $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_survey'),
-            'permission' => 'surveys',
-            'url' => 'surveys/survey'
-        ));
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('new_project'),
+        //     'url' => 'projects/project',
+        //     'permission' => 'projects'
+        // ));
 
-        $tickets = array(
-            'name' => _l('qa_create_ticket'),
-            'url' => 'tickets/add'
-        );
-        if (get_option('access_tickets_to_none_staff_members') == 0 && !is_staff_member()) {
-            $tickets['permission'] = 'is_staff_member';
-        }
-        $this->perfex_base->add_quick_actions_link($tickets);
 
-        $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('qa_create_staff'),
-            'url' => 'staff/member',
-            'permission' => 'staff'
-        ));
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_create_task'),
+        //     'url' => '#',
+        //     'custom_url' => true,
+        //         'href_attributes' => array(
+        //         'onclick' => 'new_task();return false;'
+        //     ),
+        //     'permission' => 'tasks'
+        // ));
 
-        $this->perfex_base->add_quick_actions_link(array(
-            'name' => _l('utility_calendar_new_event_title'),
-            'url' => 'utilities/calendar?new_event=true&date='.date('Y-m-d'),
-            'permission' => ''
-        ));
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_create_client'),
+        //     'permission' => 'customers',
+        //     'url' => 'clients/client'
+        // ));
+
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_create_contract'),
+        //     'permission' => 'contracts',
+        //     'url' => 'contracts/contract'
+        // ));
+
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_create_lead'),
+        //     'url' => '#',
+        //     'custom_url' => true,
+        //     'permission' => 'is_staff_member',
+        //     'href_attributes' => array(
+        //         'onclick' => 'init_lead(); return false;'
+        //     )
+        // ));
+
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_new_goal'),
+        //     'url' => 'goals/goal',
+        //     'permission' => 'goals'
+        // ));
+
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_create_kba'),
+        //     'permission' => 'knowledge_base',
+        //     'url' => 'knowledge_base/article'
+        // ));
+
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_create_survey'),
+        //     'permission' => 'surveys',
+        //     'url' => 'surveys/survey'
+        // ));
+
+        // $tickets = array(
+        //     'name' => _l('qa_create_ticket'),
+        //     'url' => 'tickets/add'
+        // );
+        // if (get_option('access_tickets_to_none_staff_members') == 0 && !is_staff_member()) {
+        //     $tickets['permission'] = 'is_staff_member';
+        // }
+        // $this->perfex_base->add_quick_actions_link($tickets);
+
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('qa_create_staff'),
+        //     'url' => 'staff/member',
+        //     'permission' => 'staff'
+        // ));
+
+        // $this->perfex_base->add_quick_actions_link(array(
+        //     'name' => _l('utility_calendar_new_event_title'),
+        //     'url' => 'utilities/calendar?new_event=true&date='.date('Y-m-d'),
+        //     'permission' => ''
+        // ));
 
     }
 }

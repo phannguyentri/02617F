@@ -18,9 +18,9 @@
     }
     foreach($task_statuses as $status){
         $val = 'true';
-        if($status == 5){
-            $val = '';
-        }
+        // if($status == 5){
+        //     $val = '';
+        // }
         echo form_hidden('task_status_'.$status,$val);
     }
     do_action('tasks_filters_hidden_html');
@@ -39,7 +39,7 @@
     </li>
     <li class="divider"></li>
     <?php foreach($task_statuses as $status){ ?>
-    <li class="<?php if($status != 5){echo 'active';} ?>">
+    <li class="<?php if($status != 6){echo 'active';} ?>">
         <a href="#" data-cview="task_status_<?php echo $status; ?>" onclick="dt_custom_view('task_status_<?php echo $status; ?>','<?php echo $view_table_name; ?>','task_status_<?php echo $status; ?>'); return false;">
             <?php echo _l('task_status_'.$status); ?>
         </a>
@@ -51,16 +51,16 @@
             <?php echo _l('todays_tasks'); ?>
         </a>
     </li>
-      <li>
+      <!-- <li>
         <a href="#" data-cview="due_date_passed" onclick="dt_custom_view('due_date_passed','<?php echo $view_table_name; ?>','due_date_passed'); return false;">
             <?php echo _l('task_list_duedate_passed'); ?>
         </a>
-    </li>
-    <li>
+    </li> -->
+    <!-- <li>
         <a href="#" data-cview="upcoming_tasks" onclick="dt_custom_view('upcoming_tasks','<?php echo $view_table_name; ?>','upcoming_tasks'); return false;">
             <?php echo _l('upcoming_tasks'); ?>
         </a>
-    </li>
+    </li> -->
     <li class="<?php echo (!has_permission('tasks','','view') ? 'active' : ''); ?>">
         <a href="#" data-cview="my_tasks" onclick="dt_custom_view('my_tasks','<?php echo $view_table_name; ?>','my_tasks'); return false;">
             <?php echo _l('tasks_view_assigned_to_user'); ?>
@@ -79,14 +79,14 @@
     </li>
     <?php } ?>
     <?php if(has_permission('tasks','','create') || has_permission('tasks','','edit')){ ?>
-    <li>
+    <!-- <li>
         <a href="#" data-cview="recurring_tasks" onclick="dt_custom_view('recurring_tasks','<?php echo $view_table_name; ?>','recurring_tasks'); return false;">
             <?php echo _l('recurring_tasks'); ?>
         </a>
-    </li>
+    </li> -->
     <?php } ?>
     <?php if(has_permission('invoices','','create')){ ?>
-    <li class="divider"></li>
+    <!-- <li class="divider"></li>
     <li>
         <a href="#" data-cview="billable" onclick="dt_custom_view('billable','<?php echo $view_table_name; ?>','billable'); return false;">
             <?php echo _l('task_billable'); ?>
@@ -101,7 +101,7 @@
         <a href="#" data-cview="not_billed" onclick="dt_custom_view('not_billed','<?php echo $view_table_name; ?>','not_billed'); return false;">
             <?php echo _l('task_billed_no'); ?>
         </a>
-    </li>
+    </li> -->
     <?php } ?>
     <?php if(has_permission('tasks','','view')){ ?>
     <?php if(count($tasks_filter_assignees)){ ?>

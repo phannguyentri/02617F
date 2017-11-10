@@ -8,46 +8,54 @@ $customer_tabs = array(
     'visible'=>true,
     'order'=>1
     ),
+   array(
+    'name'=>'notes',
+    'url'=>admin_url('clients/client/'.$client->userid.'?group=notes'),
+    'icon'=>'fa fa-sticky-note-o',
+    'lang'=>_l('Lịch sử giao dịch'),
+    'visible'=>true,
+    'order'=>2
+    ),
   array(
     'name'=>'invoices',
     'url'=>admin_url('clients/client/'.$client->userid.'?group=invoices'),
     'icon'=>'fa fa-file-text',
     'lang'=>_l('client_invoices_tab'),
     'visible'=>(has_permission('invoices','','view') || has_permission('invoices','','view_own')),
-    'order'=>2
-    ),
-  array(
-    'name'=>'payments',
-    'url'=>admin_url('clients/client/'.$client->userid.'?group=payments'),
-    'icon'=>'fa fa-line-chart',
-    'lang'=>_l('client_payments_tab'),
-    'visible'=>(has_permission('payments','','view') || has_permission('invoices','','view_own')),
     'order'=>3
     ),
-  array(
-    'name'=>'proposals',
-    'url'=>admin_url('clients/client/'.$client->userid.'?group=proposals'),
-    'icon'=>'fa fa-file-text-o',
-    'lang'=>_l('proposals'),
-    'visible'=>(has_permission('proposals','','view') || has_permission('proposals','','view_own')),
-    'order'=>4
-    ),
-  array(
-    'name'=>'estimates',
-    'url'=>admin_url('clients/client/'.$client->userid.'?group=estimates'),
-    'icon'=>'fa fa-file-text-o',
-    'lang'=>_l('estimates'),
-    'visible'=>(has_permission('estimates','','view') || has_permission('estimates','','view_own')),
-    'order'=>5
-    ),
-  array(
-    'name'=>'expenses',
-    'url'=>admin_url('clients/client/'.$client->userid.'?group=expenses'),
-    'icon'=>'fa fa-heartbeat',
-    'lang'=>_l('expenses'),
-    'visible'=>(has_permission('expenses','','view') || has_permission('expenses','','view_own')),
-    'order'=>6
-    ),
+  // array(
+  //   'name'=>'payments',
+  //   'url'=>admin_url('clients/client/'.$client->userid.'?group=payments'),
+  //   'icon'=>'fa fa-line-chart',
+  //   'lang'=>_l('client_payments_tab'),
+  //   'visible'=>(has_permission('payments','','view') || has_permission('invoices','','view_own')),
+  //   'order'=>3
+  //   ),
+  // array(
+  //   'name'=>'proposals',
+  //   'url'=>admin_url('clients/client/'.$client->userid.'?group=proposals'),
+  //   'icon'=>'fa fa-file-text-o',
+  //   'lang'=>_l('proposals'),
+  //   'visible'=>(has_permission('proposals','','view') || has_permission('proposals','','view_own')),
+  //   'order'=>4
+  //   ),
+  // array(
+  //   'name'=>'estimates',
+  //   'url'=>admin_url('clients/client/'.$client->userid.'?group=estimates'),
+  //   'icon'=>'fa fa-file-text-o',
+  //   'lang'=>_l('estimates'),
+  //   'visible'=>(has_permission('estimates','','view') || has_permission('estimates','','view_own')),
+  //   'order'=>5
+  //   ),
+  // array(
+  //   'name'=>'expenses',
+  //   'url'=>admin_url('clients/client/'.$client->userid.'?group=expenses'),
+  //   'icon'=>'fa fa-heartbeat',
+  //   'lang'=>_l('expenses'),
+  //   'visible'=>(has_permission('expenses','','view') || has_permission('expenses','','view_own')),
+  //   'order'=>6
+  //   ),
   array(
     'name'=>'contracts',
     'url'=>admin_url('clients/client/'.$client->userid.'?group=contracts'),
@@ -56,22 +64,30 @@ $customer_tabs = array(
     'visible'=>(has_permission('contracts','','view') || has_permission('contracts','','view_own')),
     'order'=>7
     ),
-  array(
-    'name'=>'projects',
-    'url'=>admin_url('clients/client/'.$client->userid.'?group=projects'),
-    'icon'=>'fa fa-bars',
-    'lang'=>_l('projects'),
-    'visible'=>true,
+   array(
+    'name'=>'contracts',
+    'url'=>admin_url('clients/client/'.$client->userid.'?group=quotes'),
+    'icon'=>'fa fa-map',
+    'lang'=>_l('Báo giá'),
+    'visible'=>(has_permission('quotes','','view') || has_permission('quotes','','view_own')),
     'order'=>8
     ),
-  array(
-    'name'=>'tickets',
-    'url'=>admin_url('clients/client/'.$client->userid.'?group=tickets'),
-    'icon'=>'fa fa-ticket',
-    'lang'=>_l('tickets'),
-    'visible'=>((get_option('access_tickets_to_none_staff_members') == 1 && !is_staff_member()) || is_staff_member()),
-    'order'=>9
-    ),
+  // array(
+  //   'name'=>'projects',
+  //   'url'=>admin_url('clients/client/'.$client->userid.'?group=projects'),
+  //   'icon'=>'fa fa-bars',
+  //   'lang'=>_l('projects'),
+  //   'visible'=>true,
+  //   'order'=>8
+  //   ),
+  // array(
+  //   'name'=>'tickets',
+  //   'url'=>admin_url('clients/client/'.$client->userid.'?group=tickets'),
+  //   'icon'=>'fa fa-ticket',
+  //   'lang'=>_l('tickets'),
+  //   'visible'=>((get_option('access_tickets_to_none_staff_members') == 1 && !is_staff_member()) || is_staff_member()),
+  //   'order'=>9
+  //   ),
   array(
     'name'=>'tasks',
     'url'=>admin_url('clients/client/'.$client->userid.'?group=tasks'),
@@ -96,22 +112,15 @@ $customer_tabs = array(
     'visible'=>true,
     'order'=>12
     ),
-  array(
-    'name'=>'map',
-    'url'=>admin_url('clients/client/'.$client->userid.'?group=map'),
-    'icon'=>'fa fa-map-marker',
-    'lang'=>_l('customer_map'),
-    'visible'=>true,
-    'order'=>13
-    ),
-  array(
-    'name'=>'notes',
-    'url'=>admin_url('clients/client/'.$client->userid.'?group=notes'),
-    'icon'=>'fa fa-sticky-note-o',
-    'lang'=>_l('contracts_notes_tab'),
-    'visible'=>true,
-    'order'=>14
-    ),
+  // array(
+  //   'name'=>'map',
+  //   'url'=>admin_url('clients/client/'.$client->userid.'?group=map'),
+  //   'icon'=>'fa fa-map-marker',
+  //   'lang'=>_l('customer_map'),
+  //   'visible'=>true,
+  //   'order'=>13
+  //   ),
+ 
   );
 
 $customer_tabs = do_action('customer_profile_tabs',$customer_tabs);

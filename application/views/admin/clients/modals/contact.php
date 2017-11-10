@@ -1,5 +1,5 @@
 <!-- Modal Contact -->
-<div class="modal fade" id="contact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="contact" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <?php echo form_open('admin/clients/contact/'.$customer_id.'/'.$contactid,array('id'=>'contact-form','autocomplete'=>'off')); ?>
@@ -42,7 +42,7 @@
                         <?php echo render_input( 'email', 'client_email',$value, 'email'); ?>
                         <?php $value=( isset($contact) ? $contact->phonenumber : ''); ?>
                         <?php echo render_input( 'phonenumber', 'client_phonenumber',$value,'text',array('autocomplete'=>'off')); ?>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                           <label for="direction"><?php echo _l('document_direction'); ?></label>
                           <select class="selectpicker" data-none-selected-text="<?php echo _l('system_default_string'); ?>" data-width="100%" name="direction" id="direction">
                             <option value="" <?php if(isset($contact) && empty($contact->direction)){echo 'selected';} ?>></option>
@@ -52,12 +52,12 @@
                     </div>
                     <?php $rel_id=( isset($contact) ? $contact->id : false); ?>
                     <?php echo render_custom_fields( 'contacts',$rel_id); ?>
-                    <div class="client_password_set_wrapper">
+                    <div class="client_password_set_wrapper hidden">
                         <label for="password" class="control-label">
                             <?php echo _l( 'client_password'); ?>
                         </label>
                         <div class="input-group">
-                            <input type="password" class="form-control password" name="password" autocomplete="off">
+                            <input type="password" value="123456" class="form-control password" name="password" autocomplete="off">
                             <span class="input-group-addon">
                                 <a href="#password" class="show_password" onclick="showPassword('password'); return false;"><i class="fa fa-eye"></i></a>
                             </span>
@@ -76,6 +76,7 @@
                     } ?>
                 </div>
                 <hr />
+                <div class="hidden">
                 <div class="checkbox checkbox-primary">
                     <input type="checkbox" name="is_primary" id="contact_primary" <?php if((!isset($contact) && total_rows('tblcontacts',array('is_primary'=>1,'userid'=>$customer_id)) == 0) || (isset($contact) && $contact->is_primary == 1)){echo 'checked';}; ?> <?php if((isset($contact) && total_rows('tblcontacts',array('is_primary'=>1,'userid'=>$customer_id)) == 1 && $contact->is_primary == 1)){echo 'disabled';} ?>>
                     <label for="contact_primary">
@@ -99,8 +100,9 @@
                 </div>
                 <?php } ?>
                 <hr />
-                <p class="bold"><?php echo _l('customer_permissions'); ?></p>
-                <p class="text-danger"><?php echo _l('contact_permissions_info'); ?></p>
+            </div>
+                <p class="bold hidden"><?php echo _l('customer_permissions'); ?></p>
+                <p class="text-danger hidden"><?php echo _l('contact_permissions_info'); ?></p>
                 <?php
                 $default_contact_permissions = array();
                 if(!isset($contact)){
@@ -108,6 +110,7 @@
                 }
                 ?>
                 <?php foreach($customer_permissions as $permission){ ?>
+                <div class="hidden">
                 <div class="col-md-6 row">
                     <div class="row">
                         <div class="col-md-6 mtop10 border-right">
@@ -120,6 +123,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
                 <div class="clearfix">  </div>
                 <?php } ?>

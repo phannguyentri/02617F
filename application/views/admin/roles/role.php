@@ -11,6 +11,7 @@
                      <hr />
                      <?php if(isset($role)){ ?>
                      <a href="<?php echo admin_url('roles/role'); ?>" class="btn btn-success pull-right mbot20 display-block"><?php echo _l('new_role'); ?></a>
+                     <a href="<?php echo admin_url('roles'); ?>" class="btn btn-default pull-left mbot20 display-block"><?php echo _l('Quay lại'); ?></a>
                      <div class="clearfix"></div>
                      <?php } ?>
                      <?php echo form_open($this->uri->uri_string()); ?>

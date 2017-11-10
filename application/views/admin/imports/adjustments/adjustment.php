@@ -4,10 +4,10 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel_s">
-                    <div class="panel-body _buttons">                   
-                    <h4 class="bold no-margin">Điều chỉnh số lượng kho</h4>
+                    <div class="panel-body _buttons">
+                    <h4 class="bold no-margin">Phiếu nhập kho</h4>
                     <hr class="no-mbot no-border">
-                    <a href="<?=admin_url('imports/adjustment_detail')?>" class="btn btn-info pull-left display-block"><?php echo _l('Thêm phiếu điều chỉnh'); ?></a>
+                    <a href="<?=admin_url('imports/adjustment_detail')?>" class="btn btn-info pull-left display-block"><?php echo _l('Thêm phiếu nhập kho'); ?></a>
                     </div>
                 </div>
                 <div class="clearfix"></div>

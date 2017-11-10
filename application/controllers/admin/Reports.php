@@ -62,7 +62,8 @@ class Reports extends Admin_controller
         $data['estimate_statuses']     = $this->estimates_model->get_statuses();
         $data['payments_years']        = $this->reports_model->get_distinct_payments_years();
         $data['estimates_sale_agents'] = $this->estimates_model->get_sale_agents();
-
+        $data['clients_iv'] = $this->clients_model->get();
+        $data['user_iv'] = $this->staff_model->get();
         $data['invoices_sale_agents']  = $this->invoices_model->get_sale_agents();
 
         $data['proposals_sale_agents']  = $this->proposals_model->get_sale_agents();
@@ -77,24 +78,28 @@ class Reports extends Admin_controller
         if ($this->input->is_ajax_request()) {
             $this->load->model('currencies_model');
             $select = array(
+                'code_company',
                 'CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblclients.userid and is_primary = 1) ELSE company END as company',
-                '(SELECT COUNT(clientid) FROM tblinvoices WHERE tblinvoices.clientid = tblclients.userid AND status != 5)',
-                '(SELECT SUM(subtotal) FROM tblinvoices WHERE tblinvoices.clientid = tblclients.userid AND status != 5)',
-                '(SELECT SUM(total) FROM tblinvoices WHERE tblinvoices.clientid = tblclients.userid AND status != 5)'
+                '(SELECT COUNT(customer_id) FROM tblquotes WHERE tblquotes.customer_id = tblclients.userid AND status != 5)',
+                '(SELECT SUM(total + total_vat + incurred) FROM tblquotes WHERE tblquotes.customer_id = tblclients.userid AND status != 5)',
+                '(SELECT COUNT(client) FROM tblcontracts WHERE tblcontracts.client = tblclients.userid AND status != 5)',
+                '(SELECT SUM(contract_value + incurred) FROM tblcontracts WHERE tblcontracts.client = tblclients.userid AND status != 5)',
+                'tblclients.datecreated1',
+                '(SELECT GROUP_CONCAT(tblstaff.fullname SEPARATOR ", ") FROM tblcustomeradmins LEFT JOIN tblstaff ON tblstaff.staffid = tblcustomeradmins.staff_id WHERE tblcustomeradmins.customer_id = tblclients.userid)',
             );
 
-            $custom_date_select = $this->get_where_report_period();
-            if ($custom_date_select != '') {
-                $i = 0;
-                foreach ($select as $_select) {
-                    if ($i !== 0) {
-                        $_temp = substr($_select, 0, -1);
-                        $_temp .= ' ' . $custom_date_select . ')';
-                        $select[$i] = $_temp;
-                    }
-                    $i++;
-                }
-            }
+            // $custom_date_select = $this->get_where_report_period();
+            // if ($custom_date_select != '') {
+            //     $i = 0;
+            //     foreach ($select as $_select) {
+            //         if ($i !== 0) {
+            //             $_temp = substr($_select, 0, -1);
+            //             $_temp .= ' ' . $custom_date_select . ')';
+            //             $select[$i] = $_temp;
+            //         }
+            //         $i++;
+            //     }
+            // }
 
             $by_currency     = $this->input->post('report_currency');
             $currency        = $this->currencies_model->get_base_currency();
@@ -116,13 +121,47 @@ class Reports extends Admin_controller
             $sIndexColumn = "userid";
             $sTable       = 'tblclients';
             $where        = array();
+            $group_by = 'GROUP BY tblclients.userid';
+            $join         = array(
+                'LEFT JOIN tblcustomeradmins ON tblcustomeradmins.customer_id = tblclients.userid',
+                'LEFT JOIN tblstaff ON tblstaff.staffid = tblcustomeradmins.staff_id'
+            );
+            if($this->input->post()){
+                $clientid = $this->input->post('clientid3');
+                $staffid = $this->input->post('staffsid3');
+                $filter=array();
+                if($clientid){
+                    array_push($where, 'AND (userid='.$clientid.')');
+                }
 
-            $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, array(), $where, array(
-                'userid'
-            ));
+                if($staffid){
+                    array_push($filter, 'AND tblstaff.staffid IN  (' . implode(', ', $staffid) . ')');
+                }
+                if (count($filter) > 0) {
+                    array_push($where, 'AND (' . prepare_dt_filter($filter) . ')');
+                }
+
+                $custom_date_select = $this->get_where_report_period('tblclients.datecreated1');
+                
+                if ($custom_date_select != '') {
+                    array_push($where, $custom_date_select);
+                }
+
+               
+               
+            }
+            
+            $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
+                'tblclients.userid',
+                'tblstaff.staffid',
+            ),'',$group_by);
             $output  = $result['output'];
             $rResult = $result['rResult'];
             $x       = 0;
+            $footer_data = 0;
+            $footer_data1  = 0;
+            $footer_data2 = 0;
+            $footer_data3 = 0;
             foreach ($rResult as $aRow) {
                 $row = array();
                 for ($i = 0; $i < count($aColumns); $i++) {
@@ -131,19 +170,439 @@ class Reports extends Admin_controller
                     } else {
                         $_data = $aRow[$aColumns[$i]];
                     }
-                    if ($i == 0) {
-                        $_data = '<a href="' . admin_url('clients/client/' . $aRow['userid']) . '" target="_blank">' . $aRow['company'] . '</a>';
-                    } else if ($aColumns[$i] == $select[2] || $aColumns[$i] == $select[3]) {
+                    if ($i == 1) {
+                        $_data = '<a href="#" onclick="init_client_modal_data(' . $aRow['userid']. ');return false;">' . $aRow['company'] . '</a>';
+                    }else if ($i == 0) {
+                        $_data = '<a href="#" onclick="init_client_modal_data(' . $aRow['userid']. ');return false;">' . $aRow['code_company'] . '</a>';
+                    }else if ($aRow[$i] == 'tblclients.datecreated1') {
+                        $_data = _d($aRow['tblclients.datecreated1']);
+                    }
+                    else if ($aColumns[$i] == $select[3] || $aColumns[$i] == $select[5]) {
                         if ($_data == null) {
                             $_data = 0;
                         }
-                        $_data = format_money($_data, $currency_symbol);
+                        if($aColumns[$i] == $select[3]){
+                            $footer_data += $_data;
+                        }if($aColumns[$i] == $select[5]){
+                            $footer_data1 += $_data;
+                        }
+                        $_data = '<div style="text-align:right">'.format_money($_data, $currency_symbol).'</div>';
+                        
+                    }
+                    else if ($aColumns[$i] == $select[2] || $aColumns[$i] == $select[4]) {
+                        if ($_data == null) {
+                            $_data = 0;
+                        }
+                        if($aColumns[$i] == $select[2]){
+                            $footer_data2 += $_data;
+                        }if($aColumns[$i] == $select[4]){
+                            $footer_data3 += $_data;
+                        }
+                        $_data = '<div style="text-align:right">'.$_data.'</div>';
+                        
                     }
                     $row[] = $_data;
                 }
                 $output['aaData'][] = $row;
                 $x++;
             }
+
+            $output['sums']['quotes']             = format_money($footer_data, $currency_symbol);
+            $output['sums']['tquotes']             = $footer_data2;
+            $output['sums']['contracts']             = format_money($footer_data1, $currency_symbol);
+            $output['sums']['tcontracts']             = $footer_data3;
+
+
+            echo json_encode($output);
+            die();
+        }
+    }
+
+    public function quotes_report()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->model('currencies_model');
+            $select = array(
+                'code',
+                'company',
+                '(SELECT fullname FROM tblstaff WHERE create_by=tblstaff.staffid)',
+                'create_date',
+                'total + total_vat + incurred',
+            );
+
+
+            $by_currency     = $this->input->post('report_currency');
+            $currency        = $this->currencies_model->get_base_currency();
+            $currency_symbol = $this->currencies_model->get_currency_symbol($currency->id);
+            
+            $aColumns     = $select;
+            $sIndexColumn = "id";
+            $sTable       = 'tblquotes';
+            $where        = array();
+            $group_by = '';
+            $join         = array(
+                'LEFT JOIN tblstaff  ON tblstaff.staffid=tblquotes.create_by',
+                'LEFT JOIN tblclients  ON tblclients.userid=tblquotes.customer_id'
+            );
+            if($this->input->post()){
+                $clientid = $this->input->post('clientid');
+                $staffid = $this->input->post('staffsid');
+                $filter=array();
+                if($clientid){
+                    array_push($where, 'AND (customer_id='.$clientid.')');
+                }
+
+                if($staffid){
+                    array_push($filter, 'AND create_by IN  (' . implode(', ', $staffid) . ')');
+                }
+                if (count($filter) > 0) {
+                    array_push($where, 'AND (' . prepare_dt_filter($filter) . ')');
+                }
+
+                $custom_date_select = $this->get_where_report_period('create_date');
+                
+                if ($custom_date_select != '') {
+                    array_push($where, $custom_date_select);
+                }
+
+               
+               
+            }
+            
+            $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
+                'id',
+                'customer_id',
+                'create_by',
+                'prefix',
+                'status',
+                'export_status',
+                'tblstaff.fullname',
+                'CONCAT(user_head_id,",",user_admin_id) as confirm_ids'
+            ),'',$group_by);
+            $output  = $result['output'];
+            $rResult = $result['rResult'];
+            $x       = 0;
+            $footer_data = 0;
+            $footer_data1  = 0;
+            $footer_data2 = 0;
+            $footer_data3 = 0;
+            foreach ($rResult as $aRow) {
+                $row = array();
+                for ($i = 0; $i < count($aColumns); $i++) {
+                    if (strpos($aColumns[$i], 'as') !== false && !isset($aRow[$aColumns[$i]])) {
+                        $_data = $aRow[strafter($aColumns[$i], 'as ')];
+                    } else {
+                        $_data = $aRow[$aColumns[$i]];
+                    }
+                    if ($i == 1) {
+                        $_data = '<a href="#" onclick="init_client_modal_data(' . $aRow['customer_id']. ');return false;">' . $aRow['company'] . '</a>';
+                    }else if ($aColumns[$i] == 'code') {
+                        $_data='<a onclick="init_qoute_modal_data('.$aRow['id'].');return false;" href="#">'.$aRow['prefix'].$aRow['code'].'</a>';
+                    }else if ($aRow[$i] == 'create_date') {
+                        $_data = _d($aRow['create_date']);
+                    }
+                    else if ($aColumns[$i] == $select[4]) {
+                        if ($_data == null) {
+                            $_data = 0;
+                        }
+                       
+                        $footer_data += $_data;
+                        
+                        $_data = '<div style="text-align:right">'.format_money($_data, $currency_symbol).'</div>';
+                        
+                    }
+                    
+                    $row[] = $_data;
+                }
+                $output['aaData'][] = $row;
+                $x++;
+            }
+
+            $output['sums']['quotes']             = format_money($footer_data, $currency_symbol);
+            // $output['sums']['tquotes']             = $footer_data2;
+            // $output['sums']['contracts']             = format_money($footer_data1, $currency_symbol);
+            // $output['sums']['tcontracts']             = $footer_data3;
+
+
+            echo json_encode($output);
+            die();
+        }
+    }
+
+     public function tasks_report()
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->load->model('currencies_model');
+            $select = array(
+                'name',
+                'startdate',
+                
+                'status',
+                '(SELECT fullname FROM tblstaff WHERE addedfrom=tblstaff.staffid)',
+            );
+
+
+            $by_currency     = $this->input->post('report_currency');
+            $currency        = $this->currencies_model->get_base_currency();
+            $currency_symbol = $this->currencies_model->get_currency_symbol($currency->id);
+            
+            $aColumns     = $select;
+            $sIndexColumn = "id";
+            $sTable       = 'tblstafftasks1';
+            $where        = array();
+            $group_by = '';
+            $join         = array();
+            $custom_fields = get_custom_fields('tasks', array(
+    'show_on_table' => 1
+));
+            foreach ($custom_fields as $field) {
+    $select_as = 'cvalue_' . $i;
+    if ($field['type'] == 'date_picker') {
+        $select_as = 'date_picker_cvalue_' . $i;
+    }
+    array_push($aColumns, 'ctable_' . $i . '.value as ' . $select_as);
+    array_push($join, 'LEFT JOIN tblcustomfieldsvalues as ctable_' . $i . ' ON tblstafftasks1.id = ctable_' . $i . '.relid AND ctable_' . $i . '.fieldto="' . $field['fieldto'] . '" AND ctable_' . $i . '.fieldid=' . $field['id']);
+    $i++;
+}
+            if($this->input->post()){
+                $clientid = $this->input->post('clientid2');
+                $staffid = $this->input->post('staffsid2');
+                $status = $this->input->post('status2');
+                $filter=array();
+                if($clientid){
+                    array_push($where, 'AND (rel_id='.$clientid.')');
+                }
+
+                if($status){
+                    array_push($where, 'AND (status='.$status.')');
+                }
+
+                if($staffid){
+                    array_push($filter, 'AND addedfrom IN  (' . implode(', ', $staffid) . ')');
+                }
+                if (count($filter) > 0) {
+                    array_push($where, 'AND (' . prepare_dt_filter($filter) . ')');
+                }
+
+                $custom_date_select = $this->get_where_report_period('create_date');
+                
+                if ($custom_date_select != '') {
+                    array_push($where, $custom_date_select);
+                }
+
+               
+               
+            }
+            
+            $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
+                'tblstafftasks1.id',
+    'dateadded',
+    'priority',
+    'rel_type',
+    'rel_id',
+    'invoice_id',
+     'duedate',
+    '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblstafftasks1.id and rel_type="task" ORDER by tag_order ASC) as tags',
+    '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblstafftaskassignees JOIN tblstaff ON tblstaff.staffid = tblstafftaskassignees.staffid WHERE taskid=tblstafftasks1.id) as assignees',
+    'priority',
+    'purpose',
+    'transaction',
+    '(SELECT GROUP_CONCAT(staffid SEPARATOR ",") FROM tblstafftaskassignees WHERE taskid=tblstafftasks1.id) as assignees_ids','1'
+            ),'',$group_by);
+            $output  = $result['output'];
+            $rResult = $result['rResult'];
+            $x       = 0;
+            $footer_data = 0;
+            $footer_data1  = 0;
+            $footer_data2 = 0;
+            $footer_data3 = 0;
+            foreach ($rResult as $aRow) {
+                $row = array();
+                for ($i = 0; $i < count($aColumns); $i++) {
+                    if (strpos($aColumns[$i], 'as') !== false && !isset($aRow[$aColumns[$i]])) {
+            $_data = $aRow[strafter($aColumns[$i], 'as ')];
+        } else {
+            $_data = $aRow[$aColumns[$i]];
+        }
+                   if($aColumns[$i] == '1'){
+            $_data = '<div class="checkbox"><input type="checkbox" value="'.$aRow['id'].'"><label></label></div>';
+        } else if ($aColumns[$i] == 'name') {
+            $_data = '<a href="'.admin_url('tasks/index/'.$aRow['id']).'" class="display-block main-tasks-table-href-name'.(!empty($aRow['rel_id']) ? ' mbot5' : '').'" onclick="new_work_from(' . $aRow['id'] . '); return false;">' . $_data . '</a>';
+                if (!empty($aRow['rel_id'])) {
+                $rel_data   = get_relation_data($aRow['rel_type'], $aRow['rel_id']);
+                $rel_values = get_relation_values($rel_data, $aRow['rel_type']);
+                // Show client company if task is related to project
+                // if ($aRow['rel_type'] == 'project') {
+    //                 $this->_instance->db->select('clientid');
+    //                 $this->_instance->db->where('id', $aRow['rel_id']);
+    //                 $client = $this->_instance->db->get('tblprojects')->row();
+    //                 if ($client) {
+    //                     $this->_instance->db->select('CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblclients.userid and is_primary = 1) ELSE company END as company');
+    //                     $this->_instance->db->where('userid', $client->clientid);
+    //                     $company = $this->_instance->db->get('tblclients')->row();
+    //                     if ($company) {
+    //                         $rel_values['name'] .= ' - ' . $company->company;
+    //                     }
+    //                 }
+    //             }
+                $_data .= '<span class="hide"> - </span>'. _l('Khách hàng').': <a class="text-muted" data-toggle="tooltip" title="' . ucfirst($aRow['rel_type']) . '" href="' . $rel_values['link'] . '">' . $rel_values['name'] . '</a>';
+            }
+
+        } else if ($aColumns[$i] == 'startdate' || $aColumns[$i] == 'duedate') {
+            if ($aColumns[$i] == 'startdate') {
+                $_data = _d($aRow['startdate']);
+            } else {
+                $_data = _d($aRow['duedate']);
+            }
+        } else if ($aColumns[$i] == 'status') {
+            $_data = '<span class="inline-block label label-'.get_status_label($aRow['status']).'" task-status-table="'.$aRow['status'].'">' . format_task_status($aRow['status'],false,true);
+            if ($aRow['status'] == 5) {
+                $_data .= '<a href="#" onclick="unmark_complete(' . $aRow['id'] . '); return false;"><i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l('task_unmark_as_complete') . '"></i></a>';
+            } else {
+                $_data .= '<a href="#" onclick="mark_complete(' . $aRow['id'] . '); return false;"><i class="fa fa-check task-icon task-unfinished-icon" data-toggle="tooltip" title="' . _l('task_single_mark_as_complete') . '"></i></a>';
+            }
+            $_data .= '</span>';
+        }else if ($aColumns[$i] == 'transaction') {
+            $_data = '<span>' . _l($aRow['transaction']). '</span>';
+        }else if ($aColumns[$i] == 'purpose') {
+            $_data = '<span >' . _l($aRow['purpose']). '</span>';
+        } else if ($aColumns[$i] == 'priority') {
+            $_data = '<span class="text-' . get_task_priority_class($_data) . ' inline-block">' . task_priority($_data) . '</span>';
+        }  else if ($i == $tags_column) {
+            $_data = render_tags($_data);
+        } else if ($aColumns[$i] == 'billable') {
+            if ($_data == 1) {
+                $billable = _l("task_billable_yes");
+            } else {
+                $billable = _l("task_billable_no");
+            }
+            $_data = $billable;
+        }
+                    
+                    $row[] = $_data;
+                }
+                $output['aaData'][] = $row;
+                $x++;
+            }
+
+            $output['sums']['quotes']             = format_money($footer_data, $currency_symbol);
+            // $output['sums']['tquotes']             = $footer_data2;
+            // $output['sums']['contracts']             = format_money($footer_data1, $currency_symbol);
+            // $output['sums']['tcontracts']             = $footer_data3;
+
+
+            echo json_encode($output);
+            die();
+        }
+    }
+
+    public function contracts_report()
+    {
+        if ($this->input->is_ajax_request()) 
+        {
+            $this->load->model('currencies_model');
+            $select = array(
+                
+                'CONCAT(tblcontracts.prefix,tblcontracts.code) as full',
+                'CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblclients.userid and is_primary = 1) ELSE company END as company',
+                '(SELECT fullname FROM tblstaff WHERE create_by=tblstaff.staffid)',
+               
+                'datestart',
+                'dateend',
+                
+                 'contract_value',
+            );
+
+
+            $by_currency     = $this->input->post('report_currency');
+            $currency        = $this->currencies_model->get_base_currency();
+            $currency_symbol = $this->currencies_model->get_currency_symbol($currency->id);
+            
+            $aColumns     = $select;
+            $sIndexColumn = "id";
+            $sTable       = 'tblcontracts';
+            $where        = array();
+            $group_by = '';
+            $join             = array(
+                'LEFT JOIN tblclients ON tblclients.userid = tblcontracts.client',
+                'LEFT JOIN tblcontracttypes ON tblcontracttypes.id = tblcontracts.contract_type'
+            );
+            if($this->input->post()){
+                $clientid = $this->input->post('clientid1');
+                $staffid = $this->input->post('staffsid1');
+                $filter=array();
+                if($clientid){
+                    array_push($where, 'AND (client='.$clientid.')');
+                }
+                if($staffid){
+                    array_push($filter, 'AND create_by IN  (' . implode(', ', $staffid) . ')');
+                }
+                if (count($filter) > 0) {
+                    array_push($where, 'AND (' . prepare_dt_filter($filter) . ')');
+                }
+
+                $custom_date_select = $this->get_where_report_period('datestart');
+                
+                if ($custom_date_select != '') {
+                    array_push($where, $custom_date_select);
+                }
+
+               
+               
+            }
+            
+            $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
+                'tblcontracts.id',
+                'tblcontracttypes.name',
+                'trash',
+                'client',
+                'export_status',
+            ),'',$group_by);
+            $output  = $result['output'];
+            $rResult = $result['rResult'];
+            $x       = 0;
+            $footer_data = 0;
+            $footer_data1  = 0;
+            $footer_data2 = 0;
+            $footer_data3 = 0;
+            foreach ($rResult as $aRow) {
+                $row = array();
+                for ($i = 0; $i < count($aColumns); $i++) {
+                    if (strpos($aColumns[$i], 'as') !== false && !isset($aRow[$aColumns[$i]])) {
+                        $_data = $aRow[strafter($aColumns[$i], 'as ')];
+                    } else {
+                        $_data = $aRow[$aColumns[$i]];
+                    }
+                    if ($i == 1) {
+                        $_data = '<a href="#" onclick="init_client_modal_data(' . $aRow['customer_id']. ');return false;">' . $aRow['company'] . '</a>';
+                    }else if ($i == 0) {
+                        $_data = '<a  href="' . admin_url('contracts/contract/' . $aRow['id']) . '">' . $aRow['full'] . '</a>';
+                    }else if ($aRow[$i] == 'create_date') {
+                        $_data = _d($aRow['create_date']);
+                    }
+                    else if ($aColumns[$i] == $select[5]) {
+                        if ($_data == null) {
+                            $_data = 0;
+                        }
+                       
+                        $footer_data += $_data;
+                        
+                        $_data = '<div style="text-align:right">'.format_money($_data, $currency_symbol).'</div>';
+                        
+                    }
+                    
+                    $row[] = $_data;
+                }
+                $output['aaData'][] = $row;
+                $x++;
+            }
+
+            $output['sums']['contracts']             = format_money($footer_data, $currency_symbol);
+            // $output['sums']['tquotes']             = $footer_data2;
+            // $output['sums']['contracts']             = format_money($footer_data1, $currency_symbol);
+            // $output['sums']['tcontracts']             = $footer_data3;
+
+
             echo json_encode($output);
             die();
         }
@@ -178,7 +637,7 @@ class Reports extends Admin_controller
             $by_currency = $this->input->post('report_currency');
             if ($by_currency) {
                 $currency = $this->currencies_model->get($by_currency);
-                array_push($where, 'AND currency=' . $by_currency);
+                array_push($where, ' AND currency=' . $by_currency);
             } else {
                 $currency = $this->currencies_model->get_base_currency();
             }
@@ -536,14 +995,14 @@ class Reports extends Admin_controller
         if ($months_report != '') {
             if (is_numeric($months_report)) {
                 $minus_months       = date('Y-m-d', strtotime("-$months_report MONTH"));
-                $custom_date_select = 'AND (' . $field . ' BETWEEN "' . $minus_months . '" AND "' . date('Y-m-d') . '")';
+                $custom_date_select = ' AND (' . $field . ' BETWEEN "' . $minus_months . '" AND "' . date('Y-m-d') . '")';
             } else if ($months_report == 'custom') {
                 $from_date = to_sql_date($this->input->post('report_from'));
                 $to_date   = to_sql_date($this->input->post('report_to'));
                 if ($from_date == $to_date) {
-                    $custom_date_select = 'AND ' . $field . ' = "' . $from_date . '"';
+                    $custom_date_select = ' AND ' . $field . ' = "' . $from_date . '"';
                 } else {
-                    $custom_date_select = 'AND (' . $field . ' BETWEEN "' . $from_date . '" AND "' . $to_date . '")';
+                    $custom_date_select = ' AND (' . $field . ' BETWEEN "' . $from_date . '" AND "' . $to_date . '")';
                 }
             }
         }

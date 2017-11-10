@@ -10,27 +10,29 @@ class Tasks extends Admin_controller
     /* Open also all taks if user access this /tasks url */
     public function index($id = '')
     {
+        // $this->perfex_base->get_table_data('tasks');
         $this->list_tasks($id);
     }
     /* List all tasks */
     public function list_tasks($id = '')
     {
         // if passed from url
+
         $_custom_view = '';
         if ($this->input->get('custom_view')) {
             $_custom_view = $this->input->get('custom_view');
         }
-        
-        // if ($this->input->is_ajax_request()) {
-        //     if ($this->input->get('kanban')) {
-        //         $data['statuses'] = $this->tasks_model->get_statuses();
-        //         echo $this->load->view('admin/tasks/kan_ban', $data, true);
-        //         die();
-        //     } else {
-        //         $this->perfex_base->get_table_data('tasks');
 
-        //     }
-        // }
+        if ($this->input->is_ajax_request()) {
+            if ($this->input->get('kanban')) {
+                $data['statuses'] = $this->tasks_model->get_statuses();
+                echo $this->load->view('admin/tasks/kan_ban', $data, true);
+                die();
+            } else {
+                $this->perfex_base->get_table_data('tasks1');
+
+            }
+        }
         $data['taskid'] = '';
         if (is_numeric($id)) {
             $data['taskid'] = $id;
@@ -157,13 +159,43 @@ class Tasks extends Admin_controller
     }
     public function init_relation_tasks($rel_id, $rel_type)
     {
-//        if ($this->input->is_ajax_request()) {
+       if ($this->input->is_ajax_request()) {
             $this->perfex_base->get_table_data('tasks_relations', array(
                 'rel_id' => $rel_id,
                 'rel_type' => $rel_type
             ));
-//        }
+       }
     }
+
+    public function init_relation_tasks1($rel_id, $rel_type)
+    {
+       if ($this->input->is_ajax_request()) {
+            $this->perfex_base->get_table_data('tasks_relations1', array(
+                'rel_id' => $rel_id,
+                'rel_type' => $rel_type
+            ));
+       }
+    }
+
+
+    public function addNewTask(){
+        if (!has_permission('tasks', '', 'edit') && !has_permission('tasks', '', 'create')) {
+            access_denied('Tasks');
+        }else{
+            if ($this->input->get()) {
+                $data = $this->input->get();
+                if ($this->tasks_model->addTest($data)){
+                    echo json_encode(array('status' => true));
+                }else{
+                    echo json_encode(array('status' => false));
+                }
+
+            }
+        }
+
+    }
+
+
     /* Add new task or update existing */
     public function task($id = '')
     {
@@ -186,6 +218,7 @@ class Tasks extends Admin_controller
         if ($this->input->get('start_date')) {
             $data['start_date'] = $this->input->get('start_date');
         }
+
         if ($this->input->post()) {
             $data                = $this->input->post();
             $data['description'] = $this->input->post('description', FALSE);
@@ -258,6 +291,136 @@ class Tasks extends Admin_controller
         $data['id']    = $id;
         $data['title'] = $title;
         $this->load->view('admin/tasks/task', $data);
+    }
+
+    public function work($id = '')
+    {
+        $idtask = $this->input->get('task_id');
+        if($id){
+            $this->perfex_base->get_table_data('tasks',array('id'=>$id));
+        }
+        // $this->tasks_model->getTaskWorkByIDTask($this->input->get('task_id'));
+        $data['task'] = $this->tasks_model->get1($idtask);
+        $data['idtask']  = $idtask;
+
+
+
+        $this->load->view('admin/tasks/work', $data);
+    }
+
+    public function reminder($id = '')
+    {
+        $idtask = $this->input->get('task_id');
+        if($id){
+            $this->perfex_base->get_table_data('tasks',array('id'=>$id));
+        }
+        // $this->tasks_model->getTaskWorkByIDTask($this->input->get('task_id'));
+        $data['task'] = $this->tasks_model->get($idtask);
+        $data['remi'] = $this->tasks_model->getRemiWork($idtask);
+        $data['idtask']  = $idtask;
+        $this->load->view('admin/tasks/reminder', $data);
+    }
+
+    public function task3($id = '')
+    {
+
+        if (!has_permission('tasks', '', 'edit') && !has_permission('tasks', '', 'create')) {
+            access_denied('Tasks');
+        }
+
+        $data = array();
+        // FOr new task add directly from the projects milestones
+        if ($this->input->get('milestone_id')) {
+            $this->db->where('id', $this->input->get('milestone_id'));
+            $milestone = $this->db->get('tblmilestones')->row();
+            if ($milestone) {
+                $data['_milestone_selected_data'] = array(
+                    'id' => $milestone->id,
+                    'due_date' => _d($milestone->due_date)
+                );
+            }
+        }
+        if ($this->input->get('start_date')) {
+            $data['start_date'] = $this->input->get('start_date');
+        }
+
+        if ($this->input->post()) {
+
+            $data                = $this->input->post();
+            $data['description'] = $this->input->post('description', FALSE);
+
+            if ($id == '') {
+                if (!has_permission('tasks', '', 'create')) {
+                    header('HTTP/1.0 400 Bad error');
+                    echo json_encode(array(
+                        'success' => false,
+                        'message' => _l('access_denied')
+                    ));
+                    die;
+                }
+                $id      = $this->tasks_model->add1($data);
+                $_id     = false;
+                $success = false;
+                $message = '';
+                if ($id) {
+                    $success = true;
+                    $_id     = $id;
+                    $message = _l('added_successfuly', _l('task'));
+                }
+                echo json_encode(array(
+                    'alert_type' => 'success',
+                    'success' => $success,
+                    'id' => $_id,
+                    'message' => $message
+                ));
+            } else {
+                if (!has_permission('tasks', '', 'edit')) {
+                    header('HTTP/1.0 400 Bad error');
+                    echo json_encode(array(
+                        'success' => false,
+                        'message' => _l('access_denied')
+                    ));
+                    die;
+                }
+                $success = $this->tasks_model->update($data, $id);
+                $message = '';
+                if ($success) {
+                    $message = _l('updated_successfuly', _l('task'));
+                }
+                echo json_encode(array(
+                    'success' => $success,
+                    'message' => $message,
+                    'id' => $id
+                ));
+            }
+            die;
+        }
+
+        $data['milestones'] = array();
+
+        if ($id == '') {
+            $title = _l('add_new', _l('task_lowercase'));
+        } else {
+
+
+            $data['task'] = $this->tasks_model->get1($id);
+            if ($data['task']->rel_type == 'project') {
+                $data['milestones'] = $this->projects_model->get_milestones($data['task']->rel_id);
+            }
+            $title = _l('edit', _l('task_lowercase')) . ' ' . $data['task']->name;
+        }
+        $data['project_end_date_attrs'] = array();
+        if ($this->input->get('rel_type') == 'project' && $this->input->get('rel_id')) {
+            $project = $this->projects_model->get($this->input->get('rel_id'));
+            if ($project->deadline) {
+                $data['project_end_date_attrs'] = array(
+                    'data-date-end-date' => $project->deadline
+                );
+            }
+        }
+        $data['id']    = $id;
+        $data['title'] = $title;
+        $this->load->view('admin/tasks/task3', $data);
     }
     public function copy()
     {
@@ -371,6 +534,7 @@ class Tasks extends Admin_controller
             }
         }
     }
+
     public function update_checklist_item()
     {
         if ($this->input->is_ajax_request()) {
@@ -514,10 +678,38 @@ class Tasks extends Admin_controller
     /* Delete task from database */
     public function delete_task($id)
     {
+
         if (!has_permission('tasks', '', 'delete')) {
             access_denied('tasks');
         }
         $success = $this->tasks_model->delete_task($id);
+        if ($success) {
+            $message = _l('deleted', _l('Công việc'));
+            $alert_type = 'success';
+        } else {
+            $message = _l('problem_deleting', _l('Công việc'));
+            $alert_type = 'danger';
+        }
+
+        echo json_encode(array(
+            'alert_type' => $alert_type,
+            'success' => $success,
+            'message' => $message
+        ));
+
+        // if (strpos($_SERVER['HTTP_REFERER'], 'tasks/index') !== FALSE) {
+        //     redirect(admin_url('tasks'));
+        // } else {
+        //     redirect($_SERVER['HTTP_REFERER']);
+        // }
+    }
+
+    public function delete_task1($id)
+    {
+        if (!has_permission('tasks', '', 'delete')) {
+            access_denied('tasks');
+        }
+        $success = $this->tasks_model->delete_task1($id);
         $message = _l('problem_deleting', _l('task_lowercase'));
         if ($success) {
             $message = _l('deleted', _l('task'));
@@ -621,7 +813,7 @@ class Tasks extends Admin_controller
                 foreach ($ids as $id) {
                     if ($this->input->post('mass_delete')) {
                         if (has_permission('tasks', '', 'delete')) {
-                            if ($this->tasks_model->delete_task($id)) {
+                            if ($this->tasks_model->delete_task1($id)) {
                                 $total_deleted++;
                             }
                         }
@@ -631,7 +823,7 @@ class Tasks extends Admin_controller
                         }
                         if ($priority) {
                             $this->db->where('id', $id);
-                            $this->db->update('tblstafftasks', array(
+                            $this->db->update('tblstafftasks1', array(
                                 'priority' => $priority
                             ));
                         }

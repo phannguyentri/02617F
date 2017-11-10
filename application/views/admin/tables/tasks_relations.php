@@ -4,10 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $aColumns = array(
     'name',
     'startdate',
-    'duedate',
-    '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblstafftasks.id and rel_type="task" ORDER by tag_order ASC) as tags',
+    'duedate',    
     '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblstafftaskassignees JOIN tblstaff ON tblstaff.staffid = tblstafftaskassignees.staffid WHERE taskid=tblstafftasks.id) as assignees',
     'priority',
+     'purpose',
+    'transaction',
     'status'
 );
 
@@ -74,6 +75,10 @@ foreach ($rResult as $aRow) {
             } else {
                   $_data = _d($aRow['duedate']);
             }
+        }else if ($aColumns[$i] == 'transaction') {
+            $_data = '<span>' . _l($aRow['transaction']). '</span>';
+        }else if ($aColumns[$i] == 'purpose') {
+            $_data = '<span >' . _l($aRow['purpose']). '</span>';
         } else if ($aColumns[$i] == 'priority') {
             $_data = '<span class="text-' . get_task_priority_class($_data) . ' inline-block">' . task_priority($_data) . '</span>';
         } else if ($aColumns[$i] == 'billable') {
@@ -93,7 +98,7 @@ foreach ($rResult as $aRow) {
             } else {
                 $_data = '';
             }
-        } else if($aColumns[$i] == $aColumns[4]) {
+        } else if($aColumns[$i] == $aColumns[3]) {
             $assignees        = explode(',', $_data);
             $assignee_ids        = explode(',', $aRow['assignees_ids']);
             $_data            = '';
@@ -137,9 +142,9 @@ foreach ($rResult as $aRow) {
     }
 
     $class = 'btn-success';
-    $atts  = array(
-        'onclick' => 'timer_action(this,' . $aRow['id'] . '); return false'
-    );
+    // $atts  = array(
+    //     'onclick' => 'timer_action(this,' . $aRow['id'] . '); return false'
+    // );
 
     $tooltip        = '';
     $is_assigned    = $this->_instance->tasks_model->is_task_assignee(get_staff_user_id(), $aRow['id']);
@@ -154,13 +159,13 @@ foreach ($rResult as $aRow) {
             $tooltip = ' data-toggle="tooltip" data-title="' . _l('task_start_timer_only_assignee') . '"';
         }
     }
-    if (!$this->_instance->tasks_model->is_timer_started($aRow['id'])) {
-        $options .= '<span' . $tooltip . ' class="pull-right">' . icon_btn('#', 'clock-o', $class . ' no-margin', $atts) . '</span>';
-    } else {
-        $options .= icon_btn('#', 'clock-o', 'btn-danger pull-right no-margin', array(
-            'onclick' => 'timer_action(this,' . $aRow['id'] . ',' . $this->_instance->tasks_model->get_last_timer($aRow['id'])->id . '); return false'
-        ));
-    }
+    // if (!$this->_instance->tasks_model->is_timer_started($aRow['id'])) {
+    //     $options .= '<span' . $tooltip . ' class="pull-right">' . icon_btn('#', 'clock-o', $class . ' no-margin', $atts) . '</span>';
+    // } else {
+    //     $options .= icon_btn('#', 'clock-o', 'btn-danger pull-right no-margin', array(
+    //         'onclick' => 'timer_action(this,' . $aRow['id'] . ',' . $this->_instance->tasks_model->get_last_timer($aRow['id'])->id . '); return false'
+    //     ));
+    // }
     $row[]              = $options;
     $rowClass = '';
     if ((!empty($aRow['duedate']) && $aRow['duedate'] < date('Y-m-d')) && $aRow['status'] != 5) {

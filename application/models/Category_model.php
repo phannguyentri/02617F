@@ -88,11 +88,10 @@ class Category_model extends CRM_Model
         }
         return false;
     }
-    public function get_by_id($id_parent=0,&$array_category=[], $level=0) {
+    public function get_by_id($id_parent=0,&$array_category, $level=0) {
         if(is_admin() && is_numeric($level)) {
             $this->db->where(array('category_parent' => $id_parent));
             $current_level = $this->db->get('tblcategories')->result_array();
-            
             foreach($current_level as $key=>$value) {
                 $sub = "";
                 for($i=0;$i<$level;$i++){
@@ -110,9 +109,14 @@ class Category_model extends CRM_Model
                         break;
                 }
                 $current_level[$key]['category'] = $sub . " " .$current_level[$key]['category'];
+
                 array_push($array_category, $current_level[$key]);
-                if($level< 3)
-                    $this->get_by_id($value['id'], $array_category, $level+1);
+
+                
+                // if($level< 3)
+                //     $this->get_by_id($value['id'], $array_category, $level+1);
+            // echo '<pre>';var_dump($current_level);die();
+
             }
         }
     }
@@ -133,6 +137,10 @@ class Category_model extends CRM_Model
         }
         return false;
     }
+
+    
+
+
     public function update_category($data_vestion,$id)
     {
         if (is_admin()) {

@@ -214,10 +214,9 @@ class Misc_model extends CRM_Model
                 $data['thumbnail_link'] = $attachment[0]['thumbnailLink'];
             }
         }
-
+        
         $this->db->insert('tblfiles', $data);
         $insert_id = $this->db->insert_id();
-
         if ($data['rel_type'] == 'customer' && isset($data['contact_id'])) {
             if (get_option('only_own_files_contacts') == 1) {
                 $this->db->insert('tblcustomerfiles_shares', array(
@@ -260,8 +259,33 @@ class Misc_model extends CRM_Model
      * @return boolean
      */
 
+
+     public function getStaffWork($id){
+        $this->db->where('taskid',$id);
+        return $this->db->get('tblstafftaskassignees')->result_array();
+        
+    }
+
+     public function getStaffWork1($id){
+        $this->db->where('taskid',$id);
+        return $this->db->get('tblstafftasksfollowers')->result_array();
+        
+    }
+
     public function add_reminder($data, $id)
-    {
+    {   
+
+        $this->db->where('rel_id',$id);
+        $this->db->delete('tblreminders');
+
+        
+
+        
+        $this->db->where('id', $id);
+        $this->db->update('tblstafftasks', array(
+            'remi' => 1)
+        ) ;
+
         if (isset($data['notify_by_email'])) {
             $data['notify_by_email'] = 1;
         } //isset($data['notify_by_email'])
@@ -271,12 +295,45 @@ class Misc_model extends CRM_Model
         $data['date']        = to_sql_date($data['date'], true);
         $data['description'] = nl2br($data['description']);
         $data['creator']     = get_staff_user_id();
-        $this->db->insert('tblreminders', $data);
-        $insert_id = $this->db->insert_id();
-        if ($insert_id) {
-            logActivity('New Reminder Added [' . ucfirst($data['rel_type']) . 'ID: ' . $data['rel_id'] . ' Description: ' . $data['description'] . ']');
-            return true;
-        } //$insert_id
+        $arr = array();
+        $arrStaff = $this->getStaffWork($id);
+
+        foreach ($this->getStaffWork1($id) as $key => $value) {
+            array_push($arrStaff, $value);
+        }
+        
+
+        if($arrStaff){
+            foreach ($arrStaff as $key => $value) {
+
+                $this->db->where('link','#taskid='.$id);
+                $this->db->where('touserid',$value['staffid']);
+                $this->db->where('fromuserid',get_staff_user_id());
+                $this->db->delete('tblreminders');
+
+
+                $data['staff'] = $value['staffid'];
+                $this->db->insert('tblreminders', $data);
+                $arr[] = $this->db->insert_id();
+                add_notification(array(
+                    'description' => $data['description'],
+                    'touserid' => $value['staffid'],
+                    'link' => '#taskid=' . $id,
+                    'date' => $data['date'],
+                    'additional_data' => serialize(array(
+                        $data['description']
+                    ))
+                ));
+            }
+
+           
+
+            if ($arr) {
+                logActivity('New Reminder Added [' . ucfirst($data['rel_type']) . 'ID: ' . $data['rel_id'] . ' Description: ' . $data['description'] . ']');
+                return true;
+            } //$insert_id
+        }
+        
         return false;
     }
     public function get_notes($rel_id, $rel_type)

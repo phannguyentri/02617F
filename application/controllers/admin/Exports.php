@@ -8,6 +8,7 @@ class Exports extends Admin_controller
         $this->load->model('exports_model');
         $this->load->model('invoice_items_model');
         $this->load->model('clients_model');
+        $this->load->model('quotes_model');
         $this->load->model('warehouse_model');
         $this->load->model('sales_model');
     }
@@ -18,6 +19,48 @@ class Exports extends Admin_controller
         }
         $data['title'] = _l('export_orders');
         $this->load->view('admin/exports/manage', $data);
+    }
+
+    public function cancel_export($id)
+    {
+        if (!$id) {
+            die('Không tìm thấy mục nào');
+        }
+
+
+        $data['status']=3;
+        $data['user_head_id']=get_staff_user_id();
+        $data['user_head_date']=date('Y-m-d H:i:s');
+        $data['export_status'] = 1;
+        $data['user_admin_id']=get_staff_user_id();
+        $data['user_admin_date']=date('Y-m-d H:i:s');
+
+        $success    = $this->quotes_model->cancel_export($id,$data);
+        $alert_type = 'warning';
+        $message    = _l('Không thực hiện được');
+        if ($success) {
+            $alert_type = 'success';
+            $message    = _l('Hủy bỏ phê duyệt thành công');
+        }
+        echo json_encode(array(
+            'alert_type' => $alert_type,
+            'message' => $message
+        ));
+
+    }
+
+    public function getIteamContact(){
+        $this->load->model('contracts_model');
+        $data         = $this->contracts_model->getContractByID($this->input->post('id'));
+        foreach ($data->items as $key => $value) {
+            $value->product_quantity = $this->warehouse_model->getProductsByWarehouseID1($value->warehouse_id,$value->product_id)->product_quantity;
+
+        }
+        foreach ($data->items1 as $key => $value) {
+            $value->product_quantity = $this->warehouse_model->getProductsByWarehouseID1($value->warehouse_id,$value->product_id)->product_quantity;
+
+        }
+        echo json_encode($data);
     }
 
     public function export_detail($id='') 
@@ -64,16 +107,31 @@ class Exports extends Admin_controller
 
         if ($id == '') {
             $title = _l('add_new', _l('exports'));
-
+            $data['contract'] = $this->exports_model->get_export_contracts();
+            $data['contract_id'] = $contract_id;
         } else {
             
             $data['item'] = $this->exports_model->getExportByID($id);
             $i=0;
             foreach ($data['item']->items as $key => $value) {       
                 $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+                $data['item']->items[$i]->product_quantity = $this->warehouse_model->getProductsByWarehouseID1($value->warehouse_id,$value->product_id)->product_quantity;
+
                 $i++;
             }
-            
+            $i=0;
+            foreach ($data['item']->items1 as $key => $value) {       
+                $data['item']->items1[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+                $data['item']->items1[$i]->product_quantity = $this->warehouse_model->getProductsByWarehouseID1($value->warehouse_id,$value->product_id)->product_quantity;
+
+                $i++;
+            }
+            $data['warehouse_id'] = $data['item']->items[0]->warehouse_id;
+            $data['warehouse_id1'] = $data['item']->items1[0]->warehouse_id;
+           
+            $a = $this->exports_model->get_export_contracts();
+            array_push($a, (array)$this->exports_model->get_export_contracts($data['item']->rel_id));
+            $data['contract'] = $a;
             if (!$data['item']) {
                 blank_page('Export Not Found');
             }
@@ -83,15 +141,39 @@ class Exports extends Admin_controller
         if (!has_permission('customers', '', 'view')) {
             $where_clients .= ' AND tblclients.userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id=' . get_staff_user_id() . ')';
         }
+
+        $staff =  $this->quotes_model->getStaff(get_staff_user_id());
+        $day = date('d/m/y');
+        $count = $this->exports_model->getExportByIDDate(get_staff_user_id(),$day);
+
+        $dayF = str_replace('/','',$day);
+        $code = $staff->staff_code.sprintf('%02d',$count+1).$dayF;
+        $data['code'] = $code;
+
         $data['warehouse_types']= $this->warehouse_model->getWarehouseTypes();
         $data['warehouses']= $this->warehouse_model->getWarehouses();
         // var_dump($data['warehouses']);die();
         $data['receivers'] = $this->staff_model->get('','',array('staffid<>'=>1));
-        
+        $data['categories_a'] = $this->quotes_model->getCategory(1,NULL,388);
+        $data['categories_b'] = $this->quotes_model->getCategory(1,NULL,446);
         $data['customers'] = $this->clients_model->get('', $where_clients);
-        $data['items']= $this->invoice_items_model->get_full(); 
+        $items = $this->invoice_items_model->get_full(); 
+
+        $i=0;
+        foreach ($items as $key => $value) {
+            $items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+            if($this->warehouse_model->getProductsByWarehouseID1(1,$value['id'])->product_quantity){
+                $items[$i]['product_quantity'] = $this->warehouse_model->getProductsByWarehouseID1(1,$value['id'])->product_quantity;
+            }else{
+                $items[$i]['product_quantity'] = 0;
+            }
+            $i++;
+        }
+        $data['items'] = $items;
         $data['title'] = $title;
-        $this->load->view('admin/exports/detail', $data);
+          echo json_encode(array(
+            'data' => $this->load->view('admin/exports/detail', $data, TRUE),
+        ));
     }
 
     public function sale_output($id)

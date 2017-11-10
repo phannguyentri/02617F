@@ -1,5 +1,10 @@
 <?php init_head(); ?>
 <link rel="stylesheet" href="<?=base_url('assets/treegrid/')?>css/jquery.treegrid.css">
+<style type="text/css">
+    .poitv{
+        pointer-events: none;
+    }
+</style>
 <div id="wrapper">
     <div class="content">
         <div class="row">
@@ -27,11 +32,11 @@
                                 echo render_select('category_2', array(), array('id', 'category'), 'Danh mục cấp 2');
                             ?>
                         </div>
-                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                       <!--  <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <?php 
                                 echo render_select('category_3', array(), array('id', 'category'), 'Danh mục cấp 3');
                             ?>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="panel_s">
@@ -41,6 +46,7 @@
                             <thead>
                                 <th>Tên danh mục</th>
                                 <th>Cấp danh mục</th>
+                                <th>Mô tả</th>
                                 <th>Tác vụ</th>
                             </thead>
                             <tbody>
@@ -50,7 +56,11 @@
                             <tr class="treegrid-<?=$categories_1->id?>">
                                 <td><h5 style="display: inline-block;"><?=$categories_1->category?></h5></td>
                                 <td>Cấp 1</td>
-                                <td><?=icon_btn('categories/delete_category/'. $categories_1->id , 'remove', 'btn-danger delete-reminder')?></td>
+                                <td><?=$categories_1->description?></td>
+                                <td>
+                                   <!--  <?=icon_btn('categories/delete_category/'. $categories_1->id , 'remove', 'btn-danger delete-reminder')?> -->
+                                        
+                                </td>
                             </tr>
                                 <?php
                                     if(isset($categories_1->items) && count($categories_1->items) > 0) {
@@ -59,7 +69,13 @@
                             <tr class="treegrid-<?=$categories_2->id?> treegrid-parent-<?=$categories_1->id?>">
                                 <td><?=$categories_2->category?></td>
                                 <td>Cấp 2</td>
-                                <td><?=icon_btn('categories/delete_category/'. $categories_2->id , 'remove', 'btn-danger delete-reminder')?></td>
+                                <td><?=$categories_2->description?></td>
+                                <td>
+                                    <a href="#" data-id="<?php echo $categories_2->id ?>" onclick="edit_category(<?php echo $categories_2->id ?>); return false;" class="btn edit_cate btn-info  btn-icon"><i class="fa fa-edit "></i></a>
+                                  
+                                    <?=icon_btn('categories/delete_category/'. $categories_2->id , 'remove', 'btn-danger delete-reminder')?>
+                                    
+                                </td>
                             </tr>
                                             <?php
                                             if(isset($categories_2->items) && count($categories_2->items) > 0) {
@@ -115,8 +131,13 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="additional"></div>
+                        <?php $selected = $categories[0]['id'] ?>
                         <?php echo render_input('category','Tên'); ?>
-                        <?php echo render_select('category_parent', $categories, array('id', 'category'), 'Danh mục cha'); ?>
+                        <?php echo render_select('category_parent', $categories, array('id', 'category'), 'Danh mục cha',$selected); ?>
+                        <?php 
+                        
+                        echo render_textarea('description', 'Mô tả', '', array(), array(), '', 'tinymce');
+                        ?> 
                     </div>
                 </div>
             </div>
@@ -160,6 +181,9 @@
         });
     }
 
+
+    
+
     $(function(){
         var filterList = {
             "category_1" : "[name='category_1']",
@@ -201,8 +225,48 @@
         $('#type').modal('show');
         $('.edit-title').addClass('hide');
         jQuery('#category').val('');
-        jQuery('#id_type').prop('action',admin_url+'categories/add_category');
+        jQuery('#id_type').prop('action',admin_url+'categories/update_category');
+        $('#category').removeAttr('readonly');
+        $('#category_parent').parents('.form-group').removeClass('poitv');
+        tinyMCE.activeEditor.setContent('');
     }
+
+
+     function edit_category(a){
+        $('#type').modal('show');
+        $('.edit-title').addClass('hide');
+        jQuery('#category').val('');
+        jQuery('#id_type').prop('action',admin_url+'categories/update_category/'+a);
+    }
+
+
+
+    $('.edit_cate').click(function(){
+        var v = $(this).attr('data-id');
+        var this1 = $(this);
+        tinyMCE.activeEditor.setContent('');
+        if(v){
+            $.ajax({
+               type: "POST",
+               dataType:'JSON',
+               url: admin_url+"categories/getCateByID/"+v,
+               success: function(data)
+               {
+                    
+                    $('#category').val(data.category);
+                    $('#category').attr('readonly','readonly');
+                    $('#category_parent').parents('.form-group').addClass('poitv');
+                    $('#category_parent').selectpicker('val', data.category_parent);
+                    $('#description').html(data.description);
+                    var b = data.description;
+                    if(b){
+                        tinyMCE.activeEditor.setContent(b);
+                    }
+               }
+             });
+        }
+    })
+
     function edit_type(invoker,id){
         var name = $(invoker).data('name');
         $('#additional').append(hidden_input('id',id));

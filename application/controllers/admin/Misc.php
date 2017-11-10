@@ -201,10 +201,15 @@ class Misc extends Admin_controller
         if ($this->input->post()) {
             $success = $this->misc_model->add_note($this->input->post(), $rel_type, $rel_id);
             if ($success) {
-                set_alert('success', _l('added_successfuly', _l('note')));
+                $alert_type = 'success';
+                $message    = _l('Thêm ghi chú thành công');
             }
         }
-        redirect($_SERVER['HTTP_REFERER']);
+        echo json_encode(array(
+            'alert_type' => $alert_type,
+            'message' => $message
+        ));
+        
     }
     public function edit_note($id)
     {
@@ -331,4 +336,7 @@ class Misc extends Admin_controller
             die();
         }
     }
+
+
+   
 }

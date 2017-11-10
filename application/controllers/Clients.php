@@ -1285,4 +1285,301 @@ class Clients extends Clients_controller
     {
         return do_recaptcha_validation($str);
     }
+     public function sent_email_later()
+    {
+        $this->db->where('status',0);
+        $this->db->where('date_send <',date('Y-m-d H:i:s'));
+        $_data=$this->db->get('email_send_later')->result_array();
+        $this->email->initialize();
+        foreach($_data as $data)
+        {
+            $message = $data['message'];
+            $name_file = $data['file'];
+            $to_email = $data['email_to'];
+            $to_email_cc = $data['email_cc'];
+            $to_email_bc = $data['email_bcc'];
+            $subject = $data['subject'];
+            $staff=get_table_where('tblstaff',array('staffid'=>$data['create_by']));
+            $sender_email = $staff[0]['email_marketing'];
+            $user_password = $staff[0]['password_email_marketing'];
+            if($sender_email==""||$user_password=="")
+            {
+                $sender_email=get_option('smtp_email');
+                $user_password=get_option('smtp_password');
+            }
+
+            $template = $data['template'];
+            $count_send = 0;
+            $username = get_staff_full_name($data['create_by']);
+            if ($name_file) {
+                $name_file = explode(',', $name_file);
+                if ($name_file != array()) {
+                    foreach ($name_file as $file) {
+                        if ($file != "") {
+                            $this->email->attach(get_upload_path_by_type('email') . $file);
+                        }
+                    }
+                }
+            }
+            if ($data['template']) {
+                if ($to_email_cc != "" || $to_email_bc != "" || $to_email != "") {
+                    $id_log = $this->email_marketing_model->log_sent_email($subject, $message, $data['file_send'], $template, $data['campaign']);
+                }
+                if ($to_email != "") {
+                    $to_email = explode(',', $to_email);
+                    foreach ($to_email as $rom) {
+
+                        $config['smtp_user'] = $sender_email;
+                        $config['smtp_pass'] = $user_password;
+                        $this->email->initialize($config);
+
+
+                        $this->email->set_newline("\r\n");
+                        $this->email->from($sender_email, $username);
+                        $this->email->set_mailtype("html");
+                        $this->email->to($rom);
+                        $message_sent = $this->get_content($rom, $message);
+                        $this->email->subject($subject);
+                        $id_email = $this->log_sent_email($rom, 0, $id_log);
+                        $this->email->message($message_sent . "<img border='0' src='" . admin_url() . "images_code/images_code?id=" . $id_email . "' width='1' height='1'>");
+                        sleep(2);
+                        if ($this->email->send()) {
+                            $count_send++;
+                        }
+                        $data['message_display'] = $this->email->print_debugger();
+                    }
+                }
+                if ($to_email_cc != "") {
+                    $to_email_cc = explode(',', $to_email_cc);
+                    foreach ($to_email_cc as $rom_cc) {
+                        $config['smtp_user'] = $sender_email;
+                        $config['smtp_pass'] = $user_password;
+                        $this->email->initialize($config);
+                        $this->email->set_newline("\r\n");
+                        $this->email->from($sender_email, $username);
+                        $this->email->set_mailtype("html");
+                        $this->email->cc($rom_cc);
+                        $message_sent = $this->get_content($rom_cc, $message);
+                        $this->email->subject($subject);
+                        $id_email = $this->log_sent_email($rom_cc, 1, $id_log);
+                        $this->email->message($message_sent . "<img border='0' src='" . admin_url() . "images_code/images_code?id=" . $id_email . "' width='1' height='1'>");
+                        if ($this->email->send()) {
+                            $count_send++;
+                        }
+                        $data['message_display'] = $this->email->print_debugger();
+                    }
+                }
+                if ($to_email_bc != "") {
+                    $to_email_bc = explode(',', $to_email_bc);
+                    foreach ($to_email_bc as $rom_bc) {
+                        $config['smtp_user'] = $sender_email;
+                        $config['smtp_pass'] = $user_password;
+                        $this->email->initialize($config);
+                        $this->email->set_newline("\r\n");
+                        $this->email->from($sender_email, $username);
+                        $this->email->set_mailtype("html");
+                        $this->email->bcc($rom_bc);
+                        $message_sent = $this->get_content($rom_bc, $message);
+                        $this->email->subject($subject);
+                        $id_email = $this->log_sent_email($rom_bc, 2, $id_log);
+                        $this->email->message($message_sent . "<img border='0' src='" . admin_url() . "images_code/images_code?id=" . $id_email . "' width='1' height='1'>");
+                        if ($this->email->send()) {
+                            $count_send++;
+                        }
+                        $data['message_display'] = $this->email->print_debugger();
+                    }
+                }
+
+                if ($count_send > 0) {
+                    $data['message_display'] = 'Message has been sent';
+                    $this->db->where('id',$data['id']);
+                    $this->db->update('email_send_later',array('status'=>1));
+                } else {
+                    $this->email_marketing_model->delete_log_email($id_log);
+                    $data['message_display'] = 'Message could not be sent!. <br>' . 'Mailer Error: ' . $this->email->print_debugger();
+                }
+            }
+            else {
+                if ($to_email != "" || $to_email_cc != "" || $to_email_bc != "") {
+                    $count_send = 0;
+                    $id_log = $this->email_marketing_model->log_sent_email($subject, $message, $data['file_send'], $template);
+                    $to_email = explode(',', $to_email);
+                    foreach ($to_email as $rom) {
+                        $config['smtp_user'] = $sender_email;
+                        $config['smtp_pass'] = $user_password;
+                        $this->email->initialize($config);
+                        $this->email->set_newline("\r\n");
+                        $this->email->from($sender_email, $username);
+                        $this->email->set_mailtype("html");
+                        $this->email->to($rom);
+                        $message_sent = $this->get_content($rom, $message);
+                        $this->email->subject($subject);
+                        $id_email = $this->log_sent_email($rom, 0, $id_log);
+                        $this->email->message($message_sent . "<img border='0' src='" . admin_url() . "email_marketing/images_code?id=" . $id_email . "' width='1' height='1'>");
+                        if ($this->email->send()) {
+                            $count_send++;
+                        }
+                    }
+                    $to_email_cc = explode(',', $to_email_cc);
+                    foreach ($to_email_cc as $rom_cc) {
+                        $config['smtp_user'] = $sender_email;
+                        $config['smtp_pass'] = $user_password;
+                        $this->email->initialize($config);
+                        $this->email->set_newline("\r\n");
+                        $this->email->from($sender_email, $username);
+                        $this->email->set_mailtype("html");
+                        $this->email->to($rom_cc);
+                        $message_sent = $this->get_content($rom_cc, $message);
+                        $this->email->subject($subject);
+                        $id_email = $this->log_sent_email($rom_cc, 1, $id_log);
+                        $this->email->message($message_sent . "<img border='0' src='" . admin_url() . "email_marketing/images_code?id=" . $id_email . "' width='1' height='1'>");
+                        if ($this->email->send()) {
+                            $count_send++;
+                        }
+
+                    }
+                    $to_email_bc = explode(',', $to_email_bc);
+                    foreach ($to_email_bc as $rom_bc) {
+                        $config['smtp_user'] = $sender_email;
+                        $config['smtp_pass'] = $user_password;
+                        $this->email->initialize($config);
+                        $this->email->set_newline("\r\n");
+                        $this->email->from($sender_email, $username);
+                        $this->email->set_mailtype("html");
+                        $this->email->to($rom_bc);
+                        $message_sent = $this->get_content($rom_bc, $message);
+                        $this->email->subject($subject);
+                        $id_email = $this->log_sent_email($rom_bc, 2, $id_log);
+                        $this->email->message($message_sent . "<img border='0' src='" . admin_url() . "email_marketing/images_code?id=" . $id_email . "' width='1' height='1'>");
+                        if ($this->email->send()) {
+                            $count_send++;
+                        }
+                    }
+
+                }
+                if ($count_send > 0) {
+                    $data['message_display'] = 'Message has been sent';
+                    $this->db->where('id',$data['id']);
+                    $this->db->update('email_send_later',array('status'=>1));
+                } else {
+                    $this->email_marketing_model->delete_log_email($id_log);
+                    $data['message_display'] = 'Message could not be sent!. <br>' . 'Mailer Error: ' . $this->email->print_debugger();
+                }
+
+            }
+        }
+    }
+    public function log_sent_email($email,$type,$id_log)
+    {
+        $this->db->insert('tblemail_send',array('email'=>$email,'type'=>$type,'id_log'=>$id_log));
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            logActivity('Send email [ID:' . $insert_id);
+            return $insert_id;
+        }
+        return false;
+    }
+    public function get_content($id,$content="")
+    {
+        $this->db->select('tblclients.*,tblcountries.short_name as country,
+                            tblarea.name as address_area,province.name as city,
+                            district.name as state,ward.name as address_ward,
+                            tblleadssources.name as source_approach,
+                            tblcurrencies.name as default_currency
+        ');
+        $this->db->where('email',$id);
+        $this->db->join('tblcountries','tblcountries.country_id=tblclients.country','left');
+        $this->db->join('tblarea','tblarea.id=tblclients.address_area','left');
+        $this->db->join('province','province.provinceid=tblclients.city','left');
+        $this->db->join('district','district.districtid=tblclients.state','left');
+        $this->db->join('ward','ward.wardid=tblclients.address_ward','left');
+        $this->db->join('tblleadssources','tblleadssources.id=tblclients.source_approach','left');
+        $this->db->join('tblcurrencies','tblcurrencies.id=tblclients.default_currency','left');
+        $client=$this->db->get('tblclients')->row();
+        if($client)
+        {
+            if($client->user_referrer)
+            {
+                $client->user_referrer=get_table_where('tblclients',array('userid'=>$client->userid))[0]['company'];
+            }
+            if($client->shipping_area)
+            {
+                $client->shipping_area=get_table_where('tblarea',array('id'=>$client->shipping_area))[0]['name'];
+            }
+            if($client->shipping_country)
+            {
+                $client->shipping_country=get_table_where('tblcountries',array('country_id'=>$client->shipping_country))[0]['short_name'];
+            }
+            if($client->shipping_city)
+            {
+                $client->shipping_city=get_table_where('province',array('provinceid'=>$client->shipping_city))[0]['name'];
+            }
+            if($client->shipping_state)
+            {
+                $client->shipping_state=get_table_where('district',array('districtid'=>$client->shipping_state))[0]['name'];
+            }
+            if($client->shipping_ward)
+            {
+                $client->shipping_ward=get_table_where('ward',array('wardid'=>$client->shipping_ward))[0]['name'];
+            }
+        }
+
+
+        $field=array('code','title','company','short_name','phonenumber',
+            'mobilephone_number','address_room_number','address_building','address_home_number',
+            'address','address_town','country','address_area','city','state','address_ward','fax',
+            'email','id_card','vat','birthday','user_referrer','groups_in','source_approach',
+            'default_currency','debt','shipping_area','shipping_country','shipping_area',
+            'shipping_city','shipping_state','shipping_ward','shipping_room_number',
+            'shipping_building','shipping_home_number','shipping_street','shipping_town',
+            'shipping_zip',
+
+        );
+        $field2=array(
+            'type_of_organization','bussiness_registration_number','legal_representative','website',
+            'business','cooperative_day',
+        );
+        $field_staff=array(
+            'staff_code','fullname','email','phonenumbser',
+
+        );
+        foreach($field as $rom)
+        {
+            $content=preg_replace('"{tblclients.'.$rom.'}"',$client->$rom,$content);
+        }
+        foreach($field2 as $rom2)
+        {
+            $content=preg_replace('"{tblclients.'.$rom2.'}"',$client->$rom2,$content);
+        }
+        foreach($field_staff as $rom_s)
+        {
+            $content=preg_replace('"{tblstaff.'.$rom_s.'}"',$client->$rom_s,$content);
+        }
+        return $content;
+
+    }
+    public function images_code()
+    {
+    $this->load->model('email_marketing_model');
+        $id=$this->input->get('id');
+        $this->email_marketing_model->update_status($id);
+        header("Content-Type: image/png");
+        $im = @imagecreate(110, 20)
+        or die("Cannot Initialize new GD image stream");
+        $background_color = imagecolorallocate($im, 0, 0, 0);
+        $text_color = imagecolorallocate($im, 233, 14, 91);
+        imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color);
+        imagepng($im);
+        imagedestroy($im);
+        header('Pragma: public');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Cache-Control: private', false);
+        header('Content-Disposition: attachment; filename="photos_icon.png"');
+        header('Content-Transfer-Encoding: binary');
+        header('Content-Length: ' . $im);
+        readfile($im);
+        exit;
+    }
+
 }

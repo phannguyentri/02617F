@@ -2026,6 +2026,7 @@ function initDataTableOffline(dt_table) {
 
     var order_col, order_type, options, _buttons;
     var _options = {
+        buttons: get_dt_export_buttons(table),
         "language": dt_lang,
         "processing": true,
         'paginate': true,
@@ -2867,6 +2868,31 @@ function reminderFormHandler(form) {
     $('.reminder-modal-' + serializeArray[1]['value'] + '-' + serializeArray[0]['value']).modal('hide');
     return false;
 }
+
+// Validate the form reminder
+function init_form_reminder() {
+    _validate_form($('#form-reminder'), {
+        date: 'required',
+        staff: 'required'
+    }, reminderFormHandler);
+}
+// Handles reminder modal form
+function reminderFormHandler(form) {
+    form = $(form);
+    var data = form.serialize();
+    var serializeArray = $(form).serializeArray();
+    $.post(form.attr('action'), data).done(function(data) {
+        data = JSON.parse(data);
+        alert_float(data.alert_type, data.message);
+        $.each(available_reminders_table, function(i, table) {
+            if ($.fn.DataTable.isDataTable(table)) {
+                $('body').find(table).DataTable().ajax.reload();
+            }
+        });
+    });
+    $('.reminder-modal-' + serializeArray[1]['value'] + '-' + serializeArray[0]['value']).modal('hide');
+    return false;
+}
 // Function to close modal manualy... needed in some modals where the data is flexible.
 function close_modal_manualy(modal) {
     if ($(modal).length == 0) {
@@ -3384,6 +3410,7 @@ function init_lead(id) {
     }
 }
 
+
 function validate_lead_form(formHandler) {
     _validate_form($('#lead_form'), {
         name: 'required',
@@ -3498,6 +3525,8 @@ function update_all_proposal_emails_linked_to_lead(id) {
         init_lead_modal_data(id);
     });
 }
+
+
 
 function init_lead_modal_data(id, url) {
     if (typeof(id) == 'undefined') {
@@ -4322,7 +4351,7 @@ function tasks_bulk_action(event) {
         } else {
             data.mass_delete = true;
         }
-        var rows = $('.table-tasks').find('tbody tr');
+        var rows = $('.table-tasks1').find('tbody tr');
         $.each(rows, function() {
             var checkbox = $($(this).find('td').eq(0)).find('input');
             if (checkbox.prop('checked') == true) {

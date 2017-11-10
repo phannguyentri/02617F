@@ -125,11 +125,20 @@ foreach ($rResult as $aRow) {
         //     'data-placement'=>'top'));
         // } 
 
-        if($aRow['status']!=2)
+        if($aRow['status']==0 && $aRow['export_status']==0)
+        {           
+            //Tao Hop Dong
+            $_data .= icon_btn('contract/cancel_export/'. $aRow['id'] , 'ban','btn-default cancel-remind',array(
+            'data-toggle'=>'tooltip',
+            'title'=>_l('Không phê duyệt'),
+            'data-placement'=>'top'
+            ));           
+            
+        }
+
+        if($aRow['status']!=2 && $aRow['status']!=3)
         {            
-            $_data .= icon_btn('exports/export_detail/'. $aRow['id'] , 'edit', 'btn-default',array('data-toggle'=>'tooltip',
-            'title'=>_l('edit'),
-            'data-placement'=>'top'));
+            $_data .= icon_btn('#', 'edit','btn-default',array('onclick'=>'init_exports_modal_data('.$aRow['id'].');return false;'));
         }  
         else
         {   $type='file-o';
@@ -140,12 +149,10 @@ foreach ($rResult as $aRow) {
                 $view=_l('create_delivery');
             }
             //Tao Phieu Giao hang
-            $_data .= icon_btn('exports/sale_delivery/'. $aRow['id'] , $type, 'btn-default',array('data-toggle'=>'tooltip',
-            'title'=>$view,
-            'data-placement'=>'top'));
-            $_data .= icon_btn('exports/export_detail/'. $aRow['id'] , 'eye', 'btn-default',array('data-toggle'=>'tooltip',
-            'title'=>_l('view'),
-            'data-placement'=>'top'));
+            // $_data .= icon_btn('exports/sale_delivery/'. $aRow['id'] , $type, 'btn-default',array('data-toggle'=>'tooltip',
+            // 'title'=>$view,
+            // 'data-placement'=>'top'));
+            $_data .= icon_btn('#', 'eye','btn-default',array('onclick'=>'init_exports_modal_data('.$aRow['id'].');return false;'));
         }      
         $row[] =$_data.icon_btn('exports/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-remind',array('data-toggle'=>'tooltip',
             'title'=>_l('delete'),

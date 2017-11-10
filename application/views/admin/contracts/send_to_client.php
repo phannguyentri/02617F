@@ -29,11 +29,19 @@
                         </div>
                         <?php echo render_input('cc','CC'); ?>
                         <hr />
+                        <div class="col-md-6">
                         <div class="checkbox checkbox-primary">
-                            <input type="checkbox" <?php if(empty($contract->content)){echo 'disabled';} else {echo 'checked';} ?> name="attach_pdf" id="attach_pdf">
+                            <input type="checkbox" <?php if(empty($item->content)){echo 'disabled';} else {echo 'checked';} ?> name="attach_pdf" id="attach_pdf">
                             <label for="attach_pdf"><?php echo _l('contract_send_to_client_attach_pdf'); ?></label>
                         </div>
-                        <h5 class="bold"><?php echo _l('contract_send_to_client_preview_template'); ?></h5>
+                        </div>
+                        <div class="col-md-6">
+                        <div class="checkbox checkbox-primary">
+                            <input type="checkbox" <?php if(empty($item->content)){echo 'disabled';} else {echo 'checked';} ?> name="attach_word" id="attach_word">
+                            <label for="attach_word"><?php echo _l('Đính kèm Word'); ?></label>
+                        </div>
+                        </div>
+                        <!-- <h5 class="bold"><?php echo _l('contract_send_to_client_preview_template'); ?></h5> -->
                         <hr />
                         <?php echo render_textarea('email_template_custom','',$template->message,array(),array(),'','tinymce-'.$contract->id); ?>
                         <?php echo form_hidden('template_name',$template_name); ?>

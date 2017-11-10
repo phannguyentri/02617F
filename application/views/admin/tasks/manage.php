@@ -6,13 +6,16 @@
         <div class="panel_s">
           <div class="panel-body _buttons">
             <div class="row">
+
               <div class="col-md-8">
-                <?php if(has_permission('tasks','','create')){ ?>
-                <a href="#" onclick="new_task(); return false;" class="btn btn-info pull-left new"><?php echo _l('new_task'); ?></a>
+                <h4>DANH SÁCH GIAO DỊCH</h4>
+                <?php if(has_permission('tasks','','create')){ ?>                
+                <!-- <a href="#" onclick="new_task1(); return false;" class="btn btn-info pull-left new "><?php echo _l('new_task'); ?></a> -->
+                <!-- <a href="#" onclick="new_task(); return false;" class="btn btn-info pull-left new mleft10"><?php echo _l('Công việc mới'); ?></a> -->
                 <?php } ?>
-                <a href="<?php echo admin_url('tasks/switch_kanban/'.$switch_kanban); ?>" class="btn btn-default mleft10 pull-left">
+               <!--  <a href="<?php echo admin_url('tasks/switch_kanban/'.$switch_kanban); ?>" class="btn btn-default mleft10 pull-left">
                  <?php if($switch_kanban == 1){ echo _l('switch_to_list_view');}else{echo _l('leads_switch_to_kanban');}; ?>
-               </a>
+               </a> -->
                 <?php if($this->input->get('project_id')){ ?>
               <a href="<?php echo admin_url('projects/view/'.$this->input->get('project_id').'?group=project_tasks'); ?>" class="mtop5 pull-left mleft10"><?php echo _l('back_to_project'); ?></a>
             <?php } ?>
@@ -23,8 +26,8 @@
                <?php echo render_input('search','','','search',array('data-name'=>'search','onkeyup'=>'tasks_kanban();','placeholder'=>_l('search_tasks')),array(),'no-margin') ?>
                </div>
                <?php } else { ?>
-               <?php $this->load->view('admin/tasks/tasks_filter_by',array('view_table_name'=>'.table-tasks')); ?>
-               <a href="<?php echo admin_url('tasks/detailed_overview'); ?>" class="btn btn-success pull-right mright5"><?php echo _l('detailed_overview'); ?></a>
+               <?php //$this->load->view('admin/tasks/tasks_filter_by',array('view_table_name'=>'.table-tasks')); ?>
+               <!-- <a href="<?php echo admin_url('tasks/detailed_overview'); ?>" class="btn btn-success hidden pull-right mright5"><?php echo _l('detailed_overview'); ?></a> -->
                <?php } ?>
 
              </div>
@@ -48,7 +51,10 @@
          </div>
        </div>
        <?php } else { ?>
+       <?php $this->load->view('admin/tasks/tasks_filter_by',array('view_table_name'=>'.table-tasks')); ?>
+               <a href="<?php echo admin_url('tasks/detailed_overview'); ?>" class="btn btn-success hidden pull-right mright5"><?php echo _l('detailed_overview'); ?></a>
        <a href="#" data-toggle="modal" data-target="#tasks_bulk_actions" class="btn btn-info mbot15"><?php echo _l('bulk_actions'); ?></a>
+
        <?php $this->load->view('admin/tasks/_table',array('bulk_actions'=>true)); ?>
 
      </div>
@@ -78,7 +84,7 @@
               </select>
             </div>
             <?php if(has_permission('tasks','','edit')){ ?>
-            <div class="form-group">
+            <div class="form-group hidden">
               <label for="task_bulk_priority" class="control-label"><?php echo _l('task_add_edit_priority'); ?></label>
               <select name="task_bulk_priority" class="selectpicker" id="task_bulk_priority" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
                 <option value=""></option>
@@ -108,6 +114,28 @@
 <?php init_tail(); ?>
 <script>
   taskid = '<?php echo $taskid; ?>';
+
+   $(document).ready(function(){
+   $('body').on('click', '.task-delete', function() {
+        var r = confirm(confirm_action_prompt);
+        var table='.table-tasks';
+        if (r == false) {
+            return false;
+        } else {
+            $.get($(this).attr('href'), function(response) {
+                $('body .task-modal-single').modal('hide');
+                alert_float(response.alert_type, response.message);
+                // Looop throug all availble reminders table to reload the data
+                    if ($.fn.DataTable.isDataTable(table)) {
+                        $('body').find(table).DataTable().ajax.reload();
+                    }
+            }, 'json');
+        }
+        return false;
+    });
+ 
+ })
+  
   $(function(){
     tasks_kanban();
   });

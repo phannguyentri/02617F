@@ -399,6 +399,7 @@ class Clients_model extends CRM_Model
     public function add($data, $client_or_lead_convert_request = false)
     {
         $contact_data = array();
+        $a = $data['email'];
         foreach ($this->contact_data as $field) {
             if (isset($data[$field])) {
                 $contact_data[$field] = $data[$field];
@@ -408,6 +409,9 @@ class Clients_model extends CRM_Model
                 }
             }
         }
+
+        $data['email'] = $a;
+
         // From customer profile register
         if (isset($data['contact_phonenumber'])) {
             $contact_data['phonenumber'] = $data['contact_phonenumber'];
@@ -427,6 +431,7 @@ class Clients_model extends CRM_Model
         if (isset($data['country']) && $data['country'] == '' || !isset($data['country'])) {
             $data['country'] = 0;
         }
+
         if(!isset($data['show_primary_contact'])) {
             $data['show_primary_contact'] = 0;
         }
@@ -439,6 +444,7 @@ class Clients_model extends CRM_Model
         if (isset($data['shipping_country']) && $data['shipping_country'] == '' || !isset($data['shipping_country'])) {
             $data['shipping_country'] = 0;
         }
+
         $data['datecreated'] = date('Y-m-d H:i:s');
         $data                = do_action('before_client_added', $data);
         $this->db->insert('tblclients', $data);
@@ -485,6 +491,7 @@ class Clients_model extends CRM_Model
 
             logActivity('New Client Created [' . $_new_client_log . ']', $_is_staff);
         }
+
         return $userid;
     }
     // Sources
@@ -501,6 +508,30 @@ class Clients_model extends CRM_Model
         }
         return $this->db->get('tblleadssources')->result_array();
     }
+
+    public function get_province($country_id) {
+         if (is_numeric($country_id)) {
+            $this->db->where('provinceid', $country_id);
+            return $this->db->get('province')->row();
+        }
+        return $this->db->get('province')->result_array();
+    }
+
+    public function get_district_by_country_id($country_id) {
+         
+        $this->db->where('provinceid', $country_id);
+        return $this->db->get('district')->result_array();
+        
+    }
+
+    public function get_district($district_id) {
+         if (is_numeric($district_id)) {
+            $this->db->where('districtid', $district_id);
+            return $this->db->get('district')->row();
+        }
+        return $this->db->get('district')->result_array();
+    }
+
     public function get_area($id = false) {
         if (is_numeric($id)) {
             $this->db->where('id', $id);
@@ -557,13 +588,18 @@ class Clients_model extends CRM_Model
             'data' => $data
         ));
         $data  = $_data['data'];
+        
         $this->db->where('userid', $id);
-        $this->db->update('tblclients', $data);
+        $iddd = $this->db->update('tblclients', $data);
 
-        if ($this->db->affected_rows() > 0) {
+
+        
+        if ($iddd) {
             $affectedRows++;
             do_action('after_client_updated', $id);
+
         }
+
         if (isset($update_all_other_transactions)) {
             // Update all unpaid invoices
             $this->db->where('clientid', $id);
@@ -935,6 +971,7 @@ class Clients_model extends CRM_Model
         $attachments['estimate'] = array();
         $attachments['proposal'] = array();
         $attachments['contract'] = array();
+        $attachments['quotes'] = array();
         $attachments['lead']     = array();
         $attachments['task']     = array();
         $attachments['customer'] = array();
@@ -985,6 +1022,29 @@ class Clients_model extends CRM_Model
                 if (count($_attachments) > 0) {
                     foreach ($_attachments as $_att) {
                         array_push($attachments['invoice'], $_att);
+                    }
+                }
+            }
+        }
+
+        $has_permission_quotes_view = has_permission('quotes', '', 'detail');
+        $has_permission_quotes_own  = has_permission('quotes', '', 'detail');
+
+        if ($has_permission_quotes_view || $has_permission_quotes_own) {
+            // Invoices
+            
+            $this->db->from('tblquotes');
+            $this->db->where('id',$id);
+            $invoices = $this->db->get()->result_array();
+            foreach ($invoices as $invoice) {
+                $this->db->where('rel_id', $invoice['id']);
+                $this->db->where('rel_type', 'quotes');
+                $_attachments = $this->db->get('tblfiles')->result_array();
+
+                if (count($_attachments) > 0) {
+                    foreach ($_attachments as $_att) {
+
+                        array_push($attachments['quotes'], $_att);
                     }
                 }
             }
@@ -1062,6 +1122,8 @@ class Clients_model extends CRM_Model
             }
         }
 
+
+
         $customer = $this->get($id);
         if ($customer->leadid != NULL) {
             $this->db->where('rel_id', $customer->leadid);
@@ -1111,9 +1173,11 @@ class Clients_model extends CRM_Model
 
         $this->db->where('rel_id', $id);
         $this->db->where('rel_type', 'customer');
+
         $client_main_attachments = $this->db->get('tblfiles')->result_array();
 
         $attachments['customer'] = $client_main_attachments;
+
         return $attachments;
     }
     /**
@@ -1234,6 +1298,16 @@ class Clients_model extends CRM_Model
         $this->db->where('customer_id', $id);
         return $this->db->get('tblcustomergroups_in')->result_array();
     }
+
+    public function get_customer_groups_name($id)
+    {
+        $this->db->where('tblcustomergroups_in.customer_id', $id);
+        $this->db->join('tblcustomersgroups','tblcustomergroups_in.groupid = tblcustomersgroups.id','left');
+        return $this->db->get('tblcustomergroups_in')->result_array();
+    }
+
+    
+
     /**
      * Get all customer groups
      * @param  string $id
@@ -1247,6 +1321,8 @@ class Clients_model extends CRM_Model
         }
         return $this->db->get('tblcustomersgroups')->result_array();
     }
+
+
     /**
      * Delete customer groups
      * @param  mixed $id group id

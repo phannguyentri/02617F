@@ -6,17 +6,21 @@ $custom_fields = get_custom_fields('customers', array(
 ));
 
 $aColumns = array(
+    'tblclients.userid',
     '1',
+    'tblclients.code_company',
     'company',
     'tblclients.phonenumber',
-    'tblcontacts.id',
+    
     'tblclients.email',
     
     'tblclients.address',
+    
     '(SELECT GROUP_CONCAT((select tblstaff.staff_code from tblstaff where tblstaff.staffid = tblcustomeradmins.staff_id) SEPARATOR ", ") FROM tblcustomeradmins where tblcustomeradmins.customer_id = tblclients.userid)',
 
     'tblclients.active',
-    '(SELECT GROUP_CONCAT(name) FROM tblcustomersgroups LEFT JOIN tblcustomergroups_in ON tblcustomergroups_in.groupid = tblcustomersgroups.id WHERE customer_id = tblclients.userid)'
+    '(SELECT GROUP_CONCAT(name) FROM tblcustomersgroups LEFT JOIN tblcustomergroups_in ON tblcustomergroups_in.groupid = tblcustomersgroups.id WHERE customer_id = tblclients.userid)',
+    'tblclients.datecreated1',
 );
 
 $join = array();
@@ -134,6 +138,27 @@ if (count($custom_fields) > 4) {
     @$this->_instance->db->query('SET SQL_BIG_SELECTS=1');
 }
 
+if($this->_instance->input->post()) {
+    $client_id = $this->_instance->input->post('client_id');
+    $date_from = $this->_instance->input->post('report-from');
+    $date_to = $this->_instance->input->post('report-to');
+    $client_phone = $this->_instance->input->post('client_phone');
+    $client_address = $this->_instance->input->post('clients_address');
+    
+    if($client_id){
+         array_push($where, 'AND tblclients.userid='.$client_id);
+    }
+    if($date_from && $date_to){
+        array_push($where, 'AND tblclients.datecreated1 BETWEEN "' . to_sql_date($date_from) . '" and "' . to_sql_date($date_to) . '"');
+    }
+    if($client_phone){
+         array_push($where, 'AND tblclients.phonenumber LIKE "%'.$client_phone .'%"');
+    }
+    if($client_address){
+         array_push($where, 'AND tblclients.address LIKE "%'.$client_address .'%"');
+    }
+}
+
 $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
     'tblclients.userid',
     'firstname',
@@ -144,7 +169,6 @@ $rResult = $result['rResult'];
 
 foreach ($rResult as $aRow) {
     $row = array();
-
     for ($i = 0; $i < count($aColumns); $i++) {
         if (strpos($aColumns[$i], 'as') !== false && !isset($aRow[$aColumns[$i]])) {
             $_data = $aRow[strafter($aColumns[$i], 'as ')];
@@ -154,7 +178,7 @@ foreach ($rResult as $aRow) {
 
         if ($aColumns[$i] == '1') {
             $_data = '<div class="checkbox"><input type="checkbox" value="' . $aRow['userid'] . '"><label></label></div>';
-        } else if ($i == 8) {
+        } else if ($i == 9) {
             if ($_data != '') {
                 $groups = explode(',', $_data);
                 $_data  = '';
@@ -162,17 +186,28 @@ foreach ($rResult as $aRow) {
                     $_data .= '<span class="label label-default mleft5 inline-block">' . $group . '</span>';
                 }
             }
-        } else if ($aColumns[$i] == 'company') {
+        }
+
+         else if ($aColumns[$i] == 'company') {
             if ($aRow['company'] == '') {
                 $aRow['company'] = _l('no_company_view_profile');
             }
+            
             $_data = '<a onclick="init_client_modal_data('.$aRow['userid'].');return false;" href="' . admin_url('clients/client/' . $aRow['userid']) . '">' . $aRow['company'] . '</a>';
+
+        }else if ($aColumns[$i] == 'tblclients.datecreated1') {
+             $_data = _d($aRow['tblclients.datecreated1']);
+             
+        }else if ($i == 2) {
+            
+            
+            $_data = '<a onclick="init_client_modal_data('.$aRow['userid'].');return false;" href="' . admin_url('clients/client/' . $aRow['userid']) . '">' . $aRow['tblclients.code_company'] . '</a>';
 
         } else if ($aColumns[$i] == 'tblclients.phonenumber') {
             $_data = '<a href="tel:' . $_data . '">' . $_data . '</a>';
-        } else if ($aColumns[$i] == $aColumns[4]) {
+        } else if ($aColumns[$i] == $aColumns[5]) {
             $_data = '<a href="mailto:' . $_data . '">' . $_data . '</a>';
-        } else if ($i == 3) {
+        } else if ($i == 4) {
             // primary contact add link
             $_data = '<a href="' . admin_url('clients/client/' . $aRow['userid'] . '?contactid=' . get_primary_contact_user_id($aRow['userid'])) . '" target="_blank">' . $aRow['firstname'] . ' ' . $aRow['lastname'] . '</a>';
         } else if ($aColumns[$i] == 'tblclients.active') {
@@ -208,7 +243,7 @@ foreach ($rResult as $aRow) {
     }
 
     $options = '';
-    $options .= icon_btn('clients/client/' . $aRow['userid'], 'pencil-square-o');
+    $options .= icon_btn('#', 'eye','btn-default',array('onclick'=>'init_client('.$aRow['userid'].');return false;'));
     if (has_permission('customers', '', 'delete')) {
         $options .= icon_btn('clients/delete/' . $aRow['userid'], 'remove', 'btn-danger _delete', array(
             'data-toggle' => 'tooltip',

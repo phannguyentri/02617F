@@ -6,6 +6,7 @@ class Contracts extends Admin_controller
     {
         parent::__construct();
         $this->load->model('contracts_model');
+        $this->load->model('quotes_model');
         $this->load->model('contract_templates_model');
         $this->load->model('warehouse_model');
     }
@@ -22,6 +23,9 @@ class Contracts extends Admin_controller
         }
         $data['chart_types']        = json_encode($this->contracts_model->get_contracts_types_chart_data());
         $data['chart_types_values'] = json_encode($this->contracts_model->get_contracts_types_values_chart_data());
+        $data['clients_iv'] = $this->clients_model->get();
+        $this->load->model('staff_model');
+        $data['user_iv'] = $this->staff_model->get();
         $data['contract_types']     = $this->contracts_model->get_contract_types();
         $data['years']              = $this->contracts_model->get_contracts_years();
         $data['title']              = _l('contracts');
@@ -45,13 +49,13 @@ class Contracts extends Admin_controller
                 {
                     $data['content']=$this->contract_templates_model->get_contract_template_by_id(2)->content;
                 }
-                // var_dump($data);die();
                 $id = $this->contracts_model->add($data);
                 if ($id) {
                     set_alert('success', _l('added_successfuly', _l('contract')));
                     redirect(admin_url('contracts/contract/' . $id));
                 }
             } else {
+
                 if (!has_permission('contracts', '', 'edit')) {
                     access_denied('contracts');
                 }
@@ -63,10 +67,34 @@ class Contracts extends Admin_controller
                 redirect(admin_url('contracts/contract/' . $id));
             }
         }
+        
         if ($id == '') {
             $title = _l('add_new', _l('contract_lowercase'));
+            $data['quotes']         = $this->contracts_model->get_quote_contracts();
         } else {
+            
             $data['contract']                 = $this->contracts_model->get($id, array(), true);
+            $a = array();
+            $a         =  $this->contracts_model->get_quote_contracts();
+            $data['item'] = $this->contracts_model->getContractByID($id);
+            // $data['item_returns'] = $this->sale_oders_model->getReturnSaleItems($id);
+            // var_dump($data['item']);die();
+            
+            $i=0;
+            foreach ($data['item']->items as $key => $value) { 
+                $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+                $i++;
+            }
+            $data['warehouse_type_id'] = $data['item']->items[0]->warehouse_id;
+            $data['warehouse_type_id1'] = $data['item']->items1[0]->warehouse_id;
+            // var_dump($data['item']);die();
+            
+            if (!$data['item']) {
+                blank_page('Sale Not Found');
+            }
+
+            array_push($a, (array)$this->contracts_model->get_quote_contracts1($data['contract']->rel_id));
+            $data['quotes'] = $a;
             $data['contract_renewal_history'] = $this->contracts_model->get_contract_renewal_history($id);
             if (!$data['contract'] || (!has_permission('contracts', '', 'view') && $data['contract']->addedfrom != get_staff_user_id())) {
                 blank_page(_l('contract_not_found'));
@@ -113,14 +141,27 @@ class Contracts extends Admin_controller
         $this->load->model('currencies_model');
         $data['base_currency'] = $this->currencies_model->get_base_currency();
         $data['types']         = $this->contracts_model->get_contract_types();
-
+        $data['categories_a'] = $this->quotes_model->getCategory(1,NULL,388);
+        $data['categories_b'] = $this->quotes_model->getCategory(1,NULL,446);
+        $data['warehouses']= $this->warehouse_model->getWarehouses();
         $where_clients = 'tblclients.active=1';
 
         if (!has_permission('customers', '', 'view')) {
             $where_clients .= ' AND tblclients.userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id=' . get_staff_user_id() . ')';
         }
 
+        $staff =  $this->quotes_model->getStaff(get_staff_user_id());
+        $day = date('d/m/y');
+        $count = $this->contracts_model->getContractByIDDate(get_staff_user_id(),$day);
+
+        $dayF = str_replace('/','',$day);
+        $code = $staff->staff_code.sprintf('%02d',$count+1).$dayF;
+        $data['code'] = $code;
+
         $data['clients'] = $this->clients_model->get('', $where_clients);
+        $this->load->model('invoice_items_model');
+        $data['items']= $this->invoice_items_model->get_full();
+
         if ($id != '') {
             if (total_rows('tblclients', array(
                 'active' => 0,
@@ -132,10 +173,16 @@ class Contracts extends Admin_controller
                 $data['clients'][] = $this->clients_model->get($data['contract']->client, array(), 'row_array');
             }
         }
-
         $data['title'] = $title;
         $this->load->view('admin/contracts/contract', $data);
     }
+
+    public function getIteamQuote(){
+        $this->load->model('quotes_model');
+        $data         = $this->quotes_model->getQuoteByID($this->input->post('id'));        
+        echo json_encode($data);
+    }
+
     public function create_order($id)
     {
         if (!has_permission('sale_items', '', 'view')) {
@@ -191,13 +238,45 @@ class Contracts extends Admin_controller
         if (!$id) {
             redirect(admin_url('contracts'));
         }
-        $contract = $this->contracts_model->get($id);
+        if($this->input->get('?type')){
+            $type = $this->input->get('?type');
+        }
+        if($this->input->get('type')){
+            $type = $this->input->get('type');
+        }
+        $contract = $this->contracts_model->get3($id,$type);
         $pdf      = contract_pdf($contract);
         $type     = 'D';
         if ($this->input->get('print')) {
             $type = 'I';
         }
+      
         $pdf->Output(slug_it($contract->subject) . '.pdf', $type);
+    }
+
+     public function word($id){
+        if (!has_permission('contracts', '', 'view') && !has_permission('contracts', '', 'view_own')) {
+            access_denied('contracts');
+        }
+        if (!$id) {
+            redirect($_SERVER["HTTP_REFERER"]);
+        }
+        
+        $contract = $this->contracts_model->get($id);
+        
+        header("Content-Type: application/vnd.msword");
+        header("Expires: 0");//no-cache
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("content-disposition: attachment;filename=".$contract->subject.".doc");
+        echo '<html>
+                <head>         
+                    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                </head>
+                <body>'.$contract->content.'</body>
+              </html>';
+        // echo mb_convert_encoding($contract->content,'HTML-ENTITIES','UTF-8');
     }
     public function send_to_email($id)
     {

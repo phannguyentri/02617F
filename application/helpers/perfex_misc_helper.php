@@ -1101,21 +1101,21 @@ function get_permission_conditions()
             'create' => false,
             'delete' => false
         ),
-        'projects' => array(
-            'view' => true,
-            'view_own' => false,
-            'edit' => true,
-            'create' => true,
-            'delete' => true,
-            'help' => _l('help_project_permissions')
-        ),
-        'surveys' => array(
-            'view' => true,
-            'view_own' => false,
-            'edit' => true,
-            'create' => true,
-            'delete' => true
-        ),
+        // 'projects' => array(
+        //     'view' => true,
+        //     'view_own' => false,
+        //     'edit' => true,
+        //     'create' => true,
+        //     'delete' => true,
+        //     'help' => _l('help_project_permissions')
+        // ),
+        // 'surveys' => array(
+        //     'view' => true,
+        //     'view_own' => false,
+        //     'edit' => true,
+        //     'create' => true,
+        //     'delete' => true
+        // ),
         'staff' => array(
             'view' => true,
             'view_own' => false,
@@ -1125,7 +1125,7 @@ function get_permission_conditions()
         ),
         'customers' => array(
             'view' => true,
-            'view_own' => false,
+            'view_own' => true,
             'edit' => true,
             'create' => true,
             'delete' => true
@@ -1144,27 +1144,27 @@ function get_permission_conditions()
             'create' => true,
             'delete' => true
         ),
-        'expenses' => array(
-            'view' => true,
-            'view_own' => true,
-            'edit' => true,
-            'create' => true,
-            'delete' => true
-        ),
-        'bulk_pdf_exporter' => array(
-            'view' => true,
-            'view_own' => false,
-            'edit' => false,
-            'create' => false,
-            'delete' => false
-        ),
-        'goals' => array(
-            'view' => true,
-            'view_own' => false,
-            'edit' => true,
-            'create' => true,
-            'delete' => true
-        ),
+        // 'expenses' => array(
+        //     'view' => true,
+        //     'view_own' => true,
+        //     'edit' => true,
+        //     'create' => true,
+        //     'delete' => true
+        // ),
+        // 'bulk_pdf_exporter' => array(
+        //     'view' => true,
+        //     'view_own' => false,
+        //     'edit' => false,
+        //     'create' => false,
+        //     'delete' => false
+        // ),
+        // 'goals' => array(
+        //     'view' => true,
+        //     'view_own' => false,
+        //     'edit' => true,
+        //     'create' => true,
+        //     'delete' => true
+        // ),
         'knowledge_base' => array(
             'view' => true,
             'view_own' => false,
@@ -1172,40 +1172,83 @@ function get_permission_conditions()
             'create' => true,
             'delete' => true
         ),
-        'proposals' => array(
+        // 'proposals' => array(
+        //     'view' => true,
+        //     'view_own' => true,
+        //     'edit' => true,
+        //     'create' => true,
+        //     'delete' => true
+        // ),
+        // 'estimates' => array(
+        //     'view' => true,
+        //     'view_own' => true,
+        //     'edit' => true,
+        //     'create' => true,
+        //     'delete' => true
+        // ),
+        // 'payments' => array(
+        //     'view' => true,
+        //     'view_own' => false,
+        //     'edit' => true,
+        //     'create' => true,
+        //     'delete' => true
+        // ),
+        'quote_items' => array(
             'view' => true,
             'view_own' => true,
             'edit' => true,
             'create' => true,
             'delete' => true
         ),
-        'estimates' => array(
+        'imports' => array(
             'view' => true,
             'view_own' => true,
             'edit' => true,
             'create' => true,
             'delete' => true
         ),
-        'payments' => array(
-            'view' => true,
-            'view_own' => false,
-            'edit' => true,
-            'create' => true,
-            'delete' => true
-        ),
-        'invoices' => array(
+        'exports' => array(
             'view' => true,
             'view_own' => true,
             'edit' => true,
             'create' => true,
             'delete' => true
         ),
+        'setup' => array(
+            'view' => true,
+            'view_own' => true,
+            'edit' => true,
+            'create' => true,
+            'delete' => true
+        ),
+        'warranty' => array(
+            'view' => true,
+            'view_own' => true,
+            'edit' => true,
+            'create' => true,
+            'delete' => true
+        ),
+        // 'invoices' => array(
+        //     'view' => true,
+        //     'view_own' => true,
+        //     'edit' => true,
+        //     'create' => true,
+        //     'delete' => true
+        // ),
         'items' => array(
             'view' => true,
             'view_own' => false,
             'edit' => true,
             'create' => true,
             'delete' => true
+        )
+        ,
+        '_email_marketing' => array(
+            'view' => true,
+            'view_own' => true,
+            'edit' => false,
+            'create' => true,
+            'delete' => false
         )
     );
 }

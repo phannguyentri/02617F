@@ -22,6 +22,7 @@ class Exports_model extends CRM_Model
             // var_dump($invoice);die();
             if ($invoice) {
                 $invoice->items       = $this->getExportItems($id);
+                $invoice->items1       = $this->getExportItems1($id);
             }
             return $invoice;
         }
@@ -39,6 +40,39 @@ class Exports_model extends CRM_Model
         $items = $this->db->get()->result();
         return $items;
 
+    }
+
+    public function getExportItems1($id)
+    {
+        $this->db->select('tblexport_items1.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id,tblitems.prefix,tblitems.code,');
+        $this->db->from('tblexport_items1');
+        $this->db->join('tblitems','tblitems.id=tblexport_items1.product_id','left');
+        $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
+        $this->db->where('export_id', $id);
+        $items = $this->db->get()->result();
+        return $items;
+
+    }
+
+     public function getExportByIDDate($id,$date){
+        $this->db->where('create_by',$id);
+        $this->db->where('create_date',$date);
+        return $this->db->count_all_results('tblexports');    
+    }
+
+    public function get_export_contracts($id)
+    {
+        $this->db->select('tblcontracts.*, CONCAT(tblcontracts.prefix,tblcontracts.code) as contract_name');
+        
+        if($id){
+           $this->db->where('id', $id); 
+           $this->db->where('export_status', 2);
+           return $this->db->get('tblcontracts')->row();
+        }else{
+            $this->db->where('export_status', 0);
+            return $this->db->get('tblcontracts')->result_array();
+        }
+        
     }
 
     public function update_status($id,$data)
@@ -76,6 +110,24 @@ class Exports_model extends CRM_Model
                 }
                 
             }
+
+            foreach ($export->items1 as $key => $value) 
+            {
+                $item=$this->db->get_where('tblwarehouses_products',array('product_id'=>$value->product_id,'warehouse_id'=>$value->warehouse_id))->row();
+                if($item)
+                {
+                    $total_quantity=$item->product_quantity-$value->quantity;
+                    // $total_quantity=($item->product_quantity-$value->quantity)? ($item->product_quantity-$value->quantity): 0 ;
+                    $data=array('product_quantity'=>$total_quantity);
+                    $this->db->update('tblwarehouses_products',$data,array('id'=>$item->id));
+                    $count++;
+                }
+                else
+                {
+                    return -1;
+                }
+                
+            }
         }        
         if ($count > 0) {
             return true;
@@ -96,7 +148,8 @@ class Exports_model extends CRM_Model
             'receiver_id'=>$data['receiver_id'],
             'reason'=>$data['reason'],
             'date'=>to_sql_date($data['date']),
-            'create_by'=>get_staff_user_id()
+            'create_by'=>get_staff_user_id(),
+            'create_date' => date('d/m/y'),
             );
         $this->db->insert('tblexports', $export);        
         $insert_id = $this->db->insert_id();
@@ -111,19 +164,27 @@ class Exports_model extends CRM_Model
                 $product=$this->getProductById($item['id']);
                 $sub_total=$product->price*$item['quantity'];
                 $total+=$sub_total;
+                $tax = (($product->price * 1) * ($product->rate * 1)) / 100;
                 
                 $item_data=array(
-                    'export_id'=>$insert_id,
-                    'product_id'=>$item['id'],
-                    'serial_no'=>$item['serial_no'],
-                    'unit_id'=>$product->unit,
-                    'quantity'=>$item['quantity'],
-                    'unit_cost'=>$product->price,
-                    'sub_total'=>$sub_total,
-                    'warehouse_id'=>$item['warehouse']
+                    'export_id' => $insert_id,
+                    'product_id' => $item['id'],
+                    'serial_no' => $item['serial_no'],
+                    'unit_id' => $product->unit,
+                    'quantity' => $item['quantity'],
+                    'unit_cost' => $product->price,
+                    'sub_total' => $sub_total,
+                    'warehouse_id' => 1,
+                    'tax_id' => $product->tax,
+                    'tax_rate' => $product->rate,
+                    'tax' => $tax,
+                    'amount' => $sub_total + $tax
+                    
                     );
                  $this->db->insert('tblexport_items', $item_data);
                  // var_dump($data);die();
+
+
                  if($this->db->affected_rows()>0)
                  {        
                      
@@ -137,9 +198,56 @@ class Exports_model extends CRM_Model
                     logActivity('Insert Export Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                  }
             }
+
+            $items1=$data['items1'];
+             
+            $count=0;
+            $affect_product=array();
+            foreach ($items1 as $key => $item) {
+
+                $product=$this->getProductById($item['id']);
+                $sub_total=$product->price*$item['quantity'];
+                $total+=$sub_total;
+                $tax = (($product->price * 1) * ($product->rate * 1)) / 100;
                 
+                $item_data=array(
+                    'export_id' => $insert_id,
+                    'product_id' => $item['id'],
+                    'serial_no' => $item['serial_no'],
+                    'unit_id' => $product->unit,
+                    'quantity' => $item['quantity'],
+                    'unit_cost' => $product->price,
+                    'sub_total' => $sub_total,
+                    'warehouse_id' => 1,
+                    'tax_id' => $product->tax,
+                    'tax_rate' => $product->rate,
+                    'tax' => $tax,
+                    'amount' => $sub_total + $tax
+                    
+                    );
+                 $this->db->insert('tblexport_items1', $item_data);
+                 // var_dump($data);die();
+
+
+                 if($this->db->affected_rows()>0)
+                 {        
+                     
+                    $affect_product[]=$item['id'];  
+                    if(!empty($data['rel_id']))
+                    {
+                        $sale=$this->getSaleItemByID($data['rel_id'],$item['id']);
+                        $export_quantity=$sale->export_quantity+$item['quantity'];
+                        $this->db->update('tblsale_items',array('export_quantity'=>$export_quantity),array('id'=>$sale->id));                       
+                    }                            
+                    logActivity('Insert Export Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
+                 }
+            }
+            $this->db->update('tblexports',array('total'=>$total),array('id'=>$insert_id));        
             $this->checkExportSale($data['rel_id']);
-            $this->db->update('tblexports',array('total'=>$total),array('id'=>$insert_id));
+            $this->db->update('tblcontracts',array('export_status'=>2),array('id'=>$data['rel_id']));
+
+            updateWarehouse($insert_id);
+
             return $insert_id;
         }
         return false;
@@ -349,11 +457,17 @@ class Exports_model extends CRM_Model
 
     public function delete($id)
     {
+        $a = $this->getExportByID($id);
         $this->db->where('id', $id);
         $this->db->delete('tblexports');
         if ($this->db->affected_rows() > 0) {
+            if($a->status != 2){
+                $this->db->update('tblcontracts',array('export_status'=>1),array('id'=>$a->rel_id));
+            }
             $this->db->where('export_id', $id);
             $this->db->delete('tblexport_items');
+            $this->db->where('export_id', $id);
+            $this->db->delete('tblexport_items1');
             return true;
         }
         return false;

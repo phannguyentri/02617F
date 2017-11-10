@@ -20,8 +20,53 @@
     </div>
 </div>
 <!--Task modal view END-->
+
+
+
 <!-- Lead Data Add/Edit  START-->
 <div class="modal fade lead-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+
+
+<!--Client Data Add/Edit END-->
+
+<!-- Lead Data Add/Edit  START-->
+<style type="text/css">
+
+
+@media (min-width: 992px){
+  .client-modal .modal-lg{      
+      width: 950px;    
+      }
+  }
+</style>
+<div class="modal fade client-modal" style="min-height: 500px;" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<style type="text/css">
+.quotes-modal .modal-lg{      
+      width: 1350px;   
+      }
+
+@media (max-width: 1350px){
+  .quotes-modal .modal-lg{      
+      width: 100% !important;    
+      }
+  }
+</style>
+<!-- Lead Data Add/Edit  START-->
+<div class="modal fade quotes-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
@@ -54,11 +99,15 @@
         </div>
     </div>
 </div>
+<!--Add/edit task modal start-->
+<div id="client_reminder_modal"></div>
 <!--Tracking stats chart for task END-->
 <div id="tacking-stats"></div>
 <!--Tracking stats chart for task END-->
 <!--Add/edit task modal start-->
 <div id="_task"></div>
+<div id="_task1"></div>
+<div id="_reminder"></div>
 <!--Add/edit task modal end-->
 <!--Lead convert to customer modal start-->
 <div id="lead_convert_to_customer"></div>
@@ -66,4 +115,4 @@
 <!--Lead convert to customer modal start-->
 <div id="lead_reminder_modal"></div>
 <!--Lead convert to customer modal end-->
-   <div id="lead_call-logs_modal"></div>
+<div id="lead_call-logs_modal"></div>

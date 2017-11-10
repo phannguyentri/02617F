@@ -67,7 +67,7 @@ foreach ( $rResult as $aRow )
     $options .= icon_btn('#','pencil-square-o','btn-default',array('onclick'=>'contact('.$aRow['userid'].','.$aRow['id'].');return false;'));
     if(has_permission('customers','','delete') || is_customer_admin($aRow['userid'])){
          if($aRow['is_primary'] == 0 || ($aRow['is_primary'] == 1 && $total_client_contacts == 1)){
-            $options .= icon_btn('clients/delete_contact/'.$aRow['userid'].'/'.$aRow['id'],'remove','btn-danger _delete');
+            $options .= icon_btn('clients/delete_contact/'.$aRow['userid'].'/'.$aRow['id'],'remove','btn-danger delete-reminder');
         }
     }
 

@@ -11,12 +11,12 @@
         <?php echo form_hidden('isedit'); ?>
         <?php echo form_hidden('itemid', $item->id); ?>
       <div class="clearfix"></div>
-        <?php 
+        <?php
         } ?>
         <!-- Product information -->
-        
 
-  <h4 class="bold no-margin"><?php echo (isset($item) ? (($item->status==2)?_l('Xem phiếu điều chỉnh kho'):_l('Sửa phiếu điều chỉnh kho')) : _l('Tạo phiếu điều chỉnh kho')); ?></h4>
+
+  <h4 class="bold no-margin"><?php echo (isset($item) ? (($item->status==2)?_l('Xem phiếu nhập kho'):_l('Sửa phiếu nhập kho')) : _l('Tạo phiếu nhập kho')); ?></h4>
   <hr class="no-mbot no-border" />
   <div class="row">
     <div class="additional"></div>
@@ -58,11 +58,11 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="item_detail">
             <div class="row">
-                
+
                 <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-                    
+
                 </div>
-                
+
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 _buttons">
                     <div class="pull-right">
                         <?php if( isset($item) ) { ?>
@@ -72,10 +72,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <?php echo form_open_multipart($this->uri->uri_string(), array('class' => 'client-form', 'autocomplete' => 'off')); ?>
                 <div class="row">
-                  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">            
+                  <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                     <?php
                     $attrs_not_select = array('data-none-selected-text' => _l('system_default_string'));
                     ?>
@@ -86,9 +86,9 @@
                           <?php $prefix =($item) ? $item->prefix : get_option('prefix_adjustment'); ?>
                             <?=$prefix?>
                             <?php echo form_hidden('rel_type', 'adjustment'); ?>
-                            <?=form_hidden('prefix',$prefix)?>    
+                            <?=form_hidden('prefix',$prefix)?>
                             </span>
-                            <?php 
+                            <?php
                                 if($item)
                                 {
                                     $number=$item->code;
@@ -104,31 +104,31 @@
 
                     <?php $value = (isset($item) ? _d($item->date) : _d(date('Y-m-d')));?>
                     <?php echo render_date_input('date','Ngày',$value); ?>
-                    
+
                     <?php
                     $default_name = (isset($item) ? $item->name : "");
                     echo render_input('name', _l('import_name'), $default_name);
                     ?>
 
-                    <?php
+                   <!--  <?php
                     $selected=(isset($item) ? $warehouse_type : '');
-                    echo render_select('warehouse_type',$warehouse_types,array('id','name'),'warehouse_type',$selected); 
+                    echo render_select('warehouse_type',$warehouse_types,array('id','name'),'warehouse_type',$selected);
+                    ?> -->
+
+                    <?php
+                    $selected=(isset($item) ? $warehouse_id : '1');
+                    echo render_select('warehouse_id',$warehouses,array('warehouseid','warehouse'),'warehouse_name',$selected);
                     ?>
 
                     <?php
-                    $selected=(isset($item) ? $warehouse_id : '');
-                    echo render_select('warehouse_id',$warehouses,array('warehouseid','warehouse'),'warehouse_name',$selected); 
-                    ?>
-
-                    <?php 
                     $reason = (isset($item) ? $item->reason : "");
                     echo render_textarea('reason', 'note', $reason, array(), array(), '', 'tinymce');
                     ?>
                 </div>
 
-                
-                
-                
+
+
+
                 <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
                     <!-- Cusstomize from invoice -->
                     <div class="panel-body mtop10">
@@ -140,7 +140,7 @@
 
                                         <?php foreach ($items as $product) { ?>
                                         <option value="<?php echo $product['id']; ?>" data-subtext="">(<?php echo $product['code']; ?>) <?php echo $product['name']; ?></option>
-                                        <?php 
+                                        <?php
                                         } ?>
 
                                     <!-- <?php if (has_permission('items', '', 'create')) { ?>
@@ -150,12 +150,12 @@
                                     </select>
                                 </div>
                             </div>
-                        
+
                             <div class="col-md-5 text-right show_quantity_as_wrapper">
-                                
+
                             </div>
                         </div>
-                        
+
 
                         <div class="table-responsive s_table">
                             <table class="table items item-purchase no-mtop">
@@ -165,14 +165,14 @@
                                         <th width="20%" class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_name'); ?>"></i> <?php echo _l('item_name'); ?></th>
                                         <th width="10%" class="text-left"><?php echo _l('item_unit'); ?></th>
                                         <th width="10%" class="text-left"><?php echo _l('item_quantity'); ?></th>
-                                        
+
                                         <th width="10%" class="text-left"><?php echo _l('item_price_buy'); ?></th>
                                         <th width="10%" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
                                         <th width="15%" class="text-left"><?php echo _l('item_specification'); ?></th>
                                         <th></th>
                                     </tr>
                                 </thead>
-                                
+
                                 <tbody>
                                     <tr class="main">
                                         <td><input type="hidden" id="itemID" value="" /></td>
@@ -187,7 +187,7 @@
                                         <td>
                                             <input class="mainQuantity" type="number" min="1" value="1"  class="form-control" placeholder="<?php echo _l('item_quantity'); ?>">
                                         </td>
-                                        
+
                                         <td>
                                             <?php echo _l('item_price_buy'); ?>
                                         </td>
@@ -205,7 +205,7 @@
                                     $i=0;
                                     $totalPrice=0;
                                     if(isset($item) && count($item->items) > 0) {
-                                        
+
                                         foreach($item->items as $value) {
                                         ?>
                                     <tr class="sortable item">
@@ -215,7 +215,7 @@
                                         <td class="dragger"><?php echo $value->product_name; ?></td>
                                         <td><?php echo $value->unit_name; ?></td>
                                         <td><input class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
-                                            
+
                                         <td><?php echo number_format($value->unit_cost); ?></td>
                                         <td><?php echo number_format($value->sub_total); ?></td>
                                         <td><?php echo $value->product_specifications	; ?></td>
@@ -253,7 +253,7 @@
                     </div>
                 <!-- End Customize from invoice -->
                 </div>
-                
+
                 <?php if(isset($item) && $item->status != 2 || !isset($item)) { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
                     <?php echo _l('submit'); ?>
@@ -266,7 +266,7 @@
 
       </div>
 
-        <!-- END PI -->        
+        <!-- END PI -->
   </div>
 </div>
 </div>
@@ -276,7 +276,7 @@
 <?php init_tail(); ?>
 <script>
     _validate_form($('.client-form'),{code:'required',warehouse_type:'required',warehouse_id:'required'});
-    
+
     var itemList = <?php echo json_encode($items);?>;
 
     //format currency
@@ -314,7 +314,7 @@
             return;
         }
         var newTr = $('<tr class="sortable item"></tr>');
-        
+
         var td1 = $('<td><input type="hidden" name="items[' + uniqueArray + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
         var td3 = $('<td></td>');
@@ -327,11 +327,11 @@
         td2.text($('tr.main').find('td:nth-child(2)').text());
         td3.text($('tr.main').find('td:nth-child(3)').text());
         td4.find('input').val($('tr.main').find('td:nth-child(4) > input').val());
-        
+
         td5.text( $('tr.main').find('td:nth-child(5)').text() );
         td6.text( $('tr.main').find('td:nth-child(6)').text() );
         td7.text( $('tr.main').find('td:nth-child(7)').text() );
-        
+
         newTr.append(td1);
         newTr.append(td2);
         newTr.append(td3);
@@ -355,7 +355,7 @@
         $('#custom_item_select').selectpicker('refresh');
         var trBar = $('tr.main');
         //console.log(trBar.find('td:nth-child(2) > input'));
-        
+
         trBar.find('td:first > input').val("");
         trBar.find('td:nth-child(2) > input').val('');
         trBar.find('td:nth-child(3) > input').val(1);
@@ -386,7 +386,7 @@
         if(typeof(itemFound) != 'undefined') {
             var trBar = $('tr.main');
             //console.log(trBar.find('td:nth-child(2) > input'));
-            
+
             trBar.find('td:first > input').val(itemFound.id);
             trBar.find('td:nth-child(2)').text(itemFound.name);
             trBar.find('td:nth-child(3)').text(itemFound.unit_name);
@@ -404,7 +404,7 @@
         }
     });
     $(document).on('keyup', '.mainQuantity',(e)=>{
-        
+
         var currentQuantityInput = $(e.currentTarget);
         var Gia = currentQuantityInput.parent().find(' + td');
         var Tong = Gia.find(' + td');
@@ -424,7 +424,7 @@
           url : admin_url + 'warehouses/getWarehouses/' + warehouse_type,
           dataType : 'json',
         })
-        .done(function(data){          
+        .done(function(data){
           warehouse_id.find('option').remove();
           warehouse_id.append('<option value=""></option>');
           $.each(data, function(key,value){
@@ -438,7 +438,7 @@
         });
       }
     }
-    
+
 </script>
 </body>
 </html>

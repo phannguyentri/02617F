@@ -4,7 +4,7 @@
         <div class="modal-content">
             <?php echo form_open('admin/clients/zip_payments/'.$client->userid); ?>
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><?php echo _l('client_zip_payments'); ?></h4>
             </div>
             <div class="modal-body">

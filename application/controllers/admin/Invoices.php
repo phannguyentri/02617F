@@ -349,6 +349,7 @@ class Invoices extends Admin_controller
         // Check for recorded payments
         $this->load->model('payments_model');
         $data['members']  = $this->staff_model->get('', 1);
+    
         $data['contacts'] = $this->clients_model->get_contacts($invoice->clientid);
         $data['payments'] = $this->payments_model->get_invoice_payments($id);
         $data['activity'] = $this->invoices_model->get_invoice_activity($id);

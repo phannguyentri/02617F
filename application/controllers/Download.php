@@ -158,6 +158,19 @@ class Download extends CI_Controller
             if (has_permission('customers', '', 'view') || is_customer_admin($attachment->rel_id) || is_client_logged_in()) {
                 $path = get_upload_path_by_type('customer') . $attachment->rel_id . '/' . $attachment->file_name;
             }
+        }else if ($folder_indicator == 'quote') {
+            if (!is_client_logged_in()) {
+                $this->db->where('id', $attachmentid);
+            } else {
+                $this->db->where('attachment_key', $attachmentid);
+            }
+            $attachment = $this->db->get('tblfiles')->row();
+            if (!$attachment) {
+                die;
+            }
+            if (has_permission('quotes', '', 'detail') || is_customer_admin($attachment->rel_id) || is_client_logged_in()) {
+                $path = get_upload_path_by_type('quote') . $attachment->rel_id . '/' . $attachment->file_name;
+            }
         } else if($folder_indicator == 'invoice_item_attachment') {
             if (!is_staff_logged_in()) {
                 die();

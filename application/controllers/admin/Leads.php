@@ -160,7 +160,6 @@ class Leads extends Admin_controller
 
         $data['statuses'] = $this->leads_model->get_status();
         $data['sources']  = $this->leads_model->get_source();
-
         echo json_encode(array(
             'data' => $this->load->view('admin/leads/lead', $data, TRUE),
             'reminder_data' => $reminder_data

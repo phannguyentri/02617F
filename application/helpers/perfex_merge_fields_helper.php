@@ -250,7 +250,6 @@ function get_password_merge_field($data, $staff, $type)
  */
 function get_client_contact_merge_fields($client_id, $contact_id = '', $password = '')
 {
-
     $fields = array();
 
     if ($contact_id == '') {
@@ -452,11 +451,12 @@ function get_proposal_merge_fields($proposal_id)
  * @param  mixed $contract_id contract id
  * @return array
  */
-function get_contract_merge_fields($contract_id)
+function get_contract_merge_fields($contract_id,$type)
 {
 
     $fields = array();
     $CI =& get_instance();
+
     $CI->db->where('id', $contract_id);
     $contract = $CI->db->get('tblcontracts')->row();
     // var_dump($contract);die();
@@ -467,7 +467,6 @@ function get_contract_merge_fields($contract_id)
 
     $CI->load->model('currencies_model');
     $currency = $CI->currencies_model->get_base_currency();
-
     $fields['{contract_id}']             = $contract->id;
     $fields['{contract_code}']           = $contract->prefix.$contract->code;
     $fields['{contract_subject}']        = $contract->subject;
@@ -475,15 +474,18 @@ function get_contract_merge_fields($contract_id)
     $fields['{contract_datestart}']      = _d($contract->datestart);
     $fields['{contract_dateend}']        = _d($contract->dateend);
     $date=($contract->datestart)? explode('-', $contract->datestart) : NULL ;
-    $fields['{contract_contract_value}'] = format_money($contract->contract_value, $currency->symbol);
+    
     $contract_value_vat=$contract->contract_value;
+    $contract_total = ($contract->incurred*1) + ($contract_value_vat);
+
     // $contract_value_vat=$contract->contract_value+($contract->contract_value*10/100);
     $fields['{contract_value_vat}'] = format_money($contract_value_vat, $currency->symbol);
-
+   
     $CI->load->library('numberword', array('clientid' => $contract->client));
-    $fields['{contract_value_words}'] = $CI->numberword->convert($contract_value_vat,$currency->symbol);
+
     $strdate='';
     $item_list='';
+    $item_list1='';
     if(is_array($date))
     {
         $strdate=_l('day_',$date[2])._l('month_',$date[1])._l('year_',$date[0]);
@@ -493,51 +495,233 @@ function get_contract_merge_fields($contract_id)
     // Item List
     $CI->load->model('contracts_model');
     $items = $CI->contracts_model->getContractItems($contract_id);
+    $items1 = $CI->contracts_model->getContractItems1($contract_id);
+    $items2 = $CI->contracts_model->getIncurred($contract_id);
     
-    // var_dump($contract_id);die();
-    
+    /// --------------------------
     $item_list.='<div style="align: center;" ><table width="100%" class="table table-bordered" height="80" style="height: 80px; margin-left: auto; margin-right: auto;" border="1">';
 
         $item_list.='<thead>';
             $item_list.='<tr style="height: 40px;text-align: center;font-weight:bold">';
-                $item_list.='<td>'._l('stt').'</td>';
-                $item_list.='<td>'._l('item_name').'</td>';    
-                $item_list.='<td>'._l('item_code').'</td>';  
-                $item_list.='<td>'._l('sl').'</td>';  
-                $item_list.='<td>'._l('unit_cost').'</td>';  
-                $item_list.='<td>'._l('item_amount').'</td>';  
+                $item_list.='<td style="width:5%;">'._l('stt').'</td>';
+                $item_list.='<td style="width:40%;">'._l('Tên thiết bị - Đặc tính kỹ thuật').'</td>';    
+                $item_list.='<td style="width:7.5%;">'._l('Đơn vị tính').'</td>';  
+                $item_list.='<td style="width:7.5%;">'._l('Số lượng').'</td>';  
+                $item_list.='<td style="width:10%;">'._l('Đơn giá (VNĐ)').'</td>';  
+                $item_list.='<td style="width:10%;">'._l('Thành tiền (VNĐ)').'</td>';  
+                $item_list.='<td style="width:10%;">'._l('Thuế (VNĐ)').'</td>'; 
+                $item_list.='<td style="width:10%;">'._l('Tổng (VNĐ)').'</td>';  
             $item_list.='</tr>';
         $item_list.='</thead>';
 
         $item_list.='<tbody>';
         $i=1;
+        $total = 0;
+        $totalq = 0;
+        $total1 = 0;
         if(empty($items))
         {
-            $item_list.='<tr><td  colspan="6" style="text-align: center;">'._l('no_item_data').'</td></tr>';
+            $item_list.='<tr><td  colspan="8" style="text-align: center;">'._l('no_item_data').'</td></tr>';
         }
         foreach ($items as $key => $item) 
         {
+            $sub_total = ($item->quantity*1) * ($item->unit_cost * 1);
+            
             $item_list.='<tr style="height: 40px;text-align: center;">';
-                $item_list.='<td style="text-align: center;">'._l($i).'</td>';
-                $item_list.='<td style="text-align: left;">'._l($item->product_name).'</td>';
-                $item_list.='<td style="text-align: left;">'._l($item->prefix.$item->code).'</td>';
-                $item_list.='<td style="text-align: right;">'._format_number($item->quantity).'</td>';
-                $item_list.='<td style="text-align: right;">'.format_money($item->unit_cost).'</td>';
-                $item_list.='<td style="text-align: right;">'.format_money($item->sub_total).'</td>';
+                $item_list.='<td  style="text-align: center; width:5%;">'._l($i).'</td>';
+                $item_list.='<td style="text-align: left; width:40%;"><strong>MODEL: '._l($item->product_name);
+                $item_list.='<br>'.$item->product_features.'</strong>';
+                $item_list.= $item->long_description;
+                $item_list.='</td>';
+                $item_list.='<td style="text-align: center;width:7.5%;">'.$item->unit_name.'</td>';
+                $item_list.='<td style="text-align: center;width:7.5%;">'.$item->quantity.'</td>';
+                $item_list.='<td style="text-align: right;width:10%;">'.format_money($item->unit_cost).'</td>';
+                $item_list.='<td style="text-align: right;width:10%;">'.format_money( $sub_total ).'</td>';
+                $item_list.='<td style="text-align: right;width:10%;">'.format_money( ($item->tax*1) ).'</td>';
+                $item_list.='<td style="text-align: right;width:10%;">'.format_money( ($item->tax*1) + ($sub_total * 1) ).'</td>';
             $item_list.='</tr>';
             $i++;
+            $total += ($item->tax*1) + ($sub_total * 1);
+            
         }
+        foreach ($items1 as $key => $item) 
+        {
+            $sub_total = ($item->quantity*1) * ($item->unit_cost * 1);
+            $item_list.='<tr style="height: 40px;text-align: center;">';
+                $item_list.='<td  style="text-align: center; width:5%;">'._l($i).'</td>';
+                $item_list.='<td style="text-align: left; width:40%;">'._l($item->product_name).'</td>';
+                $item_list.='<td style="text-align: center;width:7.5%;">'.$item->unit_name.'</td>';
+                $item_list.='<td style="text-align: center;width:7.5%;">'.$item->quantity.'</td>';
+                $item_list.='<td style="text-align: right;width:10%;">'.format_money($item->unit_cost).'</td>';
+                $item_list.='<td style="text-align: right;width:10%;">'.format_money( $sub_total ).'</td>';
+                $item_list.='<td style="text-align: right;width:10%;">'.format_money( ($item->tax*1) ).'</td>';
+                $item_list.='<td style="text-align: right;width:10%;">'.format_money( ($item->tax*1) + ($sub_total * 1) ).'</td>';
+            $item_list.='</tr>';
+            $i++;
+            $total += ($item->tax*1) + ($sub_total * 1);
+            $totalq += $item->quantity;
+            
+        }
+        $item_list.='<tr>';
+            $item_list.='<td style="text-align: center;">'._l($i).'</td>';
+            $item_list.='<td style="text-align: right;" colspan="1"><strong>Tổng giá trị sản phẩm</strong></td>';
+             $item_list.='<td style="text-align: center;"></td>';
+            $item_list.='<td style="text-align: center;">'.$totalq.'</td>';
+            $item_list.='<td style="text-align: center;"></td>';
+            $item_list.='<td style="text-align: center;"></td>';
+            $item_list.='<td style="text-align: right; " colspan="2" data-mce-style="text-align: right;"><strong>'.format_money($total).' VNĐ</strong></td>';
+        $item_list.='</tr>';
+        foreach ($items2 as $key => $item) 
+        {
+            $i++;
+            $item_list.='<tr>';
+            $item_list.='<td style="text-align: center;">'._l($i).'</td>';
+            $item_list.='<td style="text-align: right;" colspan="1"><strong>'.$item->tblincurred_contract_name.'</strong></td>';
+            $item_list.='<td style="text-align: center;"></td>';
+            $item_list.='<td style="text-align: center;">'.$totalq.'</td>';
+            $item_list.='<td style="text-align: center;"></td>';
+            $item_list.='<td style="text-align: center;"></td>';
+            $item_list.='<td style="text-align: right; " colspan="2" data-mce-style="text-align: right;"><strong>'.format_money($item->tblincurred_contract_price).' VNĐ</strong></td>';
+            $item_list.='</tr>';
+            $total2 += $item->tblincurred_contract_price;
+        }
+
+        $item_list.='<tr>';
+            $item_list.='<td style="text-align: center;">'._l($i+1).'</td>';
+            $item_list.='<td style="text-align: right;" colspan="1"><strong>Tổng tiền</strong></td>';
+            $item_list.='<td style="text-align: center;"></td>';
+           $item_list.='<td style="text-align: center;">'.$totalq.'</td>';
+            $item_list.='<td style="text-align: center;"></td>';
+            $item_list.='<td style="text-align: center;"></td>';
+            $item_list.='<td style="text-align: right; " colspan="2" data-mce-style="text-align: right;"><strong>'.format_money($total + $total2).' VNĐ</strong></td>';
+        $item_list.='</tr>';
         $item_list.='</tbody>';
 
     $item_list.='</table></div>';
+    /// --------------------------
 
-    $fields['{contract_item_list}']        = $item_list;
+    $item_list1.='<div style="align: center;" ><table width="100%" class="table table-bordered" height="80" style="height: 80px; margin-left: auto; margin-right: auto;" border="1">';
+
+        $item_list1.='<thead>';
+            $item_list1.='<tr style="height: 40px;text-align: center;font-weight:bold">';
+                $item_list1.='<td style="width:5%;">'._l('stt').'</td>';
+                $item_list1.='<td style="width:40%;">'._l('Tên thiết bị - Đặc tính kỹ thuật').'</td>';    
+                $item_list1.='<td style="width:7.5%;">'._l('Đơn vị tính').'</td>';  
+                $item_list1.='<td style="width:7.5%;">'._l('Số lượng').'</td>';  
+                $item_list1.='<td style="width:10%;">'._l('Đơn giá (VNĐ)').'</td>';  
+                $item_list1.='<td style="width:10%;">'._l('Thành tiền (VNĐ)').'</td>';  
+                $item_list1.='<td style="width:10%;">'._l('Thuế (VNĐ)').'</td>'; 
+                $item_list1.='<td style="width:10%;">'._l('Tổng (VNĐ)').'</td>';  
+            $item_list1.='</tr>';
+        $item_list1.='</thead>';
+
+        $item_list1.='<tbody>';
+        $i=1;
+        $total = 0;
+        $totalq = 0;
+        $total1 = 0;
+        $total2 = 0;
+        if(empty($items))
+        {
+            $item_list1.='<tr><td  colspan="8" style="text-align: center;">'._l('no_item_data').'</td></tr>';
+        }
+        foreach ($items as $key => $item) 
+        {
+            $sub_total = ($item->quantity*1) * ($item->unit_cost * 1);
+            
+            $item_list1.='<tr style="height: 40px;text-align: center;">';
+                $item_list1.='<td  style="text-align: center; width:5%;">'._l($i).'</td>';
+                $item_list1.='<td style="text-align: left; width:40%;"><strong>MODEL: '._l($item->product_name);
+                $item_list1.='<br>'.$item->product_features.'</strong>';
+                $item_list1.= $item->long_description;
+                $item_list1.='</td>';
+                $item_list1.='<td style="text-align: center;width:7.5%;">'.$item->unit_name.'</td>';
+                $item_list1.='<td style="text-align: center;width:7.5%;">'.$item->quantity.'</td>';
+                $item_list1.='<td style="text-align: right;width:10%;">'.format_money($item->unit_cost).'</td>';
+                $item_list1.='<td style="text-align: right;width:10%;">'.format_money( $sub_total ).'</td>';
+                $item_list1.='<td style="text-align: right;width:10%;">'.format_money(0).'</td>';
+                $item_list1.='<td style="text-align: right;width:10%;">'.format_money(($sub_total * 1) ).'</td>';
+            $item_list1.='</tr>';
+            $i++;
+            $total += ($sub_total * 1);
+            
+        }
+        foreach ($items1 as $key => $item) 
+        {
+            $sub_total = ($item->quantity*1) * ($item->unit_cost * 1);
+            $item_list1.='<tr style="height: 40px;text-align: center;">';
+                $item_list1.='<td  style="text-align: center; width:5%;">'._l($i).'</td>';
+                $item_list1.='<td style="text-align: left; width:40%;">'._l($item->product_name).'</td>';
+                $item_list1.='<td style="text-align: center;width:7.5%;">'.$item->unit_name.'</td>';
+                $item_list1.='<td style="text-align: center;width:7.5%;">'.$item->quantity.'</td>';
+                $item_list1.='<td style="text-align: right;width:10%;">'.format_money($item->unit_cost).'</td>';
+                $item_list1.='<td style="text-align: right;width:10%;">'.format_money( $sub_total ).'</td>';
+                $item_list1.='<td style="text-align: right;width:10%;">'.format_money(0).'</td>';
+                $item_list1.='<td style="text-align: right;width:10%;">'.format_money(($sub_total * 1) ).'</td>';
+            $item_list1.='</tr>';
+            $i++;
+            $total += ($sub_total * 1);
+            $totalq += $item->quantity;
+            
+        }
+        $item_list1.='<tr>';
+            $item_list1.='<td style="text-align: center;">'._l($i).'</td>';
+            $item_list1.='<td style="text-align: right;" colspan="1"><strong>Tổng giá trị sản phẩm</strong></td>';
+             $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: center;">'.$totalq.'</td>';
+            $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: right; " colspan="2" data-mce-style="text-align: right;"><strong>'.format_money($total).' VNĐ</strong></td>';
+        $item_list1.='</tr>';
+        foreach ($items2 as $key => $item) 
+        {
+            $i++;
+            $item_list1.='<tr>';
+            $item_list1.='<td style="text-align: center;">'._l($i).'</td>';
+            $item_list1.='<td style="text-align: right;" colspan="1"><strong>'.$item->tblincurred_contract_name.'</strong></td>';
+            $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: center;">'.$totalq.'</td>';
+            $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: right; " colspan="2" data-mce-style="text-align: right;"><strong>'.format_money($item->tblincurred_contract_price).' VNĐ</strong></td>';
+            $item_list1.='</tr>';
+            $total2 += $item->tblincurred_contract_price;
+        }
+
+        $item_list1.='<tr>';
+            $item_list1.='<td style="text-align: center;">'._l($i+1).'</td>';
+            $item_list1.='<td style="text-align: right;" colspan="1"><strong>Tổng tiền</strong></td>';
+            $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: center;">'.$totalq.'</td>';
+            $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: center;"></td>';
+            $item_list1.='<td style="text-align: right; " colspan="2" data-mce-style="text-align: right;"><strong>'.format_money($total + $total2).' VNĐ</strong></td>';
+        $item_list1.='</tr>';
+        $item_list1.='</tbody>';
+
+    $item_list1.='</table></div>';
+    /// --------------------------
+    if($type == 'no'){
+        $fields['{contract_item_list}']        = $item_list1;
+    }else{
+        $fields['{contract_item_list}']        = $item_list;
+    }
+
+    
+    $total3 = $total + $total2;
+    $fields['{contract_contract_value}'] = format_money($total, $currency->symbol);
+    $fields['{contract_value_in}'] = format_money($total2, $currency->symbol);
+    $fields['{contract_value_vatin}'] = format_money($total3, $currency->symbol);
+    $fields['{contract_value_words}'] = $CI->numberword->convert($total3,$currency->symbol);
+
+
     $custom_fields = get_custom_fields('contracts');
     foreach ($custom_fields as $field) {
         $fields['{' . $field['slug'] . '}'] = get_custom_field_value($contract_id, $field['id'], 'contracts');
     }
 
     return $fields;
+
 }
 /**
  * Merge fields for tasks

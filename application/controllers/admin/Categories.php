@@ -31,7 +31,6 @@ class Categories extends Admin_controller
         $data['categories'] = [];
         $this->category_model->get_by_id(0,$data['categories']);
         $data['category_1'] = $this->category_model->get_level1();
-        
         $data['title'] = _l('Danh mục sản phẩm');
         $this->load->view('admin/categories/manage', $data);
     }
@@ -53,29 +52,44 @@ class Categories extends Admin_controller
             'message' => $message
         ));
     }
-    public function add_category()
-    {
-        if ($this->input->post()) {
-            $message = '';
-                $id = $this->category_model->add_category($this->input->post(NULL, FALSE));
-                if ($id) {
-                    $success = true;
-                    $message = _l('added_successfuly', _l('als_categories'));
-                }
-                echo json_encode(array(
-                    'success' => $success,
-                    'message' => $message
-                ));
-            die;
-        }
+    // public function add_category($id)
+    // {
+    //     if ($this->input->post()) {
+    //         $message = '';
+    //             if($id){
+    //                 $idd = $this->category_model->edit_category($this->input->post(NULL, FALSE),$id);
+    //                 if ($idd) {
+    //                     $success = true;
+    //                     $message = _l('Sửa thành công', _l('als_categories'));
+    //                 }
+    //                 $data['category'] = $this->category_model->get($id);
+    //             }else{
+    //                 $idd = $this->category_model->add_category($this->input->post(NULL, FALSE));
+    //                 if ($idd) {
+    //                     $success = true;
+    //                     $message = _l('added_successfuly', _l('als_categories'));
+    //                 }
+    //             }
+    //             echo json_encode(array(
+    //                 'success' => $success,
+    //                 'message' => $message
+    //             ));
+    //         die;
+    //     }
+    // }
+
+
+    public function getCateByID($id){
+        echo json_encode($this->category_model->get_single($id));
     }
+
     public function update_category($id="")
     {
         if($id!=""){
             $message    = '';
             $alert_type = 'warning';
             if ($this->input->post()) {
-                $success = $this->category_model->update_category($this->input->post(), $id);
+                $success = $this->category_model->update_category($this->input->post(NULL, FALSE), $id);
                 if ($success) {
                     $message    = 'Cập nhật dữ liệu thành công';
                 };
@@ -84,11 +98,13 @@ class Categories extends Admin_controller
                 'success' => $success,
                 'message' => $message
             ));
+
+
         }
         else
         {
             if ($this->input->post()) {
-                $success = $this->category_model->add_category($this->input->post());
+                $success = $this->category_model->add_category($this->input->post(NULL, FALSE));
                 if ($success) {
                     $alert_type = 'success';
                     $message    = 'Thêm dữ liệu thành công';

@@ -40,6 +40,86 @@
     <?php if(file_exists(FCPATH.'assets/css/custom.css')){ ?>
     <link href="<?php echo base_url('assets/css/custom.css'); ?>" rel="stylesheet">
     <?php } ?>
+
+     <style>
+        body.hide-sidebar #menu {
+               margin-left: 0px;
+        }
+        body.hide-sidebar #wrapper {
+            margin-left: 40px;
+        }
+         body.hide-sidebar #wrapper #side-menu li:hover {
+            margin-left: 40px;
+        }
+
+
+         body.hide-sidebar>#side-menu.nav>li>a:focus,  body.hide-sidebar#side-menu.nav>li>a:hover {
+            background-color: white;
+            border-bottom: 0!important;
+            color: #fff;
+            transition: ease-in-out .2s;
+            -webkit-transition: ease-in-out .2s;
+            -moz-transition: ease-in-out .2s;
+            -o-transition: ease-in-out .2s;
+        }
+        body.hide-sidebar #side-menu li a:hover {
+            color: #fff;
+            text-transform: uppercase;
+            padding: 12px 20px 12px 16px;
+            font-size: 13px;
+             z-index: 5!important;
+            background-color: #626f80;
+        } 
+
+        body.hide-sidebar #side-menu li.active a:hover {
+            color: #fff;
+            text-transform: uppercase;
+            /* padding:0px; */
+            font-size: 13px;
+             z-index: 5!important;
+            background-color: #25252b;
+        }
+        body.hide-sidebar #side-menu li.active a+ul.nav.nav-second-level.collapse.in a {
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 13px;
+            z-index: 20!important;
+            background-color: #4a535f;
+            padding: 7px 10px 7px 45px;
+        }
+        body.hide-sidebar #side-menu li.active a+ul.nav.nav-second-level.collapse.in a:hover {
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 13px;
+            z-index: 20!important;
+            background-color: #25252b;
+            padding: 7px 10px 7px 45px;
+        } 
+        body.hide-sidebar #side-menu li.active>a{
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 13px;
+            z-index: 20!important;
+            background-color: #4a535f;
+        } 
+        body.hide-sidebar #side-menu li.active a:hover+ul.nav.nav-second-level.collapse.in a {
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 13px;
+            z-index: 20!important;
+            background-color:#5c6877;
+        } 
+        body.hide-sidebar #side-menu li .nav-second-level li.active a
+        {
+                border-radius: 0px;
+                display: inherit;
+                margin: 0px;
+                background-color:#25252b;
+        }
+        #side-menu li a{
+            padding: 12px 20px 12px 10px;
+        }
+</style>
     <?php $isRTL = (is_rtl() ? 'true' : 'false'); ?>
     <?php render_custom_styles(array('general','tabs','buttons','admin','modals','tags')); ?>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -63,5 +143,5 @@
         </script>
         <?php do_action('app_admin_head'); ?>
     </head>
-    <body <?php if(is_rtl()){ echo 'dir="rtl"';} ?> class="<?php echo 'page'.($this->uri->segment(2) ? '-'.$this->uri->segment(2) : '') . '-'.$this->uri->segment(1); ?> admin <?php if(isset($bodyclass)){echo $bodyclass . ' '; } ?><?php if($this->session->has_userdata('is_mobile') && $this->session->userdata('is_mobile') == true){echo 'hide-sidebar ';} ?><?php if(is_rtl()){echo 'rtl';} ?>">
-        <?php do_action('after_body_start'); ?>
+    <body <?php if(is_rtl()){ echo 'dir="rtl"';} ?> class="hide-sidebar <?php echo 'page'.($this->uri->segment(2) ? '-'.$this->uri->segment(2) : '') . '-'.$this->uri->segment(1); ?> admin <?php if(isset($bodyclass)){echo $bodyclass . ' '; } ?><?php if($this->session->has_userdata('is_mobile') && $this->session->userdata('is_mobile') == true){echo 'hide-sidebar ';} ?><?php if(is_rtl()){echo 'rtl';} ?><?php if(rtrim(admin_url(), "/") == current_url()) echo " hide-sidebar"; ?>">
+        <?php do_action('after_body_start');  ?>

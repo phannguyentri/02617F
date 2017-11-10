@@ -228,9 +228,11 @@ function init_relation_tasks_table($table_attributes = array())
         _l('tasks_dt_name'),
         _l('tasks_dt_datestart'),
         _l('task_duedate'),
-        _l('tags'),
+
         _l('task_assigned'),
         _l('tasks_list_priority'),
+        _l('Mục đích'),
+        _l('Phương thức'),
         _l('task_status')
     );
 
@@ -268,6 +270,62 @@ function init_relation_tasks_table($table_attributes = array())
             }
         }
         echo "<a href='#' class='btn btn-info pull-left mbot25 mright5" . $disabled . "' onclick=\"new_task_from_relation('$table_name'); return false;\">" . _l('new_task') . "</a>";
+
+
+    }
+
+    if ($table_attributes['data-new-rel-type'] == 'project') {
+            echo "<a href='" . admin_url('tasks/list_tasks?project_id=' . $table_attributes['data-new-rel-id'] . '&kanban=true') . "' class='btn btn-default pull-left mbot25'>" . _l('view_kanban') . "</a>";
+
+    }
+    echo "<div class='clearfix'></div>";
+    $table .= render_datatable($table_data, $name, array(), $table_attributes);
+
+    return $table;
+}
+
+function init_relation_tasks_table1($table_attributes = array())
+{
+    $table_data = array(
+        _l('Tên giao dịch'),
+        _l('tasks_dt_datestart'),
+        _l('task_status'),
+    );
+
+    $custom_fields = get_custom_fields('tasks', array(
+        'show_on_table' => 1
+    ));
+
+    foreach ($custom_fields as $field) {
+        array_push($table_data, $field['name']);
+    }
+
+    $table_data = do_action('tasks_related_table_columns',$table_data);
+
+    array_push($table_data, _l('options'));
+    $name = 'rel-tasks1';
+    if ($table_attributes['data-new-rel-type'] == 'lead') {
+        $name = 'rel-tasks-leads';
+    }
+
+    $table = '';
+    $CI =& get_instance();
+    $table_name = '.table-' . $name;
+    $CI->load->view('admin/tasks/tasks_filter_by', array(
+        'view_table_name' => $table_name
+    ));
+    if (has_permission('tasks', '', 'create')) {
+        $disabled   = '';
+        $table_name = addslashes($table_name);
+        if ($table_attributes['data-new-rel-type'] == 'customer' && is_numeric($table_attributes['data-new-rel-id'])) {
+            if (total_rows('tblclients', array(
+                'active' => 0,
+                'userid' => $table_attributes['data-new-rel-id']
+            )) > 0) {
+                $disabled = ' disabled';
+            }
+        }
+        echo "<a href='#' class='btn btn-info pull-left mbot25 mright5" . $disabled . "' onclick=\"new_task_from_relation1('$table_name'); return false;\">" . _l('new_task') . "</a>";
 
 
     }
@@ -1105,19 +1163,44 @@ function get_company_logo($url = '', $href_class = '')
 {
     $company_logo = get_option('company_logo');
     $company_name = get_option('companyname');
+
     if ($url == '') {
         $url = site_url();
     } else {
         $url = site_url($url);
     }
-    if ($company_logo != '') {
-        echo '<a href="' . $url . '" class="' . $href_class . ' logo img-responsive"><img src="' . base_url('uploads/company/' . $company_logo) . '" class="img-responsive" alt="' . $company_name . '" width="100px"></a>';
-    } else if ($company_name != '') {
-        echo '<a href="' . $url . '" class="' . $href_class . ' logo">' . $company_name . '</a>';
-    } else {
+    if($company_logo !='' && $company_name != ''){
+        if ($company_logo != '') {
+            echo '<a style="display:inline-block" href="' . $url . '" class="' . $href_class . ' logo img-responsive"><img src="' . base_url('uploads/company/' . $company_logo) . '" class="img-responsive" alt="' . $company_name . '" width="100px"></a>';
+        }if ($company_name != '') {
+            echo '<a style="font-size:20px;font-weight: bold;color: #fff; position: relative; top: -11px; padding-left: 15px;" href="' . $url . '" class="' . $href_class . ' logo">' . $company_name . '</a>';
+        }
+    }
+     else {
         echo '';
     }
 }
+
+function get_company_only_logo($url = '', $href_class = '')
+{
+    $company_logo = get_option('company_logo');
+
+
+    if ($url == '') {
+        $url = site_url();
+    } else {
+        $url = site_url($url);
+    }
+    if($company_logo !=''){
+        if ($company_logo != '') {
+            echo '<a style="display:inline-block" href="' . $url . '" class="' . $href_class . ' logo img-responsive"><img src="' . base_url('uploads/company/' . $company_logo) . '" class="img-responsive" alt="' . $company_name . '" width="100px"></a>';
+        }
+    }
+     else {
+        echo '';
+    }
+}
+
 /**
  * Return staff profile image url
  * @param  mixed $staff_id
@@ -1200,7 +1283,7 @@ function staff_profile_image($id = false, $classes = array('staff-profile-image'
  * @param  array  $attributes additional attributes
  * @return string
  */
-function icon_btn($url = '', $type = '', $class = 'btn-default', $attributes = array())
+function icon_btn($url = '', $type = '', $class = 'btn-default', $attributes = array(),$des)
 {
     $_attributes = '';
     foreach ($attributes as $key => $val) {
@@ -1212,7 +1295,7 @@ function icon_btn($url = '', $type = '', $class = 'btn-default', $attributes = a
     } else if ($url !== '#') {
         $_url = admin_url($url);
     }
-    return '<a href="' . $_url . '" class="btn ' . $class . ' btn-icon" ' . $_attributes . '><i class="fa fa-' . $type . '"></i></a>';
+    return '<a href="' . $_url . '" class="btn ' . $class . ' btn-icon" ' . $_attributes . '><i class="fa fa-' . $type . '"></i>'.$des.'</a>';
 }
 /**
  * Render admin tickets table
@@ -1429,6 +1512,10 @@ function format_status_quote($id)
             } else if ($id == 0) {
                 $label = 'warning';
                 $status_name="Phiếu báo giá chưa được xác nhận";
+            }
+            else if ($id == 3) {
+                $label = 'danger';
+                $status_name="Phiếu báo giá không được duyệt";
             }
             $class = 'label label-' . $label;
             return '<span class="inline-block ' . $class . '">' . $status_name . '</span>';
@@ -1755,4 +1842,21 @@ function strip_html_tags($str, $allowed = '')
     return strip_tags($str, $allowed);
     return $str;
 } //function strip_html_tags ENDS
+function format_status_email($id)
+{
+    $label = get_status_label($id);
+    if ($id == 2) {
+        $label = 'light-green';
+        $status_name="Email được xem";
+    }
+    else if ($id == 1) {
+        $label = 'info';
+        $status_name="Email chết";
+    } else if ($id == 0) {
+        $label = 'warning';
+        $status_name="Email được gửi";
+    }
+    $class = 'label label-' . $label;
+    return '<span class="inline-block ' . $class . '">' . $status_name . '</span>';
+}
 ?>

@@ -9,8 +9,8 @@ class Tasks_model extends CRM_Model
         $this->statuses = do_action('before_set_task_statuses', array_unique(array(
             1,
             4,
-            3,
-            2,
+            // 3,
+            // 2,
             5
         )));
         $this->load->model('projects_model');
@@ -38,6 +38,28 @@ class Tasks_model extends CRM_Model
         $this->db->where('id', $id);
         $this->db->where($where);
         $task = $this->db->get('tblstafftasks')->row();
+        if ($task) {
+            $task->comments        = $this->get_task_comments($id);
+            $task->assignees       = $this->get_task_assignees($id);
+            $task->followers       = $this->get_task_followers($id);
+            $task->attachments     = $this->get_task_attachments($id);
+            $task->timesheets      = $this->get_timesheeets($id);
+            $task->checklist_items = $this->get_checklist_items($id);
+            if ($task->rel_type == 'project') {
+                $task->project_data = $this->projects_model->get($task->rel_id);
+            }
+        }
+        return do_action('get_task', $task);
+    }
+
+
+
+     public function get1($id, $where = array())
+    {
+        $is_admin = is_admin();
+        $this->db->where('id', $id);
+        $this->db->where($where);
+        $task = $this->db->get('tblstafftasks1')->row();
         if ($task) {
             $task->comments        = $this->get_task_comments($id);
             $task->assignees       = $this->get_task_assignees($id);
@@ -104,6 +126,24 @@ class Tasks_model extends CRM_Model
                 'kanban_order' => $order[1]
             ));
         }
+    }
+
+    public function getStaffWork($id){
+        $this->db->where('taskid',$id);
+        return $this->db->get('tblstafftaskassignees')->result_array();
+
+    }
+
+    public function getStaffWork1($id){
+        $this->db->where('taskid',$id);
+        return $this->db->get('tblstafftasksfollowers')->result_array();
+
+    }
+
+     public function getRemiWork($id){
+        $this->db->where('rel_id',$id);
+        return $this->db->get('tblreminders')->row();
+
     }
 
     public function get_distinct_tasks_years($get_from)
@@ -302,6 +342,132 @@ class Tasks_model extends CRM_Model
         $this->db->where('(id IN (SELECT taskid FROM tblstafftaskassignees WHERE staffid=' . $id . '))');
         return $this->db->get('tblstafftasks')->result_array();
     }
+
+     public function getTaskWorkByIDTask($id){
+        $this->db->where('taks1_id', $id);
+        return $this->db->get('tblstafftasks')->result_array();
+    }
+
+    public function addTest($data)
+    {
+        $data['startdate'] = to_sql_date($data['startdate']);
+        $data['duedate']   = to_sql_date($data['duedate']);
+        $data['dateadded'] = date('Y-m-d H:i:s');
+        $data['addedfrom'] = get_staff_user_id();
+
+        if (date('Y-m-d') >= $data['startdate']) {
+            $data['status'] = 4;
+        } else {
+            $data['status'] = 1;
+        }
+
+
+        if (isset($data['custom_fields'])) {
+            $custom_fields = $data['custom_fields'];
+            unset($data['custom_fields']);
+        }
+        if (isset($data['is_public'])) {
+            $data['is_public'] = 1;
+        } else {
+            $data['is_public'] = 0;
+        }
+
+        if (isset($data['recurring_ends_on']) && $data['recurring_ends_on'] == '') {
+            unset($data['recurring_ends_on']);
+        } else if (isset($data['recurring_ends_on']) && $data['recurring_ends_on'] != '') {
+            $data['recurring_ends_on'] = to_sql_date($data['recurring_ends_on']);
+        }
+
+        if (isset($data['repeat_every']) && $data['repeat_every'] != '') {
+            $data['recurring'] = 1;
+            if ($data['repeat_every'] == 'custom') {
+                $data['repeat_every']     = $data['repeat_every_custom'];
+                $data['recurring_type']   = $data['repeat_type_custom'];
+                $data['custom_recurring'] = 1;
+            } else {
+                $_temp                    = explode('-', $data['repeat_every']);
+                $data['recurring_type']   = $_temp[1];
+                $data['repeat_every']     = $_temp[0];
+                $data['custom_recurring'] = 0;
+            }
+        } else {
+            $data['custom_recurring'] = 0;
+            $data['recurring'] = 0;
+        }
+
+        unset($data['repeat_type_custom']);
+        unset($data['repeat_every_custom']);
+
+        if (is_client_logged_in()) {
+            $data['visible_to_client'] = 1;
+        } else {
+            if (isset($data['visible_to_client'])) {
+                $data['visible_to_client'] = 1;
+            } else {
+                $data['visible_to_client'] = 0;
+            }
+        }
+
+        if (isset($data['billable'])) {
+            $data['billable'] = 1;
+        } else {
+            $data['billable'] = 0;
+        }
+
+        if ((!isset($data['milestone']) || $data['milestone'] == '') || (isset($data['milestone']) && $data['milestone'] == '')) {
+            $data['milestone'] = 0;
+        } else {
+            if ($data['rel_type'] != 'project') {
+                $data['milestone'] = 0;
+            }
+        }
+        if (empty($data['rel_type'])) {
+            unset($data['rel_type']);
+            unset($data['rel_id']);
+        } else {
+            if (empty($data['rel_id'])) {
+                unset($data['rel_type']);
+                unset($data['rel_id']);
+            }
+        }
+
+
+        $data = do_action('before_add_task', $data);
+
+        $tags = '';
+        if(isset($data['tags'])){
+            $tags  = $data['tags'];
+            unset($data['tags']);
+        }
+        // echo('<pre>');
+        // print_r($data);
+        // echo('</pre>');
+        // die('2');
+        $this->db->insert('tblstafftasks', $data);
+        $insert_id = $this->db->insert_id();
+
+        if ($insert_id) {
+
+            $stafftaskassignees = array(
+                'staffid' => get_staff_user_id(),
+                'taskid' => $insert_id,
+                'assigned_from' => get_staff_user_id(),
+            );
+            $this->db->insert('tblstafftaskassignees',$stafftaskassignees);
+
+
+            handle_tags_save($tags,$insert_id,'task');
+
+            if (isset($custom_fields)) {
+                handle_custom_fields_post($insert_id, $custom_fields);
+            }
+            do_action('after_add_task', $insert_id);
+            logActivity('New Task Added [ID:' . $insert_id . ', Name: ' . $data['name'] . ']');
+            return $insert_id;
+        }
+        return false;
+    }
+
     /**
      * Add new staff task
      * @param array $data task $_POST data
@@ -399,6 +565,119 @@ class Tasks_model extends CRM_Model
         }
 
         $this->db->insert('tblstafftasks', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            $stafftaskassignees = array(
+                'staffid' => get_staff_user_id(),
+                'taskid' => $insert_id,
+                'assigned_from' => get_staff_user_id(),
+            );
+            $this->db->insert('tblstafftaskassignees',$stafftaskassignees);
+
+
+            handle_tags_save($tags,$insert_id,'task');
+
+            if (isset($custom_fields)) {
+                handle_custom_fields_post($insert_id, $custom_fields);
+            }
+            do_action('after_add_task', $insert_id);
+            logActivity('New Task Added [ID:' . $insert_id . ', Name: ' . $data['name'] . ']');
+            return $insert_id;
+        }
+        return false;
+    }
+
+    public function add1($data)
+    {
+        $data['startdate'] = to_sql_date($data['startdate']);
+        $data['duedate']   = to_sql_date($data['duedate']);
+        $data['dateadded'] = date('Y-m-d H:i:s');
+        $data['addedfrom'] = get_staff_user_id();
+
+        if (date('Y-m-d') >= $data['startdate']) {
+            $data['status'] = 4;
+        } else {
+            $data['status'] = 1;
+        }
+
+
+        if (isset($data['custom_fields'])) {
+            $custom_fields = $data['custom_fields'];
+            unset($data['custom_fields']);
+        }
+        if (isset($data['is_public'])) {
+            $data['is_public'] = 1;
+        } else {
+            $data['is_public'] = 0;
+        }
+
+        if (isset($data['recurring_ends_on']) && $data['recurring_ends_on'] == '') {
+            unset($data['recurring_ends_on']);
+        } else if (isset($data['recurring_ends_on']) && $data['recurring_ends_on'] != '') {
+            $data['recurring_ends_on'] = to_sql_date($data['recurring_ends_on']);
+        }
+
+        if (isset($data['repeat_every']) && $data['repeat_every'] != '') {
+            $data['recurring'] = 1;
+            if ($data['repeat_every'] == 'custom') {
+                $data['repeat_every']     = $data['repeat_every_custom'];
+                $data['recurring_type']   = $data['repeat_type_custom'];
+                $data['custom_recurring'] = 1;
+            } else {
+                $_temp                    = explode('-', $data['repeat_every']);
+                $data['recurring_type']   = $_temp[1];
+                $data['repeat_every']     = $_temp[0];
+                $data['custom_recurring'] = 0;
+            }
+        } else {
+            $data['recurring'] = 0;
+        }
+
+        unset($data['repeat_type_custom']);
+        unset($data['repeat_every_custom']);
+
+        if (is_client_logged_in()) {
+            $data['visible_to_client'] = 1;
+        } else {
+            if (isset($data['visible_to_client'])) {
+                $data['visible_to_client'] = 1;
+            } else {
+                $data['visible_to_client'] = 0;
+            }
+        }
+
+        if (isset($data['billable'])) {
+            $data['billable'] = 1;
+        } else {
+            $data['billable'] = 0;
+        }
+
+        if ((!isset($data['milestone']) || $data['milestone'] == '') || (isset($data['milestone']) && $data['milestone'] == '')) {
+            $data['milestone'] = 0;
+        } else {
+            if ($data['rel_type'] != 'project') {
+                $data['milestone'] = 0;
+            }
+        }
+        if (empty($data['rel_type'])) {
+            unset($data['rel_type']);
+            unset($data['rel_id']);
+        } else {
+            if (empty($data['rel_id'])) {
+                unset($data['rel_type']);
+                unset($data['rel_id']);
+            }
+        }
+
+
+        $data = do_action('before_add_task', $data);
+
+        $tags = '';
+        if(isset($data['tags'])){
+            $tags  = $data['tags'];
+            unset($data['tags']);
+        }
+        $this->db->insert('tblstafftasks1', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
 
@@ -976,7 +1255,7 @@ class Tasks_model extends CRM_Model
     public function mark_complete($id)
     {
         $this->db->where('id', $id);
-        $this->db->update('tblstafftasks', array(
+        $this->db->update('tblstafftasks1', array(
             'datefinished' => date('Y-m-d H:i:s'),
             'status' => 5
         ));
@@ -1007,7 +1286,7 @@ class Tasks_model extends CRM_Model
 
         $this->db->select('status');
         $this->db->where('id', $task_id);
-        $_task = $this->db->get('tblstafftasks')->row();
+        $_task = $this->db->get('tblstafftasks1')->row();
         if ($_task->status == 5) {
             return $this->unmark_complete($task_id, $status);
         } else {
@@ -1015,7 +1294,7 @@ class Tasks_model extends CRM_Model
                 return $this->mark_complete($task_id);
             } else {
                 $this->db->where('id', $task_id);
-                $this->db->update('tblstafftasks', array(
+                $this->db->update('tblstafftasks1', array(
                     'status' => $status
                 ));
                 if ($this->db->affected_rows() > 0) {
@@ -1039,14 +1318,14 @@ class Tasks_model extends CRM_Model
             $status = 1;
             $this->db->select('startdate');
             $this->db->where('id', $id);
-            $_task = $this->db->get('tblstafftasks')->row();
+            $_task = $this->db->get('tblstafftasks1')->row();
             if (date('Y-m-d') > date('Y-m-d', strtotime($_task->startdate))) {
                 $status = 4;
             }
         }
 
         $this->db->where('id', $id);
-        $this->db->update('tblstafftasks', array(
+        $this->db->update('tblstafftasks1', array(
             'datefinished' => NULL,
             'status' => $status
         ));
@@ -1070,6 +1349,76 @@ class Tasks_model extends CRM_Model
      * @param  mixed $id taskid
      * @return boolean
      */
+    public function delete_task1($id, $log_activity = TRUE)
+    {
+
+        $task = $this->get1($id);
+        $this->db->where('id', $id);
+        $this->db->delete('tblstafftasks1');
+
+        if ($this->db->affected_rows() > 0) {
+            $attachments = $this->db->get('tblfiles')->result_array();
+            foreach ($attachments as $at) {
+                $this->remove_task_attachment($at['id']);
+            }
+            foreach ($this->tasks_model->getTaskWorkByIDTask($id) as $key => $value) {
+                if ($value['rel_type'] == 'project' && $log_activity == TRUE) {
+                    $this->projects_model->log_activity($value['id'], 'project_activity_task_deleted', $value['name'], $value['visible_to_client']);
+                }
+
+                $this->db->where('taks1_id', $value['id']);
+                $this->db->delete('tblstafftasks');
+
+                $this->db->where('taskid', $value['id']);
+                $this->db->delete('tblstafftasksfollowers');
+
+                $this->db->where('taskid', $value['id']);
+                $this->db->delete('tblstafftaskassignees');
+
+                $this->db->where('taskid', $value['id']);
+                $this->db->delete('tblstafftaskcomments');
+
+                $this->db->where('taskid', $value['id']);
+                $this->db->delete('tbltaskchecklists');
+                // Delete the custom field values
+                $this->db->where('relid', $value['id']);
+                $this->db->where('fieldto', 'tasks');
+                $this->db->delete('tblcustomfieldsvalues');
+
+                $this->db->where('task_id', $value['id']);
+                $this->db->delete('tbltaskstimers');
+
+
+                $this->db->where('rel_id',$value['id']);
+                $this->db->where('rel_type','task');
+                $this->db->delete('tbltags_in');
+
+
+                $this->db->where('rel_id', $value['id']);
+                $this->db->where('rel_type', 'task');
+
+                $this->db->where('rel_id', $value['id']);
+                $this->db->where('rel_type', 'task');
+                $this->db->delete('tblitemsrelated');
+
+                if (is_dir(get_upload_path_by_type('task') . $value['id'])) {
+                    delete_dir(get_upload_path_by_type('task') . $value['id']);
+                }
+
+            }
+            // Log activity only if task is deleted indivudual not when deleting all projects
+
+
+
+
+
+
+
+
+            return true;
+        }
+        return false;
+    }
     public function delete_task($id, $log_activity = TRUE)
     {
         $task = $this->get($id);

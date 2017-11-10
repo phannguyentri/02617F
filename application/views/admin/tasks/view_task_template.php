@@ -2,7 +2,7 @@
  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
  <h4 class="modal-title"><?php echo $task->name; ?></h4>
  <?php if($task->is_public == 0 && $task->status != 5){ ?>
- <small class="text-muted no-margin">
+ <small class="text-muted no-margin hidden">
   <?php echo _l('task_is_private'); ?>
   <?php if(has_permission('tasks','','edit')) { ?> -
   <a href="#" onclick="make_task_public(<?php echo $task->id; ?>); return false;">
@@ -28,14 +28,14 @@
   }
   ?>
   <div class="clearfix"></div>
-  <?php if($task->status != 5){ ?>
-  <p class="no-margin pull-left" style="margin-right:5px !important;">
+  <!-- <?php if($task->status != 5){ ?> -->
+  <!-- <p class="no-margin pull-left" style="margin-right:5px !important;">
    <a href="#" class="btn btn-default" autocomplete="off" data-loading-text="<?php echo _l('wait_text'); ?>" onclick="mark_complete(<?php echo $task->id; ?>); return false;" data-toggle="tooltip" title="<?php echo _l('task_single_mark_as_complete'); ?>">
     <i class="fa fa-check"></i>
   </a>
-</p>
-<?php } else if($task->status == 5){ ?>
-<p class="no-margin pull-left" style="margin-right:5px !important;">
+</p> -->
+<!-- <?php } else if($task->status == 5){ ?> -->
+<!-- <p class="no-margin pull-left" style="margin-right:5px !important;">
  <a href="#" class="btn btn-success" autocomplete="off" data-loading-text="<?php echo _l('wait_text'); ?>" onclick="unmark_complete(<?php echo $task->id; ?>); return false;" data-toggle="tooltip" title="<?php echo _l('task_unmark_as_complete'); ?>">
   <i class="fa fa-check"></i>
 </a>
@@ -48,7 +48,7 @@
 </a>
 </p>
 <?php } ?>
-<p class="no-margin pull-left mright5">
+<p class="no-margin pull-left mright5 hidden">
  <a href="#" class="btn btn-default mright5" data-toggle="tooltip" data-title="<?php echo _l('task_timesheets'); ?>"onclick="slideToggle('#task_single_timesheets'); return false;">
   <i class="fa fa-th-list"></i>
 </a>
@@ -56,19 +56,19 @@
 <?php if($task->billed == 0){
  $is_assigned = $this->tasks_model->is_task_assignee(get_staff_user_id(),$task->id);
  if(!$this->tasks_model->is_timer_started($task->id)) { ?>
- <p class="no-margin pull-left"<?php if(!$is_assigned){ ?> data-toggle="tooltip" data-title="<?php echo _l('task_start_timer_only_assignee'); ?>"<?php } ?>>
+ <p class="hidden no-margin pull-left"<?php if(!$is_assigned){ ?> data-toggle="tooltip" data-title="<?php echo _l('task_start_timer_only_assignee'); ?>"<?php } ?>>
   <a href="#" class="mbot10 btn<?php if(!$is_assigned || $task->status == 5){echo ' disabled btn-default';}else {echo ' btn-success';} ?>" onclick="timer_action(this,<?php echo $task->id; ?>); return false;">
    <i class="fa fa-clock-o"></i> <?php echo _l('task_start_timer'); ?>
  </a>
 </p>
 <?php } else { ?>
-<p class="no-margin pull-left">
+<p class="hidden no-margin pull-left">
   <a href="#" class="btn mbot10 btn-danger<?php if(!$is_assigned){echo ' disabled';} ?>" onclick="timer_action(this,<?php echo $task->id; ?>,<?php echo $this->tasks_model->get_last_timer($task->id)->id; ?>); return false;">
    <i class="fa fa-clock-o"></i> <?php echo _l('task_stop_timer'); ?>
  </a>
-</p>
-<?php } ?>
-<?php } ?>
+</p> -->
+<!-- <?php } ?> -->
+<!-- <?php } ?> -->
 <div class="clearfix"></div>
 <hr />
 <div id="task_single_timesheets" class="<?php if(!$this->session->flashdata('task_single_timesheets_open')){echo 'hide';} ?>">
@@ -185,16 +185,16 @@
   echo '<div class="text-muted no-margin tc-content" id="task_view_description">' . _l('task_no_description') . '</div>';
 } ?>
 <div class="clearfix"></div>
-<hr />
-<a href="#" onclick="add_task_checklist_item('<?php echo $task->id; ?>'); return false" class="mbot10 inline-block">
+<!-- <hr /> -->
+<!-- <a href="#" onclick="add_task_checklist_item('<?php echo $task->id; ?>'); return false" class="mbot10 inline-block">
   <span class="new-checklist-item"><i class="fa fa-plus-circle"></i>
    <?php echo _l('add_checklist_item'); ?>
  </span>
-</a>
-<p class="hide text-muted no-margin" id="task-no-checklist-items"><?php echo _l('task_no_checklist_items_found'); ?></p>
+</a> -->
+<!-- <p class="hide text-muted no-margin" id="task-no-checklist-items"><?php echo _l('task_no_checklist_items_found'); ?></p> -->
 <div class="row checklist-items-wrapper">
   <div class="col-md-12 ">
-   <div id="checklist-items">
+   <div id="checklist-items hidden">
    </div>
  </div>
  <div class="clearfix"></div>
@@ -367,7 +367,7 @@ echo $comments;
  <?php } ?>
  <?php if(has_permission('tasks','','delete')){ ?>
  <li>
-   <a href="<?php echo admin_url('tasks/delete_task/'.$task->id); ?>" class="_delete task-delete">
+   <a href="<?php echo admin_url('tasks/delete_task/'.$task->id); ?>" class="task-delete">
     <?php echo _l('task_single_delete'); ?>
   </a>
 </li>
@@ -384,7 +384,7 @@ echo $comments;
 </div>
 <h4 class="task-info-heading"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php echo _l('task_info'); ?></h4>
 <div class="clearfix"></div>
-<div class="task-info task-status">
+<div class="task-info task-status hidden">
  <h5>
   <i class="fa fa-<?php if($task->status == 5){echo 'star';} else if($task->status == 1){echo 'star-o';} else {echo 'star-half-o';} ?> pull-left task-info-icon"></i><?php echo _l('task_status'); ?>: <?php echo format_task_status($task->status,true); ?>
   <?php if($this->tasks_model->is_task_assignee(get_staff_user_id(),$task->id) || has_permission('tasks','','edit') || has_permission('tasks','','create')) { ?>
@@ -412,18 +412,18 @@ echo $comments;
   <?php echo _l('task_single_start_date'); ?>: <?php echo _d($task->startdate); ?>
 </h5>
 </div>
-<div class="task-info <?php if(!$task->status != 5){echo ' text-danger'; }else{echo 'text-info';} ?><?php if(!$task->duedate){ echo ' hide';} ?>">
+<div class=" task-info <?php if(!$task->status != 5){echo ' text-danger'; }else{echo 'text-info';} ?><?php if(!$task->duedate){ echo ' hide';} ?>">
  <h5><i class="fa task-info-icon fa-calendar-check-o pull-left"></i>
   <?php echo _l('task_single_due_date'); ?>: <?php echo _d($task->duedate); ?>
 </h5>
 </div>
-<div class="text-<?php echo get_task_priority_class($task->priority); ?> task-info">
+<div class="hidden text-<?php echo get_task_priority_class($task->priority); ?> task-info">
  <h5><i class="fa task-info-icon pull-left fa-bolt"></i>
   <?php echo _l('task_single_priority'); ?>: <?php echo task_priority($task->priority); ?>
 </h5>
 </div>
 <?php if((has_permission('tasks','','create') || has_permission('tasks','','edit'))){ ?>
-<div class="task-info">
+<div class="task-info hidden">
  <h5><i class="fa task-info-icon pull-left fa-clock-o"></i>
   <?php
   echo _l('task_hourly_rate'); ?>: <?php if($task->rel_type == 'project' && $task->project_data->billing_type == 2){
@@ -434,13 +434,13 @@ echo $comments;
   ?>
 </h5>
 </div>
-<div class="task-info">
+<div class="task-info hidden">
  <h5><i class="fa task-info-icon pull-left fa fa-money"></i>
   <?php echo _l('task_billable'); ?>: <?php echo ($task->billable == 1 ? _l('task_billable_yes') : _l('task_billable_no')) ?>
 </h5>
 </div>
 <?php if($task->billable == 1){ ?>
-<div class="task-info<?php if($task->billed == 0){echo ' text-warning';} ?>">
+<div class="hidden task-info<?php if($task->billed == 0){echo ' text-warning';} ?>">
  <h5><i class="fa task-info-icon pull-left fa-check"></i>
   <?php echo _l('task_billed'); ?>: <?php echo ($task->billed == 1 ? _l('task_billed_yes') : _l('task_billed_no')) ?>
 </h5>
@@ -448,7 +448,7 @@ echo $comments;
 <?php } ?>
 <?php } ?>
 <?php if($task->status == 5){ ?>
-<div class="task-info text-success" data-toggle="tooltip" data-title="<?php echo _dt($task->datefinished); ?>" data-placement="bottom">
+<div class="hidden task-info text-success" data-toggle="tooltip" data-title="<?php echo _dt($task->datefinished); ?>" data-placement="bottom">
  <h5><i class="fa task-info-icon pull-left fa-check"></i>
   <?php echo _l('task_single_finished'); ?>: <?php echo time_ago($task->datefinished); ?>
 </h5>
@@ -480,12 +480,12 @@ if($value == ''){continue;}?>
 </div>
 <?php } ?>
 <?php if($task->recurring == 1){
-  echo '<span class="label label-warning inline-block mbot10 mtop5">'._l('recurring_task').'</span>';
+  //echo '<span class="label label-warning inline-block mbot10 mtop5">'._l('recurring_task').'</span>';
 }
 ?>
 <?php if(has_permission('tasks','','create') || has_permission('tasks','','edit')){ ?>
 <div class="mtop5 clearfix"></div>
-<input type="text" class="tagsinput" id="taskTags" data-taskid="<?php echo $task->id; ?>" name="tags" value="<?php echo prep_tags_input(get_tags_in($task->id,'task')); ?>" data-role="tagsinput">
+<!-- <input type="text" class="tagsinput" id="taskTags" data-taskid="<?php echo $task->id; ?>" name="tags" value="<?php echo prep_tags_input(get_tags_in($task->id,'task')); ?>" data-role="tagsinput"> -->
 <?php } else { ?>
 <div class="mtop5 clearfix"></div>
 <?php echo render_tags(get_tags_in($task->id,'task')); ?>
@@ -601,6 +601,11 @@ echo $_followers;
 <script>
  var inner_popover_template = '<div class="popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"></div></div></div>';
  init_tags_inputs();
+
+
+ 
+
+
  $('.task-menu-options .trigger').popover({
    html: true,
    placement: "bottom",

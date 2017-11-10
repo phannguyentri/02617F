@@ -538,9 +538,8 @@ class Staff_model extends CRM_Model
      */
     public function update($data, $id)
     {
-                
-                $data['staff_manager']=json_encode($data['staff_manager']);
-// var_dump($data);die();
+        
+        $data['staff_manager']=json_encode($data['staff_manager']);
         $hook_data['data']   = $data;
         $hook_data['userid'] = $id;
         $hook_data           = do_action('before_update_staff_member', $hook_data);
@@ -669,9 +668,9 @@ class Staff_model extends CRM_Model
                 }
             }
         }
-
         $this->db->where('staffid', $id);
         $this->db->update('tblstaff', $data);
+        
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
         }

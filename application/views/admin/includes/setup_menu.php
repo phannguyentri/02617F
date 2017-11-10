@@ -1,3 +1,13 @@
+<?php if(rtrim(admin_url(), "/") == current_url()){ ?>
+  <style type="text/css">
+      body.hide-sidebar #wrapper {
+          margin-left: 0px;
+      }
+      body.hide-sidebar #menu{
+          display: none;
+      }
+  </style>
+<?php } ?>
 <div id="setup-menu-wrapper" class="animated <?php if($this->session->has_userdata('setup-menu-open') && $this->session->userdata('setup-menu-open') == true){echo 'display-block';} ?>">
     <ul class="nav metis-menu" id="setup-menu">
         <li>
@@ -10,6 +20,7 @@
         $total_setup_items = count($menu_active->setup_menu_active);
         $m                 = 0;
         foreach ($menu_active->setup_menu_active as $item) {
+           
             if (isset($item->permission) && !empty($item->permission)) {
                 if (!has_permission($item->permission, '', 'view')) {
                     $total_setup_items--;

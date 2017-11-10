@@ -7,7 +7,7 @@
         <div class="panel_s">
           <div class="panel-body _buttons">
             <!--<a href="#" class="btn btn-info pull-left" data-toggle="modal" data-target="#sales_item_modal"><?php echo _l('new_invoice_item'); ?></a>-->
-            <a href="<?php echo admin_url('invoice_items/item') ?>" class="btn btn-info pull-left"><?php echo _l('new_invoice_item'); ?></a>
+            <a href="#" onclick="init_product(); return false;"  class="btn btn-info pull-left"><?php echo _l('new_invoice_item'); ?></a>
             <a href="#" class="btn btn-info pull-left mleft5" data-toggle="modal" data-target="#groups"><?php echo _l('item_groups'); ?></a>
             <?php if(is_admin()){ ?>
             <a href="<?php echo admin_url('invoice_items/import'); ?>" class="btn btn-info pull-left mleft5 display-block">
@@ -31,12 +31,12 @@
                         echo render_select('category_2', array(), array('id', 'category'), 'Danh mục cấp 2');
                     ?>
                 </div>
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 hidden">
                     <?php 
                         echo render_select('category_3', array(), array('id', 'category'), 'Danh mục cấp 3');
                     ?>
                 </div>
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 hidden">
                     <?php 
                         echo render_select('category_4', array(), array('id', 'category'), 'Danh mục cấp 4');
                     ?>
@@ -48,16 +48,15 @@
             <div class="clearfix"></div>
             <?php render_datatable(array(
               "ID",
-              _l('item_avatar'),
               _l('item_code'),
               _l('item_name'),
-              _l('item_short_name'),
-              _l('item_description'),
+             
+              _l('Đặc tính sản phẩm'),
               _l('item_price'),
               _l('item_unit'),
               _l('item_group_id'),
-              _l('minimum_quantity'),
-              _l('maximum_quantity'),  
+              // _l('minimum_quantity'),
+              // _l('maximum_quantity'),  
               _l('actions'),              
               ),
               'invoice-items'); ?>
@@ -214,6 +213,9 @@
     };
     initDataTable('.table-invoice-items', window.location.href, [4], [4], filterList,[0,'DESC']);
     $(document).ready(()=>{
+      
+   
+
         $('#category_1,#category_2,#category_3,#category_4').on('change', (e) => {
             var id = $(e.currentTarget).val();
             $(e.currentTarget).parents('.col-xs-3').nextAll().find('select[name^="category_"] option:gt(0)').remove();

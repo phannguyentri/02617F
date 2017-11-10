@@ -1,16 +1,15 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 $assignee_column = 4;
 $tags_column = 3;
 $aColumns = array(
-    'name',
+    'tblstafftasks.id',
     'startdate',
-    'duedate',
-    '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblstafftasks.id and rel_type="task" ORDER by tag_order ASC) as tags',
-    '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblstafftaskassignees JOIN tblstaff ON tblstaff.staffid = tblstafftaskassignees.staffid WHERE taskid=tblstafftasks.id) as assignees',
-    'priority',
-    'status'
+    'name',
+    'purpose',
+    'transaction',
+    'description1',
+
 );
 
 if($this->_instance->input->get('bulk_actions')){
@@ -46,17 +45,55 @@ $sTable       = 'tblstafftasks';
 if (count($custom_fields) > 4) {
     @$this->_instance->db->query('SET SQL_BIG_SELECTS=1');
 }
+
+if($id){
+    array_push($where, 'AND tblstafftasks.taks1_id='.$id);
+}
+
+if($this->_instance->input->post()){
+    $purpose = $this->_instance->input->post('purpose');
+    $transaction = $this->_instance->input->post('transaction');
+    $remi = $this->_instance->input->post('remi');
+    $date_from = to_sql_date($this->_instance->input->post('report-from'));
+    $date_to = to_sql_date($this->_instance->input->post('report-to'));
+
+    if($purpose){
+        array_push($where, 'AND purpose="'.$purpose.'"');
+    }
+
+    if($transaction){
+        array_push($where, 'AND transaction="'.$transaction.'"');        
+    }
+
+    if($remi){
+        array_push($where, 'AND remi='.$remi);        
+    }
+
+    if($date_from && $date_to){
+        array_push($where, 'AND startdate BETWEEN "' . $date_from . '" and "' . $date_to . '"');
+    }
+}
 $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
     'tblstafftasks.id',
+    'duedate',
+    '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblstafftasks.id and rel_type="task" ORDER by tag_order ASC) as tags',
+    '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblstafftaskassignees JOIN tblstaff ON tblstaff.staffid = tblstafftaskassignees.staffid WHERE taskid=tblstafftasks.id) as assignees',
+    'priority',
+    'status',
     'dateadded',
     'priority',
     'rel_type',
     'rel_id',
     'invoice_id',
-    '(SELECT GROUP_CONCAT(staffid SEPARATOR ",") FROM tblstafftaskassignees WHERE taskid=tblstafftasks.id) as assignees_ids'
+    'remi',
+    '(SELECT GROUP_CONCAT(staffid SEPARATOR ",") FROM tblstafftaskassignees WHERE taskid=tblstafftasks.id) as assignees_ids','1',
+    'tblstafftasks.taks1_id',
 ));
+
+
 $output  = $result['output'];
 $rResult = $result['rResult'];
+// var_dump($rResult);die();
 foreach ($rResult as $aRow) {
     $row = array();
 
@@ -75,19 +112,19 @@ foreach ($rResult as $aRow) {
                 $rel_data   = get_relation_data($aRow['rel_type'], $aRow['rel_id']);
                 $rel_values = get_relation_values($rel_data, $aRow['rel_type']);
                 // Show client company if task is related to project
-                if ($aRow['rel_type'] == 'project') {
-                    $this->_instance->db->select('clientid');
-                    $this->_instance->db->where('id', $aRow['rel_id']);
-                    $client = $this->_instance->db->get('tblprojects')->row();
-                    if ($client) {
-                        $this->_instance->db->select('CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblclients.userid and is_primary = 1) ELSE company END as company');
-                        $this->_instance->db->where('userid', $client->clientid);
-                        $company = $this->_instance->db->get('tblclients')->row();
-                        if ($company) {
-                            $rel_values['name'] .= ' - ' . $company->company;
-                        }
-                    }
-                }
+                // if ($aRow['rel_type'] == 'project') {
+    //                 $this->_instance->db->select('clientid');
+    //                 $this->_instance->db->where('id', $aRow['rel_id']);
+    //                 $client = $this->_instance->db->get('tblprojects')->row();
+    //                 if ($client) {
+    //                     $this->_instance->db->select('CASE company WHEN "" THEN (SELECT CONCAT(firstname, " ", lastname) FROM tblcontacts WHERE userid = tblclients.userid and is_primary = 1) ELSE company END as company');
+    //                     $this->_instance->db->where('userid', $client->clientid);
+    //                     $company = $this->_instance->db->get('tblclients')->row();
+    //                     if ($company) {
+    //                         $rel_values['name'] .= ' - ' . $company->company;
+    //                     }
+    //                 }
+    //             }
                 $_data .= '<span class="hide"> - </span>'. _l('task_related_to').': <a class="text-muted" data-toggle="tooltip" title="' . ucfirst($aRow['rel_type']) . '" href="' . $rel_values['link'] . '">' . $rel_values['name'] . '</a>';
             }
 
@@ -105,6 +142,10 @@ foreach ($rResult as $aRow) {
                 $_data .= '<a href="#" onclick="mark_complete(' . $aRow['id'] . '); return false;"><i class="fa fa-check task-icon task-unfinished-icon" data-toggle="tooltip" title="' . _l('task_single_mark_as_complete') . '"></i></a>';
             }
             $_data .= '</span>';
+        }else if ($aColumns[$i] == 'transaction') {
+            $_data = '<span>' . _l($aRow['transaction']). '</span>';
+        }else if ($aColumns[$i] == 'purpose') {
+            $_data = '<span >' . _l($aRow['purpose']). '</span>';
         } else if ($aColumns[$i] == 'priority') {
             $_data = '<span class="text-' . get_task_priority_class($_data) . ' inline-block">' . task_priority($_data) . '</span>';
         }  else if ($i == $tags_column) {
@@ -166,11 +207,22 @@ foreach ($rResult as $aRow) {
             'onclick' => 'edit_task(' . $aRow['id'] . '); return false'
         ));
     }
+    if($aRow['remi']==1){
+        $options .= icon_btn('#', '', 'btn-success pull-right ', array('style'=>'margin-right: 0px;',
+            'title'=>'Chưa tạo nhắc nhở','onclick' => 'new_reminder_from(' . $aRow['id'] . '); return false'
+        ),'Nhắc nhở');
+        // $options .= icon_btn('contracts/create_order/'.$aRow['id'],'exchange','btn-default');
+    }else{
+        $options .= icon_btn('#', '', 'btn-default pull-right', array('style'=>'margin-right: 0px;',
+            'title'=>'Chưa tạo nhắc nhở','onclick' => 'new_reminder_from(' . $aRow['id'] . '); return false'
+        ),'Nhắc nhở');
+    }
+    
 
     $class = 'btn-success no-margin';
-    $atts  = array(
-        'onclick' => 'timer_action(this,' . $aRow['id'] . '); return false'
-    );
+    // $atts  = array(
+    //     'onclick' => 'timer_action(this,' . $aRow['id'] . '); return false'
+    // );
 
 
     $tooltip        = '';
@@ -187,13 +239,13 @@ foreach ($rResult as $aRow) {
         }
     }
 
-    if (!$this->_instance->tasks_model->is_timer_started($aRow['id'])) {
-        $options .= '<span' . $tooltip . ' class="pull-right">' . icon_btn('#', 'clock-o', $class . ' no-margin', $atts) . '</span>';
-    } else {
-        $options .= icon_btn('#', 'clock-o', 'btn-danger pull-right no-margin', array(
-            'onclick' => 'timer_action(this,' . $aRow['id'] . ',' . $this->_instance->tasks_model->get_last_timer($aRow['id'])->id . '); return false'
-        ));
-    }
+    // if (!$this->_instance->tasks_model->is_timer_started($aRow['id'])) {
+    //     $options .= '<span' . $tooltip . ' class="pull-right">' . icon_btn('#', 'clock-o', $class . ' no-margin', $atts) . '</span>';
+    // } else {
+    //     $options .= icon_btn('#', 'clock-o', 'btn-danger pull-right no-margin', array(
+    //         'onclick' => 'timer_action(this,' . $aRow['id'] . ',' . $this->_instance->tasks_model->get_last_timer($aRow['id'])->id . '); return false'
+    //     ));
+    // }
 
     $row[]              = $options;
     $rowClass = '';

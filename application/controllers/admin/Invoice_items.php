@@ -27,6 +27,11 @@ class Invoice_items extends Admin_controller
         $data['title'] = _l('invoice_items');
         $this->load->view('admin/invoice_items/manage', $data);
     }
+    public function getProductsInCate($category_id){
+        if(is_numeric($category_id) && $this->input->is_ajax_request()) {            
+            echo json_encode($this->invoice_items_model->getProductsByCateID($category_id));
+        }
+    }
     public function summary() {
         if (!has_permission('items', '', 'view')) {
             access_denied('Invoice Items');
@@ -65,8 +70,8 @@ class Invoice_items extends Admin_controller
 
                 $data['price']=str_replace('.','',$data['price']);
                 $data['price_buy']=str_replace('.','',$data['price_buy']);
-                $data['minimum_quantity']=str_replace('.','',$data['minimum_quantity']);
-                $data['maximum_quantity']=str_replace('.','',$data['maximum_quantity']);
+                $data['minimum_quantity']=10;
+                $data['maximum_quantity']=100;
                 $save_and_add_contact = false;
                 // Category 4rd level
                 if(is_array($data['category_id'])) {
@@ -82,6 +87,8 @@ class Invoice_items extends Admin_controller
                     unset($data['save_and_add_contact']);
                     $save_and_add_contact = true;
                 }
+
+
                 $id = $this->invoice_items_model->add($data);
                 if (!has_permission('items', '', 'view')) {
                     $assign['customer_admins']   = array();
@@ -103,8 +110,8 @@ class Invoice_items extends Admin_controller
                 $data = $this->input->post();
                 $data['price']=str_replace('.','',$data['price']);
                 $data['price_buy']=str_replace('.','',$data['price_buy']);
-                $data['minimum_quantity']=str_replace('.','',$data['minimum_quantity']);
-                $data['maximum_quantity']=str_replace('.','',$data['maximum_quantity']);
+                $data['minimum_quantity']=10;
+                $data['maximum_quantity']=100;
                 
                 $data['itemid'] = $id;
                 $item = $this->invoice_items_model->get_full($id);
@@ -122,15 +129,15 @@ class Invoice_items extends Admin_controller
                 if ($success == true || $success_avatar == true) {
                     set_alert('success', _l('updated_successfuly', _l('als_products')));
                 }
-                redirect(admin_url('invoice_items/item/' . $id));
+                redirect(admin_url('invoice_items'));
             }
         }
         if ($id == '') {
             $title = _l('add_new', _l('als_products'));
             $array_categories[] = array(0, $this->invoice_items_model->get_same_level_categories(0));
             $array_categories[1] = array(0, array());
-            $array_categories[2] = array(0, array());
-            $array_categories[3] = array(0, array());
+            // $array_categories[2] = array(0, array());
+            // $array_categories[3] = array(0, array());
             $data['array_categories'] = $array_categories;
             
         } else {
@@ -145,12 +152,12 @@ class Invoice_items extends Admin_controller
                 if(!isset($array_categories[1])) {
                     $array_categories[1] = array(0, array());
                 }
-                if(!isset($array_categories[2])) {
-                    $array_categories[2] = array(0, array());
-                }
-                if(!isset($array_categories[3])) {
-                    $array_categories[3] = array(0, array());
-                }
+                // if(!isset($array_categories[2])) {
+                //     $array_categories[2] = array(0, array());
+                // }
+                // if(!isset($array_categories[3])) {
+                //     $array_categories[3] = array(0, array());
+                // }
             }
             if (!$item) {
                 blank_page('Client Not Found');
@@ -161,7 +168,10 @@ class Invoice_items extends Admin_controller
 
 
         $data['title'] = $title;
-        $this->load->view('admin/invoice_items/item_details', $data);
+         echo json_encode(array(
+            'data' => $this->load->view('admin/invoice_items/item_details', $data, TRUE),
+        ));
+
     }
     public function get_categories($id=0) {
         if (!has_permission('items', '', 'view')) {

@@ -286,6 +286,9 @@
       switchMode();
     });
 
+
+    
+
     $('.billing-same-as-customer').on('click', function(e) {
       e.preventDefault();
       $('select[name="billing_area"]').selectpicker('val', $('select[name="address_area"]').selectpicker('val'));
@@ -340,8 +343,7 @@
 </script>
 <?php if(isset($client)){ ?>
 <script>
- init_rel_tasks_table(<?php echo $client->userid; ?>,'customer');
- 
+init_rel_tasks_table(<?php echo $client->userid; ?>,'customer');
     
 
 </script>

@@ -119,7 +119,7 @@
         });
     });
 
-    
+
     function manage_contract_types(form) {
         var data = $(form).serialize();
         var url = form.action;
@@ -147,7 +147,7 @@
         $('.add-title').addClass('hide');
     }
 
-    
+
 
 </script>
 </body>

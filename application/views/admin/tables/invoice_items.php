@@ -3,16 +3,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $aColumns     = array(
     'tblitems.id',
-    'tblitems.avatar',
     'tblitems.code',
     'tblitems.name',
-    'tblitems.short_name',
-    'tblitems.description',
+    // 'tblitems.short_name',
+    'tblitems.product_features',
     'tblitems.price',
     'tblunits.unit',
     'tblitems_groups.name',
-    'tblitems.minimum_quantity',
-    'tblitems.maximum_quantity',
+    // 'tblitems.minimum_quantity',
+    // 'tblitems.maximum_quantity',
     );
 // var_dump($aColumns);die;
 $sIndexColumn = "id";
@@ -27,6 +26,8 @@ $join             = array(
     'LEFT JOIN tblunits ON tblitems.unit = tblunits.unitid',
     );
 $additionalSelect = array(
+    'tblitems.avatar',
+    
     'tblitems.id',
     'tbltaxes.name', 
     'taxrate',
@@ -104,7 +105,7 @@ foreach ($rResult as $aRow) {
 
         $array_link = ['tblitems.code', 'tblitems.name'];
         if(in_array($aColumns[$i],$array_link)){
-            $_data = '<a href="'.admin_url('invoice_items/item/').$aRow['id'].'">'.$_data.'</a>';
+            $_data = '<a onclick="init_product_modal_data('.$aRow['id'].');return false;" href="'.admin_url('invoice_items/item/').$aRow['id'].'">'.$_data.'</a>';
         }
         if($aColumns[$i] == 'tblitems.avatar' && file_exists($_data)) {
             $_data = '<img src="'.base_url($_data).'" width="50px" />';
@@ -123,7 +124,8 @@ foreach ($rResult as $aRow) {
     }
     $options = '';
     if(has_permission('items','','edit')){
-        $options .= icon_btn('invoice_items/item/' . $aRow['id'], 'pencil-square-o', 'btn-default');
+        $options .= icon_btn('#', 'eye','btn-default',array('onclick'=>'init_product_modal_data('.$aRow['id'].');return false;'));
+        // $options .= icon_btn('invoice_items/item/' . $aRow['id'], 'pencil-square-o', 'btn-default');
     }
     if(has_permission('items','','delete')){
        $options .= icon_btn('invoice_items/delete/' . $aRow['id'], 'remove', 'btn-danger _delete');

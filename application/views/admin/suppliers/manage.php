@@ -206,7 +206,7 @@
                  <?php
                  $table_data = array();
                  $_table_data = array(
-                    _l('clients_list_company'),
+                    _l('Tên nhà cung cấp'),
                     _l('contact_primary'),
                     _l('company_primary_email'),
                     _l('clients_list_phone'),

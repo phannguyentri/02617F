@@ -7,7 +7,7 @@
                     <div class="panel-body _buttons">                   
                     <h4 class="bold no-margin"><?=_l('export_orders')?></h4>
                     <hr class="no-mbot no-border">
-                    <a href="<?=admin_url('exports/export_detail')?>" class="btn btn-info pull-left display-block"><?php echo _l('add_export_order'); ?></a>
+                    <a href="#" onclick="init_exports(); return false;" class="btn btn-info pull-left display-block"><?php echo _l('add_export_order'); ?></a>
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -16,7 +16,7 @@
                     <?php render_datatable(array(
                             _l('#'),
                             _l('Mã phiếu xuất kho'),
-                            _l('Mã đơn hàng'),
+                            _l('Mã hợp đồng'),
                             _l('Khách hàng'),
                             _l('Người tạo'),
                             _l('Trạng thái'),

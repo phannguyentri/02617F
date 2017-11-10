@@ -1,4 +1,6 @@
+
 <aside id="menu" class="sidebar">
+
  <ul class="nav metis-menu" id="side-menu">
   <li class="dashboard_user">
    <?php echo _l('welcome_top',$_staff->firstname); ?> <i class="fa fa-power-off top-left-logout pull-right" data-toggle="tooltip" data-title="<?php echo _l('nav_logout'); ?>" data-placement="left" onclick="logout(); return false;"></i>
@@ -14,6 +16,7 @@
 }
 
 ?>
+
 <?php if($total_qa_removed != count($_quick_actions)){ ?>
 <li class="quick-links">
   <div class="dropdown dropdown-quick-links">
@@ -24,6 +27,7 @@
      <?php
      foreach($_quick_actions as $key => $item){
       $url = '';
+
       if(isset($item['permission'])){
        if(!has_permission($item['permission'],'','create')){
         continue;
@@ -52,12 +56,21 @@
 <?php } ?>
 <?php
 do_action('before_render_aside_menu');
-$menu_active = get_option('aside_menu_active');
+// $menu_active = get_option('aside_menu_active');
+if(isset($_SESSION['type_role']))
+{
+  $menu_active = get_option($_SESSION['type_role']);
+}
+else
+{
+  $menu_active = get_option('aside_menu_active');
+}
+
 
 $menu_active = json_decode($menu_active);
 $m = 0;
 foreach($menu_active->aside_menu_active as $item){
-
+  
  if($item->id == 'tickets'){
   if(get_option('access_tickets_to_none_staff_members') == 0 && !is_staff_member()){
    continue;

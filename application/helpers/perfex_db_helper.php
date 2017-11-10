@@ -693,7 +693,13 @@ function add_notification($values)
 {
     $CI =& get_instance();
     foreach ($values as $key => $value) {
+        if($data['date']){
+            $data[$key] = $value;
+        }else{
+            $data['date'] = date('Y-m-d H:i:s');
+        }
         $data[$key] = $value;
+        
     }
     if (is_client_logged_in()) {
         $data['fromuserid']    = 0;
@@ -723,7 +729,6 @@ function add_notification($values)
             }
         }
     }
-    $data['date'] = date('Y-m-d H:i:s');
     $CI->db->insert('tblnotifications', $data);
 }
 /**
@@ -937,13 +942,12 @@ function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = array(), $w
     " . implode(' ', $join) . "
     $sWhere
     " . $where . "
-    $sOrder
     $groupBy
+    $sOrder    
     $sLimit
     ";
 
     $rResult = $CI->db->query($sQuery)->result_array();
-
     /* Data set length after filtering */
     $sQuery         = "
     SELECT FOUND_ROWS()
@@ -1633,4 +1637,24 @@ function get_item_groups() {
     $CI =& get_instance();
     $groups = $CI->db->get('tblitems_groups')->result_array();
     return $groups;
+}
+
+
+function get_table_where($table, $where = array(),$order_by="",$result='result_array')
+{
+    $CI =& get_instance();
+    if($where!=array())
+    {
+        $CI->db->where($where);
+    }
+    if($order_by!="")
+    {
+        $CI->db->order_by($order_by);
+    }
+    $result=$CI->db->get($table)->$result();
+    if ($result) {
+        return $result;
+    } else {
+        return array();
+    }
 }

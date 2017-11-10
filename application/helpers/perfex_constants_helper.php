@@ -42,6 +42,8 @@ define('PROPOSAL_ATTACHMENTS_FOLDER',FCPATH . 'uploads/proposals' . '/');
 define('EXPENSE_ATTACHMENTS_FOLDER',FCPATH . 'uploads/expenses' . '/');
 // Lead attachments
 define('LEAD_ATTACHMENTS_FOLDER',FCPATH . 'uploads/leads' . '/');
+// Lead attachments
+define('QUOTE_ATTACHMENTS_FOLDER',FCPATH . 'uploads/quote' . '/');
 // Project files attachments
 define('PROJECT_ATTACHMENTS_FOLDER',FCPATH . 'uploads/projects' . '/');
 // Project discussions attachments
@@ -49,3 +51,4 @@ define('PROJECT_DISCUSSION_ATTACHMENT_FOLDER',FCPATH . 'uploads/discussions' . '
 
 // Staff attachments folder from profile
 define('STAFF_ATTACHMENTS_FOLDER',FCPATH.'uploads/staffs'.'/');
+define('EMAIL_FOLDER',FCPATH . 'uploads/email' . '/');

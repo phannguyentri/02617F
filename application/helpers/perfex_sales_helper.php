@@ -1392,69 +1392,54 @@ function delivery_detail_pdf($invoice, $tag = '')
     return $pdf;
 }
 
-function quote_detail_pdf($invoice, $tag = '')
-{
+function quote_detail_pdf($contract, $tag = '')
+{   
+
 
     $CI =& get_instance();
-    // load_pdf_language($invoice->clientid);
     $CI->load->library('pdf');
-    $invoice_number = $invoice->prefix.$invoice->code;
-    $font_name      = get_option('pdf_font');
-    $font_size      = get_option('pdf_font_size');
 
+    $formatArray = get_pdf_format('pdf_format_invoice');
+    $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false,false,'contract');
+
+    $font_name = get_option('pdf_font');
+    $font_size = get_option('pdf_font_size');
     if ($font_size == '') {
         $font_size = 10;
     }
-
-    // $CI->load->model('payment_modes_model');
-    // $payment_modes = $CI->payment_modes_model->get();
-
-    $i = 0;
-    // In case user want to include {invoice_number} in PDF offline mode description
-    // foreach ($payment_modes as $mode) {
-    //     if(isset($mode['description'])){
-    //       $payment_modes[$i]['description'] = str_replace('{invoice_number}',format_invoice_number($invoice->id),$mode['description']);
-    //     }
-    //     $i++;
-    // }
-
-    $formatArray = get_pdf_format('A4-LANDSCAPE',true);
-    // var_dump($formatArray);die();
-    $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false,false,'invoice');
-
-    $pdf->SetTitle($invoice_number);
     $CI->pdf->SetMargins(PDF_MARGIN_LEFT, 25, PDF_MARGIN_RIGHT);
 
-    $CI->pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
+    $CI->pdf->SetAutoPageBreak(TRUE, 15);
+    $pdf->setImageScale(1.53);
     $pdf->SetAuthor(get_option('company'));
     $pdf->SetFont($font_name, '', $font_size);
-    $pdf->setImageScale(1.53);
-    $pdf->setJPEGQuality(100);
     $pdf->AddPage($formatArray['orientation'], $formatArray['format']);
-
     if ($CI->input->get('print') == 'true') {
         // force print dialog
         $js = 'print(true);';
         $pdf->IncludeJS($js);
     }
+    # Dont remove these lines - important for the PDF layout
+    // Add <br /> tag and wrap over div element every image to prevent overlaping over text
+    $contract->content = preg_replace('/(<img[^>]+>(?:<\/img>)?)/i', '<div>$1</div>', $contract->content);
+    // Add cellpadding to all tables inside the html
+    $contract->content = preg_replace('/(<table\b[^><]*)>/i', '$1 cellpadding="4">', $contract->content);
+    // Remove white spaces cased by the html editor ex. <td>  item</td>
+    $contract->content = preg_replace('/[\t\n\r\0\x0B]/', '', $contract->content);
+    $contract->content = preg_replace('/([\s])\1+/', ' ', $contract->content);
 
-    $status = $invoice->status;
-    $swap   = get_option('swap_pdf_info');
-    $CI->load->library('numberword', array(
-        'clientid' => $invoice->customer_id
-    ));
-
-    $CI->load->model('clients_model');
-    $customer=$CI->clients_model->get($invoice->customer_id);
-
-    $invoice = do_action('invoice_html_pdf_data', $invoice);
+    // Tcpdf does not support float css we need to adjust this here
+    $contract->content = str_replace('float: right', 'text-align: right', $contract->content);
+    $contract->content = str_replace('float: left', 'text-align: left', $contract->content);
+    // Image center
+    $contract->content = str_replace('margin-left: auto; margin-right: auto;', 'text-align:center;', $contract->content);
     if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_quote_detail_pdf.php')) {
         include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_quote_detail_pdf.php');
     } else {
         include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/quote_detail_pdf.php');
     }
-    return $pdf;
+    return $pdf;    
+
 }
 
 /**
@@ -1826,6 +1811,7 @@ function contract_pdf($contract)
     if ($font_size == '') {
         $font_size = 10;
     }
+
     $CI->pdf->SetMargins(PDF_MARGIN_LEFT, 25, PDF_MARGIN_RIGHT);
 
     $CI->pdf->SetAutoPageBreak(TRUE, 15);
@@ -1838,7 +1824,7 @@ function contract_pdf($contract)
         $js = 'print(true);';
         $pdf->IncludeJS($js);
     }
-    
+
     # Dont remove these lines - important for the PDF layout
     // Add <br /> tag and wrap over div element every image to prevent overlaping over text
     $contract->content = preg_replace('/(<img[^>]+>(?:<\/img>)?)/i', '<div>$1</div>', $contract->content);
@@ -1854,8 +1840,11 @@ function contract_pdf($contract)
     // Image center
     $contract->content = str_replace('margin-left: auto; margin-right: auto;', 'text-align:center;', $contract->content);
 
+    // if($CI->input->get('?type') == 'no' || $CI->input->get('type') == 'no'){
+    //     str_replace("{contract_item_list}","{contract_item_list1}",$contract->content);
+    // }
 
-
+    
     if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_contractpdf.php')) {
         include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_contractpdf.php');
     } else {

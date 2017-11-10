@@ -92,7 +92,38 @@
                     <a href="#" class="btn btn-default btn-with-tooltip invoices-total mright5" onclick="slideToggle('#stats-top'); init_invoices_total(true); return false;" data-toggle="tooltip" title="<?php echo _l('view_stats_tooltip'); ?>"><i class="fa fa-bar-chart"></i></a>
 
                     </div>
+                    <div class="col-xs-12" style="padding: 0px; padding-top: 20px;">
+                    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+                           <?php 
+                               echo render_select('contract_client', $clients_iv, array('userid', 'company'), 'Khách hàng');
+                           ?>
+                       </div>
+                       <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+                          <?php 
+                               echo render_select('contract_userc', $user_iv, array('staffid', 'fullname'), 'Người tạo');
+                           ?>
+                       </div>
                     
+
+                       <div class="col-md-3 col-lg-3 col-xs-6 col-sm-6">
+                         <label for="report-from" class="control-label"><?php echo _l('report_sales_from_date'); ?></label>
+                         <div class="input-group date">
+                            <input type="text" class="form-control datepicker" id="report-from" name="report-from">
+                            <div class="input-group-addon">
+                               <i class="fa fa-calendar calendar-icon"></i>
+                            </div>
+                         </div>
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xs-6 col-sm-6">
+                         <label for="report-to" class="control-label"><?php echo _l('report_sales_to_date'); ?></label>
+                         <div class="input-group date">
+                            <input type="text" class="form-control datepicker" id="report-to" name="report-to">
+                            <div class="input-group-addon">
+                               <i class="fa fa-calendar calendar-icon"></i>
+                            </div>
+                         </div>
+                      </div>
+                    </div>
                     <div class="clearfix mbot10"></div>
                     <hr />
                         <?php $minus_7_days = date('Y-m-d', strtotime("-7 days")); ?>
@@ -129,17 +160,19 @@
                                     <h3 class="bold"><?php echo total_rows('tblcontracts',array_merge(array('trash'=>1),$where_own)); ?></h3>
                                     <span class="text-muted"><?php echo _l('contract_summary_trash'); ?></span>
                                 </div>
+
                                 <div class="clearfix"></div>
                                 <hr />
                     <?php echo form_hidden('custom_view'); ?>
                             <?php
                             $table_data = array('#',
-                               _l('contract_list_subject'),
+                               _l('Số hợp đồng'),
                                _l('contract_list_client'),
                                _l('contract_types_list_name'),
                                 _l('contract_value'),
                                _l('contract_list_start_date'),
                                _l('contract_list_end_date'),
+                               'Người tạo',
                                );
                             $custom_fields = get_custom_fields('contracts',array('show_on_table'=>1));
                             foreach($custom_fields as $field){
@@ -176,16 +209,33 @@
    <?php init_tail(); ?>
    <script>
     $(function(){
+        var filterList = {           
+            "client_id" : "[name='contract_client']", 
+            "user_id" : "[name='contract_userc']", 
+            "report-from" : "[name='report-from']",
+            "report-to" : "[name='report-to']", 
+    
+        };
 
         var ContractsServerParams = {};
         $.each($('._hidden_inputs._filters input'),function(){
             ContractsServerParams[$(this).attr('name')] = '[name="'+$(this).attr('name')+'"]';
         });
 
+        $.each(filterList, function(key, value) {
+            ContractsServerParams[key] = value;
+        });
+
+        $.each(filterList, (filterIndex, filterItem) => {
+            $('' + filterItem).on('change', () => {
+                $('.table-contracts').DataTable().ajax.reload();
+            });
+        });
+
         var headers_contracts = $('.table-contracts').find('th');
         var not_sortable_contracts = (headers_contracts.length - 1);
 
-        initDataTable('.table-contracts', window.location.href, [not_sortable_contracts], [not_sortable_contracts], ContractsServerParams,<?php echo do_action('contracts_table_default_order',json_encode(array(5,'ASC'))); ?>);
+        initDataTable('.table-contracts', window.location.href, [not_sortable_contracts], [not_sortable_contracts], ContractsServerParams,<?php echo do_action('contracts_table_default_order',json_encode(array(1,'DESC'))); ?>);
         new Chart($('#contracts-by-type-chart'), {
             type: 'bar',
             data: <?php echo $chart_types; ?>,

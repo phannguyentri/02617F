@@ -7,6 +7,9 @@
  var report_to = $('input[name="report-to"]');
  var report_customers = $('#customers-report');
  var report_customers_groups = $('#customers-group');
+ var report_quotes = $('#quotes-report');
+ var report_contracts = $('#contracts-report');
+ var report_tasks = $('#tasks-report');
  var report_invoices = $('#invoices-report');
  var report_estimates = $('#estimates-report');
  var report_payments_received = $('#payments-received-report');
@@ -23,9 +26,19 @@
    "sale_agent_estimates": '[name="sale_agent_estimates"]',
    "proposals_sale_agents": '[name="proposals_sale_agents"]',
    "proposal_status": '[name="proposal_status"]',
+   "clientid3": '[name="clientid3"]',
+   "staffsid3" : '[name="staffsid3[]"]',
+   "clientid": '[name="clientid"]',
+   "staffsid" : '[name="staffsid[]"]',
+   "staffsid1" : '[name="staffsid1[]"]',
+   "clientid1" : '[name="clientid1"]',
+   "staffsid2" : '[name="staffsid2[]"]',
+   "clientid2" : '[name="clientid2"]',
+   "status2" : '[name="status2"]',
  }
+
  $(function() {
-   $('select[name="currency"],select[name="invoice_status"],select[name="estimate_status"],select[name="sale_agent_invoices"],select[name="sale_agent_estimates"],select[name="payments_years"],select[name="proposals_sale_agents"],select[name="proposal_status"]').on('change', function() {
+   $('select[name="clientid3"],select[name="staffsid3[]"],select[name="clientid"],select[name="staffsid[]"],select[name="clientid1"],select[name="staffsid1[]"],select[name="clientid2"],select[name="status2"],select[name="staffsid2[]"],select[name="currency"],select[name="invoice_status"],select[name="estimate_status"],select[name="sale_agent_invoices"],select[name="sale_agent_estimates"],select[name="payments_years"],select[name="proposals_sale_agents"],select[name="proposal_status"]').on('change', function() {
      gen_reports();
    });
 
@@ -96,6 +109,41 @@
      $(this).find('tfoot td.adjustment').html(sums.adjustment);
    });
 
+   $('.table-customers-report').on('draw.dt', function() {
+     var customerReportsTable = $(this).DataTable();
+     var sums = customerReportsTable.ajax.json().sums;
+     $(this).find('tfoot').addClass('bold');
+     // $(this).find('tfoot td').eq(0).html("<?php echo _l('invoice_total'); ?>");
+     $(this).find('tfoot td.subtotalquotes').html('<div style="text-align:right">'+sums.tquotes +'</div>');
+     $(this).find('tfoot td.totalquotes').html('<div style="text-align:right">'+sums.quotes +'</div>');
+     $(this).find('tfoot td.subtotalcontracts').html('<div style="text-align:right">'+sums.tcontracts +'</div>');
+     $(this).find('tfoot td.totalcontracts').html('<div style="text-align:right">'+sums.contracts +'</div>');
+     // $(this).find('tfoot td.adjustment').html(sums.adjustment);
+     // $(this).find('tfoot td.amount_open').html(sums.amount_open);
+   });
+
+   $('.table-quotes-report').on('draw.dt', function() {
+     var quoteReportsTable = $(this).DataTable();
+     var sums = quoteReportsTable.ajax.json().sums;
+     $(this).find('tfoot').addClass('bold');
+     // $(this).find('tfoot td').eq(0).html("<?php echo _l('invoice_total'); ?>");
+     $(this).find('tfoot td.subtotalquotes').html('<div style="text-align:right">'+sums.quotes +'</div>');
+     
+     // $(this).find('tfoot td.adjustment').html(sums.adjustment);
+     // $(this).find('tfoot td.amount_open').html(sums.amount_open);
+   });
+
+   $('.table-contracts-report').on('draw.dt', function() {
+     var quoteReportsTable = $(this).DataTable();
+     var sums = quoteReportsTable.ajax.json().sums;
+     $(this).find('tfoot').addClass('bold');
+     // $(this).find('tfoot td').eq(0).html("<?php echo _l('invoice_total'); ?>");
+     $(this).find('tfoot td.subtotalquotes').html('<div style="text-align:right">'+sums.contracts +'</div>');
+     
+     // $(this).find('tfoot td.adjustment').html(sums.adjustment);
+     // $(this).find('tfoot td.amount_open').html(sums.amount_open);
+   });
+
    $('.table-invoices-report').on('draw.dt', function() {
      var invoiceReportsTable = $(this).DataTable();
      var sums = invoiceReportsTable.ajax.json().sums;
@@ -132,14 +180,16 @@
    report_customers_groups.addClass('hide');
    report_customers.addClass('hide');
    report_invoices.addClass('hide');
+   report_quotes.addClass('hide');
    report_estimates.addClass('hide');
    report_payments_received.addClass('hide');
+   report_tasks.addClass('hide');
+   report_contracts.addClass('hide');
    $('#income-years').addClass('hide');
    $('.chart-income').addClass('hide');
    $('.chart-payment-modes').addClass('hide');
    $('#proposals-reports').addClass('hide');
    report_from_choose.addClass('hide');
-
    $('select[name="months-report"]').selectpicker('val', '');
        // Clear custom date picker
        report_to.val('');
@@ -154,6 +204,12 @@
          date_range.addClass('hide');
        } else if (type == 'customers-report') {
          report_customers.removeClass('hide');
+       }else if (type == 'quotes-report') {
+         report_quotes.removeClass('hide');
+       }else if (type == 'tasks-report') {
+         report_tasks.removeClass('hide');
+       }else if (type == 'contracts-report') {
+         report_contracts.removeClass('hide');
        } else if (type == 'customers-group') {
          $('.customers-group-gen').removeClass('hide');
        } else if (type == 'invoices-report') {
@@ -236,10 +292,34 @@
    }
    // Generate customers report
    function customers_report() {
+
      if ($.fn.DataTable.isDataTable('.table-customers-report')) {
        $('.table-customers-report').DataTable().destroy();
      }
      initDataTable('.table-customers-report', admin_url + 'reports/customers_report', false, false, fnServerParams, [0, 'ASC']);
+   }
+
+   function quotes_report() {
+
+     if ($.fn.DataTable.isDataTable('.table-quotes-report')) {
+       $('.table-quotes-report').DataTable().destroy();
+     }
+     initDataTable('.table-quotes-report', admin_url + 'reports/quotes_report', false, false, fnServerParams, [0, 'ASC']);
+   }
+
+   function contracts_report() {
+     if ($.fn.DataTable.isDataTable('.table-contracts-report')) {
+       $('.table-contracts-report').DataTable().destroy();
+     }
+     // console.log(admin_url + 'reports/contracts_report)
+     initDataTable('.table-contracts-report', admin_url + 'reports/contracts_report', false, false, fnServerParams, [0, 'ASC']);
+   }
+
+    function tasks_report() {
+     if ($.fn.DataTable.isDataTable('.table-tasks-report')) {
+       $('.table-tasks-report').DataTable().destroy();
+     }
+     initDataTable('.table-tasks-report', admin_url + 'reports/tasks_report', false, false, fnServerParams, [0, 'ASC']);
    }
 
    function report_by_customer_groups() {
@@ -318,6 +398,12 @@
        report_by_payment_modes();
      } else if (!report_customers.hasClass('hide')) {
        customers_report();
+     } else if (!report_quotes.hasClass('hide')) {
+       quotes_report();
+     }else if (!report_tasks.hasClass('hide')) {
+       tasks_report();
+     }else if (!report_contracts.hasClass('hide')) {
+       contracts_report();
      } else if (!$('.customers-group-gen').hasClass('hide')) {
        report_by_customer_groups();
      } else if (!report_invoices.hasClass('hide')) {

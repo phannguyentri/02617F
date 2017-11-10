@@ -664,7 +664,7 @@ $lang['als_all_tickets'] = 'Tất Cả Vé Hỗ Trợ';
 $lang['als_sales']       = 'Bán Hàng';
 
 $lang['als_staff'] = 'Nhân Viên';
-$lang['als_tasks'] = 'Nhiệm Vụ';
+$lang['als_tasks'] = 'Giao dịch';
 $lang['als_kb']    = 'Kiến Thức Cơ Bản';
 
 $lang['als_surveys']               = 'Khảo sát';
@@ -864,10 +864,10 @@ $lang['survey_text_questions_results'] = 'Kết quả câu hỏi bằng văn b�
 $lang['survey_view_all_answers']       = 'Xem tất cả các câu trả lời';
 
 # Staff Tasks
-$lang['new_task']       = 'Nhiệm vụ mới';
-$lang['tasks']          = 'Nhiệm vụ';
-$lang['task']           = 'Nhiệm vụ';
-$lang['task_lowercase'] = 'nhiệm vụ';
+$lang['new_task']       = 'Giao dịch mới';
+$lang['tasks']          = 'Giao dịch';
+$lang['task']           = 'Giao dịch';
+$lang['task_lowercase'] = 'giao dịch';
 $lang['comment_string'] = 'Bình luận';
 
 $lang['task_marked_as_complete'] = 'Công việc được đánh dấu là hoàn thành';
@@ -2894,7 +2894,7 @@ $lang['project_activity_recorded_expense'] = 'Ghi lại chi phí';
 $lang['save_customer_and_add_contact'] = 'Lưu và tạo địa chỉ liên hệ';
 $lang['tickets_chart_weekly_opening_stats'] = 'Thống kê Hàng tuần';
 $lang['related_knowledgebase_articles'] = 'Những bài viết liên quan';
-$lang['detailed_overview'] = 'Tổng quan về Nhiệm vụ';
+$lang['detailed_overview'] = 'Tổng quan về giao dịch';
 $lang['tasks_total_checklists_finished'] = 'Tổng số mục kiểm tra được đánh dấu là đã hoàn tất';
 $lang['tasks_total_added_attachments'] = 'Tổng số tệp đính kèm đã được thêm';
 $lang['tasks_total_comments'] = 'Tổng số nhận xét';
@@ -3017,7 +3017,7 @@ $lang['do_not_redirect_payment'] = 'Không chuyển hướng tôi đến bộ x�
 $lang['project_tickets'] = 'Tickets';
 $lang['invoice_report'] = 'Báo cáo hoá đơn';
 $lang['payment_modes_report'] = 'Phương thức thanh toán (Giao dịch)';
-$lang['customer_admins'] = 'Quản trị viên Khách hàng';
+$lang['customer_admins'] = 'Phụ trách khách hàng';
 $lang['assign_admin'] = 'Chỉ định quản trị viên';
 $lang['customer_admin_date_assigned'] = 'Ngày Được Chỉ định';
 $lang['customer_admin_login_as_client_message'] = 'Xin chào% s. Bạn được thêm làm quản trị viên cho khách hàng này.';
@@ -3657,7 +3657,7 @@ $lang['als_import_goods'] = "Nhập hàng";
 $lang['utilities_menu_name'] = "Tên menu";
 $lang['als_imp_contracts'] = "Hợp đồng mua";
 $lang['als_imp_transfers'] = "Chuyển kho";
-$lang['als_imp_adjustments'] = "Điều chỉnh kho";
+$lang['als_imp_adjustments'] = "Nhập kho";
 $lang['als_imp_internals'] = "Nội địa";
 $lang['als_imp_returns'] = "Hàng trả về";
 $lang['als_quotation'] = "Bảng báo giá";
@@ -3671,10 +3671,10 @@ $lang['warehouse_type'] = "Loại kho";
 $lang['warehouse_name'] = "Kho hàng";
 $lang['item_name'] = "Sản phẩm";
 $lang['supplier_profile_details'] = "Chi tiết nhà cung cấp";
-$lang['import_name'] = "Tên phiếu điều chỉnh";
-$lang['adjustments'] = "Phiếu điều chỉnh kho";
+$lang['import_name'] = "Tên phiếu nhập";
+$lang['adjustments'] = "Phiếu nhập kho";
 $lang['internals'] = "Phiếu nhập kho nội địa";
-$lang['adjustment_code'] = "Mã phiếu điều chỉnh";
+$lang['adjustment_code'] = "Mã phiếu nhập";
 $lang['settings_sales_faxnumber'] = "Số fax";
 $lang['address'] = "Địa chỉ";
 $lang['vat_no'] = "Mã số thuế";
@@ -3858,7 +3858,121 @@ $lang['converted_contract'] = "Hóa đơn đã tạo đơn đặt hàng";
 $lang['company_bank_account'] = "Số tài khoản: ";
 $lang['print_delivery'] = "In phiếu giao hàng";
 
+$lang['highV'] = "Cao";
+$lang['mediumV'] = "Vừa";
+$lang['lowV'] = "Thấp";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$lang['_email_marketing']="Tài khoản gửi email";
+$lang['password_email_marketing']="Mật khẩu email";
+$lang['tb']="Thông báo";
+$lang['null_email']="Email để gửi của hệ thống và email của tài khoản đang đăng nhập null.. vui lòng cập nhật tài khoản email của tài khoản hoặc của hệ thống";
+$lang['used_email_user']="Đang sử dụng email của tài khoản để gửi email";
+$lang['used_email_setting']="Đang sử dụng email hệ thống để gửi email";
+$lang['tb']="Thông báo";
+$lang['als_email_marketing']="Email marketing";
+$lang['information_log_email']="Thông tin lịch sử email đã gửi";
+$lang['count_group_email']="Tổng số đợt gửi email";
+$lang['count_email']="Tổng số email đã gửi";
+$lang['count_email_view']="Tổng số email được xem";
+$lang['send_email_client']="Gửi email cho khách hàng";
+$lang['find_email_not_null']="Không tìm thấy email gửi đến";
+$lang['subject_not_null']="Vui lòng nhập chủ đề";
+$lang['email_content']="Nội dung email";
+$lang['not_find_email_campaign']="Không tìm thấy email trong chiến dịch để gửi email";
+
+
+$lang['tblclients.code']="Mã nhân viên";
+$lang['tblclients.title']="Danh xưng";
+$lang['tblclients.company']="Tên";
+$lang['tblclients.short_name']="Tên ngắn gọn";
+$lang['tblclients.phonenumber']="Số điện thoại";
+
+$lang['tblclients.mobilephone_number']="Số điện thoại di động";
+$lang['tblclients.address_room_number']="Số phòng";
+$lang['tblclients.address_building']="Tòa nhà";
+$lang['tblclients.address_home_number']="Số nhà";
+$lang['tblclients.address']="Đường";
+$lang['tblclients.address_town']="Khu phố/thôn/ấp";
+$lang['tblclients.country']="Quốc gia";
+$lang['tblclients.address_area']="Khu vực";
+$lang['tblclients.city']="Thành phố";
+$lang['tblclients.state']="Quận/huyện";
+$lang['tblclients.address_ward']="Phường/xã/thị trấn";
+$lang['tblclients.fax']="Fax";
+$lang['tblclients.email']="Email";
+$lang['tblclients.id_card']="Số chứng minh nhân dân";
+$lang['tblclients.vat']="Mã số thuế";
+$lang['tblclients.birthday']="Ngày sinh";
+$lang['tblclients.source_approach']="Nguồn tiếp cận";
+$lang['tblclients.user_referrer']="Nguồn giới thiệu";
+$lang['tblclients.default_currency']="Tiền tệ";
+$lang['tblclients.debt']="Công nợ";
+$lang['tblclients.shipping_area']="Khu vực";
+$lang['tblclients.shipping_country']="Quốc gia";
+$lang['tblclients.shipping_city']="Thành phố";
+$lang['tblclients.shipping_state']="shipping_state";
+$lang['tblclients.shipping_ward']="Phường/xã/thị trấn";
+$lang['tblclients.shipping_room_number']="Số phòng";
+$lang['tblclients.shipping_building']="Tòa nhà";
+$lang['tblclients.shipping_home_number']="Số nhà";
+$lang['tblclients.shipping_street']="Địa chỉ";
+$lang['tblclients.shipping_town']="Khu phố/thôn/ấp";
+$lang['tblclients.shipping_zip']="Mã bưu chính";
+
+
+$lang['tblclients.type_of_organization']="Loại hình tổ chức";
+$lang['tblclients.bussiness_registration_number']="Số ĐKKD";
+$lang['tblclients.legal_representative']="Đại diện pháp luật";
+$lang['tblclients.website']="Website";
+$lang['tblclients.business']="Lĩnh vực kinh doanh";
+$lang['tblclients.cooperative_day']="Ngày hợp tác";
+
+$lang['tblstaff.staff_code']="Mã nhân viên";
+$lang['tblstaff.fullname']="Tên nhân viên";
+$lang['tblstaff.email']="Email";
+$lang['___email_marketing']="Gửi email";
+$lang['been_send_email']="Email đã gửi";
+$lang['template_mail']="Mẩu email";
+
+
+
+
+$lang['receipts_add_heading']="Thêm phiếu thu";
+$lang['code_vouchers_receipts']="Số phiếu thu";
+$lang['_receiver']="Người nhận";
+$lang['date_create']="Ngày tạo";
+$lang['reason']="Lý do";
+$lang['total']="Tổng tiền";
+$lang['staff_browse']="Duyệt bởi";
+$lang['staff_create']="Người tạo";
+
+
+$lang['COIL']  = 'Thu thập thông tin';
+$lang['CORE']  = 'Giới thiệu, tư vấn';
+$lang['SURV']  = 'Khảo sát';
+$lang['QUOT']  = 'Báo giá';
+$lang['NEGO']  = 'Đàm phán';
+$lang['TCK']  = 'Chăm sóc';
+$lang['DELI']  = 'Giao hàng';
+$lang['PAY']  = 'Thanh toán';
+$lang['direct']  = 'Gặp trực tiếp';
+$lang['phone']  = 'Gọi điện';
+$lang['email']  = 'Email';
+$lang['mess']  = 'Chát';
 
 
 

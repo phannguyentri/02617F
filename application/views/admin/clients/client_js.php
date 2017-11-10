@@ -4,32 +4,9 @@
  */
 ?>
 <script>
- Dropzone.options.clientAttachmentsUpload = false;
+  
  var customer_id = $('input[name="userid"]').val();
- if ($('#client-attachments-upload').length > 0) {
-   new Dropzone('#client-attachments-upload', {
-     paramName: "file",
-     dictDefaultMessage:drop_files_here_to_upload,
-     dictFallbackMessage:browser_not_support_drag_and_drop,
-     dictRemoveFile:remove_file,
-     dictFileTooBig: file_exceds_maxfile_size_in_form,
-     dictMaxFilesExceeded:you_can_not_upload_any_more_files,
-     maxFilesize: max_php_ini_upload_size.replace(/\D/g, ''),
-     addRemoveLinks: false,
-     accept: function(file, done) {
-       done();
-     },
-     acceptedFiles: allowed_files,
-     error: function(file, response) {
-       alert_float('danger', response);
-     },
-     success: function(file, response) {
-      if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-        window.location.reload();
-      }
-    }
-  });
- }
+
  $(function() {
 
    $('a[href="#contacts"],a[href="#customer_admins"]').on('click', function() {
@@ -99,16 +76,19 @@
  if(_table_api){
   _table_api.column(5).visible(false,false).columns.adjust();
 }
-/* Custome profile contacts table */
-var not_sortable_contracts = $('.table-contracts-single-client').find('th').length -1;
-_table_api = initDataTable('.table-contracts-single-client', admin_url + 'contracts/index/' + customer_id, [not_sortable_contracts], [not_sortable_contracts], 'undefined', [3, 'DESC']);
-if(_table_api){
-  _table_api.column(2).visible(false,false).columns.adjust();
-}
 
-/* Custome profile contacts table */
-var not_sortable_contacts = $('.table-contacts').find('th').length -1;
-initDataTable('.table-contacts', admin_url + 'clients/contacts/' + customer_id, [not_sortable_contacts], [not_sortable_contacts]);
+
+// /* Custome profile contacts table */
+// var not_sortable_contracts = $('.table-contracts-single-client').find('th').length -1;
+// _table_api = initDataTable('.table-contracts-single-client', admin_url + 'contracts/index/' + customer_id, [not_sortable_contracts], [not_sortable_contracts], 'undefined', [3, 'DESC']);
+// if(_table_api){
+//   _table_api.column(2).visible(false,false).columns.adjust();
+// }
+
+// /* Custome profile contacts table */
+// var not_sortable_contacts = $('.table-contacts').find('th').length -1;
+// initDataTable('.table-contacts', admin_url + 'clients/contacts/' + customer_id, [not_sortable_contacts], [not_sortable_contacts]);
+
 /* Custome profile invoices table */
 _table_api = initDataTable('.table-invoices-single-client', admin_url + 'invoices/list_invoices/false/' + customer_id, 'undefined', 'undefined', 'undefined', [
  [3, 'DESC'],
@@ -128,14 +108,14 @@ if (_table_api) {
  _table_api.column(3).visible(false, false).column(4).visible(false, false).columns.adjust();
 }
 
-/* Custome profile payments table */
-_table_api = initDataTable('.table-payments-single-client', admin_url + 'payments/list_payments/' + customer_id, [7], [7], 'undefined', [6, 'DESC']);
-if(_table_api){
-  _table_api.column(4).visible(false, false).columns.adjust();
-}
+// /* Custome profile payments table */
+// _table_api = initDataTable('.table-payments-single-client', admin_url + 'payments/list_payments/' + customer_id, [7], [7], 'undefined', [6, 'DESC']);
+// if(_table_api){
+//   _table_api.column(4).visible(false, false).columns.adjust();
+// }
 
-/* Custome profile reminders table */
-initDataTable('.table-reminders', admin_url + 'misc/get_reminders/' + customer_id + '/' + 'customer', [4], [4]);
+// /* Custome profile reminders table */
+// initDataTable('.table-reminders', admin_url + 'misc/get_reminders/' + customer_id + '/' + 'customer', [4], [4]);
 
 /* Custome profile expenses table */
 _table_api = initDataTable('.table-expenses-single-client', admin_url + 'expenses/list_expenses/false/' + customer_id, 'undefined', 'undefined', 'undefined', [5, 'DESC']);

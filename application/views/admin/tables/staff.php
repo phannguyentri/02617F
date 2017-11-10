@@ -72,6 +72,8 @@ foreach ($rResult as $aRow) {
 
             // For exporting
             $_data .= '<span class="hide">' . ($checked == 'checked' ? _l('is_active_export') : _l('is_not_active_export')) . '</span>';
+        }else if ($aColumns[$i] == 'date_birth') {
+            $_data = _d($aRow['date_birth']);
         } else if ($aColumns[$i] == 'firstname') {
             $_data = '<a href="' . admin_url('staff/profile/' . $aRow['staffid']) . '">' . staff_profile_image($aRow['staffid'], array(
                 'staff-profile-image-small'

@@ -70,7 +70,7 @@
 <?php } ?>
 
 <?php $value = (isset($member) ? $member->staff_code : get_option('prefix_staff').$maxid) ?>
-<?php $attrs = array('readonly'=>true); ?>
+<?php //$attrs = array('readonly'=>true); ?>
 <?php echo render_input('staff_code','Mã nhân viên',$value,'text',$attrs); ?>
 
 <?php $value = (isset($member) ? $member->fullname : ''); ?>
@@ -126,6 +126,10 @@ $selected=(isset($member) ? $member->gender : '');
 
 <?php $value = (isset($member) ?$member->hobbies : ''); ?>
 <?php echo render_input('hobbies','Sở thích',$value); ?>
+<?php $value = (isset($member) ? $member->email_marketing : ''); ?>
+<?php echo render_input('email_marketing','email_marketing',$value); ?>
+<?php $value = (isset($member) ? $member->password_email_marketing : ''); ?>
+<?php echo render_input('password_email_marketing','password_email_marketing',$value,'password'); ?>
 
 <div class="col-md-6">
   <div class="form-group">
@@ -358,6 +362,8 @@ $selected=(isset($member) ? $member->gender : '');
                  $is_admin = is_admin($member->staffid);
                }
                $conditions = get_permission_conditions();
+
+                
                foreach($permissions as $permission){
                  $permission_condition = $conditions[$permission['shortname']];
                  ?>

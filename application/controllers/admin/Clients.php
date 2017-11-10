@@ -24,7 +24,6 @@ class Clients extends Admin_controller
         $data['contract_types'] = $this->contracts_model->get_contract_types();
         $data['groups']         = $this->clients_model->get_groups();
         $data['title']          = _l('clients');
-
         $this->load->model('proposals_model');
         $data['proposal_statuses'] = $this->proposals_model->get_statuses();
 
@@ -34,12 +33,158 @@ class Clients extends Admin_controller
         $this->load->model('estimates_model');
         $data['estimate_statuses'] = $this->estimates_model->get_statuses();
 
+        $data['clients_iv'] = $this->clients_model->get();
         $this->load->model('projects_model');
         $data['project_statuses'] = $this->projects_model->get_project_statuses();
-
         $data['customer_admins'] = $this->clients_model->get_customers_admin_unique_ids();
-
+        
         $this->load->view('admin/clients/manage', $data);
+    }
+
+    public function quotes($client_id){
+        if ($this->input->is_ajax_request()) {
+            $this->perfex_base->get_table_data('quote_clients',array('client_id' => $client_id));
+        }
+        
+    }
+
+    function check_exists()
+    {
+
+        if ($this->input->post()) {
+            $company = $this->input->post('company');
+            $phonenumber = $this->input->post('phonenumber');
+
+            $clientid = $this->input->post('clientid');
+
+            if ($clientid != '') {
+                $this->db->where('userid', $clientid);
+                $_current = $this->db->get('tblclients')->row();
+
+                if ($company != '') {
+                    if ($_current->company == $company) {
+                        echo json_encode(true);
+                        die();
+                    }
+                }
+
+
+                if ($phonenumber != ''){
+                    if ($_current->phonenumber == $phonenumber) {
+                        echo json_encode(true);
+                        die();
+                    }
+                }
+            }
+
+
+            if ($company != '') {
+                $this->db->where('company', $company);
+            }    
+
+            if ($phonenumber != ''){
+                $this->db->where('phonenumber', $phonenumber);                
+            }       
+            $total_rows = $this->db->count_all_results('tblclients');
+            if ($total_rows > 0) {
+                echo json_encode(false);
+            } else {
+                echo json_encode(true);
+            }
+            die();
+        }
+    }
+
+
+
+    public  function exportexcel()
+    {
+        include APPPATH . 'third_party/PHPExcel/PHPExcel.php';
+        $this->load->library('PHPExcel');
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->getActiveSheet()->setTitle('tiêu đề');
+        $this->db->select('tblclients.*,tblcontacts.firstname as contact_firstname,tblcontacts.lastname as contact_lastname');
+        $this->db->join('tblcontacts','tblcontacts.userid=tblclients.userid','left');
+        $client=$this->db->get('tblclients')->result_array();
+        $BStyle = array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            ),
+            'font'  => array(
+                'bold'  => true,
+                'color' => array('rgb' => '111112'),
+                'size'  => 11,
+                'name'  => 'Times New Roman'
+            )
+        );
+        $objPHPExcel->getActiveSheet()->setCellValue('A2','STT')->getStyle('A2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('B2','MÃ KH')->getStyle('B2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('C2','Công ty')->getStyle('C2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('D3','Điện thoại')->getStyle('D3')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('E2','% CHIẾT KHẤU')->getStyle('E2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('F2','Liên hệ chính')->getStyle('F2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('G2','Email chính')->getStyle('G2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('H2','Địa chỉ')->getStyle('H2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('I2','Mã Nhân viên')->getStyle('I2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('J2','Hoạt động')->getStyle('J2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('K2','NHÓM KH')->getStyle('K2')->applyFromArray($BStyle);
+
+        foreach($client as $rom=>$value)
+        {
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.($rom+3),($rom+1));
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.($rom+3),$value['userid']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.($rom+3),$value['company']);
+            $objPHPExcel->getActiveSheet()->setCellValueExplicit('D'.($rom+3),$value['phonenumber']);
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.($rom+3),'chiết khấu');
+            $objPHPExcel->getActiveSheet()->setCellValue('F'.($rom+3),$value['contact_firstname'].' '.$value['contact_lastname']);
+            $objPHPExcel->getActiveSheet()->setCellValue('G'.($rom+3),$value['email']);
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.($rom+3),$value['address']);
+
+            $code_staff="";
+            $this->db->select('staff_code');
+            $this->db->join('tblstaff','tblstaff.staffid=tblcustomeradmins.staff_id')->where('tblcustomeradmins.customer_id',$value['userid']);
+            $codestaff=$this->db->get('tblcustomeradmins')->result_array();
+            foreach($codestaff as $code)
+            {
+                $code_staff.=$code['staff_code'];
+            }
+
+
+            $objPHPExcel->getActiveSheet()->setCellValue('I'.($rom+3),$code_staff);
+            if($value['active']==1)
+            {
+                $active='Có';
+            }
+            else
+            {
+                $active="Không";
+            }
+            $objPHPExcel->getActiveSheet()->setCellValue('J'.($rom+3),$active);
+
+            $this->db->select('tblcustomersgroups.name as namegroup');
+            $this->db->where('tblcustomergroups_in.customer_id',$value['userid']);
+            $this->db->join('tblcustomersgroups','tblcustomersgroups.id=tblcustomergroups_in.groupid');
+            $group=$this->db->get('tblcustomergroups_in')->result_array();
+            $group_clients="";
+            foreach($group as $group_name)
+            {
+                $group_clients.=$group_name['namegroup'].' ';
+            }
+
+            $objPHPExcel->getActiveSheet()->setCellValue('K'.($rom+3),$group_clients);
+        }
+        $objPHPExcel->getActiveSheet()->freezePane('A4');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="filexuat.xls"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter->save('php://output');
+        exit();
+
+
     }
     public function get_wards($district_id) {
         if(is_numeric($district_id) && $this->input->is_ajax_request()) {
@@ -64,7 +209,12 @@ class Clients extends Admin_controller
                 access_denied('customers');
             }
         }
-        if ($this->input->post() && !$this->input->is_ajax_request()) {
+        
+
+         $reminder_data = '';
+         // $this->input->is_ajax_request()
+        if ($this->input->post()) {
+
             if ($id == '') {
                 if (!has_permission('customers', '', 'create')) {
                     access_denied('customers');
@@ -84,9 +234,9 @@ class Clients extends Admin_controller
                 if ($id) {
                     set_alert('success', _l('added_successfuly', _l('client')));
                     if ($save_and_add_contact == false) {
-                        redirect(admin_url('clients/client/' . $id));
+                        redirect(admin_url('clients/'));
                     } else {
-                        redirect(admin_url('clients/client/' . $id . '?new_contact=true'));
+                        redirect(admin_url('clients/'));
                     }
                 }
             } else {
@@ -97,9 +247,18 @@ class Clients extends Admin_controller
                 }
                 $success = $this->clients_model->update($this->input->post(), $id);
                 if ($success == true) {
-                    set_alert('success', _l('updated_successfuly', _l('client')));
+                    $alert_type = 'success';
+                    $message    = _l('updated_successfuly', _l('client'));
+                }else
+                {
+                    $alert_type = 'danger';
+                    $message    = _l('Cập nhật thất bại', _l('quote'));
                 }
-                redirect(admin_url('clients/client/' . $id));
+                exit(json_encode(array(
+                    'alert_type' => $alert_type,
+                    'success' => $success,
+                    'message' => $message,
+                )));
             }
         }
         if ($id == '') {
@@ -164,7 +323,6 @@ class Clients extends Admin_controller
         $data['sources']  = $this->clients_model->get_source();
         $data['areas']  = $this->clients_model->get_area();
         $data['title'] = $title;
-        $this->load->view('admin/clients/client', $data);
     }
     public function modal($id = '') {
         if (!has_permission('customers', '', 'view')) {
@@ -178,18 +336,39 @@ class Clients extends Admin_controller
                 blank_page('Client Not Found');
             }
             $data['customer_groups'] = $this->clients_model->get_customer_groups($id);
+            $data['customer_groups_name'] = $this->clients_model->get_customer_groups_name($id);
             $this->load->model('currencies_model');
             $data['currencies'] = $this->currencies_model->get();
+            $data['group']  = $group;
             $data['groups'] = $this->clients_model->get_groups();
             $data['users'] = $this->clients_model->get();
             $data['sources']  = $this->clients_model->get_source();
             $data['areas']  = $this->clients_model->get_area();
             $data['client'] = $client;
+            $data['customer_admins'] = $this->clients_model->get_admins($id);
+            $this->load->model('payment_modes_model');
+            $data['payment_modes'] = $this->payment_modes_model->get();
+            $this->load->model('staff_model');          
+            $data['members'] = $this->staff_model->get('', 1);
+            $data['attachments']   = $this->clients_model->get_all_customer_attachments($id);
+            $data['staff']           = $this->staff_model->get('', 1);
+            $data['city'] = $this->clients_model->get_province($client->city);
+            $data['stateid'] = $this->clients_model->get_district_by_country_id($client->city);
+            $data['stateid1'] = $this->clients_model->get_district_by_country_id($client->shipping_city);
+            $data['city1'] = $this->clients_model->get_province($client->shipping_city);
+            $data['state'] = $this->clients_model->get_district($client->state);
+            $data['state1'] = $this->clients_model->get_district($client->shipping_state);
+            $data['user_notes'] = $this->misc_model->get_notes($id, 'customer');
         }
+
+        $data['groups'] = $this->clients_model->get_groups();
+
         echo json_encode(array(
             'data' => $this->load->view('admin/clients/modals/client', $data, TRUE),
         ));
     }
+
+
     public function contact($customer_id, $contact_id = '')
     {
         if (!has_permission('customers', '', 'view')) {
@@ -393,10 +572,16 @@ class Clients extends Admin_controller
         }
         $success = $this->clients_model->assign_admins($this->input->post(), $id);
         if ($success == true) {
-            set_alert('success', _l('updated_successfuly', _l('client')));
+             if ($success) {
+                $alert_type = 'success';
+                $message    = _l('Thêm thành công');
+            }
         }
 
-        redirect(admin_url('clients/client/' . $id . '?tab=customer_admins'));
+        echo json_encode(array(
+            'alert_type' => $alert_type,
+            'message' => $message
+        ));
 
     }
 
@@ -409,18 +594,30 @@ class Clients extends Admin_controller
         $this->db->where('customer_id',$customer_id);
         $this->db->where('staff_id',$staff_id);
         $this->db->delete('tblcustomeradmins');
-        redirect(admin_url('clients/client/'.$customer_id).'?tab=customer_admins');
+        redirect(admin_url('clients/'));
     }
     public function delete_contact($customer_id, $id)
     {
+
+
         if (!has_permission('customers', '', 'delete')) {
             if (!is_customer_admin($customer_id)) {
                 access_denied('customers');
             }
         }
 
-        $this->clients_model->delete_contact($id);
-        redirect(admin_url('clients/client/' . $customer_id . '?tab=contacts'));
+        $idd = $this->clients_model->delete_contact($id);
+
+        if ($idd) {            
+            $success = true;
+            $message = _l('Xóa thành công', _l('contact'));
+        }
+
+        echo json_encode(array(
+            'success' => $success,
+            'message' => $message
+        ));
+        
     }
     public function contacts($client_id)
     {
@@ -430,7 +627,20 @@ class Clients extends Admin_controller
     }
     public function upload_attachment($id)
     {
-        handle_client_attachments_upload($id);
+        if(handle_client_attachments_upload($id) ){
+            $success = true;
+            $alert_type = 'success';
+            $message    = _l('Tải lên thành công', _l('client'));
+        }else{
+            $success = false;
+            $alert_type = 'danger';
+            $message    = _l('Tải lên thất bại', _l('client'));
+        }
+        echo json_encode(array(
+            'alert_type' => $alert_type,
+            'success' => $success,
+            'message' => $message
+        ));
     }
     public function add_external_attachment()
     {
@@ -438,13 +648,29 @@ class Clients extends Admin_controller
             $this->misc_model->add_attachment_to_database($this->input->post('clientid'), 'customer', $this->input->post('files'), $this->input->post('external'));
         }
     }
+    
     public function delete_attachment($customer_id, $id)
     {
         if (has_permission('customers', '', 'delete') || is_customer_admin($customer_id)) {
-            $this->clients_model->delete_attachment($id);
+        if($this->clients_model->delete_attachment($id)){
+            $success = true;
+            $alert_type = 'success';
+            $message    = _l('Xóa thành công');
+        }else{
+            $success = false;
+            $alert_type = 'danger';
+            $message    = _l('Xóa thất bại');
         }
-        redirect($_SERVER['HTTP_REFERER']);
+           
+        }
+        echo json_encode(array(
+            'alert_type' => $alert_type,
+            'success' => $success,
+            'message' => $message
+        ));
     }
+
+
     /* Delete client */
     public function delete($id)
     {
@@ -662,7 +888,7 @@ class Clients extends Admin_controller
         }
         if (count($payments) == 0) {
             set_alert('warning', _l('client_zip_no_data_found', _l('payments')));
-            redirect(admin_url('clients/client/' . $id . '?group=payments'));
+            redirect(admin_url('clients/'));
         }
         mkdir($dir, 0777);
         $this->load->model('payments_model');

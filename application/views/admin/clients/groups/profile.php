@@ -283,6 +283,8 @@
 </div>
 </div>
 <?php if(isset($client)){ ?>
+
+
 <div role="tabpanel" class="tab-pane" id="contacts">
     <?php if(has_permission('customers','','create') || is_customer_admin($client->userid)){
         $disable_new_contacts = false;
@@ -303,6 +305,9 @@
    array_push($table_data,_l('options'));
    echo render_datatable($table_data,'contacts'); ?>
 </div>
+
+
+
 <div role="tabpanel" class="tab-pane" id="customer_admins">
     <?php if (has_permission('customers', '', 'create') || has_permission('customers', '', 'edit')) { ?>
     <a href="#" data-toggle="modal" data-target="#customer_admins_assign" class="btn btn-info mbot30"><?php echo _l('assign_admin'); ?></a>

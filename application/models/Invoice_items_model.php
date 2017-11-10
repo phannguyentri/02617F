@@ -27,9 +27,10 @@ class Invoice_items_model extends CRM_Model
 
     public function get_full($id = '')
     {
-        $this->db->select('tblitems.*,tblunits.unit as unit_name,tbltaxes.name as tax_name, tbltaxes.taxrate as taxrate
+        $this->db->select('tblitems.*,tblunits.unit as unit_name,tbltaxes.name as tax_name, tbltaxes.taxrate as taxrate, tblcategories.category
             ');
         $this->db->from('tblitems');
+        $this->db->join('tblcategories', 'tblcategories.id=tblitems.category_id', 'left');
         $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
         $this->db->join('tbltaxes','tbltaxes.id=tblitems.tax','left');
         $this->db->order_by('tblitems.id', 'desc');
@@ -41,6 +42,12 @@ class Invoice_items_model extends CRM_Model
             return $item;
         }
         
+        return $this->db->get()->result_array();
+    }
+
+    public function getProductsByCateID($id){
+        $this->db->where('tblitems.category_id',$id);
+        $this->db->from('tblitems');
         return $this->db->get()->result_array();
     }
     public function get_category_parent_id($id_category, &$array) {

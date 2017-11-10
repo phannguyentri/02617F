@@ -232,15 +232,19 @@ $top_search_area = ob_get_contents();
 ob_end_clean();
 ?>
 <div id="header">
-    <div class="hide-menu"><i class="fa fa-bars"></i></div>
+    <?php if(rtrim(admin_url(), "/") != current_url()){ ?>
+      <div class="hide-menu"><i class="fa fa-bars"></i></div>
+       <?php } ?>   
     <div id="logo">
         <?php get_company_logo('admin') ?>
     </div>
+  
     <nav>
         <div class="small-logo">
             <span class="text-primary">
                 <?php get_company_logo('admin') ?>
             </span>
+
         </div>
         <div class="mobile-menu">
             <button type="button" class="navbar-toggle visible-md visible-sm visible-xs mobile-menu-toggle collapsed" data-toggle="collapse" data-target="#mobile-collapse" aria-expanded="false">

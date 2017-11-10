@@ -62,7 +62,6 @@ class Staff extends Admin_controller
                     }
                 }
                 $response = $this->staff_model->update($data, $id);
-
                 if(is_array($response)){
                     if(isset($response['cant_remove_main_admin'])){
                         set_alert('warning', _l('staff_cant_remove_main_admin'));
@@ -73,7 +72,7 @@ class Staff extends Admin_controller
                 } elseif ($response == true) {
                    set_alert('success', _l('updated_successfuly', _l('staff_member')));
                }
-               redirect(admin_url('staff'));
+               redirect(admin_url('staff/member/' . $id));
             }
         }
         if ($id == '') {
@@ -316,5 +315,94 @@ class Staff extends Admin_controller
             echo json_encode($this->misc_model->get_all_user_notifications($this->input->post('page')));
             die;
         }
+    }
+    public function exportexcel_staff()
+    {
+        $this->db->select('tblstaff.*,tblroles.name as role_name,tblrule.name as rule_name');
+        $this->db->join('tblrule','tblrule.id=tblstaff.rule','left');
+        $this->db->join('tblroles','tblroles.roleid=tblstaff.role','left');
+        $staffs=$this->db->get('tblstaff')->result_array();
+        include APPPATH . 'third_party/PHPExcel/PHPExcel.php';
+        $this->load->library('PHPExcel');
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->getActiveSheet()->setTitle('tiêu đề');
+        $colum_array=array('I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+        $BStyle = array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            ),
+            'font'  => array(
+                'bold'  => true,
+                'color' => array('rgb' => '111112'),
+                'size'  => 11,
+                'name'  => 'Times New Roman'
+            )
+        );
+        for($row = 1; $row <= 100; $row++)
+        {
+            $styleArray = [
+                'font' => [
+                    'size' => 12
+                ]
+            ];
+            $objPHPExcel->getActiveSheet()
+                ->getStyle("A1:N1")
+                ->applyFromArray($styleArray);
+            $objPHPExcel->getActiveSheet()->SetCellValue('A1','CÔNG TY TNHH DUDOFF VIỆT NAM');
+            $objPHPExcel->getActiveSheet()->getStyle()->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(100);
+            $objPHPExcel->getActiveSheet()->mergeCells('A1:N1');
+        }
+        $objPHPExcel->getActiveSheet()->setCellValue('A2','STT')->getStyle('A2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('B2','ẢNH ĐẠI DIỆN')->getStyle('B2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('C2','BỘ PHẬN')->getStyle('C2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('D2','HỌ VÀ TÊN')->getStyle('D2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('E2','EMAIL')->getStyle('E2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('F2','CMND')->getStyle('F2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('G2','ĐIỆN THOẠI')->getStyle('F2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('H2','NGÀY SINH')->getStyle('F2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('I2','CHỔ Ở HIỆN TẠI')->getStyle('F2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('J2','LIÊN HỆ KHẨN CẤP')->getStyle('F2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('K2','LẦN ĐĂNG NHẬP CUỐI CÙNG')->getStyle('F2')->applyFromArray($BStyle);
+        $objPHPExcel->getActiveSheet()->setCellValue('L2','HOẠT ĐỘNG')->getStyle('F2')->applyFromArray($BStyle);
+
+        foreach($staffs as $rom => $staff)
+        {
+            $objPHPExcel->getActiveSheet()->setCellValue('A'.($rom+3),($rom+1));
+            $objPHPExcel->getActiveSheet()->setCellValue('B'.($rom+3),$staff['profile_image']);
+            $objPHPExcel->getActiveSheet()->setCellValue('C'.($rom+3),$staff['role_name']);
+            $objPHPExcel->getActiveSheet()->setCellValueExplicit('D'.($rom+3),$staff['fullname']);
+            $objPHPExcel->getActiveSheet()->setCellValue('E'.($rom+3),$staff['email']);
+            $objPHPExcel->getActiveSheet()->setCellValueExplicit('F'.($rom+3),$staff['passport_id']);
+            $objPHPExcel->getActiveSheet()->setCellValueExplicit('G'.($rom+3),$staff['phonenumber']);
+            $objPHPExcel->getActiveSheet()->setCellValue('H'.($rom+3),$staff['date_birth']);
+            $objPHPExcel->getActiveSheet()->setCellValue('I'.($rom+3),$staff['current_address']);
+            $objPHPExcel->getActiveSheet()->setCellValue('J'.($rom+3),$staff['emergency_contact']);
+            if ($staff['last_login']!= NULL) {
+                $_data = time_ago($staff['last_login']);
+            } else {
+                $_data = 'Never';
+            }
+            $objPHPExcel->getActiveSheet()->setCellValue('K'.($rom+3),$_data);
+            $active='Không';
+            if($staff['active']==1)
+            {
+                $active="Có";
+            }
+            $objPHPExcel->getActiveSheet()->setCellValue('L'.($rom+3),$active);
+
+        }
+        $objPHPExcel->getActiveSheet()->freezePane('A4');
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="filexuat.xls"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter->save('php://output');
+        exit();
+
+
     }
 }
