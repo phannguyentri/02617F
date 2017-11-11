@@ -33,6 +33,11 @@
                         <?php echo _l('Sản phẩm'); ?>
                         </a>
                      </li>
+                     <li role="presentation">
+                        <a href="#tab_detail" aria-controls="tab_detail" role="tab" data-toggle="tab">
+                        <?php echo _l('Chi tiết hợp đồng'); ?>
+                        </a>
+                     </li>
                   </ul>
                   <div role="tabpanel" class="tab-pane active" id="tab_info">
                      <div class="form-group hidden">
@@ -442,200 +447,197 @@
                         <!-- End Customize from invoice -->
                      </div>
                   </div>
+                  <div role="tabpanel" class="tab-pane" id="tab_detail">
+                     <?php if(isset($contract)) { ?>
+                     <div class="col-md-12 right-column" >
+                        <div class="panel_s">
+                           <div class="panel-body">
+                              <h4 class="bold no-margin font-medium"><?php echo _l('contract_edit_overview'); ?></h4>
+                              <hr />
+                              <?php if($contract->trash > 0){
+                                 echo '<div class="ribbon default"><span>'._l('contract_trash').'</span></div>';
+                                 } ?>
+                              <ul class="nav nav-tabs" role="tablist">
+                                 <li role="presentation" class="active">
+                                    <a href="#tab_content" aria-controls="tab_content" role="tab" data-toggle="tab">
+                                    <?php echo _l('contract_content'); ?>
+                                    </a>
+                                 </li>
+                                 <li role="presentation">
+                                    <a href="#tab_attachments" aria-controls="tab_attachments" role="tab" data-toggle="tab">
+                                    <?php echo _l('contract_attachments'); ?>
+                                    </a>
+                                 </li>
+                                 <li role="presentation">
+                                    <a href="#tab_renewals" aria-controls="tab_renewals" role="tab" data-toggle="tab">
+                                    <?php echo _l('no_contract_renewals_history_heading'); ?>
+                                    </a>
+                                 </li>
+                                 <!-- <li role="presentation">
+                                    <a href="#tab_tasks" aria-controls="tab_tasks" role="tab" data-toggle="tab">
+                                      <?php echo _l('tasks'); ?>
+                                    </a>
+                                    </li> -->
+                                 <li role="presentation">
+                                    <a href="#" onclick="contract_full_view(); return false;" data-toggle="tooltip" data-title="<?php echo _l('toggle_full_view'); ?>" class="toggle_view">
+                                    <i class="fa fa-expand"></i></a>
+                                 </li>
+                              </ul>
+                              <div class="tab-content">
+                                 <div role="tabpanel" class="tab-pane active" id="tab_content">
+                                    <div class="row">
+                                       <div class="col-md-12 text-right " style="padding-bottom: 10px;">
+                                          <div style="display: inline-block;">
+                                             <label>In có thuế</label>
+                                             <input type="radio" checked name="typecontract" value="yes" style="position: relative; top:3px;">
+
+                                             &nbsp|&nbsp
+
+                                             <label>In không thuế</label>
+                                             <input type="radio" name="typecontract" value="no" style="position: relative; top:3px;">
+
+                                          </div>
+                                       </div>
+                                       <div class="col-md-12 text-right _buttons">
+
+                                          <a href="<?php echo admin_url('contracts/pdf/'.$contract->id.'?print=true&'); ?>" target="_blank" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('print'); ?>" data-placement="bottom"><i class="fa fa-print"></i></a>
+                                          <a href="<?php echo admin_url('contracts/word/'.$item->id); ?>" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('Xem Word'); ?>" data-placement="bottom"><i class="fa fa-file-word-o"></i></a>
+                                          <a href="<?php echo admin_url('contracts/pdf/'.$contract->id); ?>" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('view_pdf'); ?>" data-placement="bottom"><i class="fa fa-file-pdf-o"></i></a>
+                                          <a href="#" class="btn btn-default mright5" data-target="#contract_send_to_client_modal" data-toggle="modal"><span class="btn-with-tooltip" data-toggle="tooltip" data-title="<?php echo _l('contract_send_to_email'); ?>" data-placement="bottom"><i class="fa fa-envelope"></i></span></a>
+                                       </div>
+                                       <div class="col-md-12">
+                                          <?php if(isset($contract_merge_fields)){ ?>
+                                          <p class="bold mtop10"><a href="#" onclick="slideToggle('.avilable_merge_fields'); return false;"><?php echo _l('available_merge_fields'); ?></a></p>
+                                          <div class=" avilable_merge_fields mtop15 hide">
+                                             <ul class="list-group">
+                                                <?php
+                                                   foreach($contract_merge_fields as $field){
+                                                    foreach($field as $f){
+                                                     echo '<li class="list-group-item"><b>'.$f['name'].'</b>  <a href="#" class="pull-right" onclick="insert_merge_field(this); return false">'.$f['key'].'</a></li>';
+                                                   }
+                                                   } ?>
+                                             </ul>
+                                          </div>
+                                          <?php } ?>
+                                       </div>
+                                    </div>
+                                    <hr />
+                                    <div class="editable tc-content" style="border:1px solid #f0f0f0;">
+                                       <?php if(empty($contract->content)){
+                                          echo '<span class="text-danger text-uppercase mtop15 editor-add-content-notice"> ' . _l('click_to_add_content') . '</span>';
+                                          } else {
+                                          echo $contract->content;
+                                          }
+                                          ?>
+                                    </div>
+                                 </div>
+
+                                 <div role="tabpanel" class="tab-pane" id="tab_attachments">
+                                    <?php echo form_open(admin_url('contracts/add_contract_attachment/'.$contract->id),array('id'=>'contract-attachments-form','class'=>'dropzone')); ?>
+                                    <?php echo form_close(); ?>
+                                    <div class="text-right mtop15">
+                                       <div id="dropbox-chooser"></div>
+                                    </div>
+                                    <div id="contract_attachments" class="mtop30">
+                                       <?php
+                                          $data = '<div class="row">';
+                                          foreach($contract->attachments as $attachment) {
+                                            $href_url = site_url('download/file/contract/'.$attachment['id']);
+                                            if(!empty($attachment['external'])){
+                                              $href_url = $attachment['external_link'];
+                                            }
+                                            $data .= '<div class="display-block contract-attachment-wrapper" style="padding:0px;">';
+                                            $data .= '<div class="col-md-10">';
+                                            $data .= '<div class="pull-left"><i class="'.get_mime_class($attachment['filetype']).'"></i></div>';
+                                            $data .= '<a href="'.$href_url.'">'.$attachment['file_name'].'</a>';
+                                            $data .= '<p class="text-muted">'.$attachment["filetype"].'</p>';
+                                            $data .= '</div>';
+                                            $data .= '<div class="col-md-2 text-right">';
+                                            if($attachment['staffid'] == get_staff_user_id() || is_admin()){
+                                             $data .= '<a href="#" class="text-danger" onclick="delete_contract_attachment(this,'.$attachment['id'].'); return false;"><i class="fa fa fa-times"></i></a>';
+                                           }
+                                           $data .= '</div>';
+                                           $data .= '<div class="clearfix"></div><hr/>';
+                                           $data .= '</div>';
+                                          }
+                                          $data .= '</div>';
+                                          echo $data;
+                                          ?>
+                                    </div>
+                                 </div>
+                                 <div role="tabpanel" class="tab-pane" id="tab_renewals">
+                                    <?php if(has_permission('contracts', '', 'create') || has_permission('contracts', '', 'edit')){ ?>
+                                    <div class="_buttons">
+                                       <a href="#" class="btn btn-default" data-toggle="modal" data-target="#renew_contract_modal">
+                                       <i class="fa fa-refresh"></i> <?php echo _l('contract_renew_heading'); ?>
+                                       </a>
+                                    </div>
+                                    <hr />
+                                    <?php } ?>
+                                    <div class="clearfix"></div>
+                                    <?php
+                                       if(count($contract_renewal_history) == 0){
+                                        echo _l('no_contract_renewals_found');
+                                       }
+                                       foreach($contract_renewal_history as $renewal){ ?>
+                                    <div class="display-block">
+                                       <div class="media-body">
+                                          <div class="display-block">
+                                             <?php
+                                                echo _l('contract_renewed_by',$renewal['renewed_by']);
+                                                ?>
+                                             <?php if($renewal['renewed_by_staff_id'] == get_staff_user_id() || is_admin()){ ?>
+                                             <a href="<?php echo admin_url('contracts/delete_renewal/'.$renewal['id'] . '/'.$renewal['contractid']); ?>" class="pull-right _delete text-danger"><i class="fa fa-remove"></i></a>
+                                             <br />
+                                             <?php } ?>
+                                             <small class="text-muted"><?php echo _dt($renewal['date_renewed']); ?></small>
+                                             <hr />
+                                             <span class="text-success bold" data-toggle="tooltip" title="<?php echo _l('contract_renewal_old_start_date',_d($renewal['old_start_date'])); ?>">
+                                             <?php echo _l('contract_renewal_new_start_date',_d($renewal['new_start_date'])); ?>
+                                             </span>
+                                             <br />
+                                             <?php if(is_date($renewal['new_end_date'])){
+                                                $tooltip = '';
+                                                if(is_date($renewal['old_end_date'])){
+                                                 $tooltip = _l('contract_renewal_old_end_date',_d($renewal['old_end_date']));
+                                                }
+                                                ?>
+                                             <span class="text-success bold" data-toggle="tooltip" title="<?php echo $tooltip; ?>">
+                                             <?php echo _l('contract_renewal_new_end_date',_d($renewal['new_end_date'])); ?>
+                                             </span>
+                                             <br/>
+                                             <?php } ?>
+                                             <?php if($renewal['new_value'] > 0){
+                                                $contract_renewal_value_tooltip = '';
+                                                if($renewal['old_value'] > 0){
+                                                 $contract_renewal_value_tooltip = ' data-toggle="tooltip" data-title="'._l('contract_renewal_old_value',_format_number($renewal['old_value'])).'"';
+                                                } ?>
+                                             <span class="text-success bold"<?php echo $contract_renewal_value_tooltip; ?>>
+                                             <?php echo _l('contract_renewal_new_value',_format_number($renewal['new_value'])); ?>
+                                             </span>
+                                             <br />
+                                             <?php } ?>
+                                          </div>
+                                       </div>
+                                       <hr />
+                                    </div>
+                                    <?php } ?>
+                                 </div>
+                                 <!-- <div role="tabpanel" class="tab-pane" id="tab_tasks">
+                                    <?php //init_relation_tasks_table(array('data-new-rel-id'=>$contract->id,'data-new-rel-type'=>'contract')); ?>
+                                    </div> -->
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <?php } ?>
+                  </div>
                   <button type="submit" class="btn btn-info pull-right"><?php echo _l('submit'); ?></button>
                </div>
             </div>
          </div>
          <?php echo form_close(); ?>
-         <?php if(isset($contract)) { ?>
-         <div class="col-md-12 right-column" >
-            <div class="panel_s">
-               <div class="panel-body">
-                  <h4 class="bold no-margin font-medium"><?php echo _l('contract_edit_overview'); ?></h4>
-                  <hr />
-                  <?php if($contract->trash > 0){
-                     echo '<div class="ribbon default"><span>'._l('contract_trash').'</span></div>';
-                     } ?>
-                  <ul class="nav nav-tabs" role="tablist">
-                     <li role="presentation" class="active">
-                        <a href="#tab_content" aria-controls="tab_content" role="tab" data-toggle="tab">
-                        <?php echo _l('contract_content'); ?>
-                        </a>
-                     </li>
-                     <li role="presentation">
-                        <a href="#tab_attachments" aria-controls="tab_attachments" role="tab" data-toggle="tab">
-                        <?php echo _l('contract_attachments'); ?>
-                        </a>
-                     </li>
-                     <li role="presentation">
-                        <a href="#tab_renewals" aria-controls="tab_renewals" role="tab" data-toggle="tab">
-                        <?php echo _l('no_contract_renewals_history_heading'); ?>
-                        </a>
-                     </li>
-                     <!-- <li role="presentation">
-                        <a href="#tab_tasks" aria-controls="tab_tasks" role="tab" data-toggle="tab">
-                          <?php echo _l('tasks'); ?>
-                        </a>
-                        </li> -->
-                     <li role="presentation">
-                        <a href="#" onclick="contract_full_view(); return false;" data-toggle="tooltip" data-title="<?php echo _l('toggle_full_view'); ?>" class="toggle_view">
-                        <i class="fa fa-expand"></i></a>
-                     </li>
-                  </ul>
-                  <div class="tab-content">
-                     <div role="tabpanel" class="tab-pane active" id="tab_content">
-                        <div class="row">
-                           <div class="col-md-12 text-right " style="padding-bottom: 10px;">
-                              <div style="display: inline-block;">
-                                 <label>In có thuế</label>
-                                 <input type="radio" checked name="typecontract" value="yes" style="position: relative; top:3px;">
 
-                                 &nbsp|&nbsp
-
-                                 <label>In không thuế</label>
-                                 <input type="radio" name="typecontract" value="no" style="position: relative; top:3px;">
-
-                              </div>
-                           </div>
-                           <div class="col-md-12 text-right _buttons">
-
-                              <a href="<?php echo admin_url('contracts/pdf/'.$contract->id.'?print=true&'); ?>" target="_blank" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('print'); ?>" data-placement="bottom"><i class="fa fa-print"></i></a>
-                              <a href="<?php echo admin_url('contracts/word/'.$item->id); ?>" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('Xem Word'); ?>" data-placement="bottom"><i class="fa fa-file-word-o"></i></a>
-                              <a href="<?php echo admin_url('contracts/pdf/'.$contract->id); ?>" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('view_pdf'); ?>" data-placement="bottom"><i class="fa fa-file-pdf-o"></i></a>
-                              <a href="#" class="btn btn-default mright5" data-target="#contract_send_to_client_modal" data-toggle="modal"><span class="btn-with-tooltip" data-toggle="tooltip" data-title="<?php echo _l('contract_send_to_email'); ?>" data-placement="bottom"><i class="fa fa-envelope"></i></span></a>
-                           </div>
-                           <div class="col-md-12">
-                              <?php if(isset($contract_merge_fields)){ ?>
-                              <p class="bold mtop10"><a href="#" onclick="slideToggle('.avilable_merge_fields'); return false;"><?php echo _l('available_merge_fields'); ?></a></p>
-                              <div class=" avilable_merge_fields mtop15 hide">
-                                 <ul class="list-group">
-                                    <?php
-                                       foreach($contract_merge_fields as $field){
-                                        foreach($field as $f){
-                                         echo '<li class="list-group-item"><b>'.$f['name'].'</b>  <a href="#" class="pull-right" onclick="insert_merge_field(this); return false">'.$f['key'].'</a></li>';
-                                       }
-                                       } ?>
-                                 </ul>
-                              </div>
-                              <?php } ?>
-                           </div>
-                        </div>
-                        <hr />
-                        <pre>
-                        <?php
-                           print_r($contract);
-                         ?>
-                        </pre>
-
-                        <div class="editable tc-content" style="border:1px solid #f0f0f0;">
-                           <?php if(empty($contract->content)){
-                              echo '<span class="text-danger text-uppercase mtop15 editor-add-content-notice"> ' . _l('click_to_add_content') . '</span>';
-                              } else {
-                              echo $contract->content;
-                              }
-                              ?>
-                        </div>
-                     </div>
-
-                     <div role="tabpanel" class="tab-pane" id="tab_attachments">
-                        <?php echo form_open(admin_url('contracts/add_contract_attachment/'.$contract->id),array('id'=>'contract-attachments-form','class'=>'dropzone')); ?>
-                        <?php echo form_close(); ?>
-                        <div class="text-right mtop15">
-                           <div id="dropbox-chooser"></div>
-                        </div>
-                        <div id="contract_attachments" class="mtop30">
-                           <?php
-                              $data = '<div class="row">';
-                              foreach($contract->attachments as $attachment) {
-                                $href_url = site_url('download/file/contract/'.$attachment['id']);
-                                if(!empty($attachment['external'])){
-                                  $href_url = $attachment['external_link'];
-                                }
-                                $data .= '<div class="display-block contract-attachment-wrapper" style="padding:0px;">';
-                                $data .= '<div class="col-md-10">';
-                                $data .= '<div class="pull-left"><i class="'.get_mime_class($attachment['filetype']).'"></i></div>';
-                                $data .= '<a href="'.$href_url.'">'.$attachment['file_name'].'</a>';
-                                $data .= '<p class="text-muted">'.$attachment["filetype"].'</p>';
-                                $data .= '</div>';
-                                $data .= '<div class="col-md-2 text-right">';
-                                if($attachment['staffid'] == get_staff_user_id() || is_admin()){
-                                 $data .= '<a href="#" class="text-danger" onclick="delete_contract_attachment(this,'.$attachment['id'].'); return false;"><i class="fa fa fa-times"></i></a>';
-                               }
-                               $data .= '</div>';
-                               $data .= '<div class="clearfix"></div><hr/>';
-                               $data .= '</div>';
-                              }
-                              $data .= '</div>';
-                              echo $data;
-                              ?>
-                        </div>
-                     </div>
-                     <div role="tabpanel" class="tab-pane" id="tab_renewals">
-                        <?php if(has_permission('contracts', '', 'create') || has_permission('contracts', '', 'edit')){ ?>
-                        <div class="_buttons">
-                           <a href="#" class="btn btn-default" data-toggle="modal" data-target="#renew_contract_modal">
-                           <i class="fa fa-refresh"></i> <?php echo _l('contract_renew_heading'); ?>
-                           </a>
-                        </div>
-                        <hr />
-                        <?php } ?>
-                        <div class="clearfix"></div>
-                        <?php
-                           if(count($contract_renewal_history) == 0){
-                            echo _l('no_contract_renewals_found');
-                           }
-                           foreach($contract_renewal_history as $renewal){ ?>
-                        <div class="display-block">
-                           <div class="media-body">
-                              <div class="display-block">
-                                 <?php
-                                    echo _l('contract_renewed_by',$renewal['renewed_by']);
-                                    ?>
-                                 <?php if($renewal['renewed_by_staff_id'] == get_staff_user_id() || is_admin()){ ?>
-                                 <a href="<?php echo admin_url('contracts/delete_renewal/'.$renewal['id'] . '/'.$renewal['contractid']); ?>" class="pull-right _delete text-danger"><i class="fa fa-remove"></i></a>
-                                 <br />
-                                 <?php } ?>
-                                 <small class="text-muted"><?php echo _dt($renewal['date_renewed']); ?></small>
-                                 <hr />
-                                 <span class="text-success bold" data-toggle="tooltip" title="<?php echo _l('contract_renewal_old_start_date',_d($renewal['old_start_date'])); ?>">
-                                 <?php echo _l('contract_renewal_new_start_date',_d($renewal['new_start_date'])); ?>
-                                 </span>
-                                 <br />
-                                 <?php if(is_date($renewal['new_end_date'])){
-                                    $tooltip = '';
-                                    if(is_date($renewal['old_end_date'])){
-                                     $tooltip = _l('contract_renewal_old_end_date',_d($renewal['old_end_date']));
-                                    }
-                                    ?>
-                                 <span class="text-success bold" data-toggle="tooltip" title="<?php echo $tooltip; ?>">
-                                 <?php echo _l('contract_renewal_new_end_date',_d($renewal['new_end_date'])); ?>
-                                 </span>
-                                 <br/>
-                                 <?php } ?>
-                                 <?php if($renewal['new_value'] > 0){
-                                    $contract_renewal_value_tooltip = '';
-                                    if($renewal['old_value'] > 0){
-                                     $contract_renewal_value_tooltip = ' data-toggle="tooltip" data-title="'._l('contract_renewal_old_value',_format_number($renewal['old_value'])).'"';
-                                    } ?>
-                                 <span class="text-success bold"<?php echo $contract_renewal_value_tooltip; ?>>
-                                 <?php echo _l('contract_renewal_new_value',_format_number($renewal['new_value'])); ?>
-                                 </span>
-                                 <br />
-                                 <?php } ?>
-                              </div>
-                           </div>
-                           <hr />
-                        </div>
-                        <?php } ?>
-                     </div>
-                     <!-- <div role="tabpanel" class="tab-pane" id="tab_tasks">
-                        <?php //init_relation_tasks_table(array('data-new-rel-id'=>$contract->id,'data-new-rel-type'=>'contract')); ?>
-                        </div> -->
-                  </div>
-               </div>
-            </div>
-         </div>
-         <?php } ?>
       </div>
    </div>
 </div>

@@ -41,13 +41,16 @@ class Contracts extends Admin_controller
                     access_denied('contracts');
                 }
                 $data=$this->input->post();
+
                 if($data['contract_type']==2)
                 {
+
                     $data['content']=$this->contract_templates_model->get_contract_template_by_id(1)->content;
+
                 }
                 else
                 {
-                    $data['content']=$this->contract_templates_model->get_contract_template_by_id(2)->content;
+                    $data['content']=$this->contract_templates_model->get_contract_template_by_id(1)->content;
                 }
                 $id = $this->contracts_model->add($data);
                 if ($id) {
@@ -59,7 +62,7 @@ class Contracts extends Admin_controller
                 if (!has_permission('contracts', '', 'edit')) {
                     access_denied('contracts');
                 }
-                
+
                 $success = $this->contracts_model->update($this->input->post(), $id);
                 if ($success) {
                     set_alert('success', _l('updated_successfuly', _l('contract')));
@@ -67,28 +70,28 @@ class Contracts extends Admin_controller
                 redirect(admin_url('contracts/contract/' . $id));
             }
         }
-        
+
         if ($id == '') {
             $title = _l('add_new', _l('contract_lowercase'));
             $data['quotes']         = $this->contracts_model->get_quote_contracts();
         } else {
-            
+
             $data['contract']                 = $this->contracts_model->get($id, array(), true);
             $a = array();
             $a         =  $this->contracts_model->get_quote_contracts();
             $data['item'] = $this->contracts_model->getContractByID($id);
             // $data['item_returns'] = $this->sale_oders_model->getReturnSaleItems($id);
             // var_dump($data['item']);die();
-            
+
             $i=0;
-            foreach ($data['item']->items as $key => $value) { 
+            foreach ($data['item']->items as $key => $value) {
                 $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
                 $i++;
             }
             $data['warehouse_type_id'] = $data['item']->items[0]->warehouse_id;
             $data['warehouse_type_id1'] = $data['item']->items1[0]->warehouse_id;
             // var_dump($data['item']);die();
-            
+
             if (!$data['item']) {
                 blank_page('Sale Not Found');
             }
@@ -179,7 +182,7 @@ class Contracts extends Admin_controller
 
     public function getIteamQuote(){
         $this->load->model('quotes_model');
-        $data         = $this->quotes_model->getQuoteByID($this->input->post('id'));        
+        $data         = $this->quotes_model->getQuoteByID($this->input->post('id'));
         echo json_encode($data);
     }
 
@@ -190,7 +193,7 @@ class Contracts extends Admin_controller
                 access_denied('sale_items');
             }
         }
-       
+
         if ($id == '') {
             $title = _l('add_new', _l('sales'));
 
@@ -201,17 +204,17 @@ class Contracts extends Admin_controller
             // var_dump($data['item']);die();
 
             $i=0;
-            foreach ($data['item']->items as $key => $value) { 
+            foreach ($data['item']->items as $key => $value) {
                 $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
                 $i++;
             }
 
             // var_dump($data['item']);die();
-            
+
             if (!$data['item']) {
                 blank_page('Sale Not Found');
             }
-        }       
+        }
         $where_clients = 'tblclients.active=1';
 
         if (!has_permission('customers', '', 'view')) {
@@ -222,11 +225,11 @@ class Contracts extends Admin_controller
         $data['warehouses']= $this->warehouse_model->getWarehouses();
         $data['customers'] = $this->clients_model->get('', $where_clients);
         // $data['items']= $this->invoice_items_model->get_full();
-        
+
         // $data['warehouse_types']= $this->sale_oders_model->getWarehouseTypes();
-        
+
         $data['convert']= $data['item']->export_status ? false : true ;
-        
+
         $data['title'] = $title;
         $this->load->view('admin/contracts/export_order_detail', $data);
     }
@@ -250,7 +253,7 @@ class Contracts extends Admin_controller
         if ($this->input->get('print')) {
             $type = 'I';
         }
-      
+
         $pdf->Output(slug_it($contract->subject) . '.pdf', $type);
     }
 
@@ -261,15 +264,15 @@ class Contracts extends Admin_controller
         if (!$id) {
             redirect($_SERVER["HTTP_REFERER"]);
         }
-        
+
         $contract = $this->contracts_model->get($id);
-        
+
         header("Content-Type: application/vnd.msword");
         header("Expires: 0");//no-cache
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("content-disposition: attachment;filename=".$contract->subject.".doc");
         echo '<html>
-                <head>         
+                <head>
                     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
                     <meta http-equiv="X-UA-Compatible" content="IE=edge">
                     <meta name="viewport" content="width=device-width, initial-scale=1">
