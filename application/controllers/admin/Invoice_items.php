@@ -28,7 +28,7 @@ class Invoice_items extends Admin_controller
         $this->load->view('admin/invoice_items/manage', $data);
     }
     public function getProductsInCate($category_id){
-        if(is_numeric($category_id) && $this->input->is_ajax_request()) {            
+        if(is_numeric($category_id) && $this->input->is_ajax_request()) {
             echo json_encode($this->invoice_items_model->getProductsByCateID($category_id));
         }
     }
@@ -75,7 +75,7 @@ class Invoice_items extends Admin_controller
                 $save_and_add_contact = false;
                 // Category 4rd level
                 if(is_array($data['category_id'])) {
-                    for ($i=count($data['category_id'])-1; $i >= 0 ; $i--) { 
+                    for ($i=count($data['category_id'])-1; $i >= 0 ; $i--) {
                         if( $data['category_id'][$i] != 0 ) {
                             $data['category_id'] = $data['category_id'][$i];
                             break;
@@ -112,18 +112,18 @@ class Invoice_items extends Admin_controller
                 $data['price_buy']=str_replace('.','',$data['price_buy']);
                 $data['minimum_quantity']=10;
                 $data['maximum_quantity']=100;
-                
+
                 $data['itemid'] = $id;
                 $item = $this->invoice_items_model->get_full($id);
                 if(is_array($data['category_id'])) {
-                    for ($i=count($data['category_id'])-1; $i >= 0 ; $i--) { 
+                    for ($i=count($data['category_id'])-1; $i >= 0 ; $i--) {
                         if( $data['category_id'][$i] != 0 ) {
                             $data['category_id'] = $data['category_id'][$i];
                             break;
                         }
                     }
                 }
-                
+
                 $success = $this->invoice_items_model->edit($data, $item);
                 $success_avatar = handle_item_avatar_image_upload($id);
                 if ($success == true || $success_avatar == true) {
@@ -139,7 +139,7 @@ class Invoice_items extends Admin_controller
             // $array_categories[2] = array(0, array());
             // $array_categories[3] = array(0, array());
             $data['array_categories'] = $array_categories;
-            
+
         } else {
             $title = _l('invoice_item_edit_heading');
             $item = $this->invoice_items_model->get_full($id);
@@ -147,7 +147,7 @@ class Invoice_items extends Admin_controller
 
             $array_categories[] = array($item->category_id, $this->invoice_items_model->get_same_level_categories($item->category_id));
             $this->invoice_items_model->get_category_parent_id($item->category_id, $array_categories);
-            
+
             if(count($array_categories) < 4) {
                 if(!isset($array_categories[1])) {
                     $array_categories[1] = array(0, array());
@@ -193,7 +193,7 @@ class Invoice_items extends Admin_controller
                 $this->load->view('admin/invoice_items/item_attachments_template', array('attachments'=>$item->attachments));
             }
         }
-        
+
     }
     public function delete_attachment($id)
     {
@@ -216,7 +216,7 @@ class Invoice_items extends Admin_controller
             if($this->input->is_ajax_request()) {
                 $this->perfex_base->get_table_data('item_price_history', array(
                     'rel_id' => $id,
-                )); 
+                ));
             }
         }
     }
@@ -227,11 +227,11 @@ class Invoice_items extends Admin_controller
             }
         }
         if($id!='') {
-            
+
             if($this->input->is_ajax_request()) {
                 $this->perfex_base->get_table_data('item_price_buy_history', array(
                     'rel_id' => $id,
-                )); 
+                ));
             }
         }
     }
@@ -241,7 +241,7 @@ class Invoice_items extends Admin_controller
         if (has_permission('items', '', 'view')) {
             if ($this->input->post()) {
                 $data = $this->input->post();
-                
+
                 if ($data['itemid'] == '') {
                     if (!has_permission('items', '', 'create')) {
                         header('HTTP/1.0 400 Bad error');
@@ -354,7 +354,7 @@ class Invoice_items extends Admin_controller
     public function get_item_by_id($id)
     {
         if ($this->input->is_ajax_request()) {
-            
+
             $item                   = $this->invoice_items_model->get_full($id);
             $item->long_description = nl2br($item->long_description);
             echo json_encode($item);
@@ -403,20 +403,20 @@ class Invoice_items extends Admin_controller
                                 require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . 'PHPExcel' . DIRECTORY_SEPARATOR . 'PHPExcel.php');
 
                                 $inputFileType = PHPExcel_IOFactory::identify($newFilePath);
-                                
+
                                 $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-                                
+
                                 // $objReader->setReadDataOnly(true);
-                                
+
                                 /**  Load $inputFileName to a PHPExcel Object  **/
                             $objPHPExcel =           $objReader->load($newFilePath);
                                 $allSheetName       = $objPHPExcel->getSheetNames();
                                 $objWorksheet       = $objPHPExcel->setActiveSheetIndex(0);
                                 $highestRow         = $objWorksheet->getHighestRow();
                                 $highestColumn      = $objWorksheet->getHighestColumn();
-                                
+
                                 $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
-                                
+
                                 for ($row = 1; $row <= $highestRow; ++$row) {
                                     for ($col = 0; $col < $highestColumnIndex; ++$col) {
                                         $value                     = $objWorksheet->getCellByColumnAndRow($col, $row)->getValue();
@@ -475,7 +475,7 @@ class Invoice_items extends Admin_controller
                                         exit("what");
                                         break;
                                     }
-                                        
+
                                     // Kiểm tra nếu nội dung của ô bằng với nội dung cột cần nhập
                                     if(trim($row[$stt]) == trim($column_value[0])) {
                                         $columns_found++;
@@ -504,7 +504,7 @@ class Invoice_items extends Admin_controller
                                     if($column_key == 'group_id') {
                                         $all_groups = get_item_groups();
                                         $result_search = false;
-                                        
+
                                         foreach($all_groups as $key=>$group) {
                                             if(trim($group['name']) == trim($row[$stt])) {
                                                 $result_search = $key;
@@ -528,7 +528,7 @@ class Invoice_items extends Admin_controller
                                                 break;
                                             }
                                         }
-                                        
+
                                         if($result_search !== false) {
                                             $data[$column_key] = $all_countries[$result_search]['country_id'];
                                         }
@@ -546,7 +546,7 @@ class Invoice_items extends Admin_controller
                                                 break;
                                             }
                                         }
-                                        
+
                                         if($result_search !== false) {
                                             $data[$column_key] = $all_units[$result_search]['unitid'];
                                         }
@@ -602,9 +602,9 @@ class Invoice_items extends Admin_controller
                     set_alert('warning', _l('import_upload_failed'));
                 }
             }
-            
+
         }
-        
+
         if (isset($load_result) && $load_result == true) {
             set_alert('success', _l('load_import_success'));
         }

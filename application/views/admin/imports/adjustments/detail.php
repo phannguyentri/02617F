@@ -130,32 +130,44 @@
 
 
                 <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+
                     <!-- Cusstomize from invoice -->
                     <div class="panel-body mtop10">
                         <div class="row">
-                            <div class="col-md-4">
+                            <h4 class="text-center" style="background: #ccc;padding:10px; margin: 10px 15px;">SẢN PHẨM</h4>
+                            <!-- <div class="col-md-4">
                                 <div class="form-group mbot25">
                                     <select class="selectpicker no-margin" data-width="100%" id="custom_item_select" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
-                                        <option value=""></option>
+                                        <option value=""></option> -->
 
-                                        <?php foreach ($items as $product) { ?>
+                                        <!-- <?php foreach ($items as $product) { ?>
                                         <option value="<?php echo $product['id']; ?>" data-subtext="">(<?php echo $product['code']; ?>) <?php echo $product['name']; ?></option>
                                         <?php
-                                        } ?>
-
-                                    <!-- <?php if (has_permission('items', '', 'create')) { ?>
-                                    <option data-divider="true"></option>
-                                    <option value="newitem" data-content="<span class='text-info'><?php echo _l('new_invoice_item'); ?></span>"></option>
-                                    <?php } ?> -->
+                                        } ?> -->
+<!--
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-5 text-right show_quantity_as_wrapper">
 
                             </div>
                         </div>
 
+                        <div class="col-md-4">
+                            <?php
+                                echo render_select('categories_name', $categories_a, array('id', 'category'), 'Hãng sản phẩm');
+                            ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group mbot25">
+                                <label for="productItems" class="control-label"><?=_l('item_name')?></label>
+                                <select class="selectpicker no-margin" data-width="100%" id="productItems" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="table-responsive s_table">
                             <table class="table items item-purchase no-mtop">
@@ -278,6 +290,82 @@
     _validate_form($('.client-form'),{code:'required',warehouse_type:'required',warehouse_id:'required'});
 
     var itemList = <?php echo json_encode($items);?>;
+    var productList = null;
+
+    $('#categories_name').change(function(e){
+       let category_id = $(this).val();
+       loadProductsInCategory(category_id);
+    });
+
+    function loadProductsInCategory(category_id){
+        var productSelect = $('#productItems');
+        productSelect.find('option:gt(0)').remove();
+        productSelect.selectpicker('refresh');
+
+        $.ajax({
+            url      : admin_url + 'invoice_items/getProductsInCate/' + category_id,
+            dataType : 'json',
+            async    : false,
+        })
+        .done(function(data){
+            productList = data;
+
+            $.each(data, function(key, value){
+               productSelect.append('<option value="' + value.id + '">'+'('+ value.code +') '  + value.name + '</option>');
+            });
+            productSelect.selectpicker('refresh');
+        });
+
+        console.log('productList', productList);
+
+    }
+
+    $('#productItems').change(function(e) {
+        let productId = $(this).val();
+
+        productItem = findProductItem(productId);
+        if(typeof(productItem) != 'undefined'){
+            let trBar = $('tr.main');
+            trBar.find('td:first > input').val(productItem.id);
+            trBar.find('td:nth-child(2)').text(productItem.name);
+            trBar.find('td:nth-child(3)').text(productItem.unit_name);
+            trBar.find('td:nth-child(3) > input').val(productItem.unit);
+            trBar.find('td:nth-child(4) > input').val(1);
+            trBar.find('td:nth-child(5)').text(formatNumber(productItem.price_buy));
+            trBar.find('td:nth-child(6)').text(formatNumber(productItem.price_buy * 1) );
+            trBar.find('td:nth-child(7)').text(productItem.specification);
+            isNew = true;
+            $('#btnAdd').show();
+        }else {
+            isNew = false;
+            $('#btnAdd').hide();
+        }
+    });
+
+    var findProductItem = (id) => {
+        var itemResult;
+
+        $.each(itemList, (index, value) => {
+            if(value.id == id) {
+                itemResult = value;
+                return false;
+            }
+        });
+        return itemResult;
+    };
+
+    var findItem = (id) => {
+        var itemResult;
+
+        $.each(itemList, (index, value) => {
+            if(value.id == id) {
+                itemResult = value;
+                return false;
+            }
+        });
+        return itemResult;
+    };
+
 
     //format currency
     function formatNumber(nStr, decSeperate=".", groupSeperate=",") {
@@ -292,16 +380,8 @@
         return x1 + x2;
     }
 
-    var findItem = (id) => {
-        var itemResult;
-        $.each(itemList, (index,value) => {
-            if(value.id == id) {
-                itemResult = value;
-                return false;
-            }
-        });
-        return itemResult;
-    };
+
+
     var total = <?php echo $i ?>;
     var totalPrice = <?php echo $totalPrice ?>;
     var uniqueArray = <?php echo $i ?>;
@@ -403,6 +483,7 @@
             $('#btnAdd').hide();
         }
     });
+
     $(document).on('keyup', '.mainQuantity',(e)=>{
 
         var currentQuantityInput = $(e.currentTarget);

@@ -51,10 +51,10 @@
                            <span class="input-group-addon">
                               <?php $prefix =($contract) ? $contract->prefix : get_option('prefix_contract'); ?>
                               <?=$prefix?>
-                              <?=form_hidden('prefix',$prefix)?> 
+                              <?=form_hidden('prefix',$prefix)?>
                               <!-- <?=form_hidden('rel_id',$contract->rel_id)?>    -->
                            </span>
-                           <?php 
+                           <?php
                               if($contract)
                               {
                                 $number=$contract->code;
@@ -129,7 +129,7 @@
                            <h4 class="text-center" style="background: #ccc;padding:10px;">SẢN PHẨM</h4>
                            <div class="row">
                               <div class="col-md-4">
-                                 <?php 
+                                 <?php
                                     echo render_select('categories_name', $categories_a, array('id', 'category'),'Hãng sản phẩm');
                                     ?>
                               </div>
@@ -140,7 +140,7 @@
                                        <option value=""></option>
                                        <?php foreach ($items as $product) { ?>
                                        <!--  <option value="<?php echo $product['id']; ?>" data-subtext="">(<?php echo $product['code']; ?>) <?php echo $product['name']; ?></option> -->
-                                       <?php 
+                                       <?php
                                           } ?>
                                        <!-- <?php if (has_permission('items', '', 'create')) { ?>
                                           <option data-divider="true"></option>
@@ -199,7 +199,7 @@
                                        $i=0;
                                        $totalPrice=0;
                                        if(isset($item) && count($item->items) > 0) {
-                                           
+
                                            foreach($item->items as $value) {
                                            ?>
                                     <tr class="sortable item">
@@ -264,7 +264,7 @@
                            <h4 class="text-center" style="background: #ccc;padding:10px;">LINH KIỆN</h4>
                            <div class="row">
                               <div class="col-md-4">
-                                 <?php 
+                                 <?php
                                     echo render_select('categories_name1', $categories_b, array('id', 'category'),'Hãng linh kiện');
                                     ?>
                               </div>
@@ -275,7 +275,7 @@
                                        <option value=""></option>
                                        <?php foreach ($items as $product) { ?>
                                        <!--  <option value="<?php echo $product['id']; ?>" data-subtext="">(<?php echo $product['code']; ?>) <?php echo $product['name']; ?></option> -->
-                                       <?php 
+                                       <?php
                                           } ?>
                                        <!-- <?php if (has_permission('items', '', 'create')) { ?>
                                           <option data-divider="true"></option>
@@ -333,9 +333,9 @@
                                     <?php
                                        $i1=0;
                                        $totalPrice1=0;
-                                       
+
                                        if(isset($item) && count($item->items1) > 0) {
-                                           
+
                                            foreach($item->items1 as $value) {
                                            ?>
                                     <tr class="sortable item1">
@@ -398,7 +398,7 @@
                         </div>
                         <div class="col-xs-12" style="padding:0px;">
                         <div class="form-group all" style="display: inline-block; width: 100%">
-                           <div class="title-hf" style="margin: 10px 0px;">Chi phí phát sinh thêm               
+                           <div class="title-hf" style="margin: 10px 0px;">Chi phí phát sinh thêm
                               <button type="button" class="btn btn-primary btn-xs" id="addGift"><i class="fa fa-plus"></i>
                               </button>
                            </div>
@@ -489,16 +489,16 @@
                               <div style="display: inline-block;">
                                  <label>In có thuế</label>
                                  <input type="radio" checked name="typecontract" value="yes" style="position: relative; top:3px;">
-                                 
+
                                  &nbsp|&nbsp
 
                                  <label>In không thuế</label>
                                  <input type="radio" name="typecontract" value="no" style="position: relative; top:3px;">
-                                 
+
                               </div>
                            </div>
                            <div class="col-md-12 text-right _buttons">
-                              
+
                               <a href="<?php echo admin_url('contracts/pdf/'.$contract->id.'?print=true&'); ?>" target="_blank" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('print'); ?>" data-placement="bottom"><i class="fa fa-print"></i></a>
                               <a href="<?php echo admin_url('contracts/word/'.$item->id); ?>" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('Xem Word'); ?>" data-placement="bottom"><i class="fa fa-file-word-o"></i></a>
                               <a href="<?php echo admin_url('contracts/pdf/'.$contract->id); ?>" class="btn btn-default mright5 btn-with-tooltip" data-toggle="tooltip" title="<?php echo _l('view_pdf'); ?>" data-placement="bottom"><i class="fa fa-file-pdf-o"></i></a>
@@ -521,6 +521,12 @@
                            </div>
                         </div>
                         <hr />
+                        <pre>
+                        <?php
+                           print_r($contract);
+                         ?>
+                        </pre>
+
                         <div class="editable tc-content" style="border:1px solid #f0f0f0;">
                            <?php if(empty($contract->content)){
                               echo '<span class="text-danger text-uppercase mtop15 editor-add-content-notice"> ' . _l('click_to_add_content') . '</span>';
@@ -530,6 +536,7 @@
                               ?>
                         </div>
                      </div>
+
                      <div role="tabpanel" class="tab-pane" id="tab_attachments">
                         <?php echo form_open(admin_url('contracts/add_contract_attachment/'.$contract->id),array('id'=>'contract-attachments-form','class'=>'dropzone')); ?>
                         <?php echo form_close(); ?>
@@ -638,7 +645,7 @@
 <script>
    init_rel_tasks_table(<?php echo $contract->id; ?>,'contract');
    var contract_id = '<?php echo $contract->id; ?>';
-   
+
 </script>
 <?php $this->load->view('admin/contracts/send_to_client'); ?>
 <?php $this->load->view('admin/contracts/renew_contract'); ?>
@@ -671,7 +678,7 @@
    });
    }
    $(function(){
-   
+
     if(typeof(Dropbox) != 'undefined' && $('#dropbox-chooser').length > 0 ){
      document.getElementById("dropbox-chooser").appendChild(Dropbox.createChooseButton({
        success: function(files) {
@@ -687,7 +694,7 @@
    $('#contract_incurred').val(total_inclu);
    _validate_form($('#contract-form'),{client:'required',datestart:'required',subject:'required'});
    _validate_form($('#renew-contract-form'),{new_start_date:'required'});
-   
+
    tinymce.init({
      selector: 'div.editable',
      inline: true,
@@ -794,7 +801,7 @@
    $('.right-column').toggleClass('col-md-6');
    $('.right-column').toggleClass('col-md-12');
    }
-   
+
    function formatNumber(nStr, decSeperate=".", groupSeperate=",") {
         nStr += '';
         x = nStr.split(decSeperate);
@@ -806,11 +813,11 @@
         }
         return x1 + x2;
     }
-   
-   
+
+
     var findItem = (id) => {
         var itemResult;
-   
+
         $.each(itemList, (index,value) => {
             if(value.id == id) {
                 itemResult = value;
@@ -827,7 +834,7 @@
     var uniqueArray1 = <?php echo $i1 ?>;
     var isNew = false;
     var createTrItem = () => {
-       
+
         if(!isNew) return;
         // if(!$('div #warehouse_name option:selected').length || $('div #warehouse_name option:selected').val() == '') {
         //     alert_float('danger', "Vui lòng chọn kho chứa sản phẩm!");
@@ -844,7 +851,7 @@
         // }
         uniqueArray++;
         var newTr = $('<tr class="sortable item"></tr>');
-        
+
         var td1 = $('<td><input type="hidden" name="items[' + uniqueArray + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
         var td3 = $('<td></td>');
@@ -853,12 +860,12 @@
         var td6 = $('<td></td>');
         var td7 = $('<td><input type="hidden" id="tax" data-taxid="" data-taxrate="" value="" /></td>');
         var td8 = $('<td></td>');
-    
+
         td1.find('input').val($('tr.main').find('td:nth-child(1) > input').val());
         td2.text($('tr.main').find('td:nth-child(2)').text());
         td3.text($('tr.main').find('td:nth-child(3)').text());
         td4.find('input').val($('tr.main').find('td:nth-child(4) > input').val());
-        
+
         td5.find('input').val($('tr.main').find('td:nth-child(5) > input').val().replace(/\,/g,'.'));
         td6.text( $('tr.main').find('td:nth-child(6)').text());
         var inputTax=$('tr.main').find('td:nth-child(7) > input');
@@ -873,17 +880,17 @@
         newTr.append(td6);
         newTr.append(td7);
         newTr.append(td8);
-    
+
         newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td');
         $('table.item-export tbody').append(newTr);
         total++;
         totalPrice += $('tr.main').find('td:nth-child(4) > input').val() * $('tr.main').find('td:nth-child(5)').text().replace(/\+/g, ' ');
-   
-       
+
+
         refreshTotal();
         // refreshAll();
     };
-    
+
     var createTrItem1 = () => {
         if(!isNew) return;
         // if(!$('div #warehouse_name1 option:selected').length || $('div #warehouse_name1 option:selected').val() == '') {
@@ -901,7 +908,7 @@
         // }
        uniqueArray1++;
         var newTr = $('<tr class="sortable item1"></tr>');
-        
+
         var td1 = $('<td><input type="hidden" name="items1[' + uniqueArray1 + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
         var td3 = $('<td></td>');
@@ -910,12 +917,12 @@
         var td6 = $('<td></td>');
         var td7 = $('<td><input type="hidden" id="tax" data-taxid="" data-taxrate="" value="" /></td>');
         var td8 = $('<td></td>');
-    
+
         td1.find('input').val($('tr.main1').find('td:nth-child(1) > input').val());
         td2.text($('tr.main1').find('td:nth-child(2)').text());
         td3.text($('tr.main1').find('td:nth-child(3)').text());
         td4.find('input').val($('tr.main1').find('td:nth-child(4) > input').val());
-        
+
         td5.find('input').val($('tr.main1').find('td:nth-child(5) > input').val().replace(/\,/g,'.'));
         td6.text( $('tr.main1').find('td:nth-child(6)').text());
         var inputTax=$('tr.main1').find('td:nth-child(7) > input');
@@ -930,15 +937,15 @@
         newTr.append(td6);
         newTr.append(td7);
         newTr.append(td8);
-    
+
         newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem1(this); return false;"><i class="fa fa-times"></i></a></td');
         $('table.item-export1 tbody').append(newTr);
         total1++;
         totalPrice += $('tr.main1').find('td:nth-child(4) > input').val() * $('tr.main1').find('td:nth-child(5)').text().replace(/\+/g, ' ');
-        
+
         refreshTotal1();
         // refreshAll();
-        
+
     };
     var refreshAll = () => {
         isNew = false;
@@ -946,7 +953,7 @@
         $('#custom_item_select').val('');
         $('#custom_item_select').selectpicker('refresh');
         var trBar = $('tr.main');
-        
+
         trBar.find('td:first > input').val("");
         // trBar.find('td:nth-child(1) > input').val('');
         trBar.find('td:nth-child(2)').text("<?=_l('item_name')?>");
@@ -956,17 +963,17 @@
         trBar.find('td:nth-child(6)').text(0);
         trBar.find('td:nth-child(7)').text("<?=_l('tax')?>");
         trBar.find('td:nth-child(8)').text(0);
-        
+
         $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
     };
-    
+
      var refreshAll1 = () => {
         isNew = false;
         $('#btnAdd1').hide();
         $('#custom_item_select1').val('');
         $('#custom_item_select1').selectpicker('refresh');
         var trBar = $('tr.main1');
-        
+
         trBar.find('td:first > input').val("");
         // trBar.find('td:nth-child(1) > input').val('');
         trBar.find('td:nth-child(2)').text("<?=_l('item_name')?>");
@@ -978,14 +985,14 @@
         trBar.find('td:nth-child(8)').text(0);
          $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
     };
-    
+
      var refreshAll = () => {
        isNew = false;
        $('#btnAdd').hide();
        $('#custom_item_select').val('');
        $('#custom_item_select').selectpicker('refresh');
        var trBar = $('tr.main');
-       
+
        trBar.find('td:first > input').val("");
        // trBar.find('td:nth-child(1) > input').val('');
        trBar.find('td:nth-child(2)').text("<?=_l('item_name')?>");
@@ -995,17 +1002,17 @@
        trBar.find('td:nth-child(6)').text(0);
        trBar.find('td:nth-child(7)').text("<?=_l('tax')?>");
        trBar.find('td:nth-child(8)').text(0);
-       
+
        $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
    };
-   
+
     var refreshAll1 = () => {
        isNew = false;
        $('#btnAdd1').hide();
        $('#custom_item_select1').val('');
        $('#custom_item_select1').selectpicker('refresh');
        var trBar = $('tr.main1');
-       
+
        trBar.find('td:first > input').val("");
        // trBar.find('td:nth-child(1) > input').val('');
        trBar.find('td:nth-child(2)').text("<?=_l('item_name')?>");
@@ -1017,20 +1024,20 @@
        trBar.find('td:nth-child(8)').text(0);
         $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
    };
-   
+
    var deleteTrItem = (trItem) => {
        var current = $(trItem).parent().parent();
        totalPrice -= current.find('td:nth-child(4) > input').val() * current.find('td:nth-child(5) > input').val().replace(/\./g, '');
        $(trItem).parent().parent().remove();
        total--;
-      
+
        refreshTotal();
    };
-   
+
    var deleteTrItem1 = (trItem) => {
        var current = $(trItem).parent().parent();
        totalPrice -= current.find('td:nth-child(4) > input').val() * current.find('td:nth-child(5) > input').val().replace(/\./g, '');
-       $(trItem).parent().parent().remove();      
+       $(trItem).parent().parent().remove();
        total1--;
        refreshTotal1();
    };
@@ -1040,38 +1047,38 @@
        totalPrice = 0;
        $.each(items, (index,value)=>{
            totalPrice += parseFloat($(value).find('td:nth-child(6)').text().replace(/\,/g, ''))+parseFloat($(value).find('td:nth-child(7)').text().replace(/\,/g, ''));
-           // * 
+           // *
        });
        $('.totalPrice').text(formatNumber(totalPrice));
       $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
    };
-   
+
    var refreshTotal1 = () => {
        $('.total1').text(formatNumber(total1));
        var items = $('table.item-export1 tbody tr:gt(0)');
        totalPrice = 0;
        $.each(items, (index,value)=>{
            totalPrice += parseFloat($(value).find('td:nth-child(6)').text().replace(/\,/g, ''))+parseFloat($(value).find('td:nth-child(7)').text().replace(/\,/g, ''));
-           // * 
+           // *
        });
        $('.totalPrice1').text(formatNumber(totalPrice));
       $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
    };
-   
-    
+
+
     $('#categories_name').change(function(e){
-       
-       
+
+
        var category_id=$(this).val();
        loadProductsInCategory(category_id);
-     
+
    });
-   
+
    $('#categories_name1').change(function(e){
        var category_id=$(this).val();
        loadProductsInCategory1(category_id);
    });
-   
+
    $('#custom_item_select').change((e)=>{
        var id = $(e.currentTarget).val();
        var itemFound = findItem(id);
@@ -1082,7 +1089,7 @@
        // var warehouse_id=$('#select_warehouse');
        // warehouse_id.find('option:gt(0)').remove();
        // warehouse_id.selectpicker('refresh');
-   
+
        if(typeof(itemFound) != 'undefined') {
            var trBar = $('tr.main');
            trBar.find('td:first > input').val(itemFound.id);
@@ -1105,7 +1112,7 @@
            $('#btnAdd').hide();
        }
    });
-   
+
    $('#custom_item_select1').change((e)=>{
        var id = $(e.currentTarget).val();
        var itemFound = findItem(id);
@@ -1116,10 +1123,10 @@
        // var warehouse_id=$('#select_warehouse1');
        // warehouse_id.find('option:gt(0)').remove();
        // warehouse_id.selectpicker('refresh');
-   
+
        if(typeof(itemFound) != 'undefined') {
            var trBar = $('tr.main1');
-           
+
            trBar.find('td:first > input').val(itemFound.id);
             trBar.find('td:nth-child(2)').text(itemFound.name+' ('+itemFound.prefix+itemFound.code+')('+ itemFound.category +')');
            trBar.find('td:nth-child(3)').text(itemFound.unit_name);
@@ -1140,15 +1147,15 @@
            $('#btnAdd1').hide();
        }
    });
-    
-    
+
+
     // $('#select_warehouse').on('change', (e)=>{
     //     if($(e.currentTarget).val() != '') {
     //         $(e.currentTarget).parents('tr').find('input.mainQuantity').attr('data-store', $(e.currentTarget).find('option:selected').data('store'));
     //     }
     // });
-    
-    
+
+
     $(document).on('change', '.mainQuantity', (e)=>{
         var currentQuantityInput = $(e.currentTarget);
         let elementToCompare;
@@ -1176,71 +1183,71 @@
             currentQuantityInput.removeClass('error');
             currentQuantityInput.focus();
         }
-        
+
       var Gia = currentQuantityInput.parent().find(' + td');
        var GiaTri = Gia.find(' + td');
-   
+
        var Thue = GiaTri.find(' + td');
        var Tong = Thue.find(' + td');
-       var inputTax=Thue.find('input');   
+       var inputTax=Thue.find('input');
        GiaTri.text(formatNumber(replaceObjMoney($(Gia).find('input').val()) * (currentQuantityInput.val()*1)) );
        Thue.text(formatNumber(parseFloat(inputTax.data('taxrate'))/100*parseFloat(GiaTri.text().replace(/\,/g,''))));
-   
+
        Thue.append(inputTax);
        Tong.text(formatNumber(parseFloat(Thue.text().replace(/\,/g,''))+parseFloat(GiaTri.text().replace(/\,/g,''))));
        refreshTotal();
        refreshTotal1();
     });
-   
+
     $(document).on('change', '.mainUnitCost', (e)=>{
        var currentQuantityInput = $(e.currentTarget);
        var SoLuong = currentQuantityInput.parent().prev();
        var GiaTri = $(currentQuantityInput).parent().find(' + td');
-   
+
        var Thue = GiaTri.find(' + td');
        var Tong = Thue.find(' + td');
-       var inputTax=Thue.find('input');  
-   
-   
-   
+       var inputTax=Thue.find('input');
+
+
+
        GiaTri.text(formatNumber($(SoLuong).find('input').val() * replaceObjMoney(currentQuantityInput.val()) ));
        Thue.text(formatNumber(parseFloat(inputTax.data('taxrate'))/100*parseFloat(GiaTri.text().replace(/\,/g,''))));
-   
+
        Thue.append(inputTax);
        Tong.text(formatNumber(parseFloat(Thue.text().replace(/\,/g,''))+parseFloat(GiaTri.text().replace(/\,/g,''))));
        refreshTotal();
        refreshTotal1();
    });
-    
-    
+
+
     // $('#select_kindof_warehouse').change(function(e){
     //     var warehouse_type = $(e.currentTarget).val();
     //     var product = $(e.currentTarget).parents('tr').find('td:first input');
     //     if(warehouse_type != '' && product.val() != '') {
-    //         loadWarehouses(warehouse_type,product.val()); 
+    //         loadWarehouses(warehouse_type,product.val());
     //     }
     // });
     // $('#warehouse_type').change(function(e){
     //     var warehouse_type = $(e.currentTarget).val();
     //     if(warehouse_type != '') {
-    //         getWarehouses(warehouse_type); 
+    //         getWarehouses(warehouse_type);
     //     }
     // });
-   
+
     $('#rel_id').change(function(){
      var v = $('#rel_id').val();
      $('table tr.sortable.item').remove();
      $('table tr.sortable.item1').remove();
-   
-     var total=0;     
-      
+
+     var total=0;
+
      refreshAll();
      refreshAll1();
-   
-   
+
+
      refreshTotal();
      refreshTotal1();
-   
+
      if(v){
        $.ajax({
                 url : admin_url + 'contracts/getIteamQuote/',
@@ -1256,35 +1263,35 @@
              if(data.items[0]){
                 var total = 0;
                addProductQuote('',data.items);
-               $.each(data.items, (index,itemFound) => { 
-   
+               $.each(data.items, (index,itemFound) => {
+
                  total += parseFloat(itemFound.tax)+parseFloat(itemFound.price);
-   
+
                });
                $('.totalPrice').text(formatNumber(total))
-             
+
            }
            var html = "";
            var total2= 0;
-           if(data.items2[0]){           
-               $.each(data.items2, (index,value) => {     
+           if(data.items2[0]){
+               $.each(data.items2, (index,value) => {
                html += '<div class="col-md-12" style="margin-bottom: 10px; padding: 0px;"><div class="col-xs-12 col-md-6" style="padding-left: 0px;"><label>Tên phát sinh </label><input type="text" name="incurred['+ total2 +'][name_incurred]" value="'+ value.tblincurred_name +'" style="width: 100%; "></div><div class="col-xs-11 col-md-5"><label>Phí phát sinh </label><input type="text" class="pay_incurred_class"  onkeyup="formart_num(\'pay_incurred' + total2 + '\')"  id="pay_incurred'+total2+'" value="'+ (formatNumber(value.tblincurred_price *1)).replace(/\,/g,'.') +'" name="incurred['+ total2 +'][pay_incurred]" style="width: 100%"></div> <div class="col-xs-1 col-md-1"><div>&nbsp</div><a href="#" class="btn btn-danger pull-right delete_in_item" style="margin-top: 7px;"><i class="fa fa-times"></i></a></div></div>'
                total2++;
                });
            }
-            
+
             $('#ex-gift').empty().html(html);
-   
+
              if(data.items1[0]){
                 var total = 0;
-                
+
                addProductQuote(1,data.items1);
-               $.each(data.items1, (index,itemFound) => { 
+               $.each(data.items1, (index,itemFound) => {
                  total += parseFloat(itemFound.tax)+parseFloat(itemFound.price);
                });
                $('.totalPrice1').text(formatNumber(total))
              }
-   
+
              $('input[name="contract_value"]').val(($('.totalPrice1').text().replace(/\,/g,'')*1) + ($('.totalPrice').text().replace(/\,/g,'')*1))
             });
 
@@ -1296,13 +1303,13 @@
      total2++;
      $('#ex-gift').append('<div class="col-md-12" style="margin-bottom: 10px; padding: 0px;"><div class="col-xs-12 col-md-6" style="padding-left: 0px;"><label>Tên phát sinh </label><input type="text" name="incurred['+ total2 +'][name_incurred]" style="width: 100%; "></div><div class="col-xs-11 col-md-5"><label>Phí phát sinh </label><input type="text" class="pay_incurred_class" value="0" onkeyup="formart_num(\'pay_incurred' + total2 + '\')"  id="pay_incurred'+total2+'" name="incurred['+ total2 +'][pay_incurred]" style="width: 100%"></div> <div class="col-xs-1 col-md-1"><div>&nbsp</div><a href="#" class="btn btn-danger pull-right delete_in_item" style="margin-top: 7px;"><i class="fa fa-times"></i></a></div></div>')
    });
-   
+
    $('#ex-gift').on('click','.delete_in_item',function(){
      $(this).parent().parent().remove();
      total2--;
    });
-    
-   
+
+
     function addProductQuote(a,data){
         let variablename = 'uniqueArray'+a;
         if(a == 1){
@@ -1310,11 +1317,11 @@
         }else{
          var b = "";
         }
-   
+
         var total = 0;
-   
-        $.each(data, (index,itemFound) => { 
-         
+
+        $.each(data, (index,itemFound) => {
+
         var newTr = $('<tr class="sortable item'+a+'"></tr>');
         var td1 = $('<td><input type="hidden" name="items'+a+'[' + window[variablename] + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
@@ -1328,18 +1335,18 @@
           td2.text(itemFound.product_name+' ('+itemFound.prefix+itemFound.code+')');
           td3.text(itemFound.unit_name);
           td4.find('input').val(itemFound.quantity);
-          
+
           td5.find('input').val(formatNumber(itemFound.unit_cost * 1));
           td6.text(formatNumber( (itemFound.unit_cost * 1) * (itemFound.quantity*1) ) );
-   
+
           var taxValue = itemFound.tax;
           var inputTax = $('<input type="hidden" id="tax" data-taxrate="'+itemFound.tax+'" value="'+itemFound.tax+'" />');
-   
-   
+
+
          td7.text(formatNumber(itemFound.tax));
          td7.append(inputTax);
          td8.text(formatNumber(parseFloat(taxValue)+parseFloat(itemFound.unit_cost * itemFound.quantity)));
-   
+
           newTr.append(td1);
           newTr.append(td2);
           newTr.append(td3);
@@ -1348,18 +1355,18 @@
           newTr.append(td6);
           newTr.append(td7);
           newTr.append(td8);
-         
+
         newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem'+a+'(this); return false;"><i class="fa fa-times"></i></a></td');
-        
+
          $('table.item-export'+a+' tbody').append(newTr);
         });
-        
+
         $('.total'+a).text($('<tr class="sortable item'+a+'"></tr>').length)
-        
-        
-        
+
+
+
     }
-    
+
     function formart_num(id_input)
    {
      key="";
@@ -1370,8 +1377,8 @@
      });
      $("#"+id_input).val(formatNumber(key, '.', '.'));
    }
-   
-   
+
+
    function loadProductsInCategory(category_id){
        var product_id=$('#custom_item_select');
        product_id.find('option:gt(0)').remove();
@@ -1381,16 +1388,16 @@
                url : admin_url + 'invoice_items/getProductsInCate/' + category_id,
                dataType : 'json',
            })
-           .done(function(data){          
+           .done(function(data){
                $.each(data, function(key,value){
-                   
+
                    product_id.append('<option value="' + value.id + '">'+'('+ value.code +') '  + value.name + '</option>');
                });
                product_id.selectpicker('refresh');
            });
        }
    }
-   
+
    function loadProductsInCategory1(category_id){
        var product_id=$('#custom_item_select1');
        product_id.find('option:gt(0)').remove();
@@ -1400,8 +1407,8 @@
                url : admin_url + 'invoice_items/getProductsInCate/' + category_id,
                dataType : 'json',
            })
-           .done(function(data){   
-   
+           .done(function(data){
+
                $.each(data, function(key,value){
                    product_id.append('<option value="' + value.id + '">'+'('+ value.code +') '  + value.name + '</option>');
                });
