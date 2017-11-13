@@ -56,7 +56,11 @@
          </ul>
          <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="item_detail">
-               <?php echo form_open_multipart(base_url().'admin/quotes/quote_add_ajax', array('id'=>'quotes_form','class' => 'sales-form', 'autocomplete' => 'off')); ?>
+              <?php
+                $quotesAction = (isset($item)) ? 'quote_detail/'.$item->id : 'quote_add_ajax';
+               ?>
+
+               <?php echo form_open_multipart(base_url().'admin/quotes/'.$quotesAction, array('id'=>'quotes_form','class' => 'sales-form', 'autocomplete' => 'off')); ?>
                <div class="row">
                   <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                      <?php
@@ -697,7 +701,7 @@
 <?php $this->load->view('admin/quotes/renew_contract'); ?>
 <?php } ?>
 <script>
-   _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required'},addQuotes);
+   _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required'}, addQuotes);
 
     function addQuotes(form) {
         var data = $(form).serialize();

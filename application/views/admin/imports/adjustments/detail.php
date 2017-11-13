@@ -163,7 +163,7 @@
                         <div class="col-md-4">
                             <div class="form-group mbot25">
                                 <label for="productItems" class="control-label"><?=_l('item_name')?></label>
-                                <select class="selectpicker no-margin" data-width="100%" id="productItems" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
+                                <select class="selectItem selectpicker no-margin" data-width="100%" id="productItems" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -210,15 +210,16 @@
                                             <?php echo _l('item_specification'); ?>
                                         </td>
                                         <td>
-                                            <button style="display:none" id="btnAdd" type="button" onclick="createTrItem(); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
+                                            <button style="display:none" id="btnAdd" type="button" onclick="createTrItem('product'); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
                                         </td>
                                     </tr>
                                     <?php
                                     $i=0;
-                                    $totalPrice=0;
-                                    if(isset($item) && count($item->items) > 0) {
+                                    $totalProductPrice = 0;
+                                    $numberTotalProduct = 0;
+                                    if(isset($productItems) && count($productItems->items) > 0) {
 
-                                        foreach($item->items as $value) {
+                                        foreach($productItems->items as $value) {
                                         ?>
                                     <tr class="sortable item">
                                         <td>
@@ -231,10 +232,146 @@
                                         <td><?php echo number_format($value->unit_cost); ?></td>
                                         <td><?php echo number_format($value->sub_total); ?></td>
                                         <td><?php echo $value->product_specifications	; ?></td>
-                                        <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td>
+                                        <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this, 'product'); return false;"><i class="fa fa-times"></i></a></td>
+                                    </tr>
+
+                                        <?php
+
+                                            $numberTotalProduct += $value->quantity;
+                                            $totalProductPrice  += $value->sub_total;
+                                            $i++;
+                                        }
+                                    }
+
+                                    // echo('<pre>');
+                                    // print_r($productItems->items);
+                                    // echo('</pre>');
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            <table class="table text-right">
+                                <tbody>
+                                    <tr>
+                                        <td><span class="bold"><?php echo _l('purchase_total_items'); ?> :</span>
+                                        </td>
+                                        <td class="total">
+                                            <?php echo $numberTotalProduct ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="bold"><?php echo _l('purchase_total_price'); ?> :</span>
+                                        </td>
+                                        <td class="totalPrice">
+                                            <?php echo number_format($totalProductPrice) ?> VND
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <!-- End Customize from invoice -->
+                </div>
+
+
+
+                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+
+                    <!-- Cusstomize from invoice -->
+                    <div class="panel-body mtop10">
+                        <div class="row">
+                            <h4 class="text-center" style="background: #ccc;padding:10px; margin: 10px 15px;">LINH KIỆN</h4>
+
+                            <div class="col-md-5 text-right show_quantity_as_wrapper">
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <?php
+                                echo render_select('categories_name_accessories', $categories_b, array('id', 'category'), 'Hãng linh kiện');
+                            ?>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group mbot25">
+                                <label for="accessoryItems" class="control-label"><?=_l('item_name')?></label>
+                                <select class="selectItem selectpicker no-margin" data-width="100%" id="accessoryItems" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive s_table">
+                            <table class="table items item-purchase-accessory no-mtop">
+                                <thead>
+                                    <tr>
+                                        <th><input type="hidden" id="itemID" value="" /></th>
+                                        <th width="20%" class="text-left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_name'); ?>"></i> <?php echo _l('item_name'); ?></th>
+                                        <th width="10%" class="text-left"><?php echo _l('item_unit'); ?></th>
+                                        <th width="10%" class="text-left"><?php echo _l('item_quantity'); ?></th>
+
+                                        <th width="10%" class="text-left"><?php echo _l('item_price_buy'); ?></th>
+                                        <th width="10%" class="text-left"><?php echo _l('purchase_total_price'); ?></th>
+                                        <th width="15%" class="text-left"><?php echo _l('item_specification'); ?></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr class="main2">
+                                        <td><input type="hidden" id="itemID" value="" /></td>
+                                        <td>
+                                            <?php echo _l('item_name'); ?>
+                                        </td>
+                                        <td>
+                                            <input type="hidden" id="item_unit" value="" />
+                                            <?php echo _l('item_unit'); ?>
+                                        </td>
+
+                                        <td>
+                                            <input class="mainQuantity"  type="number" min="1" value="1"  class="form-control" placeholder="<?php echo _l('item_quantity'); ?>">
+                                        </td>
+
+                                        <td>
+                                            <?php echo _l('item_price_buy'); ?>
+                                        </td>
+                                        <td>
+                                            0
+                                        </td>
+                                        <td>
+                                            <?php echo _l('item_specification'); ?>
+                                        </td>
+                                        <td>
+                                            <button style="display:none" id="btnAddAccessory" type="button" onclick="createTrItem('accessory'); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    $countAccessory       = 0;
+                                    $totalAccessoryPrice  = 0;
+                                    $numberTotalAccessory = 0;
+                                    if(isset($accessoryItems) && count($accessoryItems->items) > 0) {
+
+                                        foreach($accessoryItems->items as $value) {
+                                        ?>
+                                    <tr class="sortable item">
+                                        <td>
+                                            <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
+                                        </td>
+                                        <td class="dragger"><?php echo $value->product_name; ?></td>
+                                        <td><?php echo $value->unit_name; ?></td>
+                                        <td><input class="mainQuantity" type="number" name="items[<?php echo $i; ?>][quantity]" value="<?php echo $value->quantity; ?>"></td>
+
+                                        <td><?php echo number_format($value->unit_cost); ?></td>
+                                        <td><?php echo number_format($value->sub_total); ?></td>
+                                        <td><?php echo $value->product_specifications   ; ?></td>
+                                        <td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this, 'accessory'); return false;"><i class="fa fa-times"></i></a></td>
                                     </tr>
                                         <?php
-                                            $totalPrice += $value->sub_total;
+                                            $totalAccessoryPrice  += $value->sub_total;
+                                            $numberTotalAccessory += $value->quantity;
+                                            $countAccessory++;
                                             $i++;
                                         }
                                     }
@@ -248,15 +385,15 @@
                                     <tr>
                                         <td><span class="bold"><?php echo _l('purchase_total_items'); ?> :</span>
                                         </td>
-                                        <td class="total">
-                                            <?php echo $i ?>
+                                        <td class="count-accessory">
+                                            <?php echo $numberTotalAccessory ?>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><span class="bold"><?php echo _l('purchase_total_price'); ?> :</span>
                                         </td>
-                                        <td class="totalPrice">
-                                            <?php echo number_format($totalPrice) ?> VND
+                                        <td class="totalPriceAccessory">
+                                            <?php echo number_format($totalAccessoryPrice) ?> VND
                                         </td>
                                     </tr>
                                 </tbody>
@@ -265,6 +402,9 @@
                     </div>
                 <!-- End Customize from invoice -->
                 </div>
+
+
+
 
                 <?php if(isset($item) && $item->status != 2 || !isset($item)) { ?>
                   <button class="btn btn-info mtop20 only-save customer-form-submiter" style="margin-left: 15px">
@@ -291,14 +431,22 @@
 
     var itemList = <?php echo json_encode($items);?>;
     var productList = null;
+    var accessoryList = null;
+
+    $('#categories_name_accessories').change(function(e){
+       let category_id = $(this).val();
+       loadProductsInCategory(category_id, 'accessoryItems');
+    });
+
 
     $('#categories_name').change(function(e){
        let category_id = $(this).val();
-       loadProductsInCategory(category_id);
+       loadProductsInCategory(category_id, 'productItems');
     });
 
-    function loadProductsInCategory(category_id){
-        var productSelect = $('#productItems');
+    function loadProductsInCategory(category_id, selectId){
+        var productSelect = $('#'+selectId);
+
         productSelect.find('option:gt(0)').remove();
         productSelect.selectpicker('refresh');
 
@@ -308,7 +456,13 @@
             async    : false,
         })
         .done(function(data){
-            productList = data;
+
+            if (selectId == 'productItems') {
+                productList = data;
+            }else{
+                accessoryList = data;
+            }
+
 
             $.each(data, function(key, value){
                productSelect.append('<option value="' + value.id + '">'+'('+ value.code +') '  + value.name + '</option>');
@@ -316,16 +470,20 @@
             productSelect.selectpicker('refresh');
         });
 
-        console.log('productList', productList);
-
     }
 
-    $('#productItems').change(function(e) {
+    $('.selectItem').change(function(e) {
         let productId = $(this).val();
 
-        productItem = findProductItem(productId);
+        let classMain = ($(this).attr('id') === 'productItems') ? 'main' : 'main2';
+        let idBtnAdd  = ($(this).attr('id') === 'productItems') ? 'btnAdd' : 'btnAddAccessory';
+        let listItem  = ($(this).attr('id') === 'productItems') ? productList : accessoryList;
+
+
+        let productItem = findItem(productId, listItem);
+
         if(typeof(productItem) != 'undefined'){
-            let trBar = $('tr.main');
+            let trBar = $('tr.'+classMain);
             trBar.find('td:first > input').val(productItem.id);
             trBar.find('td:nth-child(2)').text(productItem.name);
             trBar.find('td:nth-child(3)').text(productItem.unit_name);
@@ -335,10 +493,10 @@
             trBar.find('td:nth-child(6)').text(formatNumber(productItem.price_buy * 1) );
             trBar.find('td:nth-child(7)').text(productItem.specification);
             isNew = true;
-            $('#btnAdd').show();
+            $('#'+idBtnAdd).show();
         }else {
             isNew = false;
-            $('#btnAdd').hide();
+            $('#'+idBtnAdd).hide();
         }
     });
 
@@ -354,10 +512,10 @@
         return itemResult;
     };
 
-    var findItem = (id) => {
+    var findItem = (id, listItem) => {
         var itemResult;
 
-        $.each(itemList, (index, value) => {
+        $.each(listItem, (index, value) => {
             if(value.id == id) {
                 itemResult = value;
                 return false;
@@ -382,14 +540,25 @@
 
 
 
-    var total = <?php echo $i ?>;
-    var totalPrice = <?php echo $totalPrice ?>;
-    var uniqueArray = <?php echo $i ?>;
+    var total                = <?php echo $i ?>;
+    var countAccessory       = <?php echo $countAccessory ?>;
+    var totalPrice           = <?php echo $totalProductPrice ?>;
+    var totalAccessoryPrice  = <?php echo $totalAccessoryPrice ?>;
+    var uniqueArray          = <?php echo $i ?>;
     var isNew = false;
-    var createTrItem = () => {
+
+
+
+    var createTrItem = (kindCreate) => {
+
+
+        let classTable  = (kindCreate == 'product') ? 'item-purchase' : 'item-purchase-accessory';
+        let classMain   = (kindCreate == 'product') ? 'main' : 'main2';
+        let delArgument = (kindCreate == 'product') ? 'product' : 'accessory';
+
         if(!isNew) return;
-        if( $('table.item-purchase tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').length ) {
-            $('table.item-purchase tbody tr:gt(0)').find('input[value=' + $('tr.main').find('td:nth-child(1) > input').val() + ']').parent().find('td:nth-child(2) > input').focus();
+        if( $('table.'+classTable+' tbody tr:gt(0)').find('input[value=' + $('tr.'+classMain).find('td:nth-child(1) > input').val() + ']').length ) {
+            $('table.'+classTable+' tbody tr:gt(0)').find('input[value=' + $('tr.'+classMain).find('td:nth-child(1) > input').val() + ']').parent().find('td:nth-child(2) > input').focus();
             alert('Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!');
             return;
         }
@@ -403,14 +572,14 @@
         var td6 = $('<td></td>');
         var td7 = $('<td></td>');
 
-        td1.find('input').val($('tr.main').find('td:nth-child(1) > input').val());
-        td2.text($('tr.main').find('td:nth-child(2)').text());
-        td3.text($('tr.main').find('td:nth-child(3)').text());
-        td4.find('input').val($('tr.main').find('td:nth-child(4) > input').val());
+        td1.find('input').val($('tr.'+classMain).find('td:nth-child(1) > input').val());
+        td2.text($('tr.'+classMain).find('td:nth-child(2)').text());
+        td3.text($('tr.'+classMain).find('td:nth-child(3)').text());
+        td4.find('input').val($('tr.'+classMain).find('td:nth-child(4) > input').val());
 
-        td5.text( $('tr.main').find('td:nth-child(5)').text() );
-        td6.text( $('tr.main').find('td:nth-child(6)').text() );
-        td7.text( $('tr.main').find('td:nth-child(7)').text() );
+        td5.text( $('tr.'+classMain).find('td:nth-child(5)').text() );
+        td6.text( $('tr.'+classMain).find('td:nth-child(6)').text() );
+        td7.text( $('tr.'+classMain).find('td:nth-child(7)').text() );
 
         newTr.append(td1);
         newTr.append(td2);
@@ -420,12 +589,13 @@
         newTr.append(td6);
         newTr.append(td7);
 
-        newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td');
-        $('table.item-purchase tbody').append(newTr);
-        total++;
-        totalPrice += $('tr.main').find('td:nth-child(4) > input').val() * $('tr.main').find('td:nth-child(5)').text().replace(/\+/g, ' ');
+        newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this,\''+delArgument+'\'); return false;"><i class="fa fa-times"></i></a></td');
+        $('table.'+classTable+' tbody').append(newTr);
+
+        (kindCreate == 'product') ? total++ : countAccessory++;
+        totalPrice += $('tr.'+classMain).find('td:nth-child(4) > input').val() * $('tr.'+classMain).find('td:nth-child(5)').text().replace(/\+/g, ' ');
         uniqueArray++;
-        refreshTotal();
+        refreshTotal(classTable);
         // refreshAll();
     };
     var refreshAll = () => {
@@ -444,22 +614,38 @@
 
 
     };
-    var deleteTrItem = (trItem) => {
+    var deleteTrItem = (trItem, kindCreate = 'product') => {
         var current = $(trItem).parent().parent();
         totalPrice -= current.find('td:nth-child(4) > input').val() * current.find('td:nth-child(5)').text().replace(/\,/g, '');
         $(trItem).parent().parent().remove();
-        total--;
-        refreshTotal();
+        if (kindCreate == 'product') {
+            total--;
+            classTable = 'item-purchase';
+        }else{
+            countAccessory--;
+            classTable = 'item-purchase-accessory';
+        }
+
+        refreshTotal(classTable);
     };
-    var refreshTotal = () => {
-        $('.total').text(formatNumber(total));
-        var items = $('table.item-purchase tbody tr:gt(0)');
+    var refreshTotal = (classTable) => {
+        let clasTotalPrice  = (classTable == 'item-purchase') ? 'totalPrice' : 'totalPriceAccessory';
+        let classCount      = (classTable == 'item-purchase') ? 'total' : 'count-accessory';
+        let count           = (classTable == 'item-purchase') ? total : countAccessory;
+
+        var items = $('table.'+classTable+' tbody tr:gt(0)');
         totalPrice = 0;
-        $.each(items, (index,value)=>{
+
+        let numberTotalItems = 0;
+
+        $.each(items, (index, value)=>{
             totalPrice += $(value).find('td:nth-child(4) > input').val() * $(value).find('td:nth-child(5)').text().replace(/\,/g, '');
+            numberTotalItems += parseInt($(value).find('td:nth-child(4) > input').val());
         });
-        $('.totalPrice').text(formatNumber(totalPrice));
+        $('.'+clasTotalPrice).text(formatNumber(totalPrice));
+        $('.'+classCount).text(formatNumber(numberTotalItems));
     };
+
     $('#custom_item_select').change((e)=>{
         var id = $(e.currentTarget).val();
         var itemFound = findItem(id);
@@ -485,12 +671,17 @@
     });
 
     $(document).on('keyup', '.mainQuantity',(e)=>{
+        if ($(e.currentTarget).parents('table').hasClass('item-purchase')) {
+            classTable = 'item-purchase';
+        }else{
+            classTable = 'item-purchase-accessory';
+        }
 
         var currentQuantityInput = $(e.currentTarget);
         var Gia = currentQuantityInput.parent().find(' + td');
         var Tong = Gia.find(' + td');
         Tong.text( formatNumber(Gia.text().replace(/\,/g, '') * currentQuantityInput.val()) );
-        refreshTotal();
+        refreshTotal(classTable);
     });
     $('#warehouse_type').change(function(e){
       var warehouse_type = $(e.currentTarget).val();

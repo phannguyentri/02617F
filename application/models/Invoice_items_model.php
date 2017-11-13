@@ -35,13 +35,34 @@ class Invoice_items_model extends CRM_Model
         $this->db->join('tbltaxes','tbltaxes.id=tblitems.tax','left');
         $this->db->order_by('tblitems.id', 'desc');
         if (is_numeric($id)) {
-            
+
             $this->db->where('tblitems.id', $id);
             $item = $this->db->get()->row();
             $item->attachments = $this->get_invoice_attachments($id);
             return $item;
         }
-        
+
+        return $this->db->get()->result_array();
+    }
+
+    public function get_full_by_category_id($id = '', $categoryParentId)
+    {
+        $this->db->select('tblitems.*,tblunits.unit as unit_name,tbltaxes.name as tax_name, tbltaxes.taxrate as taxrate, tblcategories.category
+            ');
+        $this->db->from('tblitems');
+        $this->db->join('tblcategories', 'tblcategories.id=tblitems.category_id', 'left');
+        $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
+        $this->db->join('tbltaxes','tbltaxes.id=tblitems.tax','left');
+        $this->db->order_by('tblitems.id', 'desc');
+        $this->db->where('tblcategories.category_parent', $categoryParentId);
+        if (is_numeric($id)) {
+
+            $this->db->where('tblitems.id', $id);
+            $item = $this->db->get()->row();
+            $item->attachments = $this->get_invoice_attachments($id);
+            return $item;
+        }
+
         return $this->db->get()->result_array();
     }
 
@@ -95,7 +116,7 @@ class Invoice_items_model extends CRM_Model
         $this->db->from('item_price_history');
         $this->db->where('id_item', $id);
         $this->db->order_by('id', 'desc');
-        
+
         return $this->db->get()->result_array();
     }
     public function getProvince($id = '')
@@ -201,7 +222,7 @@ class Invoice_items_model extends CRM_Model
     {
         $itemid = $data['itemid'];
         unset($data['itemid']);
-        
+
         if(isset($data['price']) && isset($item) && $data['price'] != $item->price) {
             $price_history_data = array(
                 'item_id' => $item->id,

@@ -52,6 +52,7 @@ class Imports extends Admin_controller
                 if (!has_permission('import_items', '', 'edit')) {
                         access_denied('import_items');
                 }
+
                 $success = $this->imports_model->update($this->input->post(), $id);
                 if ($success == true) {
                     set_alert('success', _l('updated_successfuly', _l('adjustments')));
@@ -68,6 +69,10 @@ class Imports extends Admin_controller
 
         } else {
             $data['item'] = $this->imports_model->getImportByID($id);
+
+            $data['productItems'] = $this->imports_model->getImportByIDAndCategoryParentID($id, 388);
+            $data['accessoryItems'] = $this->imports_model->getImportByIDAndCategoryParentID($id, 446);
+
             $data['warehouse_id']=$data['item']->items[0]->warehouse_id;
             $data['warehouse_type']=$this->warehouse_model->getWarehouses($data['warehouse_id'])->kindof_warehouse;
             if (!$data['item']) {
@@ -81,6 +86,7 @@ class Imports extends Admin_controller
         $data['title'] = $title;
 
         $this->load->model('quotes_model');
+
         $data['categories_a'] = $this->quotes_model->getCategory(1,NULL,388);
         $data['categories_b'] = $this->quotes_model->getCategory(1,NULL,446);
 

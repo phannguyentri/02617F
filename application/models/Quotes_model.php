@@ -11,9 +11,9 @@ class Quotes_model extends CRM_Model
     public function getQuoteByIDDate($id,$date){
         $this->db->where('create_by',$id);
         $this->db->where('create_date',$date);
-        return $this->db->count_all_results('tblquotes');    
+        return $this->db->count_all_results('tblquotes');
     }
-    
+
     public function getQuoteByID($id = '')
     {
         $this->db->select('tblquotes.*,tblstaff.fullname as creater,(SELECT fullname  FROM tblstaff WHERE user_head_id=tblstaff.staffid) as head, tblcategories.description as cdescription ,(SELECT fullname  FROM tblstaff WHERE user_admin_id=tblstaff.staffid) as admin,tblclients.address,tblclients.phonenumber,tblclients.email,tblclients.company as customer_name');
@@ -32,14 +32,14 @@ class Quotes_model extends CRM_Model
             // var_dump($invoice);die();
             if ($invoice) {
                 $invoice->items = $this->getQuoteItems($id);
-                
+
                 $invoice->items1 = $this->getQuoteItems1($id);
                 $invoice->items2 = $this->getIncurred($id);
             }
 
             return $invoice;
         }
-        
+
         return false;
     }
 
@@ -48,22 +48,22 @@ class Quotes_model extends CRM_Model
         if($idquote){
             $this->db->where('tblincurred_quote_id',$idquote);
         }
-       
+
         return $this->db->get('tblincurred')->result();
 
 
     }
 
     public function getIncurredByID($id){
-        $this->db->select('*');        
-        
+        $this->db->select('*');
+
         $this->db->where('tblincurred_id',$id);
-       
+
         return $this->db->get('tblincurred')->row();
 
 
     }
-    
+
     public function getQuoteItems($id)
     {
         $this->db->select('tblquote_items.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id, tblitems.prefix,tblitems.code,tblitems.price,tblitems.product_features,tblitems.long_description, tblitems.warranty, tblitems.specification,tblcountries.short_name as made_in,tblitems.avatar as image,tbltaxes.name as tax_name,tbltaxes.taxrate as taxrate, tblcategories.category');
@@ -76,9 +76,9 @@ class Quotes_model extends CRM_Model
         $this->db->where('quote_id', $id);
         $items = $this->db->get()->result();
         return $items;
-        
+
     }
-    
+
     public function send_contract_to_client($id, $attachpdf = true, $cc = '')
     {
 
@@ -88,7 +88,7 @@ class Quotes_model extends CRM_Model
             $pdf    = quote_detail_pdf($contract);
             $attach = $pdf->Output(slug_it($contract->subject) . '.pdf', 'S');
         }
-        $sent_to = $this->input->post('sent_to');        
+        $sent_to = $this->input->post('sent_to');
         $send    = false;
         if (is_array($sent_to)) {
             $i = 0;
@@ -119,7 +119,7 @@ class Quotes_model extends CRM_Model
 
                     $merge_fields = array();
                     echo '<pre>';var_dump($merge_fields);die();
-                    
+
                     $merge_fields = array_merge($merge_fields, get_client_contact_merge_fields($contract->client, $contact_id));
                     $merge_fields = array_merge($merge_fields, get_contract_merge_fields($id));
                     // Send cc only for the first contact
@@ -166,20 +166,20 @@ class Quotes_model extends CRM_Model
         $this->db->where('quote_id', $id);
         $items = $this->db->get()->result();
         return $items;
-        
+
     }
-    
+
     public function update_status($id, $data)
     {
         $this->db->where('id', $id);
         $this->db->update('tblquotes', $data);
-        
+
         if ($this->db->affected_rows() > 0) {
             return true;
         }
         return false;
     }
-    
+
     public function delete($id)
     {
         $this->db->where('id', $id);
@@ -188,7 +188,7 @@ class Quotes_model extends CRM_Model
 
             $this->db->where('quote_id', $id);
             $this->db->delete('tblquote_items');
-            
+
             $this->db->where('quote_id', $id);
             $this->db->delete('tblquote_items1');
 
@@ -205,19 +205,32 @@ class Quotes_model extends CRM_Model
     {
         $this->db->where('id', $id);
         $this->db->update('tblquotes', $data);
-        
+
         if ($this->db->affected_rows() > 0) {
             return true;
         }
         return false;
     }
 
-    
-    
-    
-    
+
     public function add($data)
     {
+        // echo "<pre>";
+        // print_r($data);
+        // echo "</pre>";
+
+        // foreach ($data['items1'] as $item){
+        //     $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id'=>1))->row();
+        //     if ($currentItem) {
+        //         echo "<pre>";
+        //         print_r($currentItem);
+        //         echo "</pre>";
+        //     }
+
+        // }
+        // die('2');
+
+
         $quote = array(
             'prefix' => $data['prefix'],
             'subject' => $data['subject'],
@@ -242,7 +255,7 @@ class Quotes_model extends CRM_Model
             $items1         = $data['items1'];
             $incurred       = $data['incurred'];
             foreach ($items1 as $key => $item) {
-                
+
                 $product   = $this->getProductById($item['id']);
                 $sub_total = (str_replace('.','',$item['unit_cost'])*1) * $item['quantity'];
                 $total += $sub_total;
@@ -263,7 +276,42 @@ class Quotes_model extends CRM_Model
                     'amount' => $sub_total + $tax
                 );
                 $this->db->insert('tblquote_items1', $item_data);
+
                 if ($this->db->affected_rows() > 0) {
+
+                    /**
+                     * Sync quantity ware import
+                     */
+                    $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id' => 1))->row();
+                    if ($currentItem) {
+                        $changeQuantityWareImport   = $currentItem->product_quantity - $item['quantity'];
+                        $arrData                    = array(
+                            'product_quantity' => $changeQuantityWareImport
+                        );
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
+                    }
+
+                    /**
+                     * Sync quantity ware wait
+                     */
+
+                    $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id' => 2))->row();
+                    if ($currentItem) {
+                        $changeQuantityWareWait   = $currentItem->product_quantity + $item['quantity'];
+                        $arrData                     = array(
+                            'product_quantity' => $changeQuantityWareWait
+                        );
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 2));
+                    }else{
+                        $arrData = array(
+                            'product_id'        => $item['id'],
+                            'warehouse_id'      => 2,
+                            'product_quantity'  => $item['quantity']
+                        );
+
+                        $this->db->insert('tblwarehouses_products',$arrData);
+                    }
+
                     logActivity('Insert Quote Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                 }
             }
@@ -275,14 +323,14 @@ class Quotes_model extends CRM_Model
                     $item_data = array(
                         'tblincurred_quote_id' => $insert_id,
                         'tblincurred_name' => $item['name_incurred'],
-                        'tblincurred_price' => $price,                    
+                        'tblincurred_price' => $price,
                     );
                     $this->db->insert('tblincurred', $item_data);
                 }
             }
 
             foreach ($items as $key => $item) {
-                
+
                 $product   = $this->getProductById($item['id']);
                 $sub_total = (str_replace('.','',$item['unit_cost'])*1) * $item['quantity'];
                 $total += $sub_total;
@@ -304,10 +352,48 @@ class Quotes_model extends CRM_Model
                 );
                 $this->db->insert('tblquote_items', $item_data);
                 if ($this->db->affected_rows() > 0) {
+
+                    /**
+                     * Sync quantity ware import
+                     */
+                    $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id' => 1))->row();
+                    if ($currentItem) {
+
+
+                        $changeQuantityWareImport   = $currentItem->product_quantity - $item['quantity'];
+                        // echo $changeQuantityWareImport;
+
+                        $arrData                    = array('product_quantity' => $changeQuantityWareImport);
+
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
+
+                    }
+
+                    /**
+                     * Sync quantity ware wait
+                     */
+
+                    $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id' => 2))->row();
+                    if ($currentItem) {
+                        $changeQuantityWareWait   = $currentItem->product_quantity + $item['quantity'];
+                        $arrData                  = array(
+                            'product_quantity' => $changeQuantityWareWait
+                        );
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 2));
+                    }else{
+                        $arrData = array(
+                            'product_id'        => $item['id'],
+                            'warehouse_id'      => 2,
+                            'product_quantity'  => $item['quantity']
+                        );
+
+                        $this->db->insert('tblwarehouses_products',$arrData);
+                    }
+
                     logActivity('Insert Quote Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                 }
             }
-            
+
             $this->db->update('tblquotes', array(
                 'total' => $total,
                 'incurred' => $total_price,
@@ -319,7 +405,7 @@ class Quotes_model extends CRM_Model
         }
         return false;
     }
-    
+
     public function getProductById($id)
     {
         $this->db->select('tblitems.*,tblunits.unit as unit_name');
@@ -337,10 +423,10 @@ class Quotes_model extends CRM_Model
         return $this->db->get('tblstaff')->result_array();
     }
 
-    
+
 
     public function getCategory($child,$id,$pro){
-        $this->db->select('tblcategories.*'); 
+        $this->db->select('tblcategories.*');
         if($id){
             $this->db->where('id', $id);
             return $this->db->get('tblcategories')->row();
@@ -354,7 +440,7 @@ class Quotes_model extends CRM_Model
         }
         return $this->db->get('tblcategories')->result_array();
     }
-    
+
     public function update($data, $id)
     {
 
@@ -370,6 +456,8 @@ class Quotes_model extends CRM_Model
             'date' => to_sql_date($data['date']),
             'cate_delegate_id' => $data['cate_delegate_id'],
         );
+
+
         if ($this->db->update('tblquotes', $quote, array(
             'id' => $id
         ))) {
@@ -384,14 +472,36 @@ class Quotes_model extends CRM_Model
             $items       = $data['items'];
             $total       = 0;
             $affected_id = array();
+
+
+            // echo "<pre>";
+            // print_r($items);
+            // echo "</pre>";
+
+
+            // foreach ($items as $item) {
+            //     $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id'=>1))->row();
+            //     if ($currentItem) {
+            //         echo "<pre>";
+            //         print_r($currentItem);
+            //         echo "</pre>";
+
+            //         if ($currentItem->product_quantity > $item['quantity']) {
+            //             $changeQuantityWareImport = $currentItem->product_quantity - $item['quantity'];
+            //         }
+
+            //     }
+            // }
+            // die('1x');
+
             foreach ($items as $key => $item) {
                 $affected_id[] = $item['id'];
                 $product       = $this->getProductById($item['id']);
                 $sub_total     = (str_replace('.','',$item['unit_cost'])*1) * $item['quantity'];
-                $total += $sub_total;
+                $total     += $sub_total;
                 $itm       = $this->getQuoteItem($id, $item['id']);
                 $tax       = ((str_replace('.','',$item['unit_cost'])*1) * ($product->rate * 1)) / 100;
-                $vat += $tax;
+                $vat       += $tax;
                 $item_data = array(
                     'quote_id' => $id,
                     'product_id' => $item['id'],
@@ -406,7 +516,7 @@ class Quotes_model extends CRM_Model
                     'tax' => $tax,
                     'amount' => $sub_total + $tax
                 );
-                
+
                 if ($itm) {
                     $this->db->update('tblquote_items', $item_data, array(
                         'id' => $itm->id
@@ -433,7 +543,7 @@ class Quotes_model extends CRM_Model
             }
 
 
-            
+
             $items        = $data['items1'];
             $affected_id1 = array();
             foreach ($items as $key => $item) {
@@ -459,14 +569,14 @@ class Quotes_model extends CRM_Model
                     'tax' => $tax,
                     'amount' => $sub_total + $tax
                 );
-               
-                
+
+
                 if ($itm) {
                     $this->db->update('tblquote_items1', $item_data, array(
                         'id' => $itm->id
                     ));
                     if ($this->db->affected_rows() > 0) {
-                        
+
                         $affected = true;
                         logActivity('Edit Quote Item Updated [ID:' . $id . ', Item ID' . $item['id'] . ']');
 
@@ -504,16 +614,16 @@ class Quotes_model extends CRM_Model
                             'tblincurred_quote_id' => $id,
                             'tblincurred_name' => $value['name_incurred'],
                             'tblincurred_price' => (str_replace('.','',$value['pay_incurred'])*1),
-                            
+
                         );
-                        
-                
+
+
 
                         if($itm){
                             $this->db->update('tblincurred', $item_data, array(
                                 'tblincurred_id' => $itm->tblincurred_id
                             ));
-                            if ($this->db->affected_rows() > 0) {                        
+                            if ($this->db->affected_rows() > 0) {
                                 $affected = true;
                                 logActivity('Edit Quote Item Updated [ID:' . $id . ', Item ID' . $value['tblincurred_id'] . ']');
 
@@ -529,7 +639,7 @@ class Quotes_model extends CRM_Model
                         }
 
                     }
-                    
+
                     if (!empty($affected_id2)) {
                         $this->db->where('tblincurred_quote_id', $id);
                         $this->db->where_not_in('tblincurred_id', $affected_id2);
@@ -551,12 +661,12 @@ class Quotes_model extends CRM_Model
                 'total_vat' => $vat,
             ), array(
                 'id' => $id
-            )); 
+            ));
             return $affected;
         }
         return false;
     }
-    
+
     public function getQuoteItem($quote_id, $product_id)
     {
         if (is_numeric($quote_id) && is_numeric($product_id)) {
@@ -566,7 +676,7 @@ class Quotes_model extends CRM_Model
         }
         return false;
     }
-    
+
     public function getQuoteItem1($quote_id, $product_id)
     {
         if (is_numeric($quote_id) && is_numeric($product_id)) {

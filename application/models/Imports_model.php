@@ -24,16 +24,48 @@ class Imports_model extends CRM_Model
         return false;
     }
 
+    public function getImportByIDAndCategoryParentID($id = '', $categoryParentId)
+    {
+        $this->db->select('tblimports.*,tblstaff.fullname as creater,(SELECT fullname  FROM tblstaff WHERE user_head_id=tblstaff.staffid) as head,(SELECT fullname  FROM tblstaff WHERE user_admin_id=tblstaff.staffid) as admin');
+        $this->db->from('tblimports');
+        $this->db->join('tblstaff','tblstaff.staffid=tblimports.create_by','left');
+        if (is_numeric($id)) {
+            $this->db->where('id', $id);
+            $invoice = $this->db->get()->row();
+            if ($invoice) {
+                $invoice->items       = $this->getImportItemsByParent($id, $categoryParentId);
+            }
+            return $invoice;
+        }
+
+        return false;
+    }
+
+    public function getImportItemsByParent($id, $categoryParentId)
+    {
+        $this->db->select('tblimport_items.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id,tblitems.prefix,tblitems.code,');
+        $this->db->from('tblimport_items');
+        $this->db->join('tblitems','tblitems.id=tblimport_items.product_id','left');
+        $this->db->join('tblcategories', 'tblcategories.id=tblitems.category_id', 'left');
+        $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
+        $this->db->where('import_id', $id);
+        $this->db->where('tblcategories.category_parent', $categoryParentId);
+        $items = $this->db->get()->result();
+        return $items;
+
+    }
+
+
     public function getWarehouseTypes($id = '')
     {
         $this->db->select('tbl_kindof_warehouse.*');
         $this->db->from('tbl_kindof_warehouse');
-        if (is_numeric($id)) 
+        if (is_numeric($id))
         {
             $this->db->where('id', $id);
             return $this->db->get()->row();
         }
-        else 
+        else
         {
             return $this->db->get()->result_array();
         }
@@ -60,14 +92,14 @@ class Imports_model extends CRM_Model
         $count=0;
         if($imports)
         {
-            foreach ($imports->items as $key => $value) 
+            foreach ($imports->items as $key => $value)
             {
                 $item=$this->db->get_where('tblwarehouses_products',array('product_id'=>$value->product_id,'warehouse_id'=>$value->warehouse_id))->row();
                 if($item)
                 {
                     $total_quantity=$value->quantity+$item->product_quantity;
                     $data=array('product_quantity'=>$total_quantity);
-                    $this->db->update('tblwarehouses_products',$data,array('id'=>$item->id));
+                    $this->db->update('tblwarehouses_products',$data,array('id'=>$item->id, 'warehouse_id' => $value->warehouse_id));/////////////////////////////
                     $count++;
                 }
                 else
@@ -85,9 +117,9 @@ class Imports_model extends CRM_Model
                         $count++;
                     }
                 }
-                
+
             }
-        }        
+        }
         if ($count > 0) {
             return true;
         }
@@ -156,7 +188,7 @@ class Imports_model extends CRM_Model
     }
 
     public function getProductById($id)
-    {       
+    {
             $this->db->select('tblitems.*,tblunits.unit as unit_name');
             $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
             $this->db->where('id', $id);
@@ -193,7 +225,7 @@ class Imports_model extends CRM_Model
             'create_by'=>get_staff_user_id()
             );
     // var_dump($import);die();
-        
+
         $this->db->insert('tblimports', $import);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
@@ -236,7 +268,7 @@ class Imports_model extends CRM_Model
             'code'=>$data['code'],
             'reason'=>$data['reason']
             );
-        
+
         if($this->db->update('tblimports',$import,array('id'=>$id)) && $this->db->affected_rows()>0)
         {
             logActivity('Edit Import Item Updated [ID:' . $id . ', Item ID' . $item['id'] . ']');
@@ -303,5 +335,5 @@ class Imports_model extends CRM_Model
         return false;
     }
 
-    
+
 }
