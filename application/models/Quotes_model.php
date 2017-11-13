@@ -278,7 +278,6 @@ class Quotes_model extends CRM_Model
                 $this->db->insert('tblquote_items1', $item_data);
 
                 if ($this->db->affected_rows() > 0) {
-
                     /**
                      * Sync quantity ware import
                      */
@@ -294,7 +293,6 @@ class Quotes_model extends CRM_Model
                     /**
                      * Sync quantity ware wait
                      */
-
                     $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id' => 2))->row();
                     if ($currentItem) {
                         $changeQuantityWareWait   = $currentItem->product_quantity + $item['quantity'];
@@ -361,8 +359,6 @@ class Quotes_model extends CRM_Model
 
 
                         $changeQuantityWareImport   = $currentItem->product_quantity - $item['quantity'];
-                        // echo $changeQuantityWareImport;
-
                         $arrData                    = array('product_quantity' => $changeQuantityWareImport);
 
                         $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
@@ -372,7 +368,6 @@ class Quotes_model extends CRM_Model
                     /**
                      * Sync quantity ware wait
                      */
-
                     $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id' => 2))->row();
                     if ($currentItem) {
                         $changeQuantityWareWait   = $currentItem->product_quantity + $item['quantity'];
@@ -473,26 +468,24 @@ class Quotes_model extends CRM_Model
             $total       = 0;
             $affected_id = array();
 
+            echo "<pre>";
+            print_r($items);
+            echo "</pre>";
 
-            // echo "<pre>";
-            // print_r($items);
-            // echo "</pre>";
+            foreach ($items as $item) {
+                $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id'=>1))->row();
+                if ($currentItem) {
+                    echo "<pre>";
+                    print_r($currentItem);
+                    echo "</pre>";
 
+                    if ($currentItem->product_quantity > $item['quantity']) {
+                        $changeQuantityWareImport = $currentItem->product_quantity - $item['quantity'];
+                    }
 
-            // foreach ($items as $item) {
-            //     $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id'=>1))->row();
-            //     if ($currentItem) {
-            //         echo "<pre>";
-            //         print_r($currentItem);
-            //         echo "</pre>";
-
-            //         if ($currentItem->product_quantity > $item['quantity']) {
-            //             $changeQuantityWareImport = $currentItem->product_quantity - $item['quantity'];
-            //         }
-
-            //     }
-            // }
-            // die('1x');
+                }
+            }
+            die('1x');
 
             foreach ($items as $key => $item) {
                 $affected_id[] = $item['id'];
