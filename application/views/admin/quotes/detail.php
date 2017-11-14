@@ -58,9 +58,10 @@
             <div role="tabpanel" class="tab-pane active" id="item_detail">
               <?php
                 $quotesAction = (isset($item)) ? 'quote_detail/'.$item->id : 'quote_add_ajax';
+                $classForm    = (isset($item)) ? '-update' : '';
                ?>
 
-               <?php echo form_open_multipart(base_url().'admin/quotes/'.$quotesAction, array('id'=>'quotes_form','class' => 'sales-form', 'autocomplete' => 'off')); ?>
+               <?php echo form_open_multipart(base_url().'admin/quotes/'.$quotesAction, array('id'=>'quotes_form','class' => 'sales-form'.$classForm, 'autocomplete' => 'off')); ?>
                <div class="row">
                   <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                      <?php
@@ -701,7 +702,7 @@
 <?php $this->load->view('admin/quotes/renew_contract'); ?>
 <?php } ?>
 <script>
-   _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required'}, addQuotes);
+    _validate_form($('.sales-form'),{code:'required',date:'required',customer_id:'required'}, addQuotes);
 
     function addQuotes(form) {
         var data = $(form).serialize();
@@ -962,7 +963,7 @@
      $('#ex-gift').append('<div class="col-md-12" style="margin-bottom: 10px; padding: 0px;"><div class="col-xs-12 col-md-6" style="padding-left: 0px;"><label>Tên phát sinh </label><input type="text" name="incurred['+ total2 +'][name_incurred]" style="width: 100%; "></div><div class="col-xs-11 col-md-5"><label>Phí phát sinh </label><input type="text" onkeyup="formart_num(\'pay_incurred' + total2 + '\')"  id="pay_incurred'+total2+'" name="incurred['+ total2 +'][pay_incurred]" style="width: 100%"></div> <div class="col-xs-1 col-md-1"><div>&nbsp</div><a href="#" class="btn btn-danger pull-right delete_in_item" style="margin-top: 7px;"><i class="fa fa-times"></i></a></div></div>')
    });
    <?php if($item){ ?>
-     $("#quotes_form").submit(function(e) {
+     $(".sales-form-update").submit(function(e) {
         e.preventDefault(); // avoid to execute the actual submit of the form.
 
         var url1 = $(this)[0].action; // the script where you handle the form input.
@@ -971,12 +972,12 @@
                type: "POST",
                url: url1,
                dataType:'JSON',
-               data: $("#quotes_form").serialize(), // serializes the form's elements.
+               data: $(".sales-form-update").serialize(), // serializes the form's elements.
                success: function(data)
                {
                   alert_float(data.alert_type,data.message);
                }
-             });
+        });
 
     });
 

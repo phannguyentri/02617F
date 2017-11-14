@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel_s">
-                    <div class="panel-body _buttons">                   
+                    <div class="panel-body _buttons">
                     <!-- <h4 class="bold no-margin"><?=_l('quotes')?></h4>
                     <hr class="no-mbot no-border"> -->
                     <a href="#" onclick="init_qoute(); return false;" class="btn btn-info pull-left display-block"><?php echo _l('quote_add'); ?></a>
@@ -13,16 +13,16 @@
                 <div class="panel_s">
                    <div class="panel-body">
                        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-                           <?php 
+                           <?php
                                echo render_select('quote_client', $clients_iv, array('userid', 'company'), 'Khách hàng');
                            ?>
                        </div>
                        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-                          <?php 
+                          <?php
                                echo render_select('quote_userc', $user_iv, array('staffid', 'fullname'), 'Người tạo');
                            ?>
                        </div>
-                    
+
 
                        <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
                          <label for="report-from" class="control-label"><?php echo _l('report_sales_from_date'); ?></label>
@@ -42,7 +42,7 @@
                             </div>
                          </div>
                       </div>
-                      
+
                    </div>
                </div>
                 <div class="clearfix"></div>
@@ -62,12 +62,12 @@
                             _l('#'),
                             _l('Mã phiếu báo giá'),
                             _l('Khách hàng'),
-                            _l('Người tạo'),   
-                            _l('Ngày tạo'),                           
+                            _l('Người tạo'),
+                            _l('Ngày tạo'),
                             _l('Tổng phát sinh'),
-                            _l('Tổng tiền sản phẩm'), 
-                            _l('Tổng thuế sản phẩm'), 
-                            _l('Tổng giá trị sản phẩm'), 
+                            _l('Tổng tiền sản phẩm'),
+                            _l('Tổng thuế sản phẩm'),
+                            _l('Tổng giá trị sản phẩm'),
                             _l('options')
                         ),'quotes'); ?>
                     </div>
@@ -111,16 +111,16 @@
         });
         var filterList = {
             'filterStatus' : '[id="filterStatus"]',
-            "client_id" : "[name='quote_client']", 
-            "user_id" : "[name='quote_userc']", 
+            "client_id" : "[name='quote_client']",
+            "user_id" : "[name='quote_userc']",
             "report-from" : "[name='report-from']",
-            "report-to" : "[name='report-to']", 
-    
+            "report-to" : "[name='report-to']",
+
         };
-        
+
         initDataTable('.table-quotes', window.location.href, [0], [0], filterList,[0, 'DESC']);
-        
         $.each(filterList, (filterIndex, filterItem) => {
+
             $('' + filterItem).on('change', () => {
                 $('.table-quotes').DataTable().ajax.reload();
             });

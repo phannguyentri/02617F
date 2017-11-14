@@ -186,6 +186,10 @@ class Quotes_model extends CRM_Model
         $this->db->delete('tblquotes');
         if ($this->db->affected_rows() > 0) {
 
+            // $this->db->where('quote_id', $id);
+            // $dataDeleteItem = $this->db->get('tblquote_items1')->result();
+
+
             $this->db->where('quote_id', $id);
             $this->db->delete('tblquote_items');
 
@@ -357,14 +361,12 @@ class Quotes_model extends CRM_Model
                     $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id' => 1))->row();
                     if ($currentItem) {
 
-
                         $changeQuantityWareImport   = $currentItem->product_quantity - $item['quantity'];
                         $arrData                    = array('product_quantity' => $changeQuantityWareImport);
 
                         $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
-
                     }
-
+                    // END
                     /**
                      * Sync quantity ware wait
                      */
@@ -384,6 +386,7 @@ class Quotes_model extends CRM_Model
 
                         $this->db->insert('tblwarehouses_products',$arrData);
                     }
+                    // END
 
                     logActivity('Insert Quote Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                 }
@@ -468,25 +471,6 @@ class Quotes_model extends CRM_Model
             $total       = 0;
             $affected_id = array();
 
-            echo "<pre>";
-            print_r($items);
-            echo "</pre>";
-
-            foreach ($items as $item) {
-                $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id'=>1))->row();
-                if ($currentItem) {
-                    echo "<pre>";
-                    print_r($currentItem);
-                    echo "</pre>";
-
-                    if ($currentItem->product_quantity > $item['quantity']) {
-                        $changeQuantityWareImport = $currentItem->product_quantity - $item['quantity'];
-                    }
-
-                }
-            }
-            die('1x');
-
             foreach ($items as $key => $item) {
                 $affected_id[] = $item['id'];
                 $product       = $this->getProductById($item['id']);
@@ -495,6 +479,7 @@ class Quotes_model extends CRM_Model
                 $itm       = $this->getQuoteItem($id, $item['id']);
                 $tax       = ((str_replace('.','',$item['unit_cost'])*1) * ($product->rate * 1)) / 100;
                 $vat       += $tax;
+                $oldItem   = $this->db->get_where('tblquote_items', ['quote_id' => $id, 'product_id' => $item['id']])->row();
                 $item_data = array(
                     'quote_id' => $id,
                     'product_id' => $item['id'],
@@ -510,31 +495,105 @@ class Quotes_model extends CRM_Model
                     'amount' => $sub_total + $tax
                 );
 
+                $wareItem = $this->db->get_where('tblwarehouses_products', ['product_id'=>$item['id'], 'warehouse_id'=>1])->row();
+                $wareWaitItem   = $this->db->get_where('tblwarehouses_products', ['product_id'=>$item['id'], 'warehouse_id'=>2])->row();
+
                 if ($itm) {
                     $this->db->update('tblquote_items', $item_data, array(
                         'id' => $itm->id
                     ));
+
+                    // Sync quantity warehouse
+                    $updateQuantity = (int) $item['quantity'];
+                    $oldQuantity    = (int) $oldItem->quantity;
+
+                    if ($updateQuantity > $oldQuantity) {
+
+                        $changeQuantity = $updateQuantity - $oldQuantity;
+                        $arrData        = array(
+                            'product_quantity'  => $wareItem->product_quantity-$changeQuantity,
+                        );
+
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
+
+                        $arrData        = [
+                            'product_quantity'  => $wareWaitItem->product_quantity+$changeQuantity,
+                        ];
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 2));
+
+                    }elseif ($updateQuantity < $oldQuantity) {
+                        $changeQuantity = $oldQuantity - $updateQuantity;
+                        $arrData        = [
+                            'product_quantity'  => $wareItem->product_quantity+$changeQuantity,
+                        ];
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
+
+                        $arrData        = [
+                            'product_quantity'  => $wareWaitItem->product_quantity-$changeQuantity,
+                        ];
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 2));
+                    }
+                    // END
+
+
                     if ($this->db->affected_rows() > 0) {
                         $affected = true;
                         logActivity('Edit Quote Item Updated [ID:' . $id . ', Item ID' . $item['id'] . ']');
+
                     }
                 } else {
                     $this->db->insert('tblquote_items', $item_data);
+                    /**
+                     * Sync quantity ware import
+                     */
+                    if ($wareItem) {
+                        $changeQuantityWareImport   = $wareItem->product_quantity - $item['quantity'];
+                        $arrData                    = array('product_quantity' => $changeQuantityWareImport);
+
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
+                    }
+                    // END
+
+                    /**
+                     * Sync quantity ware wait
+                     */
+                    if ($wareWaitItem) {
+                        $changeQuantityWareWait   = $wareWaitItem->product_quantity + $item['quantity'];
+                        $arrData                  = array(
+                            'product_quantity' => $changeQuantityWareWait
+                        );
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 2));
+                    }else{
+                        $arrData = array(
+                            'product_id'        => $item['id'],
+                            'warehouse_id'      => 2,
+                            'product_quantity'  => $item['quantity']
+                        );
+
+                        $this->db->insert('tblwarehouses_products',$arrData);
+                    }
+                    //END
+
                     if ($this->db->affected_rows() > 0) {
                         $affected = true;
                         logActivity('Insert Quote Item Added [ID:' . $id . ', Item ID' . $item['id'] . ']');
                     }
                 }
             }
-            if (!empty($affected_id)) {
-                $this->db->where('quote_id', $id);
+
+            if (empty($affected_id)) {
+                $this->db->where_not_in('product_id', NULL);
+            }else{
                 $this->db->where_not_in('product_id', $affected_id);
-                $this->db->delete('tblquote_items');
-                if ($this->db->affected_rows() > 0) {
-                    $affected = true;
-                }
             }
 
+            $this->db->where('quote_id', $id);
+            $dataDeleteItem = $this->db->get('tblquote_items')->result();
+            $this->deleteItems($dataDeleteItem, $id);
+
+            if ($this->db->affected_rows() > 0) {
+                $affected = true;
+            }
 
 
             $items        = $data['items1'];
@@ -544,10 +603,11 @@ class Quotes_model extends CRM_Model
 
                 $product        = $this->getProductById($item['id']);
                 $sub_total      = (str_replace('.','',$item['unit_cost'])*1) * $item['quantity'];
-                $total += $sub_total;
-                $itm       = $this->getQuoteItem1($id, $item['id']);
-                $tax       = ((str_replace('.','',$item['unit_cost'])*1) * ($product->rate * 1)) / 100;
-                $vat += $tax;
+                $total          += $sub_total;
+                $itm            = $this->getQuoteItem1($id, $item['id']);
+                $tax            = ((str_replace('.','',$item['unit_cost'])*1) * ($product->rate * 1)) / 100;
+                $vat            += $tax;
+                $oldItem   = $this->db->get_where('tblquote_items1', ['quote_id' => $id, 'product_id' => $item['id']])->row();
                 $item_data = array(
                     'quote_id' => $id,
                     'product_id' => $item['id'],
@@ -563,21 +623,86 @@ class Quotes_model extends CRM_Model
                     'amount' => $sub_total + $tax
                 );
 
-
+                $wareItem = $this->db->get_where('tblwarehouses_products', ['product_id'=>$item['id'], 'warehouse_id'=>1])->row();
+                $wareWaitItem   = $this->db->get_where('tblwarehouses_products', ['product_id'=>$item['id'], 'warehouse_id'=>2])->row();
                 if ($itm) {
                     $this->db->update('tblquote_items1', $item_data, array(
                         'id' => $itm->id
                     ));
-                    if ($this->db->affected_rows() > 0) {
 
+                    // Sync quantity warehouse
+                    $updateQuantity = (int) $item['quantity'];
+                    $oldQuantity    = (int) $oldItem->quantity;
+
+                    if ($updateQuantity > $oldQuantity) {
+
+                        $changeQuantity = $updateQuantity - $oldQuantity;
+                        $arrData        = array(
+                            'product_quantity'  => $wareItem->product_quantity-$changeQuantity,
+                        );
+
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
+
+                        $arrData        = [
+                            'product_quantity'  => $wareWaitItem->product_quantity+$changeQuantity,
+                        ];
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 2));
+
+                    }elseif ($updateQuantity < $oldQuantity) {
+                        $changeQuantity = $oldQuantity - $updateQuantity;
+                        $arrData        = [
+                            'product_quantity'  => $wareItem->product_quantity+$changeQuantity,
+                        ];
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
+
+                        $arrData        = [
+                            'product_quantity'  => $wareWaitItem->product_quantity-$changeQuantity,
+                        ];
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 2));
+                    }
+                    // END
+
+
+                    if ($this->db->affected_rows() > 0) {
                         $affected = true;
                         logActivity('Edit Quote Item Updated [ID:' . $id . ', Item ID' . $item['id'] . ']');
 
                     }
 
-
                 } else {
                     $this->db->insert('tblquote_items1', $item_data);
+
+                    /**
+                     * Sync quantity ware import
+                     */
+                    if ($wareItem) {
+                        $changeQuantityWareImport   = $wareItem->product_quantity - $item['quantity'];
+                        $arrData                    = array('product_quantity' => $changeQuantityWareImport);
+
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 1));
+                    }
+                    // END
+
+                    /**
+                     * Sync quantity ware wait
+                     */
+                    if ($wareWaitItem) {
+                        $changeQuantityWareWait   = $wareWaitItem->product_quantity + $item['quantity'];
+                        $arrData                  = array(
+                            'product_quantity' => $changeQuantityWareWait
+                        );
+                        $this->db->update('tblwarehouses_products', $arrData, array('product_id' => $item['id'], 'warehouse_id' => 2));
+                    }else{
+                        $arrData = array(
+                            'product_id'        => $item['id'],
+                            'warehouse_id'      => 2,
+                            'product_quantity'  => $item['quantity']
+                        );
+
+                        $this->db->insert('tblwarehouses_products',$arrData);
+                    }
+                    //END
+
                     if ($this->db->affected_rows() > 0) {
                         $affected = true;
                         logActivity('Insert Quote Item Added [ID:' . $id . ', Item ID' . $item['id'] . ']');
@@ -585,14 +710,21 @@ class Quotes_model extends CRM_Model
 
                 }
             }
-            if (!empty($affected_id1)) {
-                $this->db->where('quote_id', $id);
+
+            if (empty($affected_id1)) {
+                $this->db->where_not_in('product_id', NULL);
+            }else{
                 $this->db->where_not_in('product_id', $affected_id1);
-                $this->db->delete('tblquote_items1');
-                if ($this->db->affected_rows() > 0) {
-                    $affected = true;
-                }
             }
+
+            $this->db->where('quote_id', $id);
+            $dataDeleteItem = $this->db->get('tblquote_items1')->result();
+            $this->deleteItems($dataDeleteItem, $id, 'tblquote_items1');
+
+            if ($this->db->affected_rows() > 0) {
+                $affected = true;
+            }
+
 
             $total2 = 0;
             $affected_id2 = array();
@@ -609,7 +741,6 @@ class Quotes_model extends CRM_Model
                             'tblincurred_price' => (str_replace('.','',$value['pay_incurred'])*1),
 
                         );
-
 
 
                         if($itm){
@@ -658,6 +789,27 @@ class Quotes_model extends CRM_Model
             return $affected;
         }
         return false;
+    }
+
+    public function deleteItems($dataDeleteItem, $quote_id, $tableItem = 'tblquote_items'){
+        if (!empty($dataDeleteItem)) {
+            foreach ($dataDeleteItem as $value) {
+                $wareItem       = $this->db->get_where('tblwarehouses_products', ['product_id'=>$value->product_id, 'warehouse_id'=>1])->row();
+                $wareWaitItem   = $this->db->get_where('tblwarehouses_products', ['product_id'=>$value->product_id, 'warehouse_id'=>2])->row();
+
+                $this->db->update('tblwarehouses_products',
+                 ['product_quantity'    => $wareItem->product_quantity + $value->quantity],
+                 ['product_id'          => $value->product_id, 'warehouse_id' => 1]
+                );
+
+                $this->db->update('tblwarehouses_products',
+                 ['product_quantity'    => $wareWaitItem->product_quantity - $value->quantity],
+                 ['product_id'          => $value->product_id, 'warehouse_id' => 2]
+                );
+
+                $this->db->delete($tableItem, ['quote_id' => $quote_id, 'product_id' => $value->product_id]);
+            }
+        }
     }
 
     public function getQuoteItem($quote_id, $product_id)

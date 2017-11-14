@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 13, 2017 lúc 11:09 AM
+-- Thời gian đã tạo: Th10 14, 2017 lúc 11:20 AM
 -- Phiên bản máy phục vụ: 10.1.25-MariaDB
 -- Phiên bản PHP: 5.6.31
 
@@ -2870,7 +2870,249 @@ INSERT INTO `tblactivitylog` (`id`, `description`, `date`, `staffid`) VALUES
 (1922, 'Edit Quote Updated [ID:91, 2017-11-13]', '2017-11-13 17:03:14', 'admin'),
 (1923, 'Edit Quote Updated [ID:91, 2017-11-13]', '2017-11-13 17:03:15', 'admin'),
 (1924, 'Edit Quote Updated [ID:91, 2017-11-13]', '2017-11-13 17:07:21', 'admin'),
-(1925, 'Edit Quote Updated [ID:91, 2017-11-13]', '2017-11-13 17:07:22', 'admin');
+(1925, 'Edit Quote Updated [ID:91, 2017-11-13]', '2017-11-13 17:07:22', 'admin'),
+(1926, 'Edit Quote Updated [ID:91, 2017-11-13]', '2017-11-13 17:15:11', 'admin'),
+(1927, 'Edit Quote Updated [ID:91, 2017-11-13]', '2017-11-13 17:15:11', 'admin'),
+(1928, 'Edit Quote Updated [ID:91, 2017-11-14]', '2017-11-14 08:27:36', 'admin'),
+(1929, 'Edit Quote Updated [ID:91, 2017-11-14]', '2017-11-14 08:27:36', 'admin'),
+(1930, 'New Quote Added [ID:104, 14/11/2017]', '2017-11-14 08:33:58', 'admin'),
+(1931, 'Insert Quote Item Added [ID:104, Product ID56]', '2017-11-14 08:33:58', 'admin'),
+(1932, 'Insert Quote Item Added [ID:104, Product ID55]', '2017-11-14 08:33:58', 'admin'),
+(1933, 'New Quote Added [ID:105, 14/11/2017]', '2017-11-14 08:35:37', 'admin'),
+(1934, 'Insert Quote Item Added [ID:105, Product ID56]', '2017-11-14 08:35:37', 'admin'),
+(1935, 'Insert Quote Item Added [ID:105, Product ID55]', '2017-11-14 08:35:38', 'admin'),
+(1936, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:39:10', 'admin'),
+(1937, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:39:10', 'admin'),
+(1938, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:43:12', 'admin'),
+(1939, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:43:12', 'admin'),
+(1940, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:51:39', 'admin'),
+(1941, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:51:39', 'admin'),
+(1942, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:52:15', 'admin'),
+(1943, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:52:15', 'admin'),
+(1944, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:52:35', 'admin'),
+(1945, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:52:35', 'admin'),
+(1946, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:52:58', 'admin'),
+(1947, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:52:58', 'admin'),
+(1948, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:53:16', 'admin'),
+(1949, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:53:17', 'admin'),
+(1950, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:54:55', 'admin'),
+(1951, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:54:55', 'admin'),
+(1952, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:55:12', 'admin'),
+(1953, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 08:55:12', 'admin'),
+(1954, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:01:23', 'admin'),
+(1955, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:01:23', 'admin'),
+(1956, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:01:51', 'admin'),
+(1957, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:01:51', 'admin'),
+(1958, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:02:57', 'admin'),
+(1959, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:02:58', 'admin'),
+(1960, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:37:34', 'admin'),
+(1961, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:37:35', 'admin'),
+(1962, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:38:58', 'admin'),
+(1963, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:38:58', 'admin'),
+(1964, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:39:15', 'admin'),
+(1965, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:39:15', 'admin'),
+(1966, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:41:11', 'admin'),
+(1967, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:41:12', 'admin'),
+(1968, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:41:34', 'admin'),
+(1969, 'Edit Quote Updated [ID:105, 2017-11-14]', '2017-11-14 09:41:34', 'admin'),
+(1970, 'New Quote Added [ID:106, 14/11/2017]', '2017-11-14 11:13:18', 'admin'),
+(1971, 'Insert Quote Item Added [ID:106, Product ID55]', '2017-11-14 11:13:18', 'admin'),
+(1972, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:14:39', 'admin'),
+(1973, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:14:39', 'admin'),
+(1974, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:15:39', 'admin'),
+(1975, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:15:39', 'admin'),
+(1976, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:15:39', 'admin'),
+(1977, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:17:24', 'admin'),
+(1978, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:17:24', 'admin'),
+(1979, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:20:33', 'admin'),
+(1980, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:20:33', 'admin'),
+(1981, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:20:52', 'admin'),
+(1982, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:20:52', 'admin'),
+(1983, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:22:07', 'admin'),
+(1984, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:22:07', 'admin'),
+(1985, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:22:20', 'admin'),
+(1986, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:22:20', 'admin'),
+(1987, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:22:20', 'admin'),
+(1988, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:22:20', 'admin'),
+(1989, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:26:24', 'admin'),
+(1990, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:26:24', 'admin'),
+(1991, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:26:25', 'admin'),
+(1992, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:26:25', 'admin'),
+(1993, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:26:47', 'admin'),
+(1994, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:26:47', 'admin'),
+(1995, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:26:48', 'admin'),
+(1996, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:26:48', 'admin'),
+(1997, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:27:01', 'admin'),
+(1998, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:27:01', 'admin'),
+(1999, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:27:02', 'admin'),
+(2000, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:27:02', 'admin'),
+(2001, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:27:23', 'admin'),
+(2002, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:27:23', 'admin'),
+(2003, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:27:47', 'admin'),
+(2004, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:27:47', 'admin'),
+(2005, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:28:07', 'admin'),
+(2006, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:28:08', 'admin'),
+(2007, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:28:23', 'admin'),
+(2008, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:28:23', 'admin'),
+(2009, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:28:35', 'admin'),
+(2010, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:28:35', 'admin'),
+(2011, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:31:26', 'admin'),
+(2012, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:31:27', 'admin'),
+(2013, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:32:08', 'admin'),
+(2014, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:32:08', 'admin'),
+(2015, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:32:09', 'admin'),
+(2016, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:32:09', 'admin'),
+(2017, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:32:54', 'admin'),
+(2018, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:32:54', 'admin'),
+(2019, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:32:54', 'admin'),
+(2020, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:32:54', 'admin'),
+(2021, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:33:05', 'admin'),
+(2022, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:33:05', 'admin'),
+(2023, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:33:05', 'admin'),
+(2024, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:33:05', 'admin'),
+(2025, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:34:44', 'admin'),
+(2026, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:34:45', 'admin'),
+(2027, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:35:59', 'admin'),
+(2028, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:36:00', 'admin'),
+(2029, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:36:00', 'admin'),
+(2030, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:36:31', 'admin'),
+(2031, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:36:32', 'admin'),
+(2032, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:36:32', 'admin'),
+(2033, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:37:31', 'admin'),
+(2034, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:37:31', 'admin'),
+(2035, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:37:31', 'admin'),
+(2036, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:48:25', 'admin'),
+(2037, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:49:52', 'admin'),
+(2038, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:50:52', 'admin'),
+(2039, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:52:20', 'admin'),
+(2040, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:52:35', 'admin'),
+(2041, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:52:35', 'admin'),
+(2042, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:52:54', 'admin'),
+(2043, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:52:54', 'admin'),
+(2044, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:53:02', 'admin'),
+(2045, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:53:02', 'admin'),
+(2046, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:53:15', 'admin'),
+(2047, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:53:15', 'admin'),
+(2048, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:57:42', 'admin'),
+(2049, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:57:42', 'admin'),
+(2050, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:58:18', 'admin'),
+(2051, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:58:18', 'admin'),
+(2052, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:58:50', 'admin'),
+(2053, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:58:50', 'admin'),
+(2054, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:59:13', 'admin'),
+(2055, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:59:13', 'admin'),
+(2056, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:59:28', 'admin'),
+(2057, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:59:28', 'admin'),
+(2058, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 11:59:45', 'admin'),
+(2059, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 11:59:45', 'admin'),
+(2060, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:00:40', 'admin'),
+(2061, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:01:14', 'admin'),
+(2062, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 12:01:14', 'admin'),
+(2063, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:01:16', 'admin'),
+(2064, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 12:01:16', 'admin'),
+(2065, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:01:22', 'admin'),
+(2066, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:02:26', 'admin'),
+(2067, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:02:27', 'admin'),
+(2068, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:02:34', 'admin'),
+(2069, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:02:51', 'admin'),
+(2070, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:03:08', 'admin'),
+(2071, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 12:03:08', 'admin'),
+(2072, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:03:17', 'admin'),
+(2073, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:03:52', 'admin'),
+(2074, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:04:03', 'admin'),
+(2075, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:04:43', 'admin'),
+(2076, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:05:20', 'admin'),
+(2077, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:06:21', 'admin'),
+(2078, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 12:06:21', 'admin'),
+(2079, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:06:30', 'admin'),
+(2080, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:07:21', 'admin'),
+(2081, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 12:07:51', 'admin'),
+(2082, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 12:07:52', 'admin'),
+(2083, 'Failed Login Attempt [Email:hoaiphuong@sonha.com, Is Staff Member:Yes, IP:192.168.50.136]', '2017-11-14 13:08:37', NULL),
+(2084, 'New Import Added [ID:87, ]', '2017-11-14 13:10:04', 'admin'),
+(2085, 'Insert Import Item Added [ID:87, Item ID55]', '2017-11-14 13:10:04', 'admin'),
+(2086, 'Insert Import Item Added [ID:87, Item ID61]', '2017-11-14 13:10:04', 'admin'),
+(2087, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 13:37:22', 'admin'),
+(2088, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 13:37:22', 'admin'),
+(2089, 'Edit Quote Updated [ID:106, 2017-11-14]', '2017-11-14 13:48:08', 'admin'),
+(2090, 'Edit Quote Item Updated [ID:106, Item ID55]', '2017-11-14 13:48:08', 'admin'),
+(2091, 'New Quote Added [ID:107, 14/11/2017]', '2017-11-14 13:49:07', 'admin'),
+(2092, 'Insert Quote Item Added [ID:107, Product ID55]', '2017-11-14 13:49:07', 'admin'),
+(2093, 'New Quote Added [ID:108, 14/11/2017]', '2017-11-14 13:58:45', 'admin'),
+(2094, 'Insert Quote Item Added [ID:108, Product ID56]', '2017-11-14 13:58:45', 'admin'),
+(2095, 'Insert Quote Item Added [ID:108, Product ID55]', '2017-11-14 13:58:45', 'admin'),
+(2096, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:00:08', 'admin'),
+(2097, 'Edit Quote Item Updated [ID:108, Item ID55]', '2017-11-14 14:00:08', 'admin'),
+(2098, 'Edit Quote Item Updated [ID:108, Item ID56]', '2017-11-14 14:00:08', 'admin'),
+(2099, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:19:45', 'admin'),
+(2100, 'Edit Quote Item Updated [ID:108, Item ID55]', '2017-11-14 14:19:45', 'admin'),
+(2101, 'Insert Quote Item Added [ID:108, Item ID57]', '2017-11-14 14:19:45', 'admin'),
+(2102, 'Edit Quote Item Updated [ID:108, Item ID56]', '2017-11-14 14:19:45', 'admin'),
+(2103, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:35:38', 'admin'),
+(2104, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:37:51', 'admin'),
+(2105, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:38:47', 'admin'),
+(2106, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:39:10', 'admin'),
+(2107, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:40:35', 'admin'),
+(2108, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:44:23', 'admin'),
+(2109, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:44:27', 'admin'),
+(2110, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:44:48', 'admin'),
+(2111, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 14:52:00', 'admin'),
+(2112, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:14:27', 'admin'),
+(2113, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:16:26', 'admin'),
+(2114, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:17:44', 'admin'),
+(2115, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:19:16', 'admin'),
+(2116, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:23:38', 'admin'),
+(2117, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:25:08', 'admin'),
+(2118, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:26:12', 'admin'),
+(2119, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:32:56', 'admin'),
+(2120, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:34:32', 'admin'),
+(2121, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:42:07', 'admin'),
+(2122, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:42:20', 'admin'),
+(2123, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:43:00', 'admin'),
+(2124, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:44:09', 'admin'),
+(2125, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:44:30', 'admin'),
+(2126, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:44:47', 'admin'),
+(2127, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:44:56', 'admin'),
+(2128, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:48:02', 'admin'),
+(2129, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:53:03', 'admin'),
+(2130, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:53:19', 'admin'),
+(2131, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:53:44', 'admin'),
+(2132, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:54:32', 'admin'),
+(2133, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:55:48', 'admin'),
+(2134, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 15:58:24', 'admin'),
+(2135, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:06:00', 'admin'),
+(2136, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:07:08', 'admin'),
+(2137, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:09:31', 'admin'),
+(2138, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:11:07', 'admin'),
+(2139, 'Insert Quote Item Added [ID:108, Item ID55]', '2017-11-14 16:11:07', 'admin'),
+(2140, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:11:47', 'admin'),
+(2141, 'Insert Quote Item Added [ID:108, Item ID57]', '2017-11-14 16:11:47', 'admin'),
+(2142, 'Insert Quote Item Added [ID:108, Item ID61]', '2017-11-14 16:11:48', 'admin'),
+(2143, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:18:25', 'admin'),
+(2144, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:18:50', 'admin'),
+(2145, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:19:18', 'admin'),
+(2146, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:19:43', 'admin'),
+(2147, 'Insert Quote Item Added [ID:108, Item ID56]', '2017-11-14 16:19:43', 'admin'),
+(2148, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:20:32', 'admin'),
+(2149, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:20:38', 'admin'),
+(2150, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:20:54', 'admin'),
+(2151, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:21:12', 'admin'),
+(2152, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:21:27', 'admin'),
+(2153, 'Insert Quote Item Added [ID:108, Item ID56]', '2017-11-14 16:21:28', 'admin'),
+(2154, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:21:53', 'admin'),
+(2155, 'Insert Quote Item Added [ID:108, Item ID56]', '2017-11-14 16:21:53', 'admin'),
+(2156, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:32:43', 'admin'),
+(2157, 'Insert Quote Item Added [ID:108, Item ID56]', '2017-11-14 16:32:44', 'admin'),
+(2158, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:34:11', 'admin'),
+(2159, 'Edit Quote Updated [ID:108, 2017-11-14]', '2017-11-14 16:35:04', 'admin'),
+(2160, 'Insert Quote Item Added [ID:108, Item ID61]', '2017-11-14 16:35:04', 'admin'),
+(2161, 'New Quote Added [ID:109, 14/11/2017]', '2017-11-14 16:36:43', 'admin'),
+(2162, 'Insert Quote Item Added [ID:109, Product ID55]', '2017-11-14 16:36:43', 'admin'),
+(2163, 'Insert Quote Item Added [ID:109, Product ID57]', '2017-11-14 16:36:43', 'admin'),
+(2164, 'Edit Quote Updated [ID:109, 2017-11-14]', '2017-11-14 16:37:35', 'admin'),
+(2165, 'Insert Quote Item Added [ID:109, Item ID61]', '2017-11-14 16:37:36', 'admin'),
+(2166, 'Insert Quote Item Added [ID:109, Item ID56]', '2017-11-14 16:37:36', 'admin'),
+(2167, 'Edit Quote Updated [ID:109, 2017-11-14]', '2017-11-14 16:37:57', 'admin');
 
 -- --------------------------------------------------------
 
@@ -5196,7 +5438,8 @@ INSERT INTO `tblimports` (`id`, `rel_type`, `rel_id`, `prefix`, `code`, `name`, 
 (83, 'adjustment', NULL, 'ÐC-', '00083', 'A1', 'ZZ', NULL, '2017-11-12 17:00:00', 1, 1, '2017-11-13 09:15:27', 1, '2017-11-13 09:15:27', 2, '172500000'),
 (84, 'adjustment', NULL, 'ÐC-', '00084', 'QQQ', '', NULL, '2017-11-12 17:00:00', 1, 1, '2017-11-13 14:00:13', 1, '2017-11-13 14:00:13', 2, '367740000'),
 (85, 'adjustment', NULL, 'ÐC-', '00085', '', '', NULL, '2017-11-12 17:00:00', 1, 1, '2017-11-13 14:12:08', 1, '2017-11-13 14:12:08', 2, '77420000'),
-(86, 'adjustment', NULL, 'ÐC-', '00086', '', '', NULL, '2017-11-12 17:00:00', 1, NULL, NULL, NULL, NULL, 0, '506600000');
+(86, 'adjustment', NULL, 'ÐC-', '00086', '', '', NULL, '2017-11-12 17:00:00', 1, NULL, NULL, NULL, NULL, 0, '506600000'),
+(87, 'adjustment', NULL, 'ÐC-', '00087', '', '', NULL, '2017-11-13 17:00:00', 1, NULL, NULL, NULL, NULL, 0, '547000000');
 
 -- --------------------------------------------------------
 
@@ -5254,7 +5497,9 @@ INSERT INTO `tblimport_items` (`id`, `import_id`, `product_id`, `specifications`
 (101, 85, 56, '- Xếp hạng năng lượng si&ecirc;u tiết kiệm.', 4, 1, 0, '48050000', '48050000', 1),
 (104, 86, 55, '<span>- Chức năng hẹn giờ tắt máy.</span>', 4, 2, 0, '57500000', '115000000', 1),
 (105, 86, 57, '- 150 c&ocirc;ng thức nấu lập tr&igrave;nh sẵn.&nbsp;<br>- Cài đặt ưu tiên 10 công thức nấu yêu thích.<br>- Chọn và cài đặt đa ngôn ngữ. <br>- Xếp hạng hiệu quả năng lượng: A++.', 4, 10, 0, '29370000', '293700000', 1),
-(106, 86, 61, 'K&iacute;nh Ceramic Eurokera m&agrave;u đen', 4, 2, 0, '48950000', '97900000', 1);
+(106, 86, 61, 'K&iacute;nh Ceramic Eurokera m&agrave;u đen', 4, 2, 0, '48950000', '97900000', 1),
+(107, 87, 55, '<span>- Chức năng hẹn giờ tắt máy.</span>', 4, 1, 0, '57500000', '57500000', 1),
+(108, 87, 61, 'K&iacute;nh Ceramic Eurokera m&agrave;u đen', 4, 10, 0, '48950000', '489500000', 1);
 
 -- --------------------------------------------------------
 
@@ -5503,7 +5748,7 @@ CREATE TABLE `tblitems` (
 --
 
 INSERT INTO `tblitems` (`id`, `prefix`, `code`, `name`, `short_name`, `description`, `long_description`, `landtypeid`, `district_id`, `provinceid`, `rate`, `tax`, `unit`, `group_id`, `release_date`, `date_of_removal_of_sample`, `country_id`, `producer`, `specification`, `size`, `weight`, `product_features`, `price`, `price_buy`, `avatar`, `minimum_quantity`, `maximum_quantity`, `quantity`, `date`, `category_id`, `warranty`, `discount`) VALUES
-(61, '', 'SP-00058', 'Cửa trượt tự động SINIL (Hàn Quốc)', 'Cửa trượt tự động SINIL (Hàn Quốc)', 'K&iacute;nh Ceramic Eurokera m&agrave;u đen', 'K&iacute;nh Ceramic Eurokera m&agrave;u đen', NULL, NULL, NULL, '0.00', 2, '4', 4, '2017-07-25', '2027-08-25', 109, 'mỹ', 'text', 'text', 'text', 'text1t3233323', '48950000', '30000000', 'uploads/client_profile_images/61/61-cuatruotsiniln.jpg', 0, 0, 1, '0', 447, '0', '0.00'),
+(61, '', 'SP-00061', 'Cửa trượt tự động SINIL (Hàn Quốc)', 'Cửa trượt tự động SINIL (Hàn Quốc)', 'K&iacute;nh Ceramic Eurokera m&agrave;u đen', 'K&iacute;nh Ceramic Eurokera m&agrave;u đen', NULL, NULL, NULL, '0.00', 2, '4', 4, '2017-07-25', '2027-08-25', 109, 'mỹ', 'text', 'text', 'text', 'text1t3233323', '48950000', '30000000', 'uploads/client_profile_images/61/61-cuatruotsiniln.jpg', 0, 0, 1, '0', 447, '0', '0.00'),
 (56, '', 'SP-00056', 'Cửa trượt tự động NABCO (Nhật Bản)', 'Cửa trượt tự động NABCO (Nhật Bản)', '- Xếp hạng năng lượng si&ecirc;u tiết kiệm.', '<span>Máy hút mùi áp trần tròn, kính Ceramic và Inox, lắp âm hoặc nổi trên bề mặt trần. </span><br><span>- Đèn Led phân kỳ trang trí 4x1W. </span><br><span>- Điều khiển bằng Remote 4 cấp độ.</span><br><span>- Lưới lọc dầu mỡ bằng hợp kim nhôm sợi.</span><br><span>- Hút lọc khử mùi tuần hoàn bằng than Carbon hoặc kết hợp ống thoát.</span><br><span>- Công suất 300W.</span><br><span>- Lưu lượng 1300m⊃3;/h, độ ồn 57dB.</span><br><span>- Kích thước: Ф 900 x H170mm.</span>', NULL, NULL, NULL, '10.00', 3, '4', 3, '2017-07-29', '2019-07-29', 109, 'mỹ', '', '', '', '- M&agrave;u sắc: K&iacute;nh trắng v&agrave; Inox.', '48050000', '35000000', 'uploads/client_profile_images/56/61-cuatruotsiniln.jpg', 50, 150, 0, '12', 448, '60', '0.00'),
 (55, '', 'SP-00055', 'Cylin S', 'Cylin S', '<span>- Chức năng hẹn giờ tắt máy.</span>', '<span>- Đèn Led trang trí hình cầu tròn 40W, điều khiển bằng Remote 4 cấp độ hút.</span><br><span>- Lưới lọc dầu mỡ bằng hợp kim nhôm sợi. </span><br><span>- Hút lọc khử mùi bằng than carbon và ống thoát Ф150.</span><br><span>- Công suất 275W. </span><br><span>- Lưu lượng 900m⊃3;/h, độ ồn 58dB.</span><br><span>- Kích thước Ф 400 x H1120mm. </span>', NULL, NULL, NULL, '5.00', 1, '4', 4, '2017-07-29', '2018-07-29', 109, 'test', '', '', '', '- M&agrave;u sắc: Inox v&agrave; mạ Chrome.', '57500000', '30000000', 'uploads/client_profile_images/55/07-cua-tu-dong-han-quoc.jpg', 10, 20, 0, '6', 389, '60', '0.00'),
 (57, '', 'SP-00057', 'Cửa trượt tự động Sơn Hà', 'Cửa trượt tự động Sơn Hà', '- 150 c&ocirc;ng thức nấu lập tr&igrave;nh sẵn.&nbsp;<br>- Cài đặt ưu tiên 10 công thức nấu yêu thích.<br>- Chọn và cài đặt đa ngôn ngữ. <br>- Xếp hạng hiệu quả năng lượng: A++.', '<span>Lò nướng điện đa chức năng Dudoff London kiểu âm tủ bếp.</span><br>- Điều khiển núm xoay đa chiều, với màn hình hiển thị màu đa điểm TFT 4.3 inch. <br>- Dung tích: 65 lít, 10 chức năng nướng cơ bản và các chức năng an toàn sử dụng.<br>- Mặt kính đen 2 lớp cách nhiệt, chống bức xạ nhiệt.<br>- 5 cấp độ điều chỉnh ánh sáng màn hình.<br>- 3 cấp độ cài đặt chuông báo.<br>- Tổng công suất 3,1KW, điện áp 220v – 50Hz.<br>- Kích thước: ( Dài x rộng x sâu) 595 x 595 x 575mm.<br>- Kích thước lắp đặt: ( Dài x rộng x sâu) 590 x 560 x 555mm.', NULL, NULL, NULL, '5.00', 1, '4', 3, '2017-07-29', '2024-07-19', 109, 'test', '', '', '', '', '29370000', '10000000', 'uploads/client_profile_images/57/07-cua-tu-dong-han-quoc.jpg', 25, 40, 0, '24', 399, '60', '0.00');
@@ -7174,7 +7419,13 @@ INSERT INTO `tblquotes` (`id`, `prefix`, `code`, `customer_id`, `name`, `reason`
 (100, 'QU-', '00040', 9, 'Bảng báo giá', '', NULL, '2017-08-25 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '4001500000', 4343500.0000, NULL, 'testttt', 399, 55.0000, '13/11/17'),
 (101, 'QU-', '00040', 9, 'Bảng báo giá', '', NULL, '2017-08-25 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '4001500000', 4343500.0000, NULL, 'testttt', 399, 55.0000, '13/11/17'),
 (102, 'QU-', '00040', 9, 'Bảng báo giá', '', NULL, '2017-08-25 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '3484000000', 4343500.0000, NULL, 'testttt', 399, 55.0000, '13/11/17'),
-(103, 'QU-', '00040', 9, 'Bảng báo giá', '', NULL, '2017-08-25 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '3484000000', 4343500.0000, NULL, 'testttt', 399, 55.0000, '13/11/17');
+(103, 'QU-', '00040', 9, 'Bảng báo giá', '', NULL, '2017-08-25 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '3484000000', 4343500.0000, NULL, 'testttt', 399, 55.0000, '13/11/17'),
+(104, 'QU-', 'NV-ADMIN01141117', 19, 'Bảng báo giá', '', NULL, '2017-11-13 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '527750000', 7680000.0000, NULL, 'Báo giá - ZZZ', 389, NULL, '14/11/17'),
+(105, 'QU-', 'NV-ADMIN02141117', 19, 'Bảng báo giá', '', '', '2017-11-13 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '105550000', 7680000.0000, NULL, 'Báo giá - AAA', 389, NULL, '14/11/17'),
+(106, 'QU-', 'NV-ADMIN03141117', 19, 'Bảng báo giá', '', '', '2017-11-13 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '172500000', 2875000.0000, NULL, 'Báo giá - QQQ', 389, 0.0000, '14/11/17'),
+(107, 'QU-', 'NV-ADMIN04141117', 19, 'Bảng báo giá', '', NULL, '2017-11-13 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '115000000', 2875000.0000, NULL, 'Báo giá -ZZZ', 389, NULL, '14/11/17'),
+(108, 'QU-', 'NV-ADMIN05141117', 19, 'Bảng báo giá', '', '', '2017-11-13 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '135820000', 4343500.0000, NULL, 'Báo giá - ', 389, 0.0000, '14/11/17'),
+(109, 'QU-', 'NV-ADMIN06141117', 19, 'Bảng báo giá', '', '', '2017-11-13 17:00:00', 1, NULL, NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, '86870000', 4343500.0000, NULL, 'Báo giá - ', 389, 0.0000, '14/11/17');
 
 -- --------------------------------------------------------
 
@@ -7243,7 +7494,15 @@ INSERT INTO `tblquote_items` (`id`, `quote_id`, `product_id`, `serial_no`, `unit
 (115, 102, 55, NULL, 4, 1, '0', '57500000', '57500000', '1', '5', '2875000', '60375000', 1),
 (116, 103, 57, NULL, 4, 100, '0', '29370000', '2937000000', '1', '5', '1468500', '2938468500', 1),
 (117, 103, 61, NULL, 4, 10, '0', '48950000', '489500000', '2', '0', '0', '489500000', 1),
-(118, 103, 55, NULL, 4, 1, '0', '57500000', '57500000', '1', '5', '2875000', '60375000', 1);
+(118, 103, 55, NULL, 4, 1, '0', '57500000', '57500000', '1', '5', '2875000', '60375000', 1),
+(119, 104, 55, NULL, 4, 5, '0', '57500000', '287500000', '1', '5', '2875000', '290375000', 1),
+(120, 105, 55, NULL, 4, 1, '0', '57500000', '57500000', '1', '5', '2875000', '60375000', 1),
+(121, 106, 55, NULL, 4, 3, '0', '57500000', '172500000', '1', '5', '2875000', '175375000', 1),
+(122, 107, 55, NULL, 4, 2, '0', '57500000', '115000000', '1', '5', '2875000', '117875000', 1),
+(125, 108, 55, NULL, 4, 1, '0', '57500000', '57500000', '1', '5', '2875000', '60375000', 1),
+(126, 108, 57, NULL, 4, 1, '0', '29370000', '29370000', '1', '5', '1468500', '30838500', 1),
+(127, 109, 55, NULL, 4, 1, '0', '57500000', '57500000', '1', '5', '2875000', '60375000', 1),
+(128, 109, 57, NULL, 4, 1, '0', '29370000', '29370000', '1', '5', '1468500', '30838500', 1);
 
 -- --------------------------------------------------------
 
@@ -7285,7 +7544,10 @@ INSERT INTO `tblquote_items1` (`id`, `quote_id`, `product_id`, `serial_no`, `uni
 (78, 65, 56, NULL, 4, 1, '0', '48050000', '48050000', '3', '10', '4805000', '52855000', 1),
 (79, 67, 61, NULL, 4, 1, '0', '48950000', '48950000', '2', '0', '0', '48950000', 1),
 (85, 73, 61, NULL, 4, 1, '0', '48950000', '48950000', '2', '0', '0', '48950000', 1),
-(87, 75, 61, NULL, 4, 1, '0', '48950000', '48950000', '2', '0', '0', '48950000', 1);
+(87, 75, 61, NULL, 4, 1, '0', '48950000', '48950000', '2', '0', '0', '48950000', 1),
+(88, 104, 56, NULL, 4, 5, '0', '48050000', '240250000', '3', '10', '4805000', '245055000', 1),
+(89, 105, 56, NULL, 4, 1, '0', '48050000', '48050000', '3', '10', '4805000', '52855000', 1),
+(98, 108, 61, NULL, 4, 1, '0', '48950000', '48950000', '2', '0', '0', '48950000', 1);
 
 -- --------------------------------------------------------
 
@@ -7766,50 +8028,25 @@ CREATE TABLE `tblsessions` (
 --
 
 INSERT INTO `tblsessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
-('02s4bfaa9bnphvhvgnbcd9u1sal9tg94', '::1', 1510535978, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303533353937383b),
-('c5cep84dgh801k71g6hlda92mt8imlji', '192.168.50.150', 1510539273, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303533353937383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('2gfmm5ppgt1g6ij07gr1bn1cuml2sqv2', '192.168.50.150', 1510539568, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303533393330313b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('gvlabshk3k0mob0nbb8agkrhjjlban8i', '192.168.50.150', 1510540476, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534303436393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('j0otoddpf8qlf3l3ajdqqkhaga62ikj4', '192.168.50.150', 1510540975, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534303836303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('ojld9i3neqsk7aq4pasta0r72s75gaiv', '192.168.50.150', 1510541990, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534313730383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('v1n0h64hqaft0h94s9ao1u5amsqfv4eg', '192.168.50.150', 1510542190, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534323038323b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('1o7uje11amjrj67dssv120l1nfo7eqrt', '192.168.50.150', 1510542738, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534323433333b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('7u9mevjoc9bjk1ulbg0775teba2rohch', '192.168.50.150', 1510542746, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534323734363b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('ncc659km69ur8aoboe2hriaqt58gjdt8', '192.168.50.150', 1510543654, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534333534343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('e5la476bkbqbbhp68s6b07oj8q66cmlf', '192.168.50.150', 1510544097, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534333930353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('dau1j8rj6ah8lqss2ul8f32dm6uvuean', '192.168.50.150', 1510544520, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534343232353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('g1h26u0p0si4bmuavgk6brj4hu8b54er', '192.168.50.150', 1510544772, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534343532363b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('9v8kgcnikmcrmovd86tg0ff8vlbhejco', '192.168.50.150', 1510545541, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534343833343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('30vfpdjcpnlqr7n84cbv9jl0lprffoeb', '192.168.50.150', 1510545988, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534353638343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('dgpojki1hh407kqo8v24kbrss4qa57fe', '192.168.50.150', 1510546351, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534363237353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('t0scpcsot0aotjnl2t1rk117rkuv09fa', '192.168.50.150', 1510546866, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534363636303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('5ejgf384v5mg3hnt05fub873v7u1ao2e', '192.168.50.150', 1510547524, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534373337353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('6dpjo2b13tg1b0nj3po9sdsii8u4vsdb', '192.168.50.150', 1510547718, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534373638373b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('g5uj469fk7klbj2o6lvvqg5qtbt2p7da', '192.168.50.150', 1510548116, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534373939333b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('rmpnjkahuclvptl5bt2a4fmnt4sniq33', '192.168.50.150', 1510548639, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534383339343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('159ninusu6nssianbfnq9mvies8pkf5e', '192.168.50.150', 1510548995, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534383732333b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('d33a51rnce68ad842ip9blpm3n7cb7kj', '192.168.50.150', 1510549407, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303534393338343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('uferas6hfd7724jlu5cgskj95tcvkbvm', '192.168.50.150', 1510554623, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535343439383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('j39sdrucpp5o74jn32soc3da68aiukdh', '192.168.50.150', 1510555152, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535343932323b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('8t1u0r039tksrvap3bkrde2q2qao6npv', '192.168.50.150', 1510555423, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535353332383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('8sntfg6v4fs1cofhsvpg2vhq3datd5vk', '192.168.50.150', 1510556172, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535353933313b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('k45q84ms9s75hgkipna2b5g2revdnu3l', '192.168.50.150', 1510556540, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535363234353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('thtokl2uhr7km8hug7s7imahj0agqvi1', '192.168.50.150', 1510556792, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535363535393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('h3ri6o825f9hbg5r67o5q9bnjvo73tn2', '192.168.50.150', 1510557207, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535363937303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('9te07bqrvbr9oh7o4hjnf6j6rmeme77a', '192.168.50.150', 1510557609, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535373331353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('a5hscogajcsa1v0dcj5i8uueqjpvt8b3', '192.168.50.150', 1510557954, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535373636383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('9l5r6cuiuq46ld95rajshjj4mapq2kd8', '192.168.50.150', 1510558338, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535383035393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('6neh0grb7lbgr20q1u3hqtsgptau4bv3', '192.168.50.150', 1510558850, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535383632353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('mqj1sj4pos4jqq1fu5ip3vabf6kotvdh', '192.168.50.150', 1510559345, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535393039343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('4rtrqtu00eoefru0k1onlfta721tkcei', '192.168.50.150', 1510559816, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303535393433383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('8kt56h4og0ffe5mut8g2pvdjjr9d5n6l', '192.168.50.150', 1510560108, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303536303038353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('vv7kekf2a9hu1kr00h5ttajcr0akv8ch', '192.168.50.150', 1510564705, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303536303436313b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('316u91tlbf6gncfg8vs8rjktk0lo7m09', '192.168.50.150', 1510565573, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303536343731373b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('ilqbsvq0a0vocce6ig4l87igtfsge31l', '192.168.50.150', 1510565822, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303536353537363b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('id0tfh9ajbo5dmq0v540me4i5522sue6', '192.168.50.150', 1510566273, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303536353939303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('ege4muq7r9fq2nkrom4n4fmcefpf6dph', '192.168.50.150', 1510566506, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303536363332393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('1lbp3ai3pn1nth41j78r3a0f8mimcpnt', '192.168.50.150', 1510566798, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303536363730383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b),
-('f3s6bm0uommi3q1g91b1itgenlsa9e2o', '192.168.50.150', 1510567642, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303536373332393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b73657475702d6d656e752d6f70656e7c733a303a22223b);
+('2h1feaabtrii9auk58is6622eat9hvnh', '::1', 1510622129, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303632323132393b7265645f75726c7c733a353a2261646d696e223b),
+('g6mo38emln61rsvcke89vso3qhovop4o', '192.168.50.150', 1510623459, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303632323132393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('a317ked2t9gu4ihb1eg0ho8d6unggt0b', '192.168.50.150', 1510633044, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303632333437303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('3s3kg78e1okavtb9eite9kaoe777t479', '192.168.50.150', 1510634160, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303633333230343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('78siuu1uk94hqve36p7hmse7hhbfj5pb', '192.168.50.150', 1510634251, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303633343137343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('q209rr3uomoosscnthnjrm477t3g9dh4', '192.168.50.150', 1510635195, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303633343835303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('c5bt0t38087poiggjfkq1kq89jp7if8v', '192.168.50.150', 1510641442, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303633353432313b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('q30a5n98ub79n2u7ptsgsece0ji8jrpo', '192.168.50.136', 1510639836, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303633393639353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('gf8jgt0n99s4n15bk8barnqs6eluo5j3', '192.168.50.150', 1510639950, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303633393734343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('q12alrsahhq80nqqkbg65al888sq5593', '192.168.50.136', 1510640106, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303634303130363b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('o722b2ctercbsolifqkcsku76gse7dbe', '192.168.50.150', 1510642470, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303634323037323b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('mcaspne9atta1157v1a8vg1o3hh2e3or', '192.168.50.150', 1510642808, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303634323530363b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('j3m5je8lssk02235ditf12ish1ql16ed', '192.168.50.150', 1510647268, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303634333932363b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('vcbfrvl81euic8ork7mj21j1onf27nvq', '192.168.50.150', 1510649282, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303634373336313b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('h14v2s1qr7vcn2rh7phldr1i48ncm736', '192.168.50.150', 1510650440, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303634393536333b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('45jkmkp88rgr35aord8gbcnq5jen8puf', '192.168.50.150', 1510651292, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303635303535383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('e6i5ahrlg8t79b56jltcdm2ntoncjimt', '192.168.50.150', 1510652218, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303635313239373b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('ogkrmgepk728e2d4atn46mnljo1mlt1j', '192.168.50.150', 1510652277, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303635323233343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('dsr3rh8kuu55lvhcl9cu5qf6f9c2crot', '192.168.50.150', 1510654277, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303635333730323b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b);
 
 -- --------------------------------------------------------
 
@@ -7902,7 +8139,7 @@ CREATE TABLE `tblstaff` (
 --
 
 INSERT INTO `tblstaff` (`staffid`, `email`, `staff_code`, `position_id`, `staff_manager`, `fullname`, `firstname`, `lastname`, `gender`, `date_birth`, `place_birth`, `permanent_residence`, `current_address`, `passport_id`, `issued_by`, `issued_on`, `hobbies`, `height`, `weight`, `marial_status`, `emergency_contact`, `education`, `foreign_languge_skills`, `other_certificates`, `facebook`, `linkedin`, `phonenumber`, `skype`, `password`, `datecreated`, `profile_image`, `last_ip`, `last_login`, `last_password_change`, `new_pass_key`, `new_pass_key_requested`, `admin`, `role`, `rule`, `active`, `default_language`, `direction`, `media_path_slug`, `is_not_staff`, `hourly_rate`, `salary`, `email_signature`, `bank_account`, `internal_phone`, `date_work`, `place_work`, `email_marketing`, `password_email_marketing`) VALUES
-(1, 'amin@admin.com', 'NV-ADMIN', 0, '', 'admin', '', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$08$9uFKA7CEZjqLO3zSOQfPBul5FwOw8Xwj6pJs4onV4gHAn9Tlcv762', '2017-03-30 09:24:10', NULL, '192.168.50.150', '2017-11-13 08:19:53', NULL, NULL, NULL, 1, NULL, 1, 1, 'vietnamese', NULL, NULL, 0, '0.00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(1, 'amin@admin.com', 'NV-ADMIN', 0, '', 'admin', '', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$08$9uFKA7CEZjqLO3zSOQfPBul5FwOw8Xwj6pJs4onV4gHAn9Tlcv762', '2017-03-30 09:24:10', NULL, '192.168.50.136', '2017-11-14 13:09:37', NULL, NULL, NULL, 1, NULL, 1, 1, 'vietnamese', NULL, NULL, 0, '0.00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (2, 'tannguyen@gmail.com', '', 0, 'null', 'Tan Nguyen', 'Tân', 'Nguyễn', 1, '0000-00-00', '', '', '', '', '', '0000-00-00', '', 0, 0, 'single', '', NULL, NULL, NULL, 'tannguyen', '', '0909365456', '', '$2a$08$GMPg1TJgHJsyM9Oa1bp4veWqPqkglBTxdmU.OkFTM8lJ9OS8oLwRe', '2017-03-31 00:37:49', NULL, '192.168.50.19', '2017-11-08 13:54:43', NULL, NULL, NULL, 0, 1, 4, 1, 'vietnamese', '', 'tan-nguyễn', 0, '200.00', '0', '', '', '', '0000-00-00', 1, '', ''),
 (3, 'ngocha@gmail.com', '', 0, '', 'Ngoc ha', 'Ngọc', 'Hà', 1, '0000-00-00', '', '', '', '', '', '0000-00-00', '', 0, 0, 'single', '', NULL, NULL, NULL, '', '', '0909321456', '', '$2a$08$9uFKA7CEZjqLO3zSOQfPBul5FwOw8Xwj6pJs4onV4gHAn9Tlcv762', '2017-03-31 00:49:22', 'paul-hinz.jpg', '::1', '2017-07-07 15:48:58', NULL, NULL, NULL, 0, 2, 3, 1, 'vietnamese', '', 'ngọc-ha', 0, '200.00', '0', '', '', '', '0000-00-00', 1, NULL, NULL),
 (4, 'thuylinh@gmail.com', 'NV00004', 0, '', 'Thuy linh', 'Thùy', 'Linh', 1, '2017-06-30', 'HCM', 'HCM', 'HCM', '321348455', 'HCM', '2017-06-30', '', 0, 0, 'single', '12345', NULL, NULL, NULL, '', '', '09123456789', '', '$2a$08$mxYDHk1OwXmcx7QVbtKDTeKprQua5DSEDZTLEhpg65wYscNF2RY86', '2017-03-31 00:50:39', NULL, '::1', '2017-04-03 12:57:20', NULL, NULL, NULL, 0, 3, 4, 1, 'vietnamese', '', 'thuy-linh', 0, '150.00', '100', '', '1234', '5678', '2017-06-30', 1, NULL, NULL),
@@ -8903,14 +9140,14 @@ CREATE TABLE `tblwarehouses_products` (
 --
 
 INSERT INTO `tblwarehouses_products` (`id`, `product_id`, `warehouse_id`, `product_quantity`, `shipment`, `rack`) VALUES
-(3, 55, 1, 284, NULL, NULL),
-(4, 57, 1, 22, NULL, NULL),
-(5, 56, 1, 22, NULL, NULL),
+(3, 55, 1, 272, NULL, NULL),
+(4, 57, 1, 20, NULL, NULL),
+(5, 56, 1, 17, NULL, NULL),
 (6, 61, 1, 5, NULL, NULL),
-(7, 61, 2, 1, NULL, NULL),
-(8, 55, 2, 1, NULL, NULL),
-(10, 56, 2, 1, NULL, NULL),
-(11, 57, 2, 1, NULL, NULL);
+(7, 61, 2, 6, NULL, NULL),
+(8, 55, 2, 12, NULL, NULL),
+(11, 57, 2, 20, NULL, NULL),
+(12, 56, 2, 5, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -21252,7 +21489,7 @@ ALTER TABLE `tblaccount_attributes`
 -- AUTO_INCREMENT cho bảng `tblactivitylog`
 --
 ALTER TABLE `tblactivitylog`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1926;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2168;
 --
 -- AUTO_INCREMENT cho bảng `tblannouncements`
 --
@@ -21462,12 +21699,12 @@ ALTER TABLE `tblgoals`
 -- AUTO_INCREMENT cho bảng `tblimports`
 --
 ALTER TABLE `tblimports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 --
 -- AUTO_INCREMENT cho bảng `tblimport_items`
 --
 ALTER TABLE `tblimport_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 --
 -- AUTO_INCREMENT cho bảng `tblincurred`
 --
@@ -21767,17 +22004,17 @@ ALTER TABLE `tblpurchase_suggested_details`
 -- AUTO_INCREMENT cho bảng `tblquotes`
 --
 ALTER TABLE `tblquotes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 --
 -- AUTO_INCREMENT cho bảng `tblquote_items`
 --
 ALTER TABLE `tblquote_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
 --
 -- AUTO_INCREMENT cho bảng `tblquote_items1`
 --
 ALTER TABLE `tblquote_items1`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
 --
 -- AUTO_INCREMENT cho bảng `tblracks`
 --
@@ -21987,7 +22224,7 @@ ALTER TABLE `tblwarehouses`
 -- AUTO_INCREMENT cho bảng `tblwarehouses_products`
 --
 ALTER TABLE `tblwarehouses_products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT cho bảng `tblwebtolead`
 --

@@ -145,7 +145,6 @@ class Quotes extends Admin_controller
         }
         if ($this->input->post()) {
             if ($id == '') {
-                die('2222');
                 if (!has_permission('quote_items', '', 'create')) {
                     access_denied('quote_items');
                 }
@@ -170,25 +169,20 @@ class Quotes extends Admin_controller
                 }
                 $success = $this->quotes_model->update($this->input->post(), $id);
                 if ($success == true) {
+
                     $alert_type = 'success';
                     $message    = _l('updated_successfuly', _l('quote'));
-
-                    echo json_encode(array('status' => true, 'message' => 'Cập nhật thành công'));
-                    exit();
                 }
                 else
                 {
                     $alert_type = 'danger';
                     $message    = _l('Cập nhật thất bại', _l('quote'));
-
-                    echo json_encode(array('status' => false, 'message' => 'Cập nhật thất bại'));
-                    exit();
                 }
-                // exit(json_encode(array(
-                //     'alert_type' => $alert_type,
-                //     'success' => $success,
-                //     'message' => $message,
-                // )));
+                exit(json_encode(array(
+                    'alert_type' => $alert_type,
+                    'success' => $success,
+                    'message' => $message,
+                )));
             }
         }
         if ($id == '') {
