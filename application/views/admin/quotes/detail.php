@@ -713,7 +713,9 @@
             if(response.status == true){
               alert_float('success', response.message);
               $('.quotes-modal').modal('hide');
-              $('.table-quote_clients').DataTable().ajax.reload()
+              $('.table-quote_clients').DataTable().ajax.reload();
+              $('.table-quotes').DataTable().ajax.reload();
+
             }else{
               alert_float('danger', response.message);
             }

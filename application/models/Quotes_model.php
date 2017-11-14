@@ -180,31 +180,6 @@ class Quotes_model extends CRM_Model
         return false;
     }
 
-    public function delete($id)
-    {
-        $this->db->where('id', $id);
-        $this->db->delete('tblquotes');
-        if ($this->db->affected_rows() > 0) {
-
-            // $this->db->where('quote_id', $id);
-            // $dataDeleteItem = $this->db->get('tblquote_items1')->result();
-
-
-            $this->db->where('quote_id', $id);
-            $this->db->delete('tblquote_items');
-
-            $this->db->where('quote_id', $id);
-            $this->db->delete('tblquote_items1');
-
-            $this->db->where('tblincurred_quote_id', $id);
-            $this->db->delete('tblincurred');
-
-
-            return true;
-        }
-        return false;
-    }
-
     public function cancel_quote($id,$data)
     {
         $this->db->where('id', $id);
@@ -787,6 +762,31 @@ class Quotes_model extends CRM_Model
                 'id' => $id
             ));
             return $affected;
+        }
+        return false;
+    }
+
+    public function getQuoteItemsByItemId($quote_id, $tableItem = 'tblquote_items'){
+      $this->db->where('quote_id', $quote_id);
+      return $this->db->get($tableItem)->result();
+    }
+
+    public function delete($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete('tblquotes');
+        if ($this->db->affected_rows() > 0) {
+            $dataDeleteItem   = $this->getQuoteItemsByItemId($id);
+            $dataDeleteItem1  = $this->getQuoteItemsByItemId($id, 'tblquote_items1');
+
+            $this->deleteItems($dataDeleteItem, $id);
+            $this->deleteItems($dataDeleteItem1, $id, 'tblquote_items1');
+
+            $this->db->where('tblincurred_quote_id', $id);
+            $this->db->delete('tblincurred');
+
+
+            return true;
         }
         return false;
     }
