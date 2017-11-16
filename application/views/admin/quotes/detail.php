@@ -113,6 +113,13 @@
                         echo render_textarea('note', 'note', $note, array(), array(), '', 'tinymce');
                         ?>
                   </div>
+
+                  <?php
+                    // echo "<pre>";
+                    // print_r($item);
+                    // echo "</pre>";
+                   ?>
+
                   <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
                      <!-- Cusstomize from invoice -->
                      <div class="panel-body mtop10" style="border: 1px solid #ccc;">
@@ -191,7 +198,7 @@
                                     if(isset($item) && count($item->items) > 0) {
                                         foreach($item->items as $value) {
                                         ?>
-                                 <tr class="sortable item">
+                                 <tr class="sortable item" quantity-warehouse="<?=$value->warehouse_type->product_quantity; ?>" old-quantity="<?=$value->quantity ?>">
                                     <td>
                                        <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
                                     </td>
@@ -329,7 +336,7 @@
 
                                         foreach($item->items1 as $value) {
                                         ?>
-                                 <tr class="sortable item1">
+                                 <tr class="sortable item1" quantity-warehouse="<?=$value->warehouse_type->product_quantity; ?>" old-quantity="<?=$value->quantity ?>">
                                     <td>
                                        <input type="hidden" name="items1[<?php echo $i1; ?>][id]" value="<?php echo $value->product_id; ?>">
                                     </td>
@@ -746,8 +753,9 @@
     var key = $(field).text();
     tinymce.activeEditor.execCommand('mceInsertContent', false, key);
    }
-
+   // console.log('itemList', itemList);
    var findItem = (id) => {
+
        var itemResult;
        $.each(itemList, (index,value) => {
            if(value.id == id) {
@@ -755,6 +763,7 @@
                return false;
            }
        });
+
        return itemResult;
    };
    var total = <?php echo $i ?>;
@@ -764,6 +773,7 @@
    var uniqueArray1 = <?php echo $i1 ?>;
    var total2 = <?php echo $k ?>;
    var isNew = false;
+
    var createTrItem = () => {
        if(!isNew) return;
        // if(!$('div #warehouse_name option:selected').length || $('div #warehouse_name option:selected').val() == '') {
@@ -775,11 +785,18 @@
            alert_float('danger', "Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!");
            return;
        }
+
+       let quantityWarehouse  = parseInt($('#btnAdd').attr('quantity-warehouse'));
+       let currentQuantity    = parseInt($('tr.main').find('td:nth-child(4) > input').val());
+       if (currentQuantity > quantityWarehouse ) {
+          alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+          return;
+       }
        // if($('tr.main').find('td:nth-child(4) > input').val() > $('tr.main #select_warehouse option:selected').data('store')) {
        //     alert_float('danger', 'Kho ' + $('tr.main #select_warehouse option:selected').text() + '. Bạn đã nhập ' + $('tr.main').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
        //     return;
        // }
-       var newTr = $('<tr class="sortable item"></tr>');
+       var newTr = $('<tr class="sortable item" quantity-warehouse="'+quantityWarehouse+'" old-quantity="'+$('tr.main').find('td:nth-child(4) > input').val()+'"></tr>');
 
        var td1 = $('<td><input type="hidden" name="items[' + uniqueArray + '][id]" value="" /></td>');
        var td2 = $('<td class="dragger"></td>');
@@ -826,14 +843,21 @@
        // }
        if( $('table.item-export1 tbody tr:gt(0)').find('input[value=' + $('tr.main1').find('td:nth-child(1) > input').val() + ']').length ) {
            $('table.item-export1 tbody tr:gt(0)').find('input[value=' + $('tr.main1').find('td:nth-child(1) > input').val() + ']').parent().find('td:nth-child(2) > input').focus();
-           alert_float('danger', "Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!");
+           alert_float('danger', "Sản phẩm này đã được thêm, vui lòng kiểm tra lại!");
            return;
        }
+       let quantityWarehouse  = parseInt($('#btnAdd1').attr('quantity-warehouse'));
+       let currentQuantity    = parseInt($('tr.main1').find('td:nth-child(4) > input').val());
+       if (currentQuantity > quantityWarehouse ) {
+          alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+          return;
+       }
+
        // if($('tr.main1').find('td:nth-child(4) > input').val() > $('tr.main #select_warehouse option:selected').data('store')) {
        //     alert_float('danger', 'Kho ' + $('tr.main #select_warehouse1 option:selected').text() + '. Bạn đã nhập ' + $('tr.main1').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
        //     return;
        // }
-       var newTr = $('<tr class="sortable item1"></tr>');
+       var newTr = $('<tr class="sortable item1" quantity-warehouse="'+quantityWarehouse+'" old-quantity="'+$('tr.main1').find('td:nth-child(4) > input').val()+'"></tr>');
 
        var td1 = $('<td><input type="hidden" name="items1[' + uniqueArray1 + '][id]" value="" /></td>');
        var td2 = $('<td class="dragger"></td>');
@@ -996,6 +1020,7 @@
    });
 
    $('#custom_item_select').change((e)=>{
+
        var id = $(e.currentTarget).val();
        var itemFound = findItem(id);
        $('#custom_item_select').val('');
@@ -1007,6 +1032,7 @@
        // warehouse_id.selectpicker('refresh');
 
        if(typeof(itemFound) != 'undefined') {
+
            var trBar = $('tr.main');
            trBar.find('td:first > input').val(itemFound.id);
            trBar.find('td:nth-child(2)').text(itemFound.name+' ('+itemFound.prefix+itemFound.code+')('+ itemFound.category +')');
@@ -1021,6 +1047,7 @@
            trBar.find('td:nth-child(7)').append(inputTax);
            trBar.find('td:nth-child(8)').text(formatNumber(parseFloat(taxValue)+parseFloat(itemFound.price)));
            isNew = true;
+           $('#btnAdd').attr('quantity-warehouse', itemFound.product_quantity);
            $('#btnAdd').show();
        }
        else {
@@ -1056,6 +1083,7 @@
            trBar.find('td:nth-child(7)').append(inputTax);
            trBar.find('td:nth-child(8)').text(formatNumber(parseFloat(taxValue)+parseFloat(itemFound.price)));
            isNew = true;
+           $('#btnAdd1').attr('quantity-warehouse', itemFound.product_quantity);
            $('#btnAdd1').show();
        }
        else {
@@ -1072,8 +1100,20 @@
    // });
 
 
-   $(document).on('change', '.mainQuantity', (e)=>{
+   $(document).on('keyup', '.mainQuantity', (e)=>{
+       // console.log($(e.currentTarget).parent().parent().attr('quantity-warehouse'));
+       // console.log($(e.currentTarget).val());
        var currentQuantityInput = $(e.currentTarget);
+
+       let currentQuantity    = parseInt(currentQuantityInput.val());
+       let quantityWarehouse  = parseInt(currentQuantityInput.parent().parent().attr('quantity-warehouse'));
+
+       if (currentQuantity > quantityWarehouse) {
+          alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+          $(e.currentTarget).val(currentQuantityInput.parent().parent().attr('old-quantity'));
+          return;
+       }
+
        let elementToCompare;
        if(typeof(currentQuantityInput.attr('data-store')) == 'undefined' )
            elementToCompare = currentQuantityInput.parents('tr').find('input:last');
@@ -1135,7 +1175,6 @@
        refreshTotal1();
    });
 
-
    // $('#select_kindof_warehouse').change(function(e){
    //     var warehouse_type = $(e.currentTarget).val();
    //     var product = $(e.currentTarget).parents('tr').find('td:first input');
@@ -1172,6 +1211,9 @@
                dataType : 'json',
            })
            .done(function(data){
+
+               console.log('data', data);
+
                $.each(data, function(key,value){
 
                    product_id.append('<option value="' + value.id + '">'+'('+ value.code +') '  + value.name + '</option>');
@@ -1191,6 +1233,8 @@
                dataType : 'json',
            })
            .done(function(data){
+
+               console.log('data', data);
 
                $.each(data, function(key,value){
                    product_id.append('<option value="' + value.id + '">'+'('+ value.code +') '  + value.name + '</option>');

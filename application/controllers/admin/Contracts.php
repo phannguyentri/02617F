@@ -88,6 +88,12 @@ class Contracts extends Admin_controller
                 $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
                 $i++;
             }
+            $i=0;
+            foreach ($data['item']->items1 as $key => $value) {
+                $data['item']->items1[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+                $i++;
+            }
+
             $data['warehouse_type_id'] = $data['item']->items[0]->warehouse_id;
             $data['warehouse_type_id1'] = $data['item']->items1[0]->warehouse_id;
             // var_dump($data['item']);die();
@@ -163,7 +169,7 @@ class Contracts extends Admin_controller
 
         $data['clients'] = $this->clients_model->get('', $where_clients);
         $this->load->model('invoice_items_model');
-        $data['items']= $this->invoice_items_model->get_full();
+        $data['items']= $this->invoice_items_model->get_full_by_warehouse_id('', 1);
 
         if ($id != '') {
             if (total_rows('tblclients', array(
@@ -183,6 +189,10 @@ class Contracts extends Admin_controller
     public function getIteamQuote(){
         $this->load->model('quotes_model');
         $data         = $this->quotes_model->getQuoteByID($this->input->post('id'));
+        $data->aaaa   = 'zzzz';
+
+        // var_dump($data);
+
         echo json_encode($data);
     }
 

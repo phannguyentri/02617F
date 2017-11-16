@@ -194,21 +194,6 @@ class Quotes_model extends CRM_Model
 
     public function add($data)
     {
-        // echo "<pre>";
-        // print_r($data);
-        // echo "</pre>";
-
-        // foreach ($data['items1'] as $item){
-        //     $currentItem = $this->db->get_where('tblwarehouses_products', array('product_id'=>$item['id'], 'warehouse_id'=>1))->row();
-        //     if ($currentItem) {
-        //         echo "<pre>";
-        //         print_r($currentItem);
-        //         echo "</pre>";
-        //     }
-
-        // }
-        // die('2');
-
 
         $quote = array(
             'prefix' => $data['prefix'],

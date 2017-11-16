@@ -55,7 +55,11 @@ class Quotes extends Admin_controller
                 $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
                 $i++;
             }
-
+            $i=0;
+            foreach ($data['item']->items1 as $key => $value) {
+                $data['item']->items1[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+                $i++;
+            }
         }
 
         $data['warehouse_type_id'] = $data['quote']->items[0]->warehouse_id;
@@ -96,7 +100,7 @@ class Quotes extends Admin_controller
         $data['categories_a'] = $this->quotes_model->getCategory(1,NULL,388);
         $data['categories_b'] = $this->quotes_model->getCategory(1,NULL,446);
         $data['types']         = $this->contracts_model->get_contract_types();
-        $data['items']= $this->invoice_items_model->get_full();
+        $data['items']          = $this->invoice_items_model->get_full_by_warehouse_id('', 1);
         $data['quotes']         = $this->contracts_model->get_quote_contracts();
 
 
@@ -198,6 +202,12 @@ class Quotes extends Admin_controller
                 $data['item']->items[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
                 $i++;
             }
+            $i=0;
+            foreach ($data['item']->items1 as $key => $value) {
+                $data['item']->items1[$i]->warehouse_type=$this->warehouse_model->getWarehouseProduct($value->warehouse_id,$value->product_id);
+                $i++;
+            }
+
             $data['warehouse_type_id'] = $data['item']->items[0]->warehouse_id;
             $data['warehouse_type_id1'] = $data['item']->items1[0]->warehouse_id;
 
@@ -206,7 +216,7 @@ class Quotes extends Admin_controller
             }
         }
 
-        $data['items']= $this->invoice_items_model->get_full();
+        $data['items']= $this->invoice_items_model->get_full_by_warehouse_id('', 1);
 
         $where_clients = 'tblclients.active=1';
 

@@ -45,6 +45,31 @@ class Invoice_items_model extends CRM_Model
         return $this->db->get()->result_array();
     }
 
+    public function get_full_by_warehouse_id($id = '', $warehouse_id = NULL)
+    {
+        $this->db->select('tblitems.*,tblunits.unit as unit_name,tbltaxes.name as tax_name, tbltaxes.taxrate as taxrate, tblcategories.category, tblwarehouses_products.product_quantity
+        ');
+        $this->db->from('tblitems');
+        $this->db->join('tblcategories', 'tblcategories.id=tblitems.category_id', 'left');
+        $this->db->join('tblunits','tblunits.unitid=tblitems.unit','left');
+        $this->db->join('tbltaxes','tbltaxes.id=tblitems.tax','left');
+        if ($warehouse_id) {
+            $this->db->join('tblwarehouses_products', 'tblwarehouses_products.product_id = tblitems.id', 'left');
+            $this->db->where('tblwarehouses_products.warehouse_id', $warehouse_id);
+        }
+
+        $this->db->order_by('tblitems.id', 'desc');
+        if (is_numeric($id)) {
+
+            $this->db->where('tblitems.id', $id);
+            $item = $this->db->get()->row();
+            $item->attachments = $this->get_invoice_attachments($id);
+            return $item;
+        }
+
+        return $this->db->get()->result_array();
+    }
+
     public function get_full_by_category_id($id = '', $categoryParentId)
     {
         $this->db->select('tblitems.*,tblunits.unit as unit_name,tbltaxes.name as tax_name, tbltaxes.taxrate as taxrate, tblcategories.category
@@ -67,7 +92,10 @@ class Invoice_items_model extends CRM_Model
     }
 
     public function getProductsByCateID($id){
+        $this->db->select('tblitems.id, tblitems.prefix, tblitems.code, tblitems.name, tblitems.short_name, tblitems.rate, tblitems.tax, tblitems.unit, tblitems.group_id, tblitems.country_id, tblitems.producer, tblitems.specification, tblitems.size, tblitems.weight, tblitems.price, tblitems.price_buy, tblitems.avatar, tblitems.category_id, tblitems.discount, tblwarehouses_products.product_quantity, tblwarehouses_products.warehouse_id');
         $this->db->where('tblitems.category_id',$id);
+        $this->db->join('tblwarehouses_products', 'tblwarehouses_products.product_id = tblitems.id', 'left');
+        $this->db->where('tblwarehouses_products.warehouse_id', 1);
         $this->db->from('tblitems');
         return $this->db->get()->result_array();
     }

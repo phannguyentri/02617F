@@ -207,7 +207,7 @@
 
                                            foreach($item->items as $value) {
                                            ?>
-                                    <tr class="sortable item">
+                                    <tr class="sortable item" quantity-warehouse="<?=$value->warehouse_type->product_quantity; ?>" old-quantity="<?=$value->quantity ?>">
                                        <td>
                                           <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
                                        </td>
@@ -343,7 +343,7 @@
 
                                            foreach($item->items1 as $value) {
                                            ?>
-                                    <tr class="sortable item1">
+                                    <tr class="sortable item1" quantity-warehouse="<?=$value->warehouse_type->product_quantity; ?>" old-quantity="<?=$value->quantity ?>">
                                        <td>
                                           <input type="hidden" name="items1[<?php echo $i1; ?>][id]" value="<?php echo $value->product_id; ?>">
                                        </td>
@@ -653,10 +653,8 @@
 <?php $this->load->view('admin/contracts/renew_contract'); ?>
 <?php } ?>
 <script>
-   var itemList = <?php
-      echo json_encode($items);
-      ?>;
-      var total_inclu = <?php echo $item->incurred ?>;
+   var itemList = <?php echo json_encode($items);?>;
+      var total_inclu = <?php echo ($item->incurred) ? $item->incurred : 0 ; ?>;
    Dropzone.autoDiscover = false;
    if($('#contract-attachments-form').length > 0){
      var contractAttachmentsForm = new Dropzone("#contract-attachments-form", {
@@ -832,11 +830,11 @@
     var total1 = <?php echo $i1 ?>;
     var totalPrice = <?php echo $totalPrice ?>;
     var uniqueArray = <?php echo $i ?>;
-   var total2 = <?php echo $k ?>;
+    var total2 = <?php echo $k ?>;
     var uniqueArray1 = <?php echo $i1 ?>;
     var isNew = false;
     var createTrItem = () => {
-
+      alert('a');
         if(!isNew) return;
         // if(!$('div #warehouse_name option:selected').length || $('div #warehouse_name option:selected').val() == '') {
         //     alert_float('danger', "Vui lòng chọn kho chứa sản phẩm!");
@@ -847,12 +845,19 @@
             alert_float('danger', "Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!");
             return;
         }
+       let quantityWarehouse  = parseInt($('#btnAdd').attr('quantity-warehouse'));
+       let currentQuantity    = parseInt($('tr.main').find('td:nth-child(4) > input').val());
+       if (currentQuantity > quantityWarehouse ) {
+          alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+          return;
+       }
+
         // if($('tr.main').find('td:nth-child(4) > input').val() > $('tr.main #select_warehouse option:selected').data('store')) {
         //     alert_float('danger', 'Kho ' + $('tr.main #select_warehouse option:selected').text() + '. Bạn đã nhập ' + $('tr.main').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
         //     return;
         // }
         uniqueArray++;
-        var newTr = $('<tr class="sortable item"></tr>');
+        var newTr = $('<tr class="sortable item" quantity-warehouse="'+quantityWarehouse+'" old-quantity="'+$('tr.main').find('td:nth-child(4) > input').val()+'"></tr>');
 
         var td1 = $('<td><input type="hidden" name="items[' + uniqueArray + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
@@ -904,12 +909,19 @@
             alert_float('danger', "Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!");
             return;
         }
+        let quantityWarehouse  = parseInt($('#btnAdd1').attr('quantity-warehouse'));
+        let currentQuantity    = parseInt($('tr.main1').find('td:nth-child(4) > input').val());
+        if (currentQuantity > quantityWarehouse ) {
+           alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+           return;
+        }
+
         // if($('tr.main1').find('td:nth-child(4) > input').val() > $('tr.main #select_warehouse option:selected').data('store')) {
         //     alert_float('danger', 'Kho ' + $('tr.main #select_warehouse1 option:selected').text() + '. Bạn đã nhập ' + $('tr.main1').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
         //     return;
         // }
        uniqueArray1++;
-        var newTr = $('<tr class="sortable item1"></tr>');
+        var newTr = $('<tr class="sortable item1" quantity-warehouse="'+quantityWarehouse+'" old-quantity="'+$('tr.main1').find('td:nth-child(4) > input').val()+'"></tr>');
 
         var td1 = $('<td><input type="hidden" name="items1[' + uniqueArray1 + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
@@ -1107,6 +1119,7 @@
            trBar.find('td:nth-child(7)').append(inputTax);
            trBar.find('td:nth-child(8)').text(formatNumber(parseFloat(taxValue)+parseFloat(itemFound.price)));
            isNew = true;
+           $('#btnAdd').attr('quantity-warehouse', itemFound.product_quantity);
            $('#btnAdd').show();
        }
        else {
@@ -1142,6 +1155,7 @@
            trBar.find('td:nth-child(7)').append(inputTax);
            trBar.find('td:nth-child(8)').text(formatNumber(parseFloat(taxValue)+parseFloat(itemFound.price)));
            isNew = true;
+           $('#btnAdd1').attr('quantity-warehouse', itemFound.product_quantity);
            $('#btnAdd1').show();
        }
        else {
@@ -1158,8 +1172,17 @@
     // });
 
 
-    $(document).on('change', '.mainQuantity', (e)=>{
+    $(document).on('keyup', '.mainQuantity', (e)=>{
         var currentQuantityInput = $(e.currentTarget);
+        let currentQuantity    = parseInt(currentQuantityInput.val());
+        let quantityWarehouse  = parseInt(currentQuantityInput.parent().parent().attr('quantity-warehouse'));
+
+        if (currentQuantity > quantityWarehouse) {
+           alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+           $(e.currentTarget).val(currentQuantityInput.parent().parent().attr('old-quantity'));
+           return;
+        }
+
         let elementToCompare;
         if(typeof(currentQuantityInput.attr('data-store')) == 'undefined' )
             elementToCompare = currentQuantityInput.parents('tr').find('input:last');
@@ -1186,7 +1209,7 @@
             currentQuantityInput.focus();
         }
 
-      var Gia = currentQuantityInput.parent().find(' + td');
+       var Gia = currentQuantityInput.parent().find(' + td');
        var GiaTri = Gia.find(' + td');
 
        var Thue = GiaTri.find(' + td');
@@ -1252,14 +1275,16 @@
 
      if(v){
        $.ajax({
-                url : admin_url + 'contracts/getIteamQuote/',
-                data: {
-                 'id' : v,
-                },
-                type:'POST',
-                dataType : 'json',
-            })
+          url : admin_url + 'contracts/getIteamQuote/',
+          data: {
+           'id' : v,
+          },
+          type:'POST',
+          dataType : 'json',
+      })
             .done(function(data){
+            console.log('data', data);
+
             $('#contract_incurred').val(data.incurred*1);
 
              if(data.items[0]){

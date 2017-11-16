@@ -7,6 +7,7 @@
 <div id="wrapper">
    <div class="content">
       <div class="row">
+
          <?php echo form_open(admin_url('contracts/contract'),array('id'=>'contract-form')); ?>
          <div class="col-md-5 left-column">
             <div class="panel_s">
@@ -29,10 +30,10 @@
                         <span class="input-group-addon">
                         <?php $prefix = get_option('prefix_contract'); ?>
                         <?=$prefix?>
-                        <?=form_hidden('prefix',$prefix)?> 
-                        <?=form_hidden('rel_id',$quote->id)?>   
+                        <?=form_hidden('prefix',$prefix)?>
+                        <?=form_hidden('rel_id',$quote->id)?>
                         </span>
-                        <?php 
+                        <?php
                            $number= $code;
                            ?>
                         <input type="text" name="code" class="form-control" id="code" value="<?=$number ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>">
@@ -105,7 +106,7 @@
                   <h4 class="text-center" style="background: #ccc;padding:10px;">SẢN PHẨM</h4>
                   <div class="row">
                      <div class="col-md-4">
-                        <?php 
+                        <?php
                            echo render_select('categories_name', $categories_a, array('id', 'category'),'Hãng sản phẩm');
                            ?>
                      </div>
@@ -116,7 +117,7 @@
                               <option value=""></option>
                               <?php foreach ($items as $product) { ?>
                               <!--  <option value="<?php echo $product['id']; ?>" data-subtext="">(<?php echo $product['code']; ?>) <?php echo $product['name']; ?></option> -->
-                              <?php 
+                              <?php
                                  } ?>
                               <!-- <?php if (has_permission('items', '', 'create')) { ?>
                                  <option data-divider="true"></option>
@@ -175,10 +176,10 @@
                               $i=0;
                               $totalPrice=0;
                               if(isset($item) && count($item->items) > 0) {
-                                  
+
                                   foreach($item->items as $value) {
                                   ?>
-                           <tr class="sortable item">
+                           <tr class="sortable item" quantity-warehouse="<?=$value->warehouse_type->product_quantity; ?>" old-quantity="<?=$value->quantity ?>">
                               <td>
                                  <input type="hidden" name="items[<?php echo $i; ?>][id]" value="<?php echo $value->product_id; ?>">
                               </td>
@@ -240,7 +241,7 @@
                   <h4 class="text-center" style="background: #ccc;padding:10px;">LINH KIỆN</h4>
                   <div class="row">
                      <div class="col-md-4">
-                        <?php 
+                        <?php
                            echo render_select('categories_name1', $categories_b, array('id', 'category'),'Hãng linh kiện');
                            ?>
                      </div>
@@ -251,7 +252,7 @@
                               <option value=""></option>
                               <?php foreach ($items as $product) { ?>
                               <!--  <option value="<?php echo $product['id']; ?>" data-subtext="">(<?php echo $product['code']; ?>) <?php echo $product['name']; ?></option> -->
-                              <?php 
+                              <?php
                                  } ?>
                               <!-- <?php if (has_permission('items', '', 'create')) { ?>
                                  <option data-divider="true"></option>
@@ -309,12 +310,12 @@
                            <?php
                               $i1=0;
                               $totalPrice1=0;
-                              
+
                               if(isset($item) && count($item->items1) > 0) {
-                                  
+
                                   foreach($item->items1 as $value) {
                                   ?>
-                           <tr class="sortable item1">
+                           <tr class="sortable item1" quantity-warehouse="<?=$value->warehouse_type->product_quantity; ?>" old-quantity="<?=$value->quantity ?>">
                               <td>
                                  <input type="hidden" name="items1[<?php echo $i1; ?>][id]" value="<?php echo $value->product_id; ?>">
                               </td>
@@ -373,7 +374,7 @@
                   </div>
                   <div class="col-xs-12" style="padding:0px;">
                         <div class="form-group all" style="display: inline-block; width: 100%">
-                           <div class="title-hf" style="margin: 10px 0px;">Chi phí phát sinh thêm               
+                           <div class="title-hf" style="margin: 10px 0px;">Chi phí phát sinh thêm
                               <button type="button" class="btn btn-primary btn-xs" id="addGift"><i class="fa fa-plus"></i>
                               </button>
                            </div>
@@ -603,51 +604,51 @@
 <?php $this->load->view('admin/contracts/renew_contract'); ?>
 <?php } ?>
 <script>
-   var total_inclu = <?php echo $item->incurred ?>;
-   var itemList = <?php
-      echo json_encode($items);
-      ?>;
+   // alert('zzz');
+   var total_inclu = <?php echo ($item->incurred) ? $item->incurred : 0 ; ?>;
+   var itemList = <?php echo json_encode($items); ?>;
+
    Dropzone.autoDiscover = false;
    if($('#contract-attachments-form').length > 0){
-    var contractAttachmentsForm = new Dropzone("#contract-attachments-form", {
-     addRemoveLinks: true,
-     dictDefaultMessage:drop_files_here_to_upload,
-     dictFallbackMessage:browser_not_support_drag_and_drop,
-     dictRemoveFile:remove_file,
-     dictFileTooBig: file_exceds_maxfile_size_in_form,
-     dictMaxFilesExceeded:you_can_not_upload_any_more_files,
-     maxFilesize: max_php_ini_upload_size.replace(/\D/g, ''),
-     success:function(file){
-      if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
-       var location = window.location.href;
-       window.location.href= location.split('?')[0]+'?tab=tab_attachments';
-     }
-   },
-   acceptedFiles:allowed_files,
-   error:function(file,response){
-    alert_float('danger',response);
-   },
-   });
+      var contractAttachmentsForm = new Dropzone("#contract-attachments-form", {
+        addRemoveLinks: true,
+        dictDefaultMessage:drop_files_here_to_upload,
+        dictFallbackMessage:browser_not_support_drag_and_drop,
+        dictRemoveFile:remove_file,
+        dictFileTooBig: file_exceds_maxfile_size_in_form,
+        dictMaxFilesExceeded:you_can_not_upload_any_more_files,
+        maxFilesize: max_php_ini_upload_size.replace(/\D/g, ''),
+        success:function(file){
+         if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+          var location = window.location.href;
+          window.location.href= location.split('?')[0]+'?tab=tab_attachments';
+        }
+      },
+      acceptedFiles:allowed_files,
+      error:function(file,response){
+          alert_float('danger',response);
+      },
+      });
    }
    $(function(){
-    $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
-    $('#contract_incurred').val(total_inclu);
-   if(typeof(Dropbox) != 'undefined' && $('#dropbox-chooser').length > 0 ){
-    document.getElementById("dropbox-chooser").appendChild(Dropbox.createChooseButton({
-      success: function(files) {
-       $.post(admin_url+'contracts/add_external_attachment',{files:files,contract_id:contract_id,external:'dropbox'}).done(function(){
-        var location = window.location.href;
-        window.location.href= location.split('?')[0]+'?tab=tab_attachments';
-      });
-     },
-     linkType: "preview",
-     extensions: allowed_files.split(','),
-   }));
-   }
-   
+      $('input[name="contract_value"]').val (($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
+      $('#contract_incurred').val(total_inclu);
+      if(typeof(Dropbox) != 'undefined' && $('#dropbox-chooser').length > 0 ){
+         document.getElementById("dropbox-chooser").appendChild(Dropbox.createChooseButton({
+            success: function(files) {
+               $.post(admin_url+'contracts/add_external_attachment',{files:files,contract_id:contract_id,external:'dropbox'}).done(function(){
+                 var location = window.location.href;
+                 window.location.href = location.split('?')[0]+'?tab=tab_attachments';
+               });
+            },
+            linkType: "preview",
+            extensions: allowed_files.split(','),
+         }));
+      }
+
    _validate_form($('#contract-form'),{client:'required',datestart:'required',subject:'required'});
    _validate_form($('#renew-contract-form'),{new_start_date:'required'});
-   
+
    tinymce.init({
     selector: 'div.editable',
     inline: true,
@@ -713,8 +714,8 @@
    },
    });
    });
-   
-   
+
+
    function formatNumber(nStr, decSeperate=".", groupSeperate=",") {
        nStr += '';
        x = nStr.split(decSeperate);
@@ -726,7 +727,7 @@
        }
        return x1 + x2;
    }
-   
+
    var findItem = (id) => {
        var itemResult;
        $.each(itemList, (index,value) => {
@@ -755,12 +756,19 @@
            alert_float('danger', "Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!");
            return;
        }
+       let quantityWarehouse  = parseInt($('#btnAdd').attr('quantity-warehouse'));
+       let currentQuantity    = parseInt($('tr.main').find('td:nth-child(4) > input').val());
+       if (currentQuantity > quantityWarehouse ) {
+          alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+          return;
+       }
+
        // if($('tr.main').find('td:nth-child(4) > input').val() > $('tr.main #select_warehouse option:selected').data('store')) {
        //     alert_float('danger', 'Kho ' + $('tr.main #select_warehouse option:selected').text() + '. Bạn đã nhập ' + $('tr.main').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
        //     return;
        // }
-       var newTr = $('<tr class="sortable item"></tr>');
-       
+       var newTr = $('<tr class="sortable item" quantity-warehouse="'+quantityWarehouse+'" old-quantity="'+$('tr.main').find('td:nth-child(4) > input').val()+'"></tr>');
+
        var td1 = $('<td><input type="hidden" name="items[' + uniqueArray + '][id]" value="" /></td>');
        var td2 = $('<td class="dragger"></td>');
        var td3 = $('<td></td>');
@@ -769,7 +777,7 @@
        var td6 = $('<td></td>');
        var td7 = $('<td><input type="hidden" id="tax" data-taxid="" data-taxrate="" value="" /></td>');
        var td8 = $('<td></td>');
-   
+
        td1.find('input').val($('tr.main').find('td:nth-child(1) > input').val());
        td2.text($('tr.main').find('td:nth-child(2)').text());
        td3.text($('tr.main').find('td:nth-child(3)').text());
@@ -788,7 +796,7 @@
        newTr.append(td6);
        newTr.append(td7);
        newTr.append(td8);
-   
+
        newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem(this); return false;"><i class="fa fa-times"></i></a></td');
        $('table.item-export tbody').append(newTr);
        total++;
@@ -797,7 +805,7 @@
        refreshTotal();
        // refreshAll();
    };
-   
+
    var createTrItem1 = () => {
        if(!isNew) return;
        // if(!$('div #warehouse_name1 option:selected').length || $('div #warehouse_name1 option:selected').val() == '') {
@@ -809,12 +817,19 @@
            alert_float('danger', "Sản phẩm này đã được thêm, vui lòng lòng kiểm tra lại!");
            return;
        }
+       let quantityWarehouse  = parseInt($('#btnAdd1').attr('quantity-warehouse'));
+       let currentQuantity    = parseInt($('tr.main1').find('td:nth-child(4) > input').val());
+       if (currentQuantity > quantityWarehouse ) {
+          alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+          return;
+       }
+
        // if($('tr.main1').find('td:nth-child(4) > input').val() > $('tr.main #select_warehouse option:selected').data('store')) {
        //     alert_float('danger', 'Kho ' + $('tr.main #select_warehouse1 option:selected').text() + '. Bạn đã nhập ' + $('tr.main1').find('td:nth-child(4) > input').val() + ' là quá số lượng cho phép.');
        //     return;
        // }
-       var newTr = $('<tr class="sortable item1"></tr>');
-       
+       var newTr = $('<tr class="sortable item1" quantity-warehouse="'+quantityWarehouse+'" old-quantity="'+$('tr.main1').find('td:nth-child(4) > input').val()+'"></tr>');
+
        var td1 = $('<td><input type="hidden" name="items1[' + uniqueArray1 + '][id]" value="" /></td>');
        var td2 = $('<td class="dragger"></td>');
        var td3 = $('<td></td>');
@@ -823,12 +838,12 @@
        var td6 = $('<td></td>');
        var td7 = $('<td><input type="hidden" id="tax" data-taxid="" data-taxrate="" value="" /></td>');
        var td8 = $('<td></td>');
-   
+
        td1.find('input').val($('tr.main1').find('td:nth-child(1) > input').val());
        td2.text($('tr.main1').find('td:nth-child(2)').text());
        td3.text($('tr.main1').find('td:nth-child(3)').text());
        td4.find('input').val($('tr.main1').find('td:nth-child(4) > input').val());
-       
+
        td5.find('input').val($('tr.main1').find('td:nth-child(5) > input').val().replace(/\,/g,'.'));
        td6.text( $('tr.main1').find('td:nth-child(6)').text());
        var inputTax=$('tr.main1').find('td:nth-child(7) > input');
@@ -843,7 +858,7 @@
        newTr.append(td6);
        newTr.append(td7);
        newTr.append(td8);
-   
+
        newTr.append('<td><a href="#" class="btn btn-danger pull-right" onclick="deleteTrItem1(this); return false;"><i class="fa fa-times"></i></a></td');
        $('table.item-export1 tbody').append(newTr);
        total1++;
@@ -851,7 +866,7 @@
        uniqueArray1++;
        refreshTotal1();
        // refreshAll();
-       
+
    };
    var refreshAll = () => {
        isNew = false;
@@ -859,7 +874,7 @@
        $('#custom_item_select').val('');
        $('#custom_item_select').selectpicker('refresh');
        var trBar = $('tr.main');
-       
+
        trBar.find('td:first > input').val("");
        // trBar.find('td:nth-child(1) > input').val('');
        trBar.find('td:nth-child(2)').text("<?=_l('item_name')?>");
@@ -869,17 +884,17 @@
        trBar.find('td:nth-child(6)').text(0);
        trBar.find('td:nth-child(7)').text("<?=_l('tax')?>");
        trBar.find('td:nth-child(8)').text(0);
-       
+
        $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
    };
-   
+
     var refreshAll1 = () => {
        isNew = false;
        $('#btnAdd1').hide();
        $('#custom_item_select1').val('');
        $('#custom_item_select1').selectpicker('refresh');
        var trBar = $('tr.main1');
-       
+
        trBar.find('td:first > input').val("");
        // trBar.find('td:nth-child(1) > input').val('');
        trBar.find('td:nth-child(2)').text("<?=_l('item_name')?>");
@@ -891,20 +906,20 @@
        trBar.find('td:nth-child(8)').text(0);
         $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
    };
-   
+
    var deleteTrItem = (trItem) => {
        var current = $(trItem).parent().parent();
        totalPrice -= current.find('td:nth-child(4) > input').val() * current.find('td:nth-child(5) > input').val().replace(/\./g, '');
        $(trItem).parent().parent().remove();
        total--;
-      
+
        refreshTotal();
    };
-   
+
    var deleteTrItem1 = (trItem) => {
        var current = $(trItem).parent().parent();
        totalPrice -= current.find('td:nth-child(4) > input').val() * current.find('td:nth-child(5) > input').val().replace(/\./g, '');
-       $(trItem).parent().parent().remove();      
+       $(trItem).parent().parent().remove();
        total1--;
        refreshTotal1();
    };
@@ -914,19 +929,19 @@
        totalPrice = 0;
        $.each(items, (index,value)=>{
            totalPrice += parseFloat($(value).find('td:nth-child(6)').text().replace(/\,/g, ''))+parseFloat($(value).find('td:nth-child(7)').text().replace(/\,/g, ''));
-           // * 
+           // *
        });
        $('.totalPrice').text(formatNumber(totalPrice));
       $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
    };
-   
+
    var refreshTotal1 = () => {
        $('.total1').text(formatNumber(total1));
        var items = $('table.item-export1 tbody tr:gt(0)');
        totalPrice = 0;
        $.each(items, (index,value)=>{
            totalPrice += parseFloat($(value).find('td:nth-child(6)').text().replace(/\,/g, ''))+parseFloat($(value).find('td:nth-child(7)').text().replace(/\,/g, ''));
-           // * 
+           // *
        });
        $('.totalPrice1').text(formatNumber(totalPrice));
       $('input[name="contract_value"]').val(($('.totalPrice1').html().replace(/\,/g, '')*1) + ($('.totalPrice').html().replace(/\,/g, '')*1));
@@ -936,20 +951,20 @@
      total2++;
      $('#ex-gift').append('<div class="col-md-12" style="margin-bottom: 10px; padding: 0px;"><div class="col-xs-12 col-md-6" style="padding-left: 0px;"><label>Tên phát sinh </label><input type="text" name="incurred['+ total2 +'][name_incurred]" style="width: 100%; "></div><div class="col-xs-11 col-md-5"><label>Phí phát sinh </label><input type="text" class="pay_incurred_class" value="0" onkeyup="formart_num(\'pay_incurred' + total2 + '\')"  id="pay_incurred'+total2+'" name="incurred['+ total2 +'][pay_incurred]" style="width: 100%"></div> <div class="col-xs-1 col-md-1"><div>&nbsp</div><a href="#" class="btn btn-danger pull-right delete_in_item" style="margin-top: 7px;"><i class="fa fa-times"></i></a></div></div>')
    });
-   
+
    $('#ex-gift').on('click','.delete_in_item',function(){
      $(this).parent().parent().remove();
      total2--;
    });
 
 
-   
+
    $('#categories_name').change(function(e){
-       
-       
+
+
        var category_id=$(this).val();
        loadProductsInCategory(category_id);
-     
+
    });
 
    $(document).on('keyup','.pay_incurred_class',function(){
@@ -960,13 +975,13 @@
       $('#contract_incurred').val(total_inclu);
    })
 
-   
-   
+
+
    $('#categories_name1').change(function(e){
        var category_id=$(this).val();
        loadProductsInCategory1(category_id);
    });
-   
+
    $('#custom_item_select').change((e)=>{
        var id = $(e.currentTarget).val();
        var itemFound = findItem(id);
@@ -977,7 +992,7 @@
        // var warehouse_id=$('#select_warehouse');
        // warehouse_id.find('option:gt(0)').remove();
        // warehouse_id.selectpicker('refresh');
-   
+
        if(typeof(itemFound) != 'undefined') {
            var trBar = $('tr.main');
            trBar.find('td:first > input').val(itemFound.id);
@@ -993,6 +1008,7 @@
            trBar.find('td:nth-child(7)').append(inputTax);
            trBar.find('td:nth-child(8)').text(formatNumber(parseFloat(taxValue)+parseFloat(itemFound.price)));
            isNew = true;
+           $('#btnAdd').attr('quantity-warehouse', itemFound.product_quantity);
            $('#btnAdd').show();
        }
        else {
@@ -1000,7 +1016,7 @@
            $('#btnAdd').hide();
        }
    });
-   
+
    $('#custom_item_select1').change((e)=>{
        var id = $(e.currentTarget).val();
        var itemFound = findItem(id);
@@ -1011,10 +1027,10 @@
        // var warehouse_id=$('#select_warehouse1');
        // warehouse_id.find('option:gt(0)').remove();
        // warehouse_id.selectpicker('refresh');
-   
+
        if(typeof(itemFound) != 'undefined') {
            var trBar = $('tr.main1');
-           
+
            trBar.find('td:first > input').val(itemFound.id);
             trBar.find('td:nth-child(2)').text(itemFound.name+' ('+itemFound.prefix+itemFound.code+')('+ itemFound.category +')');
            trBar.find('td:nth-child(3)').text(itemFound.unit_name);
@@ -1028,6 +1044,7 @@
            trBar.find('td:nth-child(7)').append(inputTax);
            trBar.find('td:nth-child(8)').text(formatNumber(parseFloat(taxValue)+parseFloat(itemFound.price)));
            isNew = true;
+           $('#btnAdd1').attr('quantity-warehouse', itemFound.product_quantity);
            $('#btnAdd1').show();
        }
        else {
@@ -1035,17 +1052,27 @@
            $('#btnAdd1').hide();
        }
    });
-   
-   
+
+
    // $('#select_warehouse').on('change', (e)=>{
    //     if($(e.currentTarget).val() != '') {
    //         $(e.currentTarget).parents('tr').find('input.mainQuantity').attr('data-store', $(e.currentTarget).find('option:selected').data('store'));
    //     }
    // });
-   
-   
-   $(document).on('change', '.mainQuantity', (e)=>{
+
+
+   $(document).on('keyup', '.mainQuantity', (e)=>{
        var currentQuantityInput = $(e.currentTarget);
+
+       let currentQuantity    = parseInt(currentQuantityInput.val());
+       let quantityWarehouse  = parseInt(currentQuantityInput.parent().parent().attr('quantity-warehouse'));
+
+       if (currentQuantity > quantityWarehouse) {
+          alert_float('danger', "Số lượng sản phẩm này lớn hơn số lượng trong kho, vui lòng nhập lại!");
+          $(e.currentTarget).val(currentQuantityInput.parent().parent().attr('old-quantity'));
+          return;
+       }
+
        let elementToCompare;
        if(typeof(currentQuantityInput.attr('data-store')) == 'undefined' )
            elementToCompare = currentQuantityInput.parents('tr').find('input:last');
@@ -1071,57 +1098,57 @@
            currentQuantityInput.removeClass('error');
            currentQuantityInput.focus();
        }
-       
+
        var Gia = currentQuantityInput.parent().find(' + td');
        var GiaTri = Gia.find(' + td');
-   
+
        var Thue = GiaTri.find(' + td');
        var Tong = Thue.find(' + td');
-       var inputTax=Thue.find('input');   
+       var inputTax=Thue.find('input');
        GiaTri.text(formatNumber(replaceObjMoney($(Gia).find('input').val()) * (currentQuantityInput.val()*1)) );
        Thue.text(formatNumber(parseFloat(inputTax.data('taxrate'))/100*parseFloat(GiaTri.text().replace(/\,/g,''))));
-   
+
        Thue.append(inputTax);
        Tong.text(formatNumber(parseFloat(Thue.text().replace(/\,/g,''))+parseFloat(GiaTri.text().replace(/\,/g,''))));
        refreshTotal();
        refreshTotal1();
    });
-   
+
    $(document).on('change', '.mainUnitCost', (e)=>{
        var currentQuantityInput = $(e.currentTarget);
        var SoLuong = currentQuantityInput.parent().prev();
        var GiaTri = $(currentQuantityInput).parent().find(' + td');
-   
+
        var Thue = GiaTri.find(' + td');
        var Tong = Thue.find(' + td');
-       var inputTax=Thue.find('input');  
-   
-   
-   
+       var inputTax=Thue.find('input');
+
+
+
        GiaTri.text(formatNumber($(SoLuong).find('input').val() * replaceObjMoney(currentQuantityInput.val()) ));
        Thue.text(formatNumber(parseFloat(inputTax.data('taxrate'))/100*parseFloat(GiaTri.text().replace(/\,/g,''))));
-   
+
        Thue.append(inputTax);
        Tong.text(formatNumber(parseFloat(Thue.text().replace(/\,/g,''))+parseFloat(GiaTri.text().replace(/\,/g,''))));
        refreshTotal();
        refreshTotal1();
    });
-   
-   
+
+
    // $('#select_kindof_warehouse').change(function(e){
    //     var warehouse_type = $(e.currentTarget).val();
    //     var product = $(e.currentTarget).parents('tr').find('td:first input');
    //     if(warehouse_type != '' && product.val() != '') {
-   //         loadWarehouses(warehouse_type,product.val()); 
+   //         loadWarehouses(warehouse_type,product.val());
    //     }
    // });
    // $('#warehouse_type').change(function(e){
    //     var warehouse_type = $(e.currentTarget).val();
    //     if(warehouse_type != '') {
-   //         getWarehouses(warehouse_type); 
+   //         getWarehouses(warehouse_type);
    //     }
    // });
-   
+
    function formart_num(id_input)
    {
      key="";
@@ -1132,8 +1159,8 @@
      });
      $("#"+id_input).val(formatNumber(key, '.', '.'));
    }
-   
-   
+
+
    function loadProductsInCategory(category_id){
        var product_id=$('#custom_item_select');
        product_id.find('option:gt(0)').remove();
@@ -1143,16 +1170,16 @@
                url : admin_url + 'invoice_items/getProductsInCate/' + category_id,
                dataType : 'json',
            })
-           .done(function(data){          
+           .done(function(data){
                $.each(data, function(key,value){
-                   
+
                    product_id.append('<option value="' + value.id + '">'+'('+ value.code +') '  + value.name + '</option>');
                });
                product_id.selectpicker('refresh');
            });
        }
    }
-   
+
    function loadProductsInCategory1(category_id){
        var product_id=$('#custom_item_select1');
        product_id.find('option:gt(0)').remove();
@@ -1162,8 +1189,8 @@
                url : admin_url + 'invoice_items/getProductsInCate/' + category_id,
                dataType : 'json',
            })
-           .done(function(data){   
-   
+           .done(function(data){
+
                $.each(data, function(key,value){
                    product_id.append('<option value="' + value.id + '">'+'('+ value.code +') '  + value.name + '</option>');
                });
@@ -1171,7 +1198,7 @@
            });
        }
    }
-   
+
    // function getWarehouses(warehouse_type){
    //     var warehouse_id=$('#warehouse_name');
    //     warehouse_id.find('option:gt(0)').remove();
@@ -1181,11 +1208,11 @@
    //             url : admin_url + 'warehouses/getWarehouses/' + warehouse_type ,
    //             dataType : 'json',
    //         })
-   //         .done(function(data){  
+   //         .done(function(data){
    //             $.each(data, function(key,value){
    //                 warehouse_id.append('<option value="' + value.warehouseid +'">' + value.warehouse + '</option>');
    //             });
-   
+
    //             warehouse_id.selectpicker('refresh');
    //         });
    //     }
@@ -1199,7 +1226,7 @@
    //             url : admin_url + 'warehouses/getWarehouses/' + warehouse_type + '/' + filter_by_product,
    //             dataType : 'json',
    //         })
-   //         .done(function(data){          
+   //         .done(function(data){
    //             $.each(data, function(key,value){
    //                 var stringSelected = "";
    //                 if(value.warehouseid == default_value) {
@@ -1214,11 +1241,11 @@
    $('.customer-form-submiter').on('click', (e)=>{
       if($('input.error').length) {
           e.preventDefault();
-          alert('Giá trị không hợp lệ!');    
+          alert('Giá trị không hợp lệ!');
       }
-      
+
    });
-   
+
 </script>
 </body>
 </html>
