@@ -20,10 +20,10 @@ class Contracts_model extends CRM_Model
         $this->db->join('tblcontracttypes', 'tblcontracttypes.id = tblcontracts.contract_type', 'left');
         $this->db->join('tblclients', 'tblclients.userid = tblcontracts.client');
         if (is_numeric($id)) {
-            
+
             $this->db->where('tblcontracts.id', $id);
             $contract = $this->db->get('tblcontracts')->row();
-            
+
             $contract->attachments = $this->get_contract_attachments('', $contract->id);
             if ($for_editor == false) {
                 $merge_fields = array();
@@ -57,10 +57,10 @@ class Contracts_model extends CRM_Model
         $this->db->join('tblcontracttypes', 'tblcontracttypes.id = tblcontracts.contract_type', 'left');
         $this->db->join('tblclients', 'tblclients.userid = tblcontracts.client');
         if (is_numeric($id)) {
-            
+
             $this->db->where('tblcontracts.id', $id);
             $contract = $this->db->get('tblcontracts')->row();
-            
+
             $contract->attachments = $this->get_contract_attachments('', $contract->id);
             if ($for_editor == false) {
                 $merge_fields = array();
@@ -85,16 +85,16 @@ class Contracts_model extends CRM_Model
         }
         return $contracts;
     }
-    
+
     public function getContractByIDDate($id,$date){
         $this->db->where('create_by',$id);
         $this->db->where('create_date',$date);
-        return $this->db->count_all_results('tblcontracts');    
+        return $this->db->count_all_results('tblcontracts');
     }
 
     public function getContractByID($id = '')
     {
-        
+
         $this->db->select('*,tblcontracttypes.name as type_name,tblcontracts.id as id');
         $this->db->join('tblcontracttypes', 'tblcontracttypes.id = tblcontracts.contract_type', 'left');
         $this->db->join('tblclients', 'tblclients.userid = tblcontracts.client');
@@ -110,7 +110,7 @@ class Contracts_model extends CRM_Model
             }
             return $invoice;
         }
-        
+
         return false;
     }
 
@@ -119,22 +119,22 @@ class Contracts_model extends CRM_Model
         if($idquote){
             $this->db->where('tblincurred_contract_contract_id',$idquote);
         }
-       
+
         return $this->db->get('tblincurred_contract')->result();
 
 
     }
 
     public function getIncurredByID($id){
-        $this->db->select('*');        
-        
+        $this->db->select('*');
+
         $this->db->where('tblincurred_contract_contract_id',$id);
-       
+
         return $this->db->get('tblincurred_contract')->row();
 
 
     }
-    
+
     public function getContractItems($id)
     {
         $this->db->select('tblcontract_items.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id, tblitems.prefix,tblitems.code, tblitems.warranty, tblitems.specification,tblcountries.short_name as made_in,tblitems.price,tblitems.long_description, tblitems.product_features,tblitems.avatar as image, tblcategories.category');
@@ -146,9 +146,9 @@ class Contracts_model extends CRM_Model
         $this->db->where('contract_id', $id);
         $items = $this->db->get()->result();
         return $items;
-        
+
     }
-    
+
     public function getContractItems1($id)
     {
         $this->db->select('tblcontract_items1.*,tblitems.name as product_name,tblitems.description,tblunits.unit as unit_name,tblunits.unitid as unit_id, tblitems.prefix,tblitems.code, tblitems.warranty, tblitems.specification,tblcountries.short_name as made_in,tblitems.price,tblitems.long_description, tblitems.product_features,tblitems.avatar as image, tblcategories.category');
@@ -160,7 +160,7 @@ class Contracts_model extends CRM_Model
         $this->db->where('contract_id', $id);
         $items = $this->db->get()->result();
         return $items;
-        
+
     }
     /**
      * Select unique contracts years
@@ -193,10 +193,10 @@ class Contracts_model extends CRM_Model
      */
     public function add($data)
     {
-        
+
         $data['dateadded'] = date('Y-m-d H:i:s');
         $data['addedfrom'] = get_staff_user_id();
-        
+
         $data['datestart'] = to_sql_date($data['datestart']);
         unset($data['attachment']);
         if ($data['dateend'] == '') {
@@ -237,7 +237,7 @@ class Contracts_model extends CRM_Model
             'not_visible_to_client' => $data['not_visible_to_client'],
             'create_by' => get_staff_user_id(),
             'create_date' => date('d/m/y'),
-            
+
         );
 
         $data     = do_action('before_contract_added', $data);
@@ -247,13 +247,13 @@ class Contracts_model extends CRM_Model
             if (isset($data['rel_id'])) {
                 $items1 = $data['items1'];
                 foreach ($items1 as $key => $item) {
-                    
+
                     $product   = $this->getProductById($item['id']);
                     $sub_total = (str_replace('.','',$item['unit_cost'])*1) * $item['quantity'];
                     $total += $sub_total;
                     $tax = ((str_replace('.','',$item['unit_cost'])*1) * ($product->rate * 1)) / 100;
-                    
-                    
+
+
                     $item_data = array(
                         'contract_id' => $insert_id,
                         'product_id' => $item['id'],
@@ -268,46 +268,46 @@ class Contracts_model extends CRM_Model
                         'tax' => $tax,
                         'amount' => $sub_total + $tax
                     );
-                    
+
                     $this->db->insert('tblcontract_items1', $item_data);
-                    
+
                     if ($this->db->affected_rows() > 0) {
                         logActivity('Insert Quote Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                     }
                 }
-                
+
 
                 $items2 = $data['incurred'];
                 foreach ($items2 as $key => $item) {
                     if($item['pay_incurred'] && $item['name_incurred']){
                         $sub_total = (str_replace('.','',$item['pay_incurred'])*1);
-                        
-                        
-                        
+
+
+
                         $item_data = array(
                             'tblincurred_contract_contract_id ' => $insert_id,
                             'tblincurred_contract_name ' => $item['name_incurred'],
                             'tblincurred_contract_price ' => $sub_total,
-                            
+
                         );
-                        
+
                         $this->db->insert('tblincurred_contract', $item_data);
-                        
+
                         if ($this->db->affected_rows() > 0) {
                             logActivity('Insert Quote Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                         }
                     }
                 }
-                
+
                 $items = $data['items'];
-                
+
                 foreach ($items as $key => $item) {
-                    
+
                     $product   = $this->getProductById($item['id']);
                     $sub_total =(str_replace('.','',$item['unit_cost'])*1) * $item['quantity'];
                     $total += $sub_total;
                     $tax = ((str_replace('.','',$item['unit_cost'])*1) * ($product->rate * 1)) / 100;
-                    
+
                     $item_data = array(
                         'contract_id' => $insert_id,
                         'product_id' => $item['id'],
@@ -323,15 +323,15 @@ class Contracts_model extends CRM_Model
                         'amount' => $sub_total + $tax
                     );
                     $this->db->insert('tblcontract_items', $item_data);
-                    
+
                 }
-                
-                
-                
+
+
+
                 if ($this->db->affected_rows() > 0) {
                     logActivity('Insert Quote Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                 }
-                
+
                 $this->UpdateQuoteStatus(1, $data['rel_id']);
             }
             if (isset($custom_fields)) {
@@ -343,7 +343,7 @@ class Contracts_model extends CRM_Model
         }
         return false;
     }
-    
+
     public function getProductById($id)
     {
         $this->db->select('tblitems.*,tblunits.unit as unit_name');
@@ -351,7 +351,7 @@ class Contracts_model extends CRM_Model
         $this->db->where('id', $id);
         return $this->db->get('tblitems')->row();
     }
-    
+
     public function UpdateQuoteStatus($status, $id)
     {
         $this->db->update('tblquotes', array(
@@ -363,7 +363,7 @@ class Contracts_model extends CRM_Model
 
     // public function AddContractItems($rel_id,$contract_id)
     // {
-    
+
     //     if(!$rel_id)
     //     {
     //         return false;
@@ -396,7 +396,7 @@ class Contracts_model extends CRM_Model
     //         return false;
     //     }
     // }
-    
+
     /**
      * @param  array $_POST data
      * @param  integer Contract ID
@@ -425,7 +425,7 @@ class Contracts_model extends CRM_Model
             'data' => $data,
             'id' => $id
         ));
-        
+
         $data = $_data['data'];
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
@@ -444,20 +444,20 @@ class Contracts_model extends CRM_Model
             'client' => $data['client'],
             'datestart' => $data['datestart'],
             'contract_type' => $data['contract_type'],
-           
+
             'dateend' => $data['dateend'],
-            
-           
+
+
             'trash' => $data['trash'],
             'not_visible_to_client' => $data['not_visible_to_client']
-            
+
         );
         $this->db->where('id', $id);
         $idd = $this->db->update('tblcontracts', $contract);
         if ($idd) {
             $affected_id1 = array();
             $items1       = $data['items1'];
-            
+
             foreach ($items1 as $key => $item) {
                 $affected_id1 = $item['id'];
                 $product      = $this->getProductById($item['id']);
@@ -465,7 +465,7 @@ class Contracts_model extends CRM_Model
                 $total += $sub_total;
                 $tax = ((str_replace('.','',$item['unit_cost'])*1) * ($product->rate * 1)) / 100;
                 $itm = $this->getQuoteItem1($id, $item['id']);
-                
+
                 $item_data = array(
                     'contract_id' => $id,
                     'product_id' => $item['id'],
@@ -480,7 +480,7 @@ class Contracts_model extends CRM_Model
                     'tax' => $tax,
                     'amount' => $sub_total + $tax
                 );
-                
+
                 if ($itm) {
                     $this->db->update('tblcontract_items1', $item_data, array(
                         'id' => $itm->id
@@ -496,12 +496,12 @@ class Contracts_model extends CRM_Model
                         logActivity('Insert Quote Item Added [ID:' . $id . ', Item ID' . $item['id'] . ']');
                     }
                 }
-                
+
                 if ($this->db->affected_rows() > 0) {
                     logActivity('Insert Quote Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
                 }
             }
-            
+
             if (!empty($affected_id1)) {
                 $this->db->where('contract_id', $id);
                 $this->db->where_not_in('product_id', $affected_id1);
@@ -521,16 +521,16 @@ class Contracts_model extends CRM_Model
                             'tblincurred_contract_contract_id' => $id,
                             'tblincurred_contract_name' => $value['name_incurred'],
                             'tblincurred_contract_price' => (str_replace('.','',$value['pay_incurred'])*1),
-                            
+
                         );
-                        
-                
+
+
 
                         if($itm){
                             $this->db->update('tblincurred_contract', $item_data, array(
                                 'tblincurred_contract_id' => $itm->tblincurred_contract_id
                             ));
-                            if ($this->db->affected_rows() > 0) {                        
+                            if ($this->db->affected_rows() > 0) {
                                 $affected = true;
                                 logActivity('Edit Quote Item Updated [ID:' . $id . ', Item ID' . $value['tblincurred_id'] . ']');
 
@@ -546,7 +546,7 @@ class Contracts_model extends CRM_Model
                         }
 
                     }
-                    
+
                     if (!empty($affected_id2)) {
                         $this->db->where('tblincurred_contract_contract_id', $id);
                         $this->db->where_not_in('tblincurred_contract_id', $affected_id2);
@@ -560,7 +560,7 @@ class Contracts_model extends CRM_Model
                 $this->db->where('tblincurred_contract_contract_id', $id);
                 $this->db->delete('tblincurred_contract');
             }
-            
+
             $items       = $data['items'];
             $affected_id = array();
             foreach ($items as $key => $item) {
@@ -570,7 +570,7 @@ class Contracts_model extends CRM_Model
                 $total += $sub_total;
                 $itm       = $this->getQuoteItem($id, $item['id']);
                 $tax = ((str_replace('.','',$item['unit_cost'])*1) * ($product->rate * 1)) / 100;
-                
+
                 $item_data = array(
                     'contract_id' => $id,
                     'product_id' => $item['id'],
@@ -600,15 +600,15 @@ class Contracts_model extends CRM_Model
                         logActivity('Insert Quote Item Added [ID:' . $id . ', Item ID' . $item['id'] . ']');
                     }
                 }
-                
+
             }
-            
-            
-            
+
+
+
             if ($this->db->affected_rows() > 0) {
                 logActivity('Insert Quote Item Added [ID:' . $insert_id . ', Product ID' . $item['id'] . ']');
             }
-            
+
             if (!empty($affected_id)) {
                 $this->db->where('contract_id', $id);
                 $this->db->where_not_in('product_id', $affected_id);
@@ -630,7 +630,7 @@ class Contracts_model extends CRM_Model
      * @return boolean
      * Delete contract, also attachment will be removed if any found
      */
-    
+
     public function getQuoteItem($quote_id, $product_id)
     {
         if (is_numeric($quote_id) && is_numeric($product_id)) {
@@ -640,7 +640,7 @@ class Contracts_model extends CRM_Model
         }
         return false;
     }
-    
+
     public function getQuoteItem1($quote_id, $product_id)
     {
         if (is_numeric($quote_id) && is_numeric($product_id)) {
@@ -650,7 +650,7 @@ class Contracts_model extends CRM_Model
         }
         return false;
     }
-    
+
     public function delete($id)
     {
         do_action('before_contract_deleted', $id);
@@ -661,36 +661,36 @@ class Contracts_model extends CRM_Model
 
         $this->db->where('contract_id', $id);
         $this->db->delete('tblcontract_items');
-            
+
         $this->db->where('contract_id', $id);
         $this->db->delete('tblcontract_items1');
-        
+
         if ($this->db->affected_rows() > 0) {
             // Delete the custom field values
             $this->db->where('relid', $id);
             $this->db->where('fieldto', 'contracts');
             $this->db->delete('tblcustomfieldsvalues');
-            
+
             $this->db->where('rel_id', $id);
             $this->db->where('rel_type', 'contract');
 
 
-            
 
 
 
-            
-            
-            
+
+
+
+
             $attachments = $this->db->get('tblfiles')->result_array();
             foreach ($attachments as $attachment) {
                 $this->delete_contract_attachment($attachment['id']);
             }
 
-            
 
 
-            $this->db->update('tblquotes', array('export_status'=>0), array('id' => $contract->rel_id));        
+
+            $this->db->update('tblquotes', array('export_status'=>0), array('id' => $contract->rel_id));
 
 
             $this->db->where('contractid', $id);
@@ -781,7 +781,7 @@ class Contracts_model extends CRM_Model
     {
         $deleted    = false;
         $attachment = $this->get_contract_attachments($attachment_id);
-        
+
         if ($attachment) {
             if (empty($attachment->external)) {
                 unlink(get_upload_path_by_type('contract') . $attachment->rel_id . '/' . $attachment->file_name);
@@ -792,7 +792,7 @@ class Contracts_model extends CRM_Model
                 $deleted = true;
                 logActivity('Contract Attachment Deleted [ContractID: ' . $attachment->rel_id . ']');
             }
-            
+
             if (is_dir(get_upload_path_by_type('contract') . $attachment->rel_id)) {
                 // Check if no attachments left, so we can delete the folder also
                 $other_attachments = list_files(get_upload_path_by_type('contract') . $attachment->rel_id);
@@ -858,7 +858,7 @@ class Contracts_model extends CRM_Model
         $types  = $this->get_contract_types();
         foreach ($types as $type) {
             array_push($labels, $type['name']);
-            
+
             $where = array(
                 'where' => array(
                     'contract_type' => $type['id'],
@@ -866,11 +866,11 @@ class Contracts_model extends CRM_Model
                 ),
                 'field' => 'contract_value'
             );
-            
+
             if (!has_permission('contracts', '', 'view')) {
                 $where['where']['addedfrom'] = get_staff_user_id();
             }
-            
+
             $total = sum_from_table('tblcontracts', $where);
             if ($total == null) {
                 $total = 0;
@@ -1029,7 +1029,7 @@ class Contracts_model extends CRM_Model
         }
         return $this->db->get('tblcontracttypes')->result_array();
     }
-    
+
     public function get_contract_items($id = '')
     {
         if (is_numeric($id)) {
@@ -1038,14 +1038,14 @@ class Contracts_model extends CRM_Model
         }
         return $this->db->get('tblquote_items')->result_array();
     }
-    
+
     public function get_quote_contracts()
     {
         $this->db->select('tblquotes.*, CONCAT(tblquotes.prefix,tblquotes.code) as quote_name');
         $this->db->where('export_status', 0);
         return $this->db->get('tblquotes')->result_array();
     }
-    
+
     public function get_quote_contracts1($id)
     {
         $this->db->select('tblquotes.*, CONCAT(tblquotes.prefix,tblquotes.code) as quote_name');
@@ -1053,7 +1053,7 @@ class Contracts_model extends CRM_Model
         $this->db->where('tblquotes.id', $id);
         return $this->db->get('tblcontracts')->row();
     }
-    
+
     /**
      * @param  integer ID
      * @return mixed
@@ -1073,5 +1073,9 @@ class Contracts_model extends CRM_Model
             return true;
         }
         return false;
+    }
+    public function getProductQuantity($warehouseId, $productId){
+        $this->db->select('product_quantity');
+        return $this->db->get_where('tblwarehouses_products', array('warehouse_id' => $warehouseId, 'product_id' => $productId))->row();
     }
 }

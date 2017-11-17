@@ -47,8 +47,6 @@ class Quotes extends Admin_controller
         else
         {
            $data['quote']        = $this->quotes_model->getQuoteByID($id);
-           // var_dump($data['customer_id'])  ;die();
-            // var_dump($data['item']);die();
            $data['item']        = $this->quotes_model->getQuoteByID($id);
             $i=0;
             foreach ($data['item']->items as $key => $value) {

@@ -189,9 +189,12 @@ class Contracts extends Admin_controller
     public function getIteamQuote(){
         $this->load->model('quotes_model');
         $data         = $this->quotes_model->getQuoteByID($this->input->post('id'));
-        $data->aaaa   = 'zzzz';
-
-        // var_dump($data);
+        foreach ($data->items as $val) {
+            $val->product_quantity = $this->contracts_model->getProductQuantity(1, $val->product_id)->product_quantity;
+        }
+        foreach ($data->items1 as $val) {
+            $val->product_quantity = $this->contracts_model->getProductQuantity(1, $val->product_id)->product_quantity;
+        }
 
         echo json_encode($data);
     }

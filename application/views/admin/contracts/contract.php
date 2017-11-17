@@ -1283,7 +1283,6 @@
           dataType : 'json',
       })
             .done(function(data){
-            console.log('data', data);
 
             $('#contract_incurred').val(data.incurred*1);
 
@@ -1349,7 +1348,7 @@
 
         $.each(data, (index,itemFound) => {
 
-        var newTr = $('<tr class="sortable item'+a+'"></tr>');
+        var newTr = $('<tr class="sortable item'+a+'" quantity-warehouse="'+itemFound.product_quantity+'" old-quantity="'+itemFound.quantity+'"></tr>');
         var td1 = $('<td><input type="hidden" name="items'+a+'[' + window[variablename] + '][id]" value="" /></td>');
         var td2 = $('<td class="dragger"></td>');
         var td3 = $('<td></td>');
