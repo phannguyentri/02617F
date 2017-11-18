@@ -9,30 +9,49 @@ class Sms extends Admin_controller
         $this->load->model('sms_model');
     }
 
-    public function index()
+    public function index($id = "")
     {
         if ($this->input->is_ajax_request()) {
             $this->perfex_base->get_table_data('client_email');
         }
 
         if ($this->input->post()) {
+            if ($id = "") {
+                $dataInsert = [
+                    'subject' => $this->input->post('subject'),
+                    'message' => $this->input->post('message'),
+                    'phone_number' => $this->input->post('phonenumber'),
+                    'date_send'    => $this->input->post('date_send')
+                ];
 
-            $dataInsert = [
-                'subject' => $this->input->post('subject'),
-                'message' => $this->input->post('message'),
-                'phone_number' => $this->input->post('phonenumber'),
-                'date_send'    => $this->input->post('date_send')
-            ];
-
-            if ($this->sms_model->insertSendSms($dataInsert)) {
-                set_alert('success', _l('Gửi SMS thành công'));
-                redirect(admin_url('sms'));
+                if ($this->sms_model->insertSendSms($dataInsert)) {
+                    set_alert('success', _l('Gửi SMS thành công'));
+                    redirect(admin_url('sms'));
+                }else{
+                    set_alert('danger', _l('Gửi SMS không thành công'));
+                    redirect(admin_url('sms'));
+                }
             }else{
-                set_alert('danger', _l('Gửi SMS không thành công'));
-                redirect(admin_url('sms'));
+                $dataUpdate = [
+                    'subject' => $this->input->post('subject'),
+                    'message' => $this->input->post('message'),
+                    'phone_number' => $this->input->post('phonenumber'),
+                    'date_send'    => $this->input->post('date_send')
+                ];
+                if ($this->sms_model->updateSendSms($id, $dataUpdate)) {
+                    set_alert('success', _l('Sửa SMS thành công'));
+                    redirect(admin_url('sms'));
+                }else{
+                    set_alert('danger', _l('Sửa SMS không thành công'));
+                    redirect(admin_url('sms'));
+                }
+
             }
+        }else{
+            $data['id'] = $id;
+            if ($id != "") {
 
-
+            }
         }
 
 

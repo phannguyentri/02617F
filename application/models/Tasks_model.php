@@ -589,10 +589,12 @@ class Tasks_model extends CRM_Model
 
     public function add1($data)
     {
-        $data['startdate'] = to_sql_date($data['startdate']);
-        $data['duedate']   = to_sql_date($data['duedate']);
-        $data['dateadded'] = date('Y-m-d H:i:s');
-        $data['addedfrom'] = get_staff_user_id();
+        $data['startdate']              = to_sql_date($data['startdate']);
+        $data['duration_finish_date']   = to_sql_date($data['duration_finish_date']);
+        $data['finish_date']            = to_sql_date($data['finish_date']);
+        $data['duedate']                = to_sql_date($data['duedate']);
+        $data['dateadded']              = date('Y-m-d H:i:s');
+        $data['addedfrom']              = get_staff_user_id();
 
         if (date('Y-m-d') >= $data['startdate']) {
             $data['status'] = 4;
@@ -1883,5 +1885,13 @@ class Tasks_model extends CRM_Model
             return true;
         }
         return false;
+    }
+
+    public function getClients($id = NULL){
+        if ($id) {
+            $this->db->where('userid', $id);
+        }
+        $this->db->select('tblclients.userid, tblclients.code_company, tblclients.address, tblclients.code_vat, tblclients.email, tblclients.company, tblclients.phonenumber, tblclients.client_type1, tblclients.name_contact');
+        return $this->db->get('tblclients')->result_array();
     }
 }

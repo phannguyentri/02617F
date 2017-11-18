@@ -205,12 +205,12 @@
             render_datatable($table_data, 'quote_clients'); ?>
       </div>
       <div role="tabpanel" class="tab-pane" id="tasks">
-        <h4 class="no-mtop bold"><?php echo _l('Giao dịch'); ?></h4>
+          <h4 class="no-mtop bold"><?php echo _l('Giao dịch'); ?></h4>
           <hr>
          <?php if(isset($client)){
 
             init_relation_tasks_table1(array( 'data-new-rel-id'=>$client->userid,'data-new-rel-type'=>'customer'));
-            } ?>
+          } ?>
       </div>
       <div role="tabpanel" class="tab-pane" id="attachments">
          <div class="modal fade" id="customer_file_share_file_with" data-total-contacts="<?php echo count($contacts); ?>" tabindex="-1" role="dialog">

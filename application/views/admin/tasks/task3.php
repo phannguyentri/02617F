@@ -47,8 +47,65 @@
                   <label for="task_visible_to_client"><?php echo _l('task_visible_to_client'); ?></label>
                </div>
                <!-- <hr /> -->
-               <?php $value = (isset($task) ? $task->name : ''); ?>
-               <?php echo render_input('name','Tên giao dịch',$value); ?>
+               <?php
+                  // echo "<pre>";
+                  // print_r($clients);
+                  // echo "</pre>";
+               ?>
+
+               <div class="col-md-4">
+
+                  <div class="form-group select_template">
+                     <label for="view_template">Chọn khách hàng:</label>
+                     <?php echo render_select('client', $clients, array('userid', 'code_company'),'', $rel_id, array('onchange'=>'get_contentemail(this.value)', 'disabled' => 'disabled','data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng'))); ?>
+                  </div>
+                  <?php
+                     if ($rel_id != '') {
+                        foreach ($clients as $value) {
+                           if ($value['userid'] == $rel_id) {
+                              $code_company = $value['code_company'];
+                              $address      = $value['address'];
+                              $code_vat     = $value['code_vat'];
+                              $email        = $value['email'];
+                              $phonenumber  = $value['phonenumber'];
+                              $name_contact = $value['name_contact'];
+                              $company      = $value['company'];
+                           }
+                        }
+
+                     }
+                   ?>
+                  <div class="form-group">
+                     <label for="name" class="control-label">Mã KH</label>
+                     <input type="text" id="client-name" class="form-control" value="<?php echo $code_company?>" disabled="disabled">
+                  </div>
+                  <div class="form-group">
+                     <label for="name" class="control-label">Tên KH</label>
+                     <input type="text" id="client-name" class="form-control" value="<?php echo $company?>" disabled="disabled">
+                  </div>
+                  <div class="form-group">
+                     <label for="name" class="control-label">Địa chỉ văn phòng</label>
+                     <input type="text" id="client-name" class="form-control" value="<?php echo $address?>" disabled="disabled">
+                  </div>
+                  <div class="form-group">
+                     <label for="name" class="control-label">Điện thoại</label>
+                     <input type="text" id="client-name" class="form-control" value="<?php echo $phonenumber?>" disabled="disabled">
+                  </div>
+                  <div class="form-group">
+                     <label for="name" class="control-label">Email</label>
+                     <input type="text" id="client-name" class="form-control" value="<?php echo $email?>" disabled="disabled">
+                  </div>
+                  <div class="form-group">
+                     <label for="name" class="control-label">Mã số thuế</label>
+                     <input type="text" id="client-name" class="form-control" value="<?php echo $code_vat?>" disabled="disabled">
+                  </div>
+                  <div class="form-group">
+                     <label for="name" class="control-label">Liên hệ</label>
+                     <input type="text" id="client-name" class="form-control" value="<?php echo $name_contact?>" disabled="disabled">
+                  </div>
+               </div>
+
+
                <div class="hidden task-hours<?php if(isset($task) && $task->rel_type == 'project' && total_rows('tblprojects',array('id'=>$task->rel_id,'billing_type'=>3)) == 0){echo ' hide';} ?>">
                   <?php $value = (isset($task) ? $task->hourly_rate : 0); ?>
                   <?php echo render_input('hourly_rate','task_hourly_rate',$value); ?>
@@ -64,18 +121,13 @@
                      </select>
                   </div>
                </div>
-               <div class="row">
-                  <div class="col-md-12">
-                     <?php if(isset($task)){
-                        $value = _d($task->startdate);
-                        } else if(isset($start_date)){
-                        $value = $start_date;
-                        } else {
-                        $value = _d(date('Y-m-d'));
-                        }
-                        ?>
-                     <?php echo render_date_input('startdate','task_add_edit_start_date',$value); ?>
-                  </div>
+               <div class="col-md-4">
+                  <?php $value = (isset($task) ? $task->name : ''); ?>
+                  <?php
+                     echo render_input('name','Tên giao dịch',$value);
+                     echo render_textarea('content_detail', 'Nội dung chi tiết', '', array(), array(), '', 'tinymce');
+                  ?>
+
                   <div class="col-md-6 hidden">
                      <?php $value = (isset($task) ? _d($task->duedate) : ''); ?>
                      <?php echo render_date_input('duedate','task_add_edit_due_date',$value,$project_end_date_attrs); ?>
@@ -92,7 +144,7 @@
                         </select>
                      </div>
                   </div>
-                 
+
                   <div class="col-md-6 hidden">
                      <div class="form-group<?php if($rel_id == ''){echo ' hide';} ?>" id="rel_id_wrapper">
                         <label for="rel_id" class="control-label"><span class="rel_id_label"></span></label>
@@ -123,7 +175,108 @@
                         </select>
                      </div>
                   </div>
+
                </div>
+               <div class="col-md-4">
+                  <?php if(isset($task)){
+                     $value = _d($task->startdate);
+                     } else if(isset($start_date)){
+                     $value = $start_date;
+                     } else {
+                     $value = _d(date('Y-m-d'));
+                     }
+                     ?>
+                  <?php echo render_date_input('startdate','task_add_edit_start_date', $value); ?>
+                  <?php echo render_date_input('duration_finish_date','Hạn hoàn thành'); ?>
+                  <?php echo render_date_input('finish_date','Ngày hoàn thành'); ?>
+                  <?php
+                      $purpose_type = array(
+                          array(
+                              'id' => 'COIL',
+                              'name' => 'Thu thập thông tin',
+                          ),
+                          array(
+                              'id' => 'CORE',
+                              'name' => 'Giới thiệu, tư vấn',
+                          ),
+                          array(
+                              'id' => 'SURV',
+                              'name' => 'Khảo sát',
+                          ),
+                          array(
+                              'id' => 'QUOT',
+                              'name' => 'Báo giá',
+                          ),
+                          array(
+                              'id' => 'NEGO',
+                              'name' => 'Đàm phán',
+                          ),
+                          array(
+                              'id' => 'TCK',
+                              'name' => 'Chăm sóc',
+                          ),
+                          array(
+                              'id' => 'DELI',
+                              'name' => 'Giao hàng',
+                          ),
+                          array(
+                              'id' => 'PAY',
+                              'name' => 'Thanh toán',
+                          ),
+                      );
+
+                      echo render_select('purpose', $purpose_type, array('id','name'),'Mục đích', (isset($task) ? $task->purpose : 1), array(), array(), '', '', false);
+
+                      $transaction_type = array(
+                          array(
+                              'id' => 'direct',
+                              'name' => 'Gặp trực tiếp',
+                          ),
+                          array(
+                              'id' => 'phone',
+                              'name' => 'Gọi điện',
+                          ),
+                          array(
+                              'id' => 'email',
+                              'name' => 'Email',
+                          ),
+                          array(
+                              'id' => 'mess',
+                              'name' => 'Chát',
+                          ),
+
+                      );
+
+                      echo render_select('transaction', $transaction_type, array('id','name'),'Phương thức', (isset($task) ? $task->transaction : 1), array(), array(), '', '', false);
+
+                      $priority_level = array(
+                          array(
+                              'id' => '1',
+                              'name' => '1',
+                          ),
+                          array(
+                              'id' => '2',
+                              'name' => '2',
+                          ),
+                          array(
+                              'id' => '3',
+                              'name' => '3',
+                          ),
+                          array(
+                              'id' => '4',
+                              'name' => '4',
+                          ),
+
+                      );
+
+                      echo render_select('priority', $priority_level, array('id','name'),'Mức độ ưu tiên', 1, array(), array(), '', '', false);
+
+                   ?>
+
+
+               </div>
+
+
                <div class="recurring_custom <?php if((isset($task) && $task->custom_recurring != 1) || (!isset($task))){echo 'hide';} ?>">
                   <div class="row">
                      <div class="col-md-6">
@@ -184,7 +337,7 @@
                <p class="bold"><?php _l('task_add_edit_description'); ?></p>
                <?php $contents = ''; if(isset($task)){$contents = $task->description;} ?>
                <?php echo render_textarea('description','',$contents,array('data-task-ae-editor'=>true),array(),'','hidden'); ?>
-              
+
             </div>
          </div>
       </div>
@@ -194,30 +347,42 @@
       </div>
    </div>
 </div>
+
+<style type="text/css">
+   .modal-dialog{
+      width: 1200px;
+   }
+</style>
+
 <?php echo form_close(); ?>
 <script>
+    $(document).ready(function() {
+      init_editor('.tinymce');
+    });
+
+
    var _rel_id = $('#rel_id'),
    _rel_type = $('#rel_type'),
    _rel_id_wrapper = $('#rel_id_wrapper'),
    data = {};
-   
+
    var _milestone_selected_data;
    _milestone_selected_data = undefined;
-   
+
    $(function(){
-   
+
     $( "body" ).off( "change", "#rel_id" );
-   
+
     custom_fields_hyperlink();
     init_tags_inputs();
-   
+
     _validate_form($('#task-form'), {
       name: 'required',
       startdate: 'required',
       purpose :'required',
       transaction: 'required',
     },task_form_handler);
-   
+
     $('.rel_id_label').html(_rel_type.find('option:selected').text());
     _rel_type.on('change', function() {
      var clonedSelect = _rel_id.html('').clone();
@@ -225,7 +390,7 @@
      _rel_id = clonedSelect;
      $('#rel_id_select').append(clonedSelect);
      $('.rel_id_label').html(_rel_type.find('option:selected').text());
-   
+
      task_rel_select();
      if($(this).val() != ''){
       _rel_id_wrapper.removeClass('hide');
@@ -234,13 +399,15 @@
     }
     init_project_details(_rel_type.val());
    });
-   
+
     init_datepicker();
     init_color_pickers();
     init_selectpicker();
     task_rel_select();
     init_editor('.tinymce-task',{height:200});
-   
+
+
+
     $('body').on('change','#rel_id',function(){
      if($(this).val() != ''){
        if(_rel_type.val() == 'project'){
@@ -261,18 +428,18 @@
        }
      }
    });
-   
+
     <?php if(!isset($task) && $rel_id != ''){ ?>
       _rel_id.change();
       <?php } ?>
-   
+
     });
-   
+
    <?php if(isset($_milestone_selected_data)){ ?>
     _milestone_selected_data = '<?php echo json_encode($_milestone_selected_data); ?>';
     _milestone_selected_data = JSON.parse(_milestone_selected_data);
     <?php } ?>
-   
+
     function task_rel_select(){
       clearInterval(autocheck_notifications_timer_id);
       var options = {
@@ -320,8 +487,8 @@
       .ajaxSelectPicker(options)
     }
 
-    
-   
+
+
     function init_project_details(type,tasks_visible_to_customer){
       var wrap = $('.non-project-details');
       var wrap_task_hours = $('.task-hours');

@@ -79,12 +79,12 @@ class Sms_model extends CRM_Model
             return false;
         }
     }
-    public function update($id,$data)
+    public function updateSendSms($id, $data)
     {
-        $this->db->where('id',$id);
-        $this->db->update('tblsms_templates',$data);
+        $this->db->where('id', $id);
+        $this->db->update('tbllog_sms_send',$data);
         if ($this->db->affected_rows() > 0) {
-            logActivity('Update SMS template [ID:' . $id . ', Name:' . $data['name'] . ']');
+            logActivity('Update send SMS [ID:' . $id . ', Name:' . $data['name'] . ']');
             return true;
         }
         return false;
@@ -116,7 +116,7 @@ class Sms_model extends CRM_Model
         }
         return array();
     }
-    public function get_log_email()
+    public function get_log_sms()
     {
         $this->db->order_by('date_send','desc');
         return $this->db->get('tbllog_email_send')->result_array();

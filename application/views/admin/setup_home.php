@@ -4,7 +4,7 @@
    background: #e9ebef;
    }
    body.hide-sidebar #wrapper #side-menu li:hover {
-     margin-left: 0px; 
+     margin-left: 0px;
     }
    #side-menu li > a {
    border: 2px dashed #000;
@@ -43,7 +43,7 @@
    }
    .drop-title a{
    /* background: red; */
-   /* border-radius: 50%; */   
+   /* border-radius: 50%; */
    /* height: 50px; */
    color: #fff;
    /* width: 50px; */
@@ -55,7 +55,7 @@
 <div id="wrapper" style="min-height: auto !important">
    <div class="content" style="position: relative;">
       <h2 class="text-center tc padding">QUẢN LÝ DOANH NGHIỆP</h2>
-      
+
       <div style="display: inline-block;
     position: absolute;
     top: :0px;
@@ -68,7 +68,7 @@
    </a>
    <ul class="dropdown-menu" aria-labelledby="dropdownQuickLinks">
      <?php
-      
+
 
      foreach($_quick_actions as $key => $item){
       $url = '';
@@ -110,7 +110,7 @@
                }
                }
                }
-               
+
                ?>
             <?php
                do_action('before_render_aside_menu');
@@ -137,11 +137,11 @@
                   <?php
                      $menu_active = json_decode($menu_active);
                      $m = 0;
-                     
+
                      foreach($menu_active->aside_menu_active as $item){
                      // als_sale_contracts
                       // als_quotations
-                     if($item->id == 'customers'  || $item->id == 'tasks'  || $item->id == 'quote_items' || $item->id == 'contracts' || $item->id == '_email_marketing'){
+                     if($item->id == 'customers'  || $item->id == 'tasks'  || $item->id == 'quote_items' || $item->id == 'contracts' || $item->id == '_email_marketing' || $item->id == 'als_purchase'){
                      $submenu = false;
                      $remove_main_menu = false;
                      $url = '';
@@ -174,7 +174,7 @@
                      if(!_startsWith($url,'http://') && $url != '#'){
                       $url = admin_url($url);
                      }
-                     
+
                      ?>
                      <?php if(has_permission($item->id,'','view') || has_permission($item->id,'','view_own') ){ ?>
                     <li class="menu-item-<?php echo $item->id; ?> <?php echo ($item->children) ? 'drop' : '' ?> ">
@@ -231,9 +231,8 @@
                   </li>
                   <?php } } ?>
                   <?php } ?>
-                  
-                  <li><a href="#"><i class="fa fa-calendar menu-icon"></i>QUẢN LÝ SMS</a></li>
-                  
+
+
                </ul>
             </aside>
          </div>
@@ -248,7 +247,7 @@
                }
                }
                }
-               
+
                ?>
             <?php
                do_action('before_render_aside_menu');
@@ -274,11 +273,11 @@
                   <?php
                      $menu_active = json_decode($menu_active);
                      $m = 0;
-                     
+
                      foreach($menu_active->aside_menu_active as $item){
-                     
-                     
-                     if($item->id == 'products' || $item->id == 'reports' || $item->id == 'staff' || $item->id == 'import_goods' || $item->id == 'export_warehouses'   || $item->id == 'sales' || $item->id == 'als_purchase'){
+
+
+                     if($item->id == 'products' || $item->id == 'reports' || $item->id == 'staff' || $item->id == 'import_goods' || $item->id == 'export_warehouses'   || $item->id == 'sales' ){
                      $submenu = false;
                      $remove_main_menu = false;
                      $url = '';
@@ -311,7 +310,7 @@
                      if(!_startsWith($url,'http://') && $url != '#'){
                       $url = admin_url($url);
                      }
-                     
+
                      ?>
                   <li class="menu-item-<?php echo $item->id; ?> <?php echo ($item->children) ? 'drop' : '' ?> ">
                      <a href="<?php echo ($item->children) ? 'javascript:void(0)' : $url; ?>" aria-expanded="false"><i class="<?php echo $item->icon; ?> menu-icon"></i>
@@ -389,7 +388,7 @@
                       }
                      }
                      }
-                     
+
                      ?>
                   <?php
                      do_action('before_render_aside_menu');
@@ -402,14 +401,14 @@
                      {
                        $menu_active = get_option('aside_menu_active');
                      }
-                     
-                     
+
+
                      $menu_active = json_decode($menu_active);
                      $m = 0;
-                     
+
                      foreach($menu_active->aside_menu_active as $item){
-                     
-                     
+
+
                      if($item->id == 'fg'){
                      $submenu = false;
                      $remove_main_menu = false;
@@ -443,7 +442,7 @@
                      if(!_startsWith($url,'http://') && $url != '#'){
                       $url = admin_url($url);
                      }
-                     
+
                      ?>
                   <li class="menu-item-<?php echo $item->id; ?> <?php echo ($item->children) ? 'drop' : '' ?> ">
                      <a href="<?php echo ($item->children) ? 'javascript:void(0)' : $url; ?>" aria-expanded="false"><i class="<?php echo $item->icon; ?> menu-icon"></i>
@@ -476,7 +475,7 @@
                            <?php echo _l($submenu->name); ?></a>
                         </li>
                         <?php } ?>
-                        
+
                      </ul>
                      <?php } ?>
                   </li>
@@ -505,10 +504,10 @@
                   </li>
                    <li>
                     <a href="#"><i class="fa fa-list-alt menu-icon"></i>DANH SÁCH LẮP ĐẶT</a>
-                   
+
                   </li>
                </ul>
-            </aside> 
+            </aside>
          </div>
          <div class="col-md-3">
             <div class="drop-title text-center" style=" background:#175f96;">
@@ -529,7 +528,7 @@
                       }
                      }
                      }
-                     
+
                      ?>
                   <?php
                      do_action('before_render_aside_menu');
@@ -542,14 +541,14 @@
                      {
                        $menu_active = get_option('aside_menu_active');
                      }
-                     
-                     
+
+
                      $menu_active = json_decode($menu_active);
                      $m = 0;
-                     
+
                      foreach($menu_active->aside_menu_active as $item){
-                     
-                     
+
+
                      if($item->id == 'ff'){
                      $submenu = false;
                      $remove_main_menu = false;
@@ -583,7 +582,7 @@
                      if(!_startsWith($url,'http://') && $url != '#'){
                       $url = admin_url($url);
                      }
-                     
+
                      ?>
                   <li class="menu-item-<?php echo $item->id; ?> <?php echo ($item->children) ? 'drop' : '' ?> ">
                      <a href="<?php echo ($item->children) ? 'javascript:void(0)' : $url; ?>" aria-expanded="false"><i class="<?php echo $item->icon; ?> menu-icon"></i>
@@ -644,7 +643,7 @@
                   </li>
                    <li>
                     <a href="#"><i class="fa fa-list-alt menu-icon"></i>DANH SÁCH BẢO HÀNH</a>
-                   
+
                   </li>
                </ul>
             </aside>

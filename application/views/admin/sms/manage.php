@@ -249,7 +249,7 @@
 
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-success" id="test-api">Test API</button>
+                                <!-- <button type="button" class="btn btn-success" id="test-api">Test API</button> -->
 
                         </div>
                     </div>

@@ -303,8 +303,6 @@ class Tasks extends Admin_controller
         $data['task'] = $this->tasks_model->get1($idtask);
         $data['idtask']  = $idtask;
 
-
-
         $this->load->view('admin/tasks/work', $data);
     }
 
@@ -345,7 +343,10 @@ class Tasks extends Admin_controller
         }
 
         if ($this->input->post()) {
-
+            echo("<pre>");
+            print_r($this->input->post());
+            echo("</pre>");
+            die('zzzzzzzzzzzzzzzzzzzzzzzzzz');
             $data                = $this->input->post();
             $data['description'] = $this->input->post('description', FALSE);
 
@@ -420,6 +421,7 @@ class Tasks extends Admin_controller
         }
         $data['id']    = $id;
         $data['title'] = $title;
+        $data['clients'] = $this->tasks_model->getClients($this->input->post());
         $this->load->view('admin/tasks/task3', $data);
     }
     public function copy()

@@ -152,9 +152,6 @@
          ?>
          <div class="col-xs-12 " data-id="createNewTask" style="display: none;padding: 15px 0px 20px 0px;margin-bottom: 15px;  border:  1px solid #ccc">
 
-
-
-
           <div class="col-md-12">
              <?php
                 $rel_type = '';
@@ -269,7 +266,7 @@
                       );
 
                       echo render_select('purpose', $purpose_type, array('id','name'),'Mục đích', (isset($task) ? $task->purpose : 1), array(), array(), '', '', false);
-                      ?>
+                ?>
                 </div>
                 <div class="col-md-6">
                    <?php
