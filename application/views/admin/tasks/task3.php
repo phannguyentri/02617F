@@ -61,7 +61,7 @@
                         if ($nonClient) {
                            echo render_select('rel_id', $clients, array('userid', 'code_company'),'', $task->rel_id, array('onchange' => 'changeRelId(this.value)', 'data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
                         }else{
-                           echo render_select('rel_id', $clients, array('userid', 'code_company'),'', $rel_id, array('onchange'=>'get_contentemail(this.value)', 'disabled' => 'disabled','data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
+                           echo render_select('rel_id', $clients, array('userid', 'code_company'),'', $rel_id, array('disabled' => 'disabled','data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
                         }
 
                      ?>

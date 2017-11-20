@@ -115,7 +115,7 @@ foreach ($rResult as $aRow) {
         if($aColumns[$i] == '1'){
             $_data = '<div class="checkbox"><input type="checkbox" value="'.$aRow['id'].'"><label></label></div>';
         }else if($aColumns[$i] == 'tblclients.company'){
-            $_data = '<a href="'.admin_url('clients/').'" class="display-block main-tasks-table-href-name mbot5">'.$aRow['tblclients.company'].'</a>';
+            $_data = '<a onclick="init_client_modal_data('.$aRow['client_id'].');return false;" href="'.admin_url('clients/client/').$aRow['client_id'].'" class="display-block main-tasks-table-href-name mbot5">'.$aRow['tblclients.company'].'</a>';
         }else if ($aColumns[$i] == 'name') {
             $_data = '<a href="'.admin_url('tasks/index/'.$aRow['id']).'" class="display-block main-tasks-table-href-name'.(!empty($aRow['rel_id']) ? ' mbot5' : '').'" onclick="new_work_from(' . $aRow['id'] . '); return false;">' . $_data . '</a>';
                 if (!empty($aRow['rel_id'])) {
@@ -156,7 +156,6 @@ foreach ($rResult as $aRow) {
                     )).'</a>';
                 }
             }
-
         } else if ($aColumns[$i] == 'purpose') {
             $_data = $purpose_type[$aRow['purpose']];
         } else if ($aColumns[$i] == 'startdate' || $aColumns[$i] == 'duedate') {
