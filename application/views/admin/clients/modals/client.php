@@ -85,6 +85,7 @@
          <?php if (has_permission('customers', '', 'create') || has_permission('customers', '', 'edit')) { ?>
          <a href="#" data-toggle="modal" data-target="#customer_admins_assign" class="btn btn-info mbot30"><?php echo _l('assign_admin'); ?></a>
          <?php } ?>
+
          <table class="table dt-table table-customer_admin-client">
             <thead>
                <tr>

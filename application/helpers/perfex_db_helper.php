@@ -35,7 +35,7 @@ function client_have_transactions($id)
  */
 function getMaxID($id,$table)
 {
-   
+
     $CI =& get_instance();
     if (!class_exists('perfex_base')) {
         $CI->load->library('perfex_base');
@@ -45,7 +45,7 @@ function getMaxID($id,$table)
 
 function getProvince($id)
 {
-   
+
     $CI =& get_instance();
     if (!class_exists('perfex_base')) {
         $CI->load->library('perfex_base');
@@ -55,7 +55,7 @@ function getProvince($id)
 
 function getDistrict($id)
 {
-   
+
     $CI =& get_instance();
     if (!class_exists('perfex_base')) {
         $CI->load->library('perfex_base');
@@ -65,7 +65,7 @@ function getDistrict($id)
 
 function getWard($id)
 {
-   
+
     $CI =& get_instance();
     if (!class_exists('perfex_base')) {
         $CI->load->library('perfex_base');
@@ -74,7 +74,7 @@ function getWard($id)
 }
 function getClient($id,$address_type=NULL)
 {
-   
+
     $CI =& get_instance();
     if (!class_exists('perfex_base')) {
         $CI->load->library('perfex_base');
@@ -289,7 +289,7 @@ function get_primary_contact_user_id($userid)
  */
 function get_option($name)
 {
-   
+
     $CI =& get_instance();
     if (!class_exists('perfex_base')) {
         $CI->load->library('perfex_base');
@@ -307,7 +307,7 @@ function check_option($name) {
 
 function getWareHouse($id)
 {
-   
+
     $CI =& get_instance();
     if (!class_exists('perfex_base')) {
         $CI->load->library('perfex_base');
@@ -317,7 +317,7 @@ function getWareHouse($id)
 
 // function getProvince($id)
 // {
-   
+
 //     $CI =& get_instance();
 //     if (!class_exists('perfex_base')) {
 //         $CI->load->library('perfex_base');
@@ -326,7 +326,7 @@ function getWareHouse($id)
 // }
 // function getDistrict($id)
 // {
-   
+
 //     $CI =& get_instance();
 //     if (!class_exists('perfex_base')) {
 //         $CI->load->library('perfex_base');
@@ -335,7 +335,7 @@ function getWareHouse($id)
 // }
 // function getAward($id)
 // {
-   
+
 //     $CI =& get_instance();
 //     if (!class_exists('perfex_base')) {
 //         $CI->load->library('perfex_base');
@@ -699,7 +699,7 @@ function add_notification($values)
             $data['date'] = date('Y-m-d H:i:s');
         }
         $data[$key] = $value;
-        
+
     }
     if (is_client_logged_in()) {
         $data['fromuserid']    = 0;
@@ -915,7 +915,7 @@ function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = array(), $w
             $sWhere = '';
         }
     }
-    
+
     /*
      * SQL queries
      * Get data to display
@@ -943,7 +943,7 @@ function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = array(), $w
     $sWhere
     " . $where . "
     $groupBy
-    $sOrder    
+    $sOrder
     $sLimit
     ";
 
@@ -972,7 +972,7 @@ function data_tables_init($aColumns, $sIndexColumn, $sTable, $join = array(), $w
         "iTotalDisplayRecords" => $iFilteredTotal,
         "aaData" => array()
     );
-    
+
     return array(
         'rResult' => $rResult,
         'output' => $output
@@ -1620,7 +1620,7 @@ function get_tasks_where_string()
 }
 /**
  * Show all units exists in database
- * 
+ *
  * @return array
  */
 function get_units() {
@@ -1657,4 +1657,29 @@ function get_table_where($table, $where = array(),$order_by="",$result='result_a
     } else {
         return array();
     }
+}
+
+function get_admins_assigned($clientId){
+    $CI =& get_instance();
+    $CI->db->select('staff_id');
+    $CI->db->where('customer_id', $clientId);
+    $result = $CI->db->get('tblcustomeradmins')->result_array();
+
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}
+
+function get_contact_primary($clientId){
+    $CI =& get_instance();
+    $CI->db->select('firstname, lastname');
+    $CI->db->where('userid', $clientId);
+    $CI->db->where('is_primary', 1);
+    $result = $CI->db->get('tblcontacts')->row();
+
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
 }

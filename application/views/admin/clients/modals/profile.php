@@ -66,7 +66,7 @@
         </div>
     <?php } ?>
     <?php echo form_open($form_url,array('id'=>'client_form')); ?>
-    
+
     <!-- begin bang cuoc goi nho-->
     <div class="row">
         <div class="client-view<?php if(!isset($client)){echo ' hide';} ?>">
@@ -83,11 +83,11 @@
                         <p class="bold font-medium-xs"><?php echo (isset($client) && $client->client_type1 != '' ? ($client->client_type1==1 ? 'Cá nhân' : 'Đại lý' ) : '-') ?></p>
                     </div>
                     <?php
-                       
+
                         foreach ($customer_groups_name as $key => $value) {
                             $cus[] = $value['name'];
                         }
-                       
+
                      ?>
                     <div class="col-md-4 fix_clear">
                         <p class="text-muted lead-field-heading no-mtop "><?php echo _l('Phân loại theo ngành nghề'); ?></p>
@@ -108,7 +108,7 @@
                         <p class="text-muted lead-field-heading"><?php echo _l('Tên khách hàng/ công ty'); ?></p>
                         <p class="bold font-medium-xs"><?php echo (isset($client) && $client->company != '' ? $client->company : '-') ?></p>
                     </div>
-                    
+
                     <div class="col-md-4 fix_clear">
                         <p class="text-muted lead-field-heading"><?php echo _l('Số điện thoại cố định'); ?></p>
                         <p class="bold font-medium-xs"><?php echo (isset($client) && $client->phonenumber != '' ? $client->phonenumber : '-') ?></p>
@@ -152,7 +152,7 @@
                         <p class="text-muted lead-field-heading"><?php echo _l('Số tài khoản'); ?></p>
                         <p class="bold font-medium-xs"><?php echo (isset($client) && $client->number_user != '' ? $client->number_user : '-') ?></p>
                     </div>
-                    
+
                     <div class="col-md-4 fix_clear">
                         <p class="text-muted lead-field-heading"><?php echo _l('Người đại diện'); ?></p>
                         <p class="bold font-medium-xs"><?php echo (isset($client) && $client->user_def != '' ? $client->user_def : '-') ?></p>
@@ -172,8 +172,8 @@
                         <p class="text-muted lead-field-heading"><?php echo _l('Số di động'); ?></p>
                         <p class="bold font-medium-xs"><?php echo (isset($client) && $client->mobilephone_number != '' ? $client->mobilephone_number : '-') ?></p>
                     </div>
-                    
-                   
+
+
 
                 </div>
             </div>
@@ -250,7 +250,7 @@
         <div class="clearfix">  </div>
         <div class="client-edit<?php if(isset($client)){echo ' hide';} ?>">
                <div class="col-md-12" >
-        
+
                     <div class="col-md-4" style="padding-left: 0px;">
                         <?php
                         $s_attrs = array('data-none-selected-text'=>_l('system_default_string'));
@@ -310,7 +310,7 @@
                 <div class="col-md-12">
                     <div class="col-md-4" style="padding-left: 0px;">
                         <?php
-                        
+
                         $code_company = (isset($item) ? (($client->code_company)? $client->code_company : get_option('prefix_customer').sprintf("%05d",$client->id)) : get_option('prefix_customer').sprintf("%05d",(getMaxID('userid','tblclients')+1)));
                         echo render_input( 'code_company', 'Mã khách hàng' , $code_company, 'text', array(),''); ?>
 
@@ -362,56 +362,56 @@
                 </div></div>
                 <div class="col-md-12" >
                     <div class="col-md-3" style="padding-left: 0px;">
-                        <?php 
+                        <?php
 
                         $code_vat = (isset($client) ? $client->code_vat : "" );
                         echo render_input( 'code_vat', 'Mã số thuế',$code_vat, 'text', array()); ?>
                     </div>
-                    
+
 
                     <div class="col-md-3" >
-                        <?php 
+                        <?php
 
                         $number_user = (isset($client) ? $client->number_user : "" );
                         echo render_input('number_user', 'Số tài khoản',$number_user, 'text', array()); ?>
                     </div>
 
                     <div class="col-md-3" >
-                        <?php 
+                        <?php
 
                         $user_def = (isset($client) ? $client->user_def : "" );
                         echo render_input('user_def', 'Người đại diện',$user_def, 'text', array()); ?>
                     </div>
 
                     <div class="col-md-3" style="padding-right: 0px;">
-                        <?php 
+                        <?php
 
                         $user_def_name = ( isset($client) ? $client->user_def_name : "");
 
                         echo render_input('user_def_name', 'Chức danh',$user_def_name, 'text', array()); ?>
-                        
 
-                       
+
+
                     </div>
                 </div>
                 <div class="col-md-12" >
                     <div class="col-md-4" style="padding-left: 0px;">
-                        <?php 
+                        <?php
 
                         $name_contact = (isset($client) ? $client->name_contact : "" );
                         echo render_input( 'name_contact', 'Tên liên hệ',$name_contact, 'text', array()); ?>
                     </div>
-                    
+
 
                     <div class="col-md-4" >
-                        <?php 
+                        <?php
 
                         $email = (isset($client) ? $client->email : "" );
                         echo render_input('email', 'Email',$email, 'email', array()); ?>
                     </div>
 
                     <div class="col-md-4" style="padding-right: 0px;">
-                        <?php 
+                        <?php
 
                         $mobilephone_text = ( isset($client) ? $client->mobilephone_number : "");
                         ?>
@@ -434,7 +434,7 @@
     <!-- end bang cuoc goi nho-->
 
     <?php if(!isset($lead)){ ?>
-       
+
     <?php } ?>
     <!-- <?php if(isset($client)){ ?>
         <div class="lead-latest-activity lead-view">
@@ -444,7 +444,7 @@
             <div id="lead-latest-activity" class="pleft5"></div>
         </div>
     <?php } ?> -->
-    
+
     <div class="client-edit<?php if(isset($client)){echo ' hide';} ?>">
         <hr />
         <button type="submit" class="btn btn-info pull-right"><?php echo _l('submit'); ?></button>
@@ -477,7 +477,7 @@
 <script>
     $(function(){
         $("body").on("click", '[client-edit]', function(a) {
-            a.preventDefault(), 
+            a.preventDefault(),
             $("body .client-view").toggleClass("hide"),
             $("body .client-edit").toggleClass("show");
         });
@@ -488,9 +488,9 @@
 //            });
 
     });
-    
 
-    
+
+
 
 </script>
 </script>

@@ -26,7 +26,7 @@
                       $rel_id = $task->rel_id;
                       $rel_type = $task->rel_type;
                     }
-                    ?>
+               ?>
                <div class="clearfix"></div>
                <?php } ?>
                <?php
@@ -49,7 +49,7 @@
                <!-- <hr /> -->
                <?php
                   // echo "<pre>";
-                  // print_r($clients);
+                  // print_r($task);
                   // echo "</pre>";
                ?>
 
@@ -57,10 +57,18 @@
 
                   <div class="form-group select_template">
                      <label for="view_template">Chọn khách hàng:</label>
-                     <?php echo render_select('client', $clients, array('userid', 'code_company'),'', $rel_id, array('onchange'=>'get_contentemail(this.value)', 'disabled' => 'disabled','data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng'))); ?>
+                     <?php
+                        if ($nonClient) {
+                           echo render_select('rel_id', $clients, array('userid', 'code_company'),'', $task->rel_id, array('onchange' => 'changeRelId(this.value)', 'data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
+                        }else{
+                           echo render_select('rel_id', $clients, array('userid', 'code_company'),'', $rel_id, array('onchange'=>'get_contentemail(this.value)', 'disabled' => 'disabled','data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
+                        }
+
+                     ?>
                   </div>
+
                   <?php
-                     if ($rel_id != '') {
+                     if ($task->rel_id != '' || $rel_id) {
                         foreach ($clients as $value) {
                            if ($value['userid'] == $rel_id) {
                               $code_company = $value['code_company'];
@@ -77,7 +85,7 @@
                    ?>
                   <div class="form-group">
                      <label for="name" class="control-label">Mã KH</label>
-                     <input type="text" id="client-name" class="form-control" value="<?php echo $code_company?>" disabled="disabled">
+                     <input type="text" id="client-code" class="form-control" value="<?php echo $code_company?>" disabled="disabled">
                   </div>
                   <div class="form-group">
                      <label for="name" class="control-label">Tên KH</label>
@@ -85,23 +93,23 @@
                   </div>
                   <div class="form-group">
                      <label for="name" class="control-label">Địa chỉ văn phòng</label>
-                     <input type="text" id="client-name" class="form-control" value="<?php echo $address?>" disabled="disabled">
+                     <input type="text" id="client-address" class="form-control" value="<?php echo $address?>" disabled="disabled">
                   </div>
                   <div class="form-group">
                      <label for="name" class="control-label">Điện thoại</label>
-                     <input type="text" id="client-name" class="form-control" value="<?php echo $phonenumber?>" disabled="disabled">
+                     <input type="text" id="client-phone" class="form-control" value="<?php echo $phonenumber?>" disabled="disabled">
                   </div>
                   <div class="form-group">
                      <label for="name" class="control-label">Email</label>
-                     <input type="text" id="client-name" class="form-control" value="<?php echo $email?>" disabled="disabled">
+                     <input type="text" id="client-email" class="form-control" value="<?php echo $email?>" disabled="disabled">
                   </div>
                   <div class="form-group">
                      <label for="name" class="control-label">Mã số thuế</label>
-                     <input type="text" id="client-name" class="form-control" value="<?php echo $code_vat?>" disabled="disabled">
+                     <input type="text" id="client-code-vat" class="form-control" value="<?php echo $code_vat?>" disabled="disabled">
                   </div>
                   <div class="form-group">
                      <label for="name" class="control-label">Liên hệ</label>
-                     <input type="text" id="client-name" class="form-control" value="<?php echo $name_contact?>" disabled="disabled">
+                     <input type="text" id="client-contact" class="form-control" value="<?php echo $name_contact?>" disabled="disabled">
                   </div>
                </div>
 
@@ -121,11 +129,16 @@
                      </select>
                   </div>
                </div>
+               <?php
+               // echo "<pre>";
+               // print_r($task);
+               // echo "</pre>";
+               ?>
                <div class="col-md-4">
                   <?php $value = (isset($task) ? $task->name : ''); ?>
                   <?php
                      echo render_input('name','Tên giao dịch',$value);
-                     echo render_textarea('content_detail', 'Nội dung chi tiết', '', array(), array(), '', 'tinymce');
+                     echo render_textarea('content_detail', 'Nội dung chi tiết', (isset($task->content_detail) ? $task->content_detail : ''), array(), array(), '', 'tinymce');
                   ?>
 
                   <div class="col-md-6 hidden">
@@ -187,8 +200,8 @@
                      }
                      ?>
                   <?php echo render_date_input('startdate','task_add_edit_start_date', $value); ?>
-                  <?php echo render_date_input('duration_finish_date','Hạn hoàn thành'); ?>
-                  <?php echo render_date_input('finish_date','Ngày hoàn thành'); ?>
+                  <?php echo render_date_input('duration_finish_date','Hạn hoàn thành', (isset($task->duration_finish_date) ? _d($task->duration_finish_date) : _d(date('Y-m-d')))); ?>
+                  <?php echo render_date_input('finish_date','Ngày hoàn thành', (isset($task->finish_date) ? _d($task->finish_date) : _d(date('Y-m-d')))); ?>
                   <?php
                       $purpose_type = array(
                           array(
@@ -269,7 +282,7 @@
 
                       );
 
-                      echo render_select('priority', $priority_level, array('id','name'),'Mức độ ưu tiên', 1, array(), array(), '', '', false);
+                      echo render_select('priority', $priority_level, array('id','name'),'Mức độ ưu tiên', (isset($task) ? $task->priority : 1), array(), array(), '', '', false);
 
                    ?>
 
@@ -356,6 +369,22 @@
 
 <?php echo form_close(); ?>
 <script>
+   function changeRelId(relId){
+      let clients = <?php echo json_encode($clients) ?>;
+      $.each(clients, function(index, val) {
+         if (val.userid == relId) {
+            $('#client-code').val(val.code_company);
+            $('#client-name').val(val.company);
+            $('#client-address').val(val.address);
+            $('#client-phone').val(val.phonenumber);
+            $('#client-email').val(val.email);
+            $('#client-code-vat').val(val.code_vat);
+            $('#client-contact').val(val.name_contact);
+         }
+      });
+
+   }
+
     $(document).ready(function() {
       init_editor('.tinymce');
     });
@@ -376,7 +405,7 @@
     custom_fields_hyperlink();
     init_tags_inputs();
 
-    _validate_form($('#task-form'), {
+    _validate_form($('#task-form1'), {
       name: 'required',
       startdate: 'required',
       purpose :'required',

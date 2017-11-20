@@ -9,7 +9,11 @@
 
               <div class="col-md-8">
                 <h4>DANH SÁCH GIAO DỊCH</h4>
-                <?php if(has_permission('tasks','','create')){ ?>                
+
+                <!-- <a href="#" class="btn btn-info pull-left mbot25 mright5" onclick="new_task_from_relation1('.table-rel-tasks1'); return false;">Giao dịch mới</a> -->
+                <a href="#" class="btn btn-info pull-left mbot25 mright5" onclick="add_task(0); return false">Giao dịch mới</a>
+
+                <?php if(has_permission('tasks','','create')){ ?>
                 <!-- <a href="#" onclick="new_task1(); return false;" class="btn btn-info pull-left new "><?php echo _l('new_task'); ?></a> -->
                 <!-- <a href="#" onclick="new_task(); return false;" class="btn btn-info pull-left new mleft10"><?php echo _l('Công việc mới'); ?></a> -->
                 <?php } ?>
@@ -133,10 +137,17 @@
         }
         return false;
     });
- 
+
  })
-  
+
+
+
   $(function(){
+    // initDataTableFixedHeader('.table-sale_orders', admin_url+'sale_orders/list_sale_orders',
+    //     [not_sortable_sale_orders], [not_sortable_sale_orders],
+    //     filterList,
+    //     [1,'DESC'],
+    initDataTableFixedHeader(".table-tasks1", admin_url+'tasks?bulk_actions=true' , [0], [0], '', [0, "ASC"]);
     tasks_kanban();
   });
 </script>

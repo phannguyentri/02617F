@@ -1,11 +1,37 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+
+$purpose_type = array(
+    "COIL" => "Thu thập thông tin",
+    "CORE" => "Giới thiệu, tư vấn",
+    "SURV" => "Khảo sát",
+    "QUOT" => "Báo giá",
+    "NEGO" => "Đàm phán",
+    "TCK"  => "Chăm sóc",
+    "DELI" => "Giao hàng",
+    "PAY"  => "Thanh toán"
+);
+
+$transaction_type = array(
+    "direct"    => "Gặp trực tiếp",
+    "phone"     => "Gọi điện",
+    "email"     => "Email",
+    "mess"      => "Chát",
+);
+
 $assignee_column = 4;
 $tags_column = 3;
 $aColumns = array(
+    'tblclients.company',
+    '2',
+    '3',
     'name',
-    'startdate',
-   
+    'purpose',
+    'transaction',
+    'content_detail',
+    '4',
+    'priority',
+    // 'startdate',
     'status',
 
 );
@@ -43,23 +69,39 @@ $sTable       = 'tblstafftasks1';
 if (count($custom_fields) > 4) {
     @$this->_instance->db->query('SET SQL_BIG_SELECTS=1');
 }
+
+array_push($join, 'LEFT JOIN tblclients  ON tblclients.userid=tblstafftasks1.rel_id');
+
 $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
     'tblstafftasks1.id',
+    'tblclients.userid as client_id',
     'dateadded',
     'priority',
     'rel_type',
-    'rel_id',
+    'tblstafftasks1.rel_id',
     'invoice_id',
-     'duedate',
+    'duedate',
     '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblstafftasks1.id and rel_type="task" ORDER by tag_order ASC) as tags',
     '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblstafftaskassignees JOIN tblstaff ON tblstaff.staffid = tblstafftaskassignees.staffid WHERE taskid=tblstafftasks1.id) as assignees',
     'priority',
     'purpose',
     'transaction',
-    '(SELECT GROUP_CONCAT(staffid SEPARATOR ",") FROM tblstafftaskassignees WHERE taskid=tblstafftasks1.id) as assignees_ids','1'
+    'tblclients.company',
+    'content_detail',
+    '(SELECT GROUP_CONCAT(staffid SEPARATOR ",") FROM tblstafftaskassignees WHERE taskid=tblstafftasks1.id) as assignees_ids',
+    '1',
+    'startdate',
+    'duration_finish_date',
+    'finish_date'
 ));
+
+
 $output  = $result['output'];
 $rResult = $result['rResult'];
+// echo "<pre>";
+// print_r($rResult);
+// echo "</pre>";die();
+
 foreach ($rResult as $aRow) {
     $row = array();
 
@@ -72,7 +114,9 @@ foreach ($rResult as $aRow) {
 
         if($aColumns[$i] == '1'){
             $_data = '<div class="checkbox"><input type="checkbox" value="'.$aRow['id'].'"><label></label></div>';
-        } else if ($aColumns[$i] == 'name') {
+        }else if($aColumns[$i] == 'tblclients.company'){
+            $_data = '<a href="'.admin_url('clients/').'" class="display-block main-tasks-table-href-name mbot5">'.$aRow['tblclients.company'].'</a>';
+        }else if ($aColumns[$i] == 'name') {
             $_data = '<a href="'.admin_url('tasks/index/'.$aRow['id']).'" class="display-block main-tasks-table-href-name'.(!empty($aRow['rel_id']) ? ' mbot5' : '').'" onclick="new_work_from(' . $aRow['id'] . '); return false;">' . $_data . '</a>';
                 if (!empty($aRow['rel_id'])) {
                 $rel_data   = get_relation_data($aRow['rel_type'], $aRow['rel_id']);
@@ -94,6 +138,27 @@ foreach ($rResult as $aRow) {
                 $_data .= '<span class="hide"> - </span>'. _l('Khách hàng').': <a class="text-muted" data-toggle="tooltip" title="' . ucfirst($aRow['rel_type']) . '" href="' . $rel_values['link'] . '">' . $rel_values['name'] . '</a>';
             }
 
+        }else if($aColumns[$i] == '2'){
+            $contact = get_contact_primary($aRow['client_id']);
+            if ($contact) {
+                $_data = $contact->firstname." ".$contact->lastname;
+            }
+
+        } else if($aColumns[$i] == '3'){
+            $_data = '';
+            $staffs = get_admins_assigned($aRow['client_id']);
+
+            if ($staffs) {
+                foreach ($staffs as $value) {
+                    $_data .= '<a href="'.admin_url('profile/'.$value['staff_id']).'" data-toggle="tooltip" data-title="'.get_staff_full_name($value['staff_id']).'">'.staff_profile_image($value['staff_id'], array(
+                        'staff-profile-image-small',
+                        'mright5'
+                    )).'</a>';
+                }
+            }
+
+        } else if ($aColumns[$i] == 'purpose') {
+            $_data = $purpose_type[$aRow['purpose']];
         } else if ($aColumns[$i] == 'startdate' || $aColumns[$i] == 'duedate') {
             if ($aColumns[$i] == 'startdate') {
                 $_data = _d($aRow['startdate']);
@@ -109,10 +174,15 @@ foreach ($rResult as $aRow) {
             }
             $_data .= '</span>';
         }else if ($aColumns[$i] == 'transaction') {
-            $_data = '<span>' . _l($aRow['transaction']). '</span>';
-        }else if ($aColumns[$i] == 'purpose') {
-            $_data = '<span >' . _l($aRow['purpose']). '</span>';
-        } else if ($aColumns[$i] == 'priority') {
+            $_data = '<span>' . _l($transaction_type[$aRow['transaction']]). '</span>';
+        }else if($aColumns[$i] == 'content_detail'){
+            $_data = '<span>' . _l($aRow['content_detail']). '</span>';
+        }else if($aColumns[$i] == '4'){
+            $_data  = '<span>' . _d($aRow['startdate']). '</span></br>';
+            $_data .= '<span>' . _d($aRow['duration_finish_date']). '</span></br>';
+            $_data .= '<span class="text-success inline-block">' . _d($aRow['finish_date']). '</span></br>';
+        }
+        else if ($aColumns[$i] == 'priority') {
             $_data = '<span class="text-' . get_task_priority_class($_data) . ' inline-block">' . task_priority($_data) . '</span>';
         }  else if ($i == $tags_column) {
             $_data = render_tags($_data);

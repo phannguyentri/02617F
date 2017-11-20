@@ -93,4 +93,114 @@ if($alertclass != ''){
     })
 </script>
 
+<script type="text/javascript">
+function initDataTableFixedHeader(table, url, notsearchable, notsortable, fnserverparams, defaultorder, fixedColumns) {
+    // alert(table);
+    var _table_name = table;
+    if ($(table).length == 0) {
+        return;
+    }
+    if (fnserverparams == 'undefined' || typeof(fnserverparams) == 'undefined') {
+        fnserverparams = []
+    }
 
+    // If not order is passed order by the first column
+    if (typeof(defaultorder) == 'undefined') {
+        defaultorder = [
+            [0, 'ASC']
+        ];
+    } else {
+        if (defaultorder.length == 1) {
+            defaultorder = [defaultorder]
+        }
+    }
+
+    var length_options = [10, 25, 50, 100];
+    var length_options_names = [10, 25, 50, 100];
+
+    tables_pagination_limit = parseFloat(tables_pagination_limit);
+
+    if ($.inArray(tables_pagination_limit, length_options) == -1) {
+        length_options.push(tables_pagination_limit)
+        length_options_names.push(tables_pagination_limit)
+    }
+
+    length_options.sort(function(a, b) {
+        return a - b;
+    });
+    length_options_names.sort(function(a, b) {
+        return a - b;
+    });
+
+    length_options.push(-1);
+    length_options_names.push(dt_length_menu_all);
+
+    var table = $('body').find(table).dataTable({
+        fixedColumns: fixedColumns || false,
+        "sScrollX": "100%",
+        "sScrollXInner": "100%",
+        "bScrollCollapse": true,
+        scrollY:        '80vh',
+        scrollCollapse: true,
+        "language": dt_lang,
+        "processing": true,
+        "retrieve": true,
+        "serverSide": true,
+        'paginate': true,
+        'searchDelay': 700,
+        "bDeferRender": true,
+        "responsive": false,
+        "autoWidth": false,
+        dom: "<'mbot25'B><'row'><'row'<'col-md-6'l><'col-md-6'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>",
+        "pageLength": tables_pagination_limit,
+        "lengthMenu": [length_options, length_options_names],
+        "columnDefs": [{
+            "searchable": false,
+            "targets": notsearchable,
+        }, {
+            "sortable": false,
+            "targets": notsortable
+        }],
+        "fnCreatedRow": function(nRow, aData, iDataIndex) {
+            // If tooltips found
+            $(nRow).attr('data-title', aData.Data_Title)
+            $(nRow).attr('data-toggle', aData.Data_Toggle)
+        },
+        "initComplete": function(settings, json) {
+            var _table = $(table);
+            var th_last_child = _table.find('thead th:last-child');
+            var th_first_child = _table.find('thead th:first-child');
+            if (th_last_child.text().trim() == options_string_translate) {
+                th_last_child.addClass('not-export');
+            }
+            if (th_first_child.find('input[type="checkbox"]').length > 0) {
+                th_first_child.addClass('not-export');
+            }
+        },
+        "order": defaultorder,
+        "ajax": {
+            "url": url,
+            "type": "POST",
+            "data": function(d) {
+                for (var key in fnserverparams) {
+                    d[key] = $(fnserverparams[key]).val();
+                }
+            }
+        },
+        buttons: get_dt_export_buttons(table),
+    });
+
+    var tableApi = table.DataTable();
+    var hiddenHeadings = $(table).find('th.not_visible');
+    $.each(hiddenHeadings, function() {
+        tableApi.columns(this.cellIndex).visible(false, false);
+    });
+    // Fix for hidden tables colspan not correct if the table is empty
+    if ($(_table_name).is(':hidden')) {
+        $(_table_name).find('.dataTables_empty').attr('colspan', $(_table_name).find('thead th').length);
+    }
+
+    return tableApi;
+}
+
+</script>

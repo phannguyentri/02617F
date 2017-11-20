@@ -1,8 +1,16 @@
 <?php
 
  $table_data = array(
+    _l('Tên khách hàng'),
+    _l('Người liên hệ'),
+    _l('Người phụ trách'),
     _l('Tên giao dịch'),
-    _l('tasks_dt_datestart'),
+    _l('Mục đích'),
+    _l('Loại giao dịch'),
+    _l('Nội dung chi tiết'),
+    _l('Thời gian thực hiện'),
+    _l('Ưu tiên'),
+    // _l('tasks_dt_datestart'),
     _l('task_status')
     );
  if(isset($bulk_actions)){

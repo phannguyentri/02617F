@@ -661,15 +661,15 @@ class Tasks_model extends CRM_Model
                 $data['milestone'] = 0;
             }
         }
-        if (empty($data['rel_type'])) {
-            unset($data['rel_type']);
-            unset($data['rel_id']);
-        } else {
-            if (empty($data['rel_id'])) {
-                unset($data['rel_type']);
-                unset($data['rel_id']);
-            }
-        }
+        // if (empty($data['rel_type'])) {
+        //     unset($data['rel_type']);
+        //     unset($data['rel_id']);
+        // } else {
+        //     if (empty($data['rel_id'])) {
+        //         unset($data['rel_type']);
+        //         unset($data['rel_id']);
+        //     }
+        // }
 
 
         $data = do_action('before_add_task', $data);
@@ -680,6 +680,7 @@ class Tasks_model extends CRM_Model
             unset($data['tags']);
         }
         $this->db->insert('tblstafftasks1', $data);
+
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
 
@@ -700,6 +701,9 @@ class Tasks_model extends CRM_Model
      * @param  mixed $id   task id
      * @return boolean
      */
+        // $data['duration_finish_date']   = to_sql_date($data['duration_finish_date']);
+        // $data['finish_date']            = to_sql_date($data['finish_date']);
+
     public function update($data, $id)
     {
         $affectedRows      = 0;
@@ -805,6 +809,113 @@ class Tasks_model extends CRM_Model
         }
         return false;
     }
+
+    public function update1($data, $id)
+    {
+
+        $affectedRows      = 0;
+        $data['startdate'] = to_sql_date($data['startdate']);
+        $data['duedate']   = to_sql_date($data['duedate']);
+        $data['duration_finish_date']   = to_sql_date($data['duration_finish_date']);
+        $data['finish_date']            = to_sql_date($data['finish_date']);
+
+        if (isset($data['datefinished'])) {
+            $data['datefinished'] = to_sql_date($data['datefinished'], true);
+        }
+
+        if (isset($data['custom_fields'])) {
+            $custom_fields = $data['custom_fields'];
+            if (handle_custom_fields_post($id, $custom_fields)) {
+                $affectedRows++;
+            }
+            unset($data['custom_fields']);
+        }
+
+
+        if ($data['repeat_every'] != '') {
+            $data['recurring'] = 1;
+            if ($data['repeat_every'] == 'custom') {
+                $data['repeat_every']     = $data['repeat_every_custom'];
+                $data['recurring_type']   = $data['repeat_type_custom'];
+                $data['custom_recurring'] = 1;
+            } else {
+                $_temp                    = explode('-', $data['repeat_every']);
+                $data['recurring_type']   = $_temp[1];
+                $data['repeat_every']     = $_temp[0];
+                $data['custom_recurring'] = 0;
+            }
+        } else {
+            $data['recurring'] = 0;
+        }
+
+        if ($data['recurring_ends_on'] == '' || $data['recurring'] == 0) {
+            $data['recurring_ends_on'] = NULL;
+        } else {
+            $data['recurring_ends_on'] = to_sql_date($data['recurring_ends_on']);
+        }
+
+        unset($data['repeat_type_custom']);
+        unset($data['repeat_every_custom']);
+
+        if (isset($data['is_public'])) {
+            $data['is_public'] = 1;
+        } else {
+            $data['is_public'] = 0;
+        }
+        if (isset($data['billable'])) {
+            $data['billable'] = 1;
+        } else {
+            $data['billable'] = 0;
+        }
+
+        if ((!isset($data['milestone']) || $data['milestone'] == '') || (isset($data['milestone']) && $data['milestone'] == '')) {
+            $data['milestone'] = 0;
+        } else {
+            if ($data['rel_type'] != 'project') {
+                $data['milestone'] = 0;
+            }
+        }
+
+
+        if (isset($data['visible_to_client'])) {
+            $data['visible_to_client'] = 1;
+        } else {
+            $data['visible_to_client'] = 0;
+        }
+        if (empty($data['rel_type'])) {
+            $data['rel_id']   = NULL;
+            $data['rel_type'] = NULL;
+        } else {
+            if (empty($data['rel_id'])) {
+                $data['rel_id']   = NULL;
+                $data['rel_type'] = NULL;
+            }
+        }
+
+        $_data['data'] = $data;
+        $_data['id']   = $id;
+
+        $_data = do_action('before_update_task', $_data);
+
+        $data = $_data['data'];
+
+        if(isset($data['tags'])){
+            if(handle_tags_save($data['tags'],$id,'task')){
+                $affectedRows++;
+            }
+            unset($data['tags']);
+        }
+
+        $this->db->where('id', $id);
+        if ($this->db->update('tblstafftasks1', $data)) {
+            do_action('after_update_task', $id);
+            logActivity('Task Updated [ID:' . $id . ', Name: ' . $data['name'] . ']');
+            return true;
+        }
+
+        return false;
+    }
+
     public function get_checklist_item($id)
     {
         $this->db->where('id', $id);

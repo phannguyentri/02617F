@@ -342,11 +342,12 @@ class Tasks extends Admin_controller
             $data['start_date'] = $this->input->get('start_date');
         }
 
+
         if ($this->input->post()) {
-            echo("<pre>");
-            print_r($this->input->post());
-            echo("</pre>");
-            die('zzzzzzzzzzzzzzzzzzzzzzzzzz');
+            // echo("<pre>");
+            // print_r($this->input->post());
+            // echo("</pre>");
+            // die('zzzzzzzzzzzzzzzzzzzzzzzzzz');
             $data                = $this->input->post();
             $data['description'] = $this->input->post('description', FALSE);
 
@@ -383,7 +384,7 @@ class Tasks extends Admin_controller
                     ));
                     die;
                 }
-                $success = $this->tasks_model->update($data, $id);
+                $success = $this->tasks_model->update1($data, $id);
                 $message = '';
                 if ($success) {
                     $message = _l('updated_successfuly', _l('task'));
@@ -402,8 +403,6 @@ class Tasks extends Admin_controller
         if ($id == '') {
             $title = _l('add_new', _l('task_lowercase'));
         } else {
-
-
             $data['task'] = $this->tasks_model->get1($id);
             if ($data['task']->rel_type == 'project') {
                 $data['milestones'] = $this->projects_model->get_milestones($data['task']->rel_id);
@@ -419,6 +418,12 @@ class Tasks extends Admin_controller
                 );
             }
         }
+
+        $data['nonClient'] = false;
+        if ($this->input->get('nonClient')) {
+            $data['nonClient'] = true;
+        }
+
         $data['id']    = $id;
         $data['title'] = $title;
         $data['clients'] = $this->tasks_model->getClients($this->input->post());
