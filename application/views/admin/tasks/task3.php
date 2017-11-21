@@ -1,8 +1,11 @@
-<?php if(isset($task)){
-   echo form_hidden('task_is_edit1',$task->id);
-   }
-   ?>
-<?php echo form_open(admin_url('tasks/task3/'.$id),array('id'=>'task-form1')); ?>
+<?php
+    $formId = '';
+    if(isset($task)){
+      echo form_hidden('task_is_edit1',$task->id);
+      $formId = '-update';
+    }
+ ?>
+<?php echo form_open(admin_url('tasks/task3/'.$id),array('id'=>'task-form'.$formId)); ?>
 <div class="modal fade" id="_task_modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 <div class="modal-dialog modal-lg" role="document">
    <div class="modal-content">
@@ -283,18 +286,18 @@
                       );
 
                       echo render_select('priority', $priority_level, array('id','name'),'Mức độ ưu tiên', (isset($task) ? $task->priority : 1), array(), array(), '', '', false);
+
                       $staffs   = get_admins_assigned_join_tblstaff($rel_id);
-                      echo render_select('staff_id[]', $staffs, array('staff_id', 'fullname'), 'Chọn phụ trách khách hàng', '', array('multiple' => 'multiple'), array(), '', '', false);
-                      // $contacts = get_contact_by_client_id($rel_id);
-                      // echo render_select('contact_id', $contacts, array('id', 'fullname'), 'Chọn lieen', '', array(), array(), '', '', false);
-                      // echo "<pre>";
-                      // print_r($contacts);
-                      // echo "</pre>";
+                      $arrSelectedOnus = [];
+                      if (isset($selectedOnus)) {
+                        foreach ($selectedOnus as $val) {
+                          $arrSelectedOnus[] = $val['staff_id'];
+                        }
+                      }
 
+                      echo render_select('staff_id[]', $staffs, array('staff_id', 'fullname'), 'Chọn phụ trách khách hàng', $arrSelectedOnus, array('multiple' => 'multiple'), array(), '', '', false);
                    ?>
-
                </div>
-
 
                <div class="recurring_custom <?php if((isset($task) && $task->custom_recurring != 1) || (!isset($task))){echo 'hide';} ?>">
                   <div class="row">
@@ -408,12 +411,12 @@
     custom_fields_hyperlink();
     init_tags_inputs();
 
-    // _validate_form($('#task-form1'), {
-    //   name: 'required',
-    //   startdate: 'required',
-    //   purpose :'required',
-    //   transaction: 'required',
-    // },task_form_handler);
+    _validate_form($('#task-form-update'), {
+      name: 'required',
+      startdate: 'required',
+      purpose :'required',
+      transaction: 'required',
+    },task_form_handler);
 
     $('.rel_id_label').html(_rel_type.find('option:selected').text());
     _rel_type.on('change', function() {
@@ -437,8 +440,6 @@
     init_selectpicker();
     task_rel_select();
     init_editor('.tinymce-task',{height:200});
-
-
 
     $('body').on('change','#rel_id',function(){
      if($(this).val() != ''){
@@ -518,8 +519,6 @@
       .selectpicker()
       .ajaxSelectPicker(options)
     }
-
-
 
     function init_project_details(type,tasks_visible_to_customer){
       var wrap = $('.non-project-details');

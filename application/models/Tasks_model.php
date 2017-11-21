@@ -681,7 +681,6 @@ class Tasks_model extends CRM_Model
         }
 
         $staffs_id   = $data['staff_id'];
-
         unset($data['staff_id']);
 
         $this->db->insert('tblstafftasks1', $data);
@@ -922,14 +921,40 @@ class Tasks_model extends CRM_Model
             unset($data['tags']);
         }
 
+        // echo "<pre>";
+        // print_r($data);
+        // echo "</pre>";die();
+        $staffs_id   = $data['staff_id'];
+        unset($data['staff_id']);
+
         $this->db->where('id', $id);
         if ($this->db->update('tblstafftasks1', $data)) {
+            $this->delete_onus_by_task_id($id);
+            $data_insert_onus = [
+                'task_id'       => $id,
+                'assigned_from' => (is_staff_logged_in() ? get_staff_user_id() : $staff_id),
+            ];
+            if (!empty($staffs_id)) {
+                foreach ($staffs_id as $val) {
+                    $data_insert_onus['staff_id'] = $val;
+                    $this->db->insert('tblonus', $data_insert_onus);
+                }
+            }
+
             do_action('after_update_task', $id);
             logActivity('Task Updated [ID:' . $id . ', Name: ' . $data['name'] . ']');
             return true;
         }
 
         return false;
+    }
+
+    public function delete_onus_by_task_id($task_id){
+      $this->db->where('task_id', $task_id);
+      if ($this->db->delete('tblonus')) {
+        return true;
+      }
+      return false;
     }
 
     public function get_checklist_item($id)
@@ -2020,6 +2045,12 @@ class Tasks_model extends CRM_Model
         }
         $this->db->select('tblclients.userid, tblclients.code_company, tblclients.address, tblclients.code_vat, tblclients.email, tblclients.company, tblclients.phonenumber, tblclients.client_type1, tblclients.name_contact');
         return $this->db->get('tblclients')->result_array();
+    }
+
+    public function get_onus_by_task_id($task_id){
+      $this->db->select('staff_id');
+      $this->db->where('task_id', $task_id);
+      return $this->db->get('tblonus')->result_array();
     }
 
     // public function get_admins_assigned($clientId){

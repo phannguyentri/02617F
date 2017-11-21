@@ -399,7 +399,8 @@ class Tasks extends Admin_controller
         if ($id == '') {
             $title = _l('add_new', _l('task_lowercase'));
         } else {
-            $data['task'] = $this->tasks_model->get1($id);
+            $data['task']           = $this->tasks_model->get1($id);
+            $data['selectedOnus']   = $this->tasks_model->get_onus_by_task_id($id);
             if ($data['task']->rel_type == 'project') {
                 $data['milestones'] = $this->projects_model->get_milestones($data['task']->rel_id);
             }

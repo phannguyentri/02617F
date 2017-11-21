@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-define('APP_BASE_URL','http://192.168.50.150/02617F');
+define('APP_BASE_URL','http://localhost/02617F');//192.168.50.150
 
 /*
 |--------------------------------------------------------------------------
