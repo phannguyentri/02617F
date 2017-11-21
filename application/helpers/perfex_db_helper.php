@@ -1671,12 +1671,85 @@ function get_admins_assigned($clientId){
     return false;
 }
 
+function get_all_staff(){
+    $CI =& get_instance();
+    $CI->db->select('staffid, fullname');
+    $result = $CI->db->get('tblstaff')->result_array();
+
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}
+
+
+function get_admins_assigned_join_tblstaff($clientId){
+    $CI =& get_instance();
+    $CI->db->select('tblcustomeradmins.staff_id, tblstaff.firstname, tblstaff.lastname, tblstaff.fullname');
+    $CI->db->where('customer_id', $clientId);
+    $CI->db->join('tblstaff', 'tblstaff.staffid = tblcustomeradmins.staff_id');
+    $result = $CI->db->get('tblcustomeradmins')->result_array();
+
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}
+
 function get_contact_primary($clientId){
     $CI =& get_instance();
     $CI->db->select('firstname, lastname');
     $CI->db->where('userid', $clientId);
     $CI->db->where('is_primary', 1);
     $result = $CI->db->get('tblcontacts')->row();
+
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}
+
+function get_contact_by_client_id($clientId){
+    $CI =& get_instance();
+    $CI->db->select('id , CONCAT(firstname, " " ,lastname) as fullname');
+    $CI->db->where('userid', $clientId);
+    $result = $CI->db->get('tblcontacts')->result_array();
+
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}
+
+function get_askassignees_by_task_id($taskId){
+    $CI =& get_instance();
+    // $CI->db->select('');
+    $CI->db->where('taskid', $taskId);
+    $result = $CI->db->get('tblstafftaskassignees')->result_array();
+
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}
+
+function get_asksfollowers_by_task_id($taskId){
+    $CI =& get_instance();
+    // $CI->db->select('');
+    $CI->db->where('taskid', $taskId);
+    $result = $CI->db->get('tblstafftasksfollowers')->result_array();
+
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}
+
+function get_onus_by_task_id($taskId){
+    $CI =& get_instance();
+    // $CI->db->select('');
+    $CI->db->where('task_id', $taskId);
+    $result = $CI->db->get('tblonus')->result_array();
 
     if(!empty($result)){
         return $result;

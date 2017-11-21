@@ -75,6 +75,7 @@ array_push($join, 'LEFT JOIN tblclients  ON tblclients.userid=tblstafftasks1.rel
 $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
     'tblstafftasks1.id',
     'tblclients.userid as client_id',
+    'name',
     'dateadded',
     'priority',
     'rel_type',
@@ -117,7 +118,9 @@ foreach ($rResult as $aRow) {
         }else if($aColumns[$i] == 'tblclients.company'){
             $_data = '<a onclick="init_client_modal_data('.$aRow['client_id'].');return false;" href="'.admin_url('clients/client/').$aRow['client_id'].'" class="display-block main-tasks-table-href-name mbot5">'.$aRow['tblclients.company'].'</a>';
         }else if ($aColumns[$i] == 'name') {
-            $_data = '<a href="'.admin_url('tasks/index/'.$aRow['id']).'" class="display-block main-tasks-table-href-name'.(!empty($aRow['rel_id']) ? ' mbot5' : '').'" onclick="new_work_from(' . $aRow['id'] . '); return false;">' . $_data . '</a>';
+            $_data = '<a href="'.admin_url('tasks/index/'.$aRow['id']).'" class="display-block main-tasks-table-href-name'.(!empty($aRow['rel_id']) ? ' mbot5' : '').'' . $_data . '</a>';
+            /*" onclick="new_work_from(' . $aRow['id'] . '); return false;">*/
+
                 if (!empty($aRow['rel_id'])) {
                 $rel_data   = get_relation_data($aRow['rel_type'], $aRow['rel_id']);
                 $rel_values = get_relation_values($rel_data, $aRow['rel_type']);
@@ -135,18 +138,25 @@ foreach ($rResult as $aRow) {
     //                     }
     //                 }
     //             }
-                $_data .= '<span class="hide"> - </span>'. _l('Khách hàng').': <a class="text-muted" data-toggle="tooltip" title="' . ucfirst($aRow['rel_type']) . '" href="' . $rel_values['link'] . '">' . $rel_values['name'] . '</a>';
+                $_data .= '<span class="hide"> - </span>'. $aRow['name'] .': <a class="text-muted" data-toggle="tooltip" title="' . ucfirst($aRow['rel_type']) . '" href="' . $rel_values['link'] . '">' . $rel_values['name'] . '</a>';
             }
 
         }else if($aColumns[$i] == '2'){
-            $contact = get_contact_primary($aRow['client_id']);
-            if ($contact) {
-                $_data = $contact->firstname." ".$contact->lastname;
+            $_data = '';
+            $contacts = get_asksfollowers_by_task_id($aRow['id']);
+
+            if ($contacts) {
+                foreach ($contacts as $value) {
+                    $_data .= '<a href="'.admin_url('profile/'.$value['staffid']).'" data-toggle="tooltip" data-title="'.get_staff_full_name($value['staffid']).'">'.staff_profile_image($value['staffid'], array(
+                        'staff-profile-image-small',
+                        'mright5'
+                    )).'</a>';
+                }
             }
 
         } else if($aColumns[$i] == '3'){
             $_data = '';
-            $staffs = get_admins_assigned($aRow['client_id']);
+            $staffs = get_onus_by_task_id($aRow['id']);
 
             if ($staffs) {
                 foreach ($staffs as $value) {
@@ -180,8 +190,7 @@ foreach ($rResult as $aRow) {
             $_data  = '<span>' . _d($aRow['startdate']). '</span></br>';
             $_data .= '<span>' . _d($aRow['duration_finish_date']). '</span></br>';
             $_data .= '<span class="text-success inline-block">' . _d($aRow['finish_date']). '</span></br>';
-        }
-        else if ($aColumns[$i] == 'priority') {
+        }else if ($aColumns[$i] == 'priority') {
             $_data = '<span class="text-' . get_task_priority_class($_data) . ' inline-block">' . task_priority($_data) . '</span>';
         }  else if ($i == $tags_column) {
             $_data = render_tags($_data);
@@ -243,9 +252,10 @@ foreach ($rResult as $aRow) {
         ));
 
     }
-    $options .= icon_btn('#', 'list-alt', 'btn-default ', array(
-            'onclick' => 'new_work_from(' . $aRow['id'] . '); return false'
-        ));
+    // Công việc
+    // $options .= icon_btn('#', 'list-alt', 'btn-default ', array(
+    //         'onclick' => 'new_work_from(' . $aRow['id'] . '); return false'
+    //     ));
 
     if (has_permission('tasks', '', 'delete')) {
         $options .= icon_btn('tasks/delete_task1/' . $aRow['id'], 'remove', 'btn-danger _delete', array(

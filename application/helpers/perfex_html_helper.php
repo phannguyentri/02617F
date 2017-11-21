@@ -335,6 +335,7 @@ function init_relation_tasks_table1($table_attributes = array())
 
     }
     echo "<div class='clearfix'></div>";
+
     $table .= render_datatable($table_data, $name, array(), $table_attributes);
 
     return $table;

@@ -131,7 +131,7 @@
                </div>
                <?php
                // echo "<pre>";
-               // print_r($task);
+               // print_r(get_admins_assigned_join_tblstaff($rel_id));
                // echo "</pre>";
                ?>
                <div class="col-md-4">
@@ -283,9 +283,15 @@
                       );
 
                       echo render_select('priority', $priority_level, array('id','name'),'Mức độ ưu tiên', (isset($task) ? $task->priority : 1), array(), array(), '', '', false);
+                      $staffs   = get_admins_assigned_join_tblstaff($rel_id);
+                      echo render_select('staff_id[]', $staffs, array('staff_id', 'fullname'), 'Chọn phụ trách khách hàng', '', array('multiple' => 'multiple'), array(), '', '', false);
+                      // $contacts = get_contact_by_client_id($rel_id);
+                      // echo render_select('contact_id', $contacts, array('id', 'fullname'), 'Chọn lieen', '', array(), array(), '', '', false);
+                      // echo "<pre>";
+                      // print_r($contacts);
+                      // echo "</pre>";
 
                    ?>
-
 
                </div>
 
@@ -385,10 +391,6 @@
 
    }
 
-    $(document).ready(function() {
-      init_editor('.tinymce');
-    });
-
 
    var _rel_id = $('#rel_id'),
    _rel_type = $('#rel_type'),
@@ -399,18 +401,19 @@
    _milestone_selected_data = undefined;
 
    $(function(){
+    init_editor('.tinymce');
 
     $( "body" ).off( "change", "#rel_id" );
 
     custom_fields_hyperlink();
     init_tags_inputs();
 
-    _validate_form($('#task-form1'), {
-      name: 'required',
-      startdate: 'required',
-      purpose :'required',
-      transaction: 'required',
-    },task_form_handler);
+    // _validate_form($('#task-form1'), {
+    //   name: 'required',
+    //   startdate: 'required',
+    //   purpose :'required',
+    //   transaction: 'required',
+    // },task_form_handler);
 
     $('.rel_id_label').html(_rel_type.find('option:selected').text());
     _rel_type.on('change', function() {

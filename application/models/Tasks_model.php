@@ -679,10 +679,26 @@ class Tasks_model extends CRM_Model
             $tags  = $data['tags'];
             unset($data['tags']);
         }
+
+        $staffs_id   = $data['staff_id'];
+
+        unset($data['staff_id']);
+
         $this->db->insert('tblstafftasks1', $data);
 
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
+
+            $data_insert_onus = [
+                'task_id'       => $insert_id,
+                'assigned_from' => (is_staff_logged_in() ? get_staff_user_id() : $staff_id),
+            ];
+            if (!empty($staffs_id)) {
+                foreach ($staffs_id as $val) {
+                    $data_insert_onus['staff_id'] = $val;
+                    $this->db->insert('tblonus', $data_insert_onus);
+                }
+            }
 
             handle_tags_save($tags,$insert_id,'task');
 
@@ -2005,4 +2021,15 @@ class Tasks_model extends CRM_Model
         $this->db->select('tblclients.userid, tblclients.code_company, tblclients.address, tblclients.code_vat, tblclients.email, tblclients.company, tblclients.phonenumber, tblclients.client_type1, tblclients.name_contact');
         return $this->db->get('tblclients')->result_array();
     }
+
+    // public function get_admins_assigned($clientId){
+    //     $this->db->select('staff_id');
+    //     $this->db->where('customer_id', $clientId);
+    //     $result = $this->db->get('tblcustomeradmins')->result_array();
+
+    //     if(!empty($result)){
+    //         return $result;
+    //     }
+    //     return false;
+    // }
 }

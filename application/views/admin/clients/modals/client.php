@@ -13,7 +13,8 @@
          } else {
          echo _l('add_new',_l('client'));
          }
-         ?>
+
+      ?>
    </h4>
 </div>
 <div class="modal-body">
@@ -210,7 +211,7 @@
           <hr>
          <?php if(isset($client)){
 
-            init_relation_tasks_table1(array( 'data-new-rel-id'=>$client->userid,'data-new-rel-type'=>'customer'));
+            init_relation_tasks_table1(array( 'data-new-rel-id' => $client->userid, 'data-new-rel-type' => 'customer'));
           } ?>
       </div>
       <div role="tabpanel" class="tab-pane" id="attachments">
@@ -494,7 +495,15 @@
 <?php } ?>
 <?php } ?>
 <script type="text/javascript">
+
    // others script write here
+  $(function(){
+    init_editor('.tinymce');
+    // let clientId = <?php echo $client->userid; ?>;
+    // init_rel_tasks_table1(clientId, 'customer');
+    // initDataTable('.table-quote_clients', admin_url + 'clients/quotes/' + clientId, [0], [0]);
+  });
+
    $('.client-form').validate({});
    function addRules(rulesObj){
      for (var item in rulesObj){

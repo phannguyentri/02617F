@@ -1,10 +1,27 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+$purpose_type = array(
+    "COIL" => "Thu thập thông tin",
+    "CORE" => "Giới thiệu, tư vấn",
+    "SURV" => "Khảo sát",
+    "QUOT" => "Báo giá",
+    "NEGO" => "Đàm phán",
+    "TCK"  => "Chăm sóc",
+    "DELI" => "Giao hàng",
+    "PAY"  => "Thanh toán"
+);
+
+$transaction_type = array(
+    "direct"    => "Gặp trực tiếp",
+    "phone"     => "Gọi điện",
+    "email"     => "Email",
+    "mess"      => "Chát",
+);
+
 $aColumns = array(
     'name',
     'startdate',
-    
     'status',
 );
 
@@ -38,17 +55,25 @@ $sTable       = 'tblstafftasks1';
 if (count($custom_fields) > 4) {
     @$this->_instance->db->query('SET SQL_BIG_SELECTS=1');
 }
+
+array_push($join, 'LEFT JOIN tblclients  ON tblclients.userid=tblstafftasks1.rel_id');
+
 $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
     'tblstafftasks1.id',
+    'tblclients.userid as client_id',
+    'name',
     'dateadded',
     'priority',
     'invoice_id',
-    'duedate',    
+    'duedate',
     '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblstafftaskassignees JOIN tblstaff ON tblstaff.staffid = tblstafftaskassignees.staffid WHERE taskid=tblstafftasks1.id) as assignees',
     'priority',
-     'purpose',
+    'purpose',
     'transaction',
-    '(SELECT GROUP_CONCAT(staffid SEPARATOR ",") FROM tblstafftaskassignees WHERE taskid=tblstafftasks1.id) as assignees_ids'
+    '(SELECT GROUP_CONCAT(staffid SEPARATOR ",") FROM tblstafftaskassignees WHERE taskid=tblstafftasks1.id) as assignees_ids',
+    'startdate',
+    'duration_finish_date',
+    'finish_date',
 ));
 $output  = $result['output'];
 $rResult = $result['rResult'];
@@ -142,9 +167,9 @@ foreach ($rResult as $aRow) {
         ));
 
     }
-    $options .= icon_btn('#', 'list-alt', 'btn-default ', array(
-            'onclick' => 'new_work_from(' . $aRow['id'] . '); return false'
-        ));
+    // $options .= icon_btn('#', 'list-alt', 'btn-default ', array(
+    //         'onclick' => 'new_work_from(' . $aRow['id'] . '); return false'
+    //     ));
 
     if (has_permission('tasks', '', 'delete')) {
         $options .= icon_btn('tasks/delete_task1/' . $aRow['id'], 'remove', 'btn-danger _delete', array(

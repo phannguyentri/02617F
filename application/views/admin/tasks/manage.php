@@ -9,7 +9,12 @@
 
               <div class="col-md-8">
                 <h4>DANH SÁCH GIAO DỊCH</h4>
+                <?php
+                // echo "<pre>";
+                // print_r(get_askassignees_by_task_id(59));
+                // echo "</pre>";
 
+                 ?>
                 <!-- <a href="#" class="btn btn-info pull-left mbot25 mright5" onclick="new_task_from_relation1('.table-rel-tasks1'); return false;">Giao dịch mới</a> -->
                 <a href="#" class="btn btn-info pull-left mbot25 mright5" onclick="add_task(0); return false">Giao dịch mới</a>
 

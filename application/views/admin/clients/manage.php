@@ -258,7 +258,7 @@
                   <?php
                      $table_data = array(
 
-                         _l('#'),
+                        _l('#'),
                          '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="clients"><label></label></div>',
                         _l('Mã khách hàng'),
                         _l('clients_list_company'),
@@ -475,7 +475,7 @@
 
     var url1 = $(this)[0].action; // the script where you handle the form input.
 
-        $.ajax({
+         $.ajax({
                type: "POST",
                url: url1,
                dataType:'JSON',
@@ -485,7 +485,7 @@
                   alert_float(data.alert_type,data.message);
                   $("body").find(".reminder-modal--").modal('hide');
                }
-             });
+         });
 
     });
 
@@ -610,8 +610,8 @@
     });
 
  })
-        init_rel_tasks_table(id,'customer');
-        init_rel_tasks_table1(id,'customer');
+       init_rel_tasks_table(id,'customer');
+       init_rel_tasks_table1(id,'customer');
         /* Custome profile reminders table */
        initDataTable('.table-reminders', admin_url + 'misc/get_reminders/' + id + '/' + 'customer', [4], [4]);
        // initDataTable('.table-customer_admin-client', admin_url + 'misc/get_reminders/' + id + '/' + 'customer', [4], [4]);

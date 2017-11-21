@@ -344,10 +344,6 @@ class Tasks extends Admin_controller
 
 
         if ($this->input->post()) {
-            // echo("<pre>");
-            // print_r($this->input->post());
-            // echo("</pre>");
-            // die('zzzzzzzzzzzzzzzzzzzzzzzzzz');
             $data                = $this->input->post();
             $data['description'] = $this->input->post('description', FALSE);
 
@@ -427,6 +423,7 @@ class Tasks extends Admin_controller
         $data['id']    = $id;
         $data['title'] = $title;
         $data['clients'] = $this->tasks_model->getClients($this->input->post());
+        // $data['staffs']  = $this->tasks_model->get_admins_assigned($id);
         $this->load->view('admin/tasks/task3', $data);
     }
     public function copy()
