@@ -22,6 +22,9 @@ $transaction_type = array(
 $aColumns = array(
     'name',
     'startdate',
+    'purpose',
+    'transaction',
+    'priority',
     'status',
 );
 
@@ -63,7 +66,6 @@ $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, ar
     'tblclients.userid as client_id',
     'name',
     'dateadded',
-    'priority',
     'invoice_id',
     'duedate',
     '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblstafftaskassignees JOIN tblstaff ON tblstaff.staffid = tblstafftaskassignees.staffid WHERE taskid=tblstafftasks1.id) as assignees',

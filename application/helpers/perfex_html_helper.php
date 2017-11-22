@@ -289,6 +289,9 @@ function init_relation_tasks_table1($table_attributes = array())
     $table_data = array(
         _l('Tên giao dịch'),
         _l('tasks_dt_datestart'),
+        _l('Mục đích'),
+        _l('Phương thức'),
+        _l('Ưu tiên'),
         _l('task_status'),
     );
 

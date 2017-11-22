@@ -4,7 +4,7 @@
  */
 ?>
 <script>
-  
+
  var customer_id = $('input[name="userid"]').val();
 
  $(function() {
@@ -144,7 +144,7 @@ if(_table_api) {
     //    });
     //  }
 
-     
+
 
      $('body').on('hidden.bs.modal', '#contact', function() {
        $('#contact_data').empty();
@@ -233,26 +233,26 @@ function contactFormHandler(form) {
 }
 
 function contact(client_id, contact_id) {
- if (typeof(contact_id) == 'undefined') {
-   contact_id = '';
- }
- $.post(admin_url + 'clients/contact/' + client_id + '/' + contact_id).done(function(response) {
-   $('#contact_data').html(response);
-   $('#contact').modal({show:true,backdrop:'static'});
-   $('body').on('shown.bs.modal', '#contact', function() {
-     var contactid = $(this).find('input[name="contactid"]').val();
-     if (contact_id == '') {
-       $('#contact').find('input[name="firstname"]').focus();
-     }
-   });
-   init_selectpicker();
-   init_datepicker();
-   custom_fields_hyperlink();
-   validate_contact_form();
- }).fail(function(error) {
-  var response = JSON.parse(error.responseText);
-  alert_float('danger', response.message);
-});
+   if (typeof(contact_id) == 'undefined') {
+     contact_id = '';
+   }
+   $.post(admin_url + 'clients/contact/' + client_id + '/' + contact_id).done(function(response) {
+     $('#contact_data').html(response);
+     $('#contact').modal({show:true,backdrop:'static'});
+     $('body').on('shown.bs.modal', '#contact', function() {
+       var contactid = $(this).find('input[name="contactid"]').val();
+       if (contact_id == '') {
+         $('#contact').find('input[name="firstname"]').focus();
+       }
+     });
+     init_selectpicker();
+     init_datepicker();
+     custom_fields_hyperlink();
+     validate_contact_form();
+   }).fail(function(error) {
+    var response = JSON.parse(error.responseText);
+    alert_float('danger', response.message);
+  });
 }
 function update_all_proposal_emails_linked_to_contact(contact_id) {
  var data = {};

@@ -1,3 +1,9 @@
+<style type="text/css">
+  .fix-padding{
+    padding: 5px 15px;
+  }
+</style>
+
 <div class="modal-header">
  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
  <h4 class="modal-title"><?php echo $task->name; ?></h4>
@@ -23,11 +29,41 @@
     echo '<div class="task-single-related-wrapper">';
     $task_rel_data = get_relation_data($task->rel_type,$task->rel_id);
     $task_rel_value = get_relation_values($task_rel_data,$task->rel_type);
-    echo '<h4 class="bold font-medium mbot15">'._l('task_single_related').': <a href="'.$task_rel_value['link'].'" target="_blank">'.$task_rel_value['name'].'</a></h4>';
+    echo '<h4 class="bold font-medium mbot15">Thông tin khách hàng: <a href="'.$task_rel_value['link'].'" target="_blank">'.$task_rel_value['name'].'</a></h4>';
     echo '</div>';
   }
   ?>
+  <?php
+    // echo("<pre>");
+    // print_r($info_client);
+    // echo("</pre>");
+   ?>
+  <div class="col-md-12 fix-padding">
+    <span class="text-muted"><i class="fa fa-info-circle"></i> Mã khách hàng</span>: <span class="bold"><?php echo $info_client[0]['code_company'] ?></span>
+  </div>
+  <div class="col-md-12 fix-padding">
+    <span class="text-muted"><i class="fa fa-phone"></i> Số điện thoại</span>: <span class="bold"><?php echo $info_client[0]['phonenumber'] ?></span>
+  </div>
+  <div class="col-md-12 fix-padding">
+    <span class="text-muted"><i class="fa fa-address-book-o"></i> Địa chỉ văn phòng</span>: <span class="bold"><?php echo $info_client[0]['address'] ?></span>
+  </div>
+  <div class="col-md-12 fix-padding">
+    <span class="text-muted"><i class="fa fa-envelope"></i> Email</span>: <span class="bold"><?php echo $info_client[0]['email'] ?></span>
+  </div>
+  <div class="col-md-12 fix-padding">
+    <span class="text-muted"><i class="fa fa-info-circle"></i> Mã số thuế</span>: <span class="bold"><?php echo $info_client[0]['code_vat'] ?></span>
+  </div>
+  <div class="col-md-12 fix-padding">
+    <span class="text-muted"><i class="fa fa-info-circle"></i> Tên liên hệ</span>: <span class="bold"><?php echo $info_client[0]['name_contact'] ?></span>
+  </div>
+
   <div class="clearfix"></div>
+  <?php
+    // echo("<pre>");
+    // print_r($task);
+    // echo("</pre>");
+   ?>
+
   <!-- <?php if($task->status != 5){ ?> -->
   <!-- <p class="no-margin pull-left" style="margin-right:5px !important;">
    <a href="#" class="btn btn-default" autocomplete="off" data-loading-text="<?php echo _l('wait_text'); ?>" onclick="mark_complete(<?php echo $task->id; ?>); return false;" data-toggle="tooltip" title="<?php echo _l('task_single_mark_as_complete'); ?>">
@@ -175,15 +211,27 @@
 <hr />
 </div>
 <div class="clearfix"></div>
-<h4 class="bold th font-medium mbot15 pull-left"><?php echo _l('task_view_description'); ?></h4>
-<?php if(has_permission('tasks','','edit')){ ?><a href="#" onclick="edit_task_inline_description(this,<?php echo $task->id; ?>); return false;" class="pull-right mtop5 font-medium-xs"><i class="fa fa-pencil-square-o"></i></a>
+<?php
+  // echo "<pre>";
+  // print_r($task);
+  // echo "</pre>";
+ ?>
+<!-- <h4 class="bold th font-medium mbot15 pull-left">Nội dung chi tiết</h4> -->
+<h4 class="bold font-medium mbot15">Nội dung chi tiết</h4>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <?php echo $task->content_detail; ?>
+  </div>
+</div>
+
+<!-- <?php if(has_permission('tasks','','edit')){ ?><a href="#" onclick="edit_task_inline_description(this,<?php echo $task->id; ?>); return false;" class="pull-right mtop5 font-medium-xs"><i class="fa fa-pencil-square-o"></i></a>
 <?php } ?>
 <div class="clearfix"></div>
 <?php if(!empty($task->description)){
   echo '<div class="tc-content"><div id="task_view_description">' .check_for_links($task->description) .'</div></div>';
 } else {
   echo '<div class="text-muted no-margin tc-content" id="task_view_description">' . _l('task_no_description') . '</div>';
-} ?>
+} ?> -->
 <div class="clearfix"></div>
 <!-- <hr /> -->
 <!-- <a href="#" onclick="add_task_checklist_item('<?php echo $task->id; ?>'); return false" class="mbot10 inline-block">
@@ -375,11 +423,11 @@ echo $comments;
 </ul>
 </div>
 <?php if(has_permission('tasks','','delete') || has_permission('tasks','','edit') || has_permission('tasks','','create')){ ?>
-<a href="#" onclick="return false;" class="trigger manual-popover mright5">
+<!-- <a href="#" onclick="return false;" class="trigger manual-popover mright5">
  <i class="fa fa-circle-thin" aria-hidden="true"></i>
  <i class="fa fa-circle-thin" aria-hidden="true"></i>
  <i class="fa fa-circle-thin" aria-hidden="true"></i>
-</a>
+</a> -->
 <?php } ?>
 </div>
 <h4 class="task-info-heading"><i class="fa fa-info-circle" aria-hidden="true"></i> <?php echo _l('task_info'); ?></h4>
@@ -407,11 +455,64 @@ echo $comments;
 <?php } ?>
 </h5>
 </div>
-<div class="<?php if(date('Y-m-d') > $task->startdate && total_rows('tbltaskstimers',array('task_id'=>$task->id)) == 0 && $task->status != 5){echo 'text-danger';}else{echo 'text-muted';} ?> task-info">
+<!-- <div class="<?php if(date('Y-m-d') > $task->startdate && total_rows('tbltaskstimers',array('task_id'=>$task->id)) == 0 && $task->status != 5){echo 'text-danger';}else{echo 'text-muted';} ?> task-info">
  <h5><i class="fa task-info-icon fa-calendar-plus-o pull-left fa-margin"></i>
   <?php echo _l('task_single_start_date'); ?>: <?php echo _d($task->startdate); ?>
 </h5>
+</div> -->
+
+<div class="task-info">
+ <h5><i class="fa task-info-icon fa-calendar-plus-o pull-left fa-margin"></i>
+  <span class="text-info">Ngày bắt đầu:</span> <span class="bold"><?php echo _d($task->startdate) ?></span></h5>
 </div>
+
+<div class="task-info">
+ <h5><i class="fa task-info-icon fa-calendar-plus-o pull-left fa-margin"></i>
+  <span class="text-info">Ngày kết thúc:</span> <span class="bold"><?php echo _d($task->duration_finish_date) ?></span></h5>
+</div>
+
+<div class="task-info">
+ <h5><i class="fa task-info-icon fa-calendar-plus-o pull-left fa-margin"></i>
+  <span class="text-info">Ngày hoàn thành:</span> <span class="bold"><?php echo _d($task->finish_date) ?></span></h5>
+</div>
+
+<?php
+  $purpose_type = array(
+    "COIL" => "Thu thập thông tin",
+    "CORE" => "Giới thiệu, tư vấn",
+    "SURV" => "Khảo sát",
+    "QUOT" => "Báo giá",
+    "NEGO" => "Đàm phán",
+    "TCK"  => "Chăm sóc",
+    "DELI" => "Giao hàng",
+    "PAY"  => "Thanh toán"
+  );
+
+  $transaction_type = array(
+      "direct"    => "Gặp trực tiếp",
+      "phone"     => "Gọi điện",
+      "email"     => "Email",
+      "mess"      => "Chát",
+  );
+ ?>
+
+<div class="task-info">
+ <h5><i class="fa task-info-icon fa-dot-circle-o pull-left fa-margin"></i>
+  <span class="text-success">Mục đích:</span> <span class="bold"><?php echo $purpose_type[$task->purpose] ?></span></h5>
+</div>
+<div class="task-info">
+ <h5><i class="fa task-info-icon fa-dot-circle-o pull-left fa-margin"></i>
+  <span class="text-success">Phương thức:</span> <span class="bold"><?php echo $transaction_type[$task->transaction] ?></span></h5>
+</div>
+<div class="task-info">
+ <h5><i class="fa task-info-icon fa-dot-circle-o pull-left fa-margin"></i>
+  <span class="text-success">Mức độ ưu tiên:</span>
+  <?php
+    echo '<span class="text-' . get_task_priority_class($task->priority) . ' inline-block">' . task_priority($task->priority) . '</span>';
+   ?>
+  </h5>
+</div>
+
 <div class=" task-info <?php if(!$task->status != 5){echo ' text-danger'; }else{echo 'text-info';} ?><?php if(!$task->duedate){ echo ' hide';} ?>">
  <h5><i class="fa task-info-icon fa-calendar-check-o pull-left"></i>
   <?php echo _l('task_single_due_date'); ?>: <?php echo _d($task->duedate); ?>
@@ -473,11 +574,11 @@ if($value == ''){continue;}?>
 </div>
 <?php } ?>
 <?php if(has_permission('tasks','','create')){ ?>
-<div class="task-info text-success">
+<!-- <div class="task-info text-success">
  <h5><i class="fa task-info-icon fa-clock-o"></i>
   <?php echo _l('task_total_logged_time'); ?> <?php echo seconds_to_time_format($this->tasks_model->calc_task_total_time($task->id)); ?>
 </h5>
-</div>
+</div> -->
 <?php } ?>
 <?php if($task->recurring == 1){
   //echo '<span class="label label-warning inline-block mbot10 mtop5">'._l('recurring_task').'</span>';
@@ -506,26 +607,39 @@ if($value == ''){continue;}?>
 <select data-width="100%" <?php if($task->rel_type=='project'){ ?> data-live-search-placeholder="<?php echo _l('search_project_members'); ?>" <?php } ?> data-task-id="<?php echo $task->id; ?>" id="add_task_assignees" class="text-muted mbot10 task-action-select selectpicker<?php if(total_rows('tblstafftaskassignees',array('taskid'=>$task->id)) == 0){echo ' task-assignees-dropdown-indicator';} ?>" name="select-assignees" data-live-search="true" title='<?php echo _l('task_single_assignees_select_title'); ?>' data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
  <?php
  $options = '';
- foreach ($staff as $assignee) {
-   if (total_rows('tblstafftaskassignees', array(
-     'staffid' => $assignee['staffid'],
-     'taskid' => $task->id
-     )) == 0) {
-     if ($task->rel_type == 'project') {
-       if (total_rows('tblprojectmembers', array(
-         'project_id' => $task->rel_id,
-         'staff_id' => $assignee['staffid']
-         )) == 0) {
-         continue;
-     }
+ $staffs = get_admins_assigned($task->rel_id);
+ $arrSelectedAssignees = [];
+ if (!empty($selectedAssignees)) {
+    foreach ($selectedAssignees as $val) {
+      $arrSelectedAssignees[] = $val['staffid'];
    }
-   $options .= '<option value="' . $assignee['staffid'] . '">' . get_staff_full_name($assignee['staffid']) . '</option>';
  }
+ foreach ($staffs as $assignee) {
+ //   if (total_rows('tblstafftaskassignees', array(
+ //     'staffid' => $assignee['staffid'],
+ //     'taskid' => $task->id
+ //     )) == 0) {
+ //   if ($task->rel_type == 'project') {
+ //       if (total_rows('tblprojectmembers', array(
+ //         'project_id' => $task->rel_id,
+ //         'staff_id' => $assignee['staffid']
+ //         )) == 0) {
+ //         continue;
+ //     }
+ //   }
+ //   $options .= '<option value="' . $assignee['staff_id'] . '">' . get_staff_full_name($assignee['staff_id']) . '</option>';
+ // }
+ if (!in_array($assignee['staff_id'], $arrSelectedAssignees)) {
+    $options .= '<option value="' . $assignee['staff_id'] . '">' . get_staff_full_name($assignee['staff_id']) . '</option>';
+ }
+
 }
 echo $options;
+
 ?>
 </select>
 <?php } ?>
+
 <div class="task_users_wrapper">
  <?php
  $_assignees = '';
@@ -587,22 +701,20 @@ echo $_followers;
 ?>
 </div>
 <hr class="task-info-separator" />
-<?php echo form_open_multipart('admin/tasks/upload_file',array('id'=>'task-attachment','class'=>'dropzone')); ?>
+<!-- <?php echo form_open_multipart('admin/tasks/upload_file',array('id'=>'task-attachment','class'=>'dropzone')); ?>
 <?php echo form_close(); ?>
 <?php if(get_option('dropbox_app_key') != ''){ ?>
 <hr />
 <div class="text-center">
  <div id="dropbox-chooser-task"></div>
 </div>
-<?php } ?>
+<?php } ?> -->
 </div>
 </div>
 </div>
 <script>
  var inner_popover_template = '<div class="popover"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"></div></div></div>';
  init_tags_inputs();
-
-
 
 
 

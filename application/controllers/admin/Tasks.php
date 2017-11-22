@@ -400,7 +400,9 @@ class Tasks extends Admin_controller
             $title = _l('add_new', _l('task_lowercase'));
         } else {
             $data['task']           = $this->tasks_model->get1($id);
-            $data['selectedOnus']   = $this->tasks_model->get_onus_by_task_id($id);
+            // $data['selectedOnus']    = $this->tasks_model->get_onus_by_task_id($id);
+            $data['selectedAssignees']  = $this->tasks_model->get_task_assignees_by_task_id($id);
+            $data['selectedFollowers']  = $this->tasks_model->get_task_followers_by_task_id($id);
             if ($data['task']->rel_type == 'project') {
                 $data['milestones'] = $this->projects_model->get_milestones($data['task']->rel_id);
             }
@@ -465,6 +467,9 @@ class Tasks extends Admin_controller
         }
         $data['task']           = $task;
         $data['id']             = $task->id;
+        // $data['info_client']    = $this->staff_model->getClients($task->rel_id);
+        $data['info_client']    = $this->tasks_model->getClients($task->rel_id);
+        $data['selectedAssignees']  = $this->tasks_model->get_task_assignees_by_task_id($task->id);
         $data['staff']          = $this->staff_model->get('', 1);
         $data['task_is_billed'] = $this->tasks_model->is_task_billed($taskid);
         $this->load->view('admin/tasks/view_task_template', $data);

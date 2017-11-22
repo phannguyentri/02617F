@@ -1,5 +1,5 @@
 <?php
-    $formId = '';
+    $formId = '1';
     if(isset($task)){
       echo form_hidden('task_is_edit1',$task->id);
       $formId = '-update';
@@ -204,7 +204,7 @@
                      ?>
                   <?php echo render_date_input('startdate','task_add_edit_start_date', $value); ?>
                   <?php echo render_date_input('duration_finish_date','Hạn hoàn thành', (isset($task->duration_finish_date) ? _d($task->duration_finish_date) : _d(date('Y-m-d')))); ?>
-                  <?php echo render_date_input('finish_date','Ngày hoàn thành', (isset($task->finish_date) ? _d($task->finish_date) : _d(date('Y-m-d')))); ?>
+                  <?php echo render_date_input('finish_date','Ngày hoàn thành', (isset($task->finish_date) ? _d($task->finish_date) : '')); ?>
                   <?php
                       $purpose_type = array(
                           array(
@@ -288,14 +288,27 @@
                       echo render_select('priority', $priority_level, array('id','name'),'Mức độ ưu tiên', (isset($task) ? $task->priority : 1), array(), array(), '', '', false);
 
                       $staffs   = get_admins_assigned_join_tblstaff($rel_id);
-                      $arrSelectedOnus = [];
-                      if (isset($selectedOnus)) {
-                        foreach ($selectedOnus as $val) {
-                          $arrSelectedOnus[] = $val['staff_id'];
+
+                      $arrSelectedAssignees = [];
+                      if (isset($selectedAssignees)) {
+                        foreach ($selectedAssignees as $val) {
+                          $arrSelectedAssignees[] = $val['staffid'];
                         }
                       }
 
-                      echo render_select('staff_id[]', $staffs, array('staff_id', 'fullname'), 'Chọn phụ trách khách hàng', $arrSelectedOnus, array('multiple' => 'multiple'), array(), '', '', false);
+                      echo render_select('task_assignees_id[]', $staffs, array('staff_id', 'fullname'), 'Người nhận nhiệm vụ', $arrSelectedAssignees, array('multiple' => 'multiple'), array(), '', '', false);
+
+                      $allStaff = get_all_staff();
+
+                      $arrSelectedFollowers = [];
+                      if (isset($selectedFollowers)) {
+                        foreach ($selectedFollowers as $val) {
+                          $arrSelectedFollowers[] = $val['staffid'];
+                        }
+                      }
+
+                      echo render_select('task_followers_id[]', $allStaff, array('staffid', 'fullname'), 'Người theo dõi', $arrSelectedFollowers, array('multiple' => 'multiple'), array(), '', '', false);
+
                    ?>
                </div>
 

@@ -148,6 +148,16 @@
 
 
   $(function(){
+      // let not_sortable_contracts = $('.table-contracts-single-client').find('th').length -1;
+      //      _table_api = initDataTable('.table-contracts-single-client', admin_url + 'contracts/index/' + id, [not_sortable_contracts], [not_sortable_contracts], 'undefined', [3, 'DESC']);
+      //      if(_table_api){
+      //        _table_api.column(2).visible(false,false).columns.adjust();
+      //      }
+      // initDataTable('.table-contacts', admin_url + 'clients/contacts/' + id, [not_sortable_contacts], [not_sortable_contacts]);
+
+      //  let not_sortable_quote = $('.table-quote_clients').find('th').length -1;
+      //  initDataTable('.table-quote_clients', admin_url + 'clients/quotes/' + id, [not_sortable_quote], [not_sortable_quote]);
+
     // initDataTableFixedHeader('.table-sale_orders', admin_url+'sale_orders/list_sale_orders',
     //     [not_sortable_sale_orders], [not_sortable_sale_orders],
     //     filterList,

@@ -12,7 +12,7 @@ $aColumns     = array(
     'code',
     // 'company',
     '(SELECT fullname FROM tblstaff WHERE create_by=tblstaff.staffid)',
-    
+
     // 'CONCAT((SELECT fullname FROM tblstaff  WHERE user_head_id=tblstaff.staffid),",",(SELECT fullname FROM tblstaff  WHERE user_admin_id=tblstaff.staffid)) as confirm',
 
     'date',
@@ -26,7 +26,9 @@ $aColumns     = array(
 $sIndexColumn = "id";
 $sTable       = 'tblquotes';
 $where = array();
-$where = array('WHERE customer_id='.$client_id);
+if($client){
+    $where = array('WHERE customer_id='.$client_id);
+}
 if(!empty($sale_id))
 {
     $where[]='AND rel_id="'.$sale_id.'"';
@@ -41,7 +43,7 @@ if($this->_instance->input->post()) {
         elseif($filter_status == 3)
             array_push($where, 'AND export_status=0');
         elseif($filter_status == 5)
-            array_push($where, 'AND status=3');        
+            array_push($where, 'AND status=3');
         else {
             array_push($where, 'AND status<>2 AND export_status=0');
         }
@@ -98,7 +100,7 @@ foreach ($rResult as $aRow) {
         if($aColumns[$i] == 'total') {
             $_data = number_format($aRow['total'],0,',','.');
         }
-       
+
 
         // if ($aColumns[$i] == 'status') {
         //     $_data='<span class="inline-block label label-'.get_status_label($aRow['status']).'" task-status-table="'.$aRow['status'].'">' . format_status_quote($aRow['status'],false,true).'';
@@ -115,13 +117,13 @@ foreach ($rResult as $aRow) {
         //         if($aRow['status']==3){
         //            $_data.='<a href="javacript:void(0)">';
         //         }
-                
+
         //     }
         //     else {
         //         if($aRow['status']==0) {
         //             $_data .= '<a href="javacript:void(0)" onclick="var_status(' . $aRow['status'] . ',' . $aRow['id'] . ')">';
         //         }
-                
+
         //         else
         //         {
         //             $_data .= '<a href="javacript:void(0)">';
@@ -138,7 +140,7 @@ foreach ($rResult as $aRow) {
             $_data            = '';
             $result = '';
             $as = 0;
-            for ($x=0; $x < count($confirms); $x++) { 
+            for ($x=0; $x < count($confirms); $x++) {
                 if($confirms[$x]!='')
                 {
                     $_data .= '<a href="' . admin_url('profile/' . $confirm_ids[$x]) . '">' . staff_profile_image($confirm_ids[$x], array(
@@ -158,33 +160,33 @@ foreach ($rResult as $aRow) {
     //     //     'title'=>_l('dt_button_print'),
     //     //     'data-placement'=>'top'));
     //     if($aRow['status']==2 && $aRow['export_status']!=1)
-    //     {           
+    //     {
     //         //Tao Hop Dong
     //         $_data .= icon_btn('quotes/contract_output/'. $aRow['id'] , 'exchange','btn-default',array(
     //         'data-toggle'=>'tooltip',
     //         'title'=>_l('create_contract'),
     //         'data-placement'=>'top'
-    //         ));  
+    //         ));
     //     }
 
     //     // if($aRow['status']==0 && $aRow['export_status']==0)
-    //     // {           
+    //     // {
     //     //     //Tao Hop Dong
     //     //     $_data .= icon_btn('quotes/cancel_quote/'. $aRow['id'] , 'ban','btn-default cancel-remind',array(
     //     //     'data-toggle'=>'tooltip',
     //     //     'title'=>_l('Không đồng ý phê duyệt'),
     //     //     'data-placement'=>'top'
-    //     //     ));           
-            
+    //     //     ));
+
     //     // }
-          
+
     //     $_data .=  icon_btn('#', 'eye','btn-default',array('onclick'=>'init_qoute('.$aRow['id'].');return false;'));
     //     // $options .= icon_btn('invoice_it
 
 
     //     // icon_btn('quotes/quote_detail/'. $aRow['id'] , 'edit','btn-default',array('data-toggle'=>'tooltip',
     //     // 'title'=>_l('edit'),
-    //     // 'data-placement'=>'top'));     
+    //     // 'data-placement'=>'top'));
     //     $row[] =$_data.icon_btn('quotes/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-remind',array('data-toggle'=>'tooltip',
     //     'title'=>_l('delete'),
     //     'data-placement'=>'top'));

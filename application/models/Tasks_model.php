@@ -37,7 +37,7 @@ class Tasks_model extends CRM_Model
         $is_admin = is_admin();
         $this->db->where('id', $id);
         $this->db->where($where);
-        $task = $this->db->get('tblstafftasks')->row();
+        $task = $this->db->get('tblstafftasks1')->row();
         if ($task) {
             $task->comments        = $this->get_task_comments($id);
             $task->assignees       = $this->get_task_assignees($id);
@@ -589,12 +589,18 @@ class Tasks_model extends CRM_Model
 
     public function add1($data)
     {
+
         $data['startdate']              = to_sql_date($data['startdate']);
         $data['duration_finish_date']   = to_sql_date($data['duration_finish_date']);
         $data['finish_date']            = to_sql_date($data['finish_date']);
         $data['duedate']                = to_sql_date($data['duedate']);
         $data['dateadded']              = date('Y-m-d H:i:s');
         $data['addedfrom']              = get_staff_user_id();
+
+        // echo("<pre>");
+        // print_r($data);
+        // echo("</pre>");die();
+
 
         if (date('Y-m-d') >= $data['startdate']) {
             $data['status'] = 4;
@@ -680,24 +686,52 @@ class Tasks_model extends CRM_Model
             unset($data['tags']);
         }
 
-        $staffs_id   = $data['staff_id'];
-        unset($data['staff_id']);
+        // $staffs_id      = $data['staff_id'];
+        $assignees_id   = $data['task_assignees_id'];
+        $followers_id   = $data['task_followers_id'];
+        // unset($data['staff_id']);
+        unset($data['task_assignees_id']);
+        unset($data['task_followers_id']);
+
+        // echo "<pre>";
+        // print_r($followers_id);
+        // echo "</pre>";
 
         $this->db->insert('tblstafftasks1', $data);
 
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
 
-            $data_insert_onus = [
-                'task_id'       => $insert_id,
-                'assigned_from' => (is_staff_logged_in() ? get_staff_user_id() : $staff_id),
-            ];
-            if (!empty($staffs_id)) {
-                foreach ($staffs_id as $val) {
-                    $data_insert_onus['staff_id'] = $val;
-                    $this->db->insert('tblonus', $data_insert_onus);
+            // $data_insert_onus = [
+            //     'task_id'       => $insert_id,
+            //     'assigned_from' => (is_staff_logged_in() ? get_staff_user_id() : $staff_id),
+            // ];
+            // if (!empty($staffs_id)) {
+            //     foreach ($staffs_id as $val) {
+            //         $data_insert_onus['staff_id'] = $val;
+            //         $this->db->insert('tblonus', $data_insert_onus);
+            //     }
+            // }
+
+            if (!empty($assignees_id)) {
+                foreach ($assignees_id as $val) {
+                    $data_insert_assignee = [
+                        'taskid'    => $insert_id,
+                        'assignee'  => $val,
+                    ];
+                    $this->add_task_assignees($data_insert_assignee);
                 }
             }
+            if (!empty($followers_id)) {
+                foreach ($followers_id as $val) {
+                    $data_insert_follower = [
+                        'taskid'    => $insert_id,
+                        'staffid'   => $val,
+                    ];
+                    $this->db->insert('tblstafftasksfollowers', $data_insert_follower);
+                }
+            }
+
 
             handle_tags_save($tags,$insert_id,'task');
 
@@ -921,25 +955,39 @@ class Tasks_model extends CRM_Model
             unset($data['tags']);
         }
 
+
+        $assignees_id   = $data['task_assignees_id'];
+        $followers_id   = $data['task_followers_id'];
         // echo "<pre>";
-        // print_r($data);
+        // print_r($followers_id);
         // echo "</pre>";die();
-        $staffs_id   = $data['staff_id'];
-        unset($data['staff_id']);
+        unset($data['task_assignees_id']);
+        unset($data['task_followers_id']);
 
         $this->db->where('id', $id);
         if ($this->db->update('tblstafftasks1', $data)) {
-            $this->delete_onus_by_task_id($id);
-            $data_insert_onus = [
-                'task_id'       => $id,
-                'assigned_from' => (is_staff_logged_in() ? get_staff_user_id() : $staff_id),
-            ];
-            if (!empty($staffs_id)) {
-                foreach ($staffs_id as $val) {
-                    $data_insert_onus['staff_id'] = $val;
-                    $this->db->insert('tblonus', $data_insert_onus);
+
+            $this->delete_task_assignees_by_task_id($id);
+            if (!empty($assignees_id)) {
+                foreach ($assignees_id as $val) {
+                    $data_insert_assignee = [
+                        'taskid'    => $id,
+                        'assignee'  => $val,
+                    ];
+                    $this->add_task_assignees($data_insert_assignee);
                 }
             }
+            $this->delete_task_followers_by_task_id($id);
+            if (!empty($followers_id)) {
+                foreach ($followers_id as $val) {
+                    $data_insert_follower = [
+                        'taskid'    => $id,
+                        'staffid'   => $val,
+                    ];
+                    $this->db->insert('tblstafftasksfollowers', $data_insert_follower);
+                }
+            }
+
 
             do_action('after_update_task', $id);
             logActivity('Task Updated [ID:' . $id . ', Name: ' . $data['name'] . ']');
@@ -949,13 +997,29 @@ class Tasks_model extends CRM_Model
         return false;
     }
 
-    public function delete_onus_by_task_id($task_id){
-      $this->db->where('task_id', $task_id);
-      if ($this->db->delete('tblonus')) {
+    public function delete_task_assignees_by_task_id($task_id){
+      $this->db->where('taskid', $task_id);
+      if ($this->db->delete('tblstafftaskassignees')) {
         return true;
       }
       return false;
     }
+
+    public function delete_task_followers_by_task_id($task_id){
+      $this->db->where('taskid', $task_id);
+      if ($this->db->delete('tblstafftasksfollowers')) {
+        return true;
+      }
+      return false;
+    }
+
+    // public function delete_onus_by_task_id($task_id){
+    //   $this->db->where('task_id', $task_id);
+    //   if ($this->db->delete('tblonus')) {
+    //     return true;
+    //   }
+    //   return false;
+    // }
 
     public function get_checklist_item($id)
     {
@@ -1141,6 +1205,10 @@ class Tasks_model extends CRM_Model
      */
     public function add_task_assignees($data, $integration = false)
     {
+        // echo "<pre>";
+        // print_r($data);
+        // echo "</pre>";die();
+
         $this->db->insert('tblstafftaskassignees', array(
             'taskid' => $data['taskid'],
             'staffid' => $data['assignee'],
@@ -2051,6 +2119,18 @@ class Tasks_model extends CRM_Model
       $this->db->select('staff_id');
       $this->db->where('task_id', $task_id);
       return $this->db->get('tblonus')->result_array();
+    }
+
+    public function get_task_assignees_by_task_id($task_id){
+      $this->db->select('staffid');
+      $this->db->where('taskid', $task_id);
+      return $this->db->get('tblstafftaskassignees')->result_array();
+    }
+
+    public function get_task_followers_by_task_id($task_id){
+      $this->db->select('staffid');
+      $this->db->where('taskid', $task_id);
+      return $this->db->get('tblstafftasksfollowers')->result_array();
     }
 
     // public function get_admins_assigned($clientId){

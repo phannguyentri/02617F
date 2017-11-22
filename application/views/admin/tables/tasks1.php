@@ -84,7 +84,6 @@ $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, ar
     'duedate',
     '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblstafftasks1.id and rel_type="task" ORDER by tag_order ASC) as tags',
     '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblstafftaskassignees JOIN tblstaff ON tblstaff.staffid = tblstafftaskassignees.staffid WHERE taskid=tblstafftasks1.id) as assignees',
-    'priority',
     'purpose',
     'transaction',
     'tblclients.company',
@@ -143,24 +142,22 @@ foreach ($rResult as $aRow) {
 
         }else if($aColumns[$i] == '2'){
             $_data = '';
-            $contacts = get_asksfollowers_by_task_id($aRow['id']);
+            $contacts = get_contact_by_client_id($aRow['client_id']);
 
             if ($contacts) {
+                $_data = '';
                 foreach ($contacts as $value) {
-                    $_data .= '<a href="'.admin_url('profile/'.$value['staffid']).'" data-toggle="tooltip" data-title="'.get_staff_full_name($value['staffid']).'">'.staff_profile_image($value['staffid'], array(
-                        'staff-profile-image-small',
-                        'mright5'
-                    )).'</a>';
+                    $_data  .= '<a href="#" onclick="contact('.$aRow['client_id'].','.$value['id'].');return false;"> <img src="'.contact_profile_image_url($value['id']).'" class="staff-profile-image-small mright5" data-toggle="tooltip" data-title="'.$value['fullname'].'"></a>';
                 }
             }
 
         } else if($aColumns[$i] == '3'){
             $_data = '';
-            $staffs = get_onus_by_task_id($aRow['id']);
+            $staffs = get_askassignees_by_task_id($aRow['id']);
 
             if ($staffs) {
                 foreach ($staffs as $value) {
-                    $_data .= '<a href="'.admin_url('profile/'.$value['staff_id']).'" data-toggle="tooltip" data-title="'.get_staff_full_name($value['staff_id']).'">'.staff_profile_image($value['staff_id'], array(
+                    $_data .= '<a href="'.admin_url('profile/'.$value['staffid']).'" data-toggle="tooltip" data-title="'.get_staff_full_name($value['staffid']).'">'.staff_profile_image($value['staffid'], array(
                         'staff-profile-image-small',
                         'mright5'
                     )).'</a>';
