@@ -7,7 +7,7 @@
           <div class="panel-body _buttons">
             <div class="row">
 
-              <div class="col-md-8">
+              <div class="col-md-12">
                 <h4>DANH SÁCH GIAO DỊCH</h4>
                 <?php
                 // echo "<pre>";
@@ -28,18 +28,61 @@
                 <?php if($this->input->get('project_id')){ ?>
               <a href="<?php echo admin_url('projects/view/'.$this->input->get('project_id').'?group=project_tasks'); ?>" class="mtop5 pull-left mleft10"><?php echo _l('back_to_project'); ?></a>
             <?php } ?>
-             </div>
-             <div class="col-md-4">
+            </div>
+            <!-- <div class="col-md-4">
                <?php if($this->session->has_userdata('tasks_kanban_view') && $this->session->userdata('tasks_kanban_view') == 'true') { ?>
                <div data-toggle="tooltip" data-placement="bottom" data-title="<?php echo _l('search_by_tags'); ?>">
                <?php echo render_input('search','','','search',array('data-name'=>'search','onkeyup'=>'tasks_kanban();','placeholder'=>_l('search_tasks')),array(),'no-margin') ?>
                </div>
                <?php } else { ?>
-               <?php //$this->load->view('admin/tasks/tasks_filter_by',array('view_table_name'=>'.table-tasks')); ?>
-               <!-- <a href="<?php echo admin_url('tasks/detailed_overview'); ?>" class="btn btn-success hidden pull-right mright5"><?php echo _l('detailed_overview'); ?></a> -->
-               <?php } ?>
 
-             </div>
+               <?php } ?>
+            </div> -->
+
+              <?php
+                $purpose_type = array(
+                  array(
+                      'id' => 'COIL',
+                      'name' => 'Thu thập thông tin',
+                  ),
+                  array(
+                      'id' => 'CORE',
+                      'name' => 'Giới thiệu, tư vấn',
+                  ),
+                  array(
+                      'id' => 'SURV',
+                      'name' => 'Khảo sát',
+                  ),
+                  array(
+                      'id' => 'QUOT',
+                      'name' => 'Báo giá',
+                  ),
+                  array(
+                      'id' => 'NEGO',
+                      'name' => 'Đàm phán',
+                  ),
+                  array(
+                      'id' => 'TCK',
+                      'name' => 'Chăm sóc',
+                  ),
+                  array(
+                      'id' => 'DELI',
+                      'name' => 'Giao hàng',
+                  ),
+                  array(
+                      'id' => 'PAY',
+                      'name' => 'Thanh toán',
+                  ),
+                );
+               ?>
+
+              <div class="col-md-3">
+                <?php
+                  echo render_select('purpose', $purpose_type, array('id', 'name'), 'Loại giao dịch');
+                 ?>
+              </div>
+
+
            </div>
          </div>
        </div>
@@ -122,7 +165,25 @@
 </div>
 <?php init_tail(); ?>
 <script>
-  taskid = '<?php echo $taskid; ?>';
+
+  var filterList = {
+      'purpose' : '[id="purpose"]',
+      // "client_id" : "[name='quote_client']",
+      // "user_id" : "[name='quote_userc']",
+      // "report-from" : "[name='report-from']",
+      // "report-to" : "[name='report-to']",
+  };
+
+  $.each(filterList, (filterIndex, filterItem) => {
+      $('' + filterItem).on('change', () => {
+
+      });
+  });
+
+  console.log(filterList);
+
+
+   taskid = '<?php echo $taskid; ?>';
 
    $(document).ready(function(){
    $('body').on('click', '.task-delete', function() {

@@ -88,7 +88,8 @@ foreach ($rResult as $aRow) {
             $_data = $aRow[$aColumns[$i]];
         }
         if ($aColumns[$i] == 'name') {
-            $_data = '<a href="'.admin_url('tasks/index/'.$aRow['id']).'" class="main-tasks-table-href-name" onclick="new_work_from(' . $aRow['id'] . '); return false;">' . $_data . '</a>';
+            // $_data = '<a href="'.admin_url('tasks/index/'.$aRow['id']).'" class="main-tasks-table-href-name" onclick="new_work_from(' . $aRow['id'] . '); return false;">' . $_data . '</a>';
+            $_data = '<a href="#" class="main-tasks-table-href-name" >' . $_data . '</a>';
         } else if ($aColumns[$i] == 'status') {
             $_data = '<span class="inline-block label label-'.get_status_label($aRow['status']).'" task-status-table="'.$aRow['status'].'">' . format_task_status($aRow['status'],false,true);
             if ($aRow['status'] == 5) {

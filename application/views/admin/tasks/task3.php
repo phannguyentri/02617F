@@ -268,19 +268,19 @@
                       $priority_level = array(
                           array(
                               'id' => '1',
-                              'name' => '1',
+                              'name' => _l('task_priority_low'),
                           ),
                           array(
                               'id' => '2',
-                              'name' => '2',
+                              'name' => _l('task_priority_medium'),
                           ),
                           array(
                               'id' => '3',
-                              'name' => '3',
+                              'name' => _l('task_priority_high'),
                           ),
                           array(
                               'id' => '4',
-                              'name' => '4',
+                              'name' => _l('task_priority_urgent'),
                           ),
 
                       );

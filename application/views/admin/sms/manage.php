@@ -12,6 +12,12 @@
                     <div class="panel_s">
                         <div class="panel-body">
 
+                            <?php
+                                echo("<pre>");
+                                print_r($sms);
+                                echo("</pre>");
+                             ?>
+
                             <div style="text-align: right"><a onclick="full_col()"><i class="fa fa-expand"></i></a></div>
                             <h1><a href="#" title="CRM">Sms Marketing</a></h1>
                             <h2></h2>
@@ -67,7 +73,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">SĐT người nhận:</label>
-                                <input type="text" id="email" name="phonenumber" class="tagemail form-control" placeholder="SĐT người nhận"  data-role="tagsinput">
+                                <input type="text" id="email" name="phonenumber" class="tagemail form-control" value="<?php echo isset($sms) ? $sms->phone_number : '' ?>" placeholder="SĐT người nhận"  data-role="tagsinput">
                             </div>
                             <div class="form-group email_CC" style="display: none">
                                 <label for="">Email người nhận CC:</label>
@@ -160,17 +166,25 @@
                                 </div>
                             </div>
                             <div class="clearfix"></div>
+                            <?php
+                                $none = 'none';
+                                if (isset($sms)) {
+                                    if ($sms->template_sms_id != 0) {
+                                        $none = '';
+                                    }
+                                }
+                             ?>
                             <div class="form-group select_template" style="display:none;">
                                 <label for="view_template">Mẫu SMS:</label>
-                                <?php echo render_select('view_template',$email_plate,array('id','name'),'','',array('onchange'=>'get_contentemail(this.value)','data-width'=>'100%','data-none-selected-text'=>_l('chọn mẫu SMS'))); ?>
+                                <?php echo render_select('view_template', $email_plate, array('id','name'), '', isset($sms) ? $sms->template_sms_id : '', array('onchange'=>'get_contentemail(this.value)', 'data-width'=>'100%', 'data-none-selected-text'=>_l('chọn mẫu SMS'))); ?>
                             </div>
                             <div class="form-group">
                                 <label for="subject">Chủ đề:</label>
-                                <input type="text" class="form-control" id="subject" name="subject"  value="" placeholder="Nhập chủ đề của bạn..." required >
+                                <input type="text" class="form-control" id="subject" name="subject"  value="<?php echo isset($sms) ? $sms->subject : '' ?>" placeholder="Nhập chủ đề của bạn..." required >
                             </div>
                             <div class="form-group">
                                     <p class="bold"><?php echo _l('Nội dung SMS'); ?></p>
-                                    <?php echo render_textarea('message','','',array('data-task-ae-editor'=>true),array(),'','tinymce-task'); ?>
+                                    <?php echo render_textarea('message', '', isset($sms) ? $sms->message : '', array('data-task-ae-editor'=>true), array(), '', 'tinymce-task'); ?>
                             </div>
                             <?php
                             if($value_email!=""||$value_pass_email!=""){
@@ -293,26 +307,25 @@
 
 <script>
 
-    $('#test-api').click(function(e) {
-        e.preventDefault();
+    // $('#test-api').click(function(e) {
+    //     e.preventDefault();
 
-        $.ajax({
-            url: 'http://113.185.0.35:8888/smsmarketing/api',
-            type: 'POST',
-            contentType: "application/json; charset=utf-8",
-            dataType: 'jsonp',
+    //     $.ajax({
+    //         url: 'http://113.185.0.35:8888/smsmarketing/api',
+    //         type: 'POST',
+    //         contentType: "application/json; charset=utf-8",
+    //         dataType: 'jsonp',
 
-        })
-        .done(function(response) {
-            console.log(response);
-            console.log("success");
-        })
-        .fail(function(response) {
-            console.log(response);
-            console.log("error");
-        })
-    });
-
+    //     })
+    //     .done(function(response) {
+    //         console.log(response);
+    //         console.log("success");
+    //     })
+    //     .fail(function(response) {
+    //         console.log(response);
+    //         console.log("error");
+    //     })
+    // });
 
     var excel_email=[];
     var this_email=0;

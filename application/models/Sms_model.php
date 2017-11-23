@@ -121,6 +121,7 @@ class Sms_model extends CRM_Model
         $this->db->order_by('date_send','desc');
         return $this->db->get('tbllog_email_send')->result_array();
     }
+
     public function get_staff_email($id="")
     {
         if($id!="")
@@ -133,6 +134,11 @@ class Sms_model extends CRM_Model
             return $this->db->get('tblstaff')->result_array();
         }
 
+    }
+
+    public function getSmsById($smsId){
+        $this->db->where('id', $smsId);
+        return $this->db->get('tbllog_sms_send')->row();
     }
 
 }

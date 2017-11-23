@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 22, 2017 lúc 11:49 AM
+-- Thời gian đã tạo: Th10 23, 2017 lúc 06:11 AM
 -- Phiên bản máy phục vụ: 10.1.25-MariaDB
 -- Phiên bản PHP: 5.6.31
 
@@ -3332,7 +3332,15 @@ INSERT INTO `tblactivitylog` (`id`, `description`, `date`, `staffid`) VALUES
 (2383, 'Task Updated [ID:72, Name: giao dich 12]', '2017-11-22 17:16:38', 'admin'),
 (2384, 'New Task Added [ID:73, Name: POU]', '2017-11-22 17:20:38', 'admin'),
 (2385, 'New Task Added [ID:74, Name: POU]', '2017-11-22 17:23:15', 'admin'),
-(2386, 'Email Send To [Email:tuananh@g.com, Template:New Task Assigned (Sent to Staff)]', '2017-11-22 17:24:52', 'admin');
+(2386, 'Email Send To [Email:tuananh@g.com, Template:New Task Assigned (Sent to Staff)]', '2017-11-22 17:24:52', 'admin'),
+(2387, 'Email Send To [Email:tuananh@g.com, Template:New Task Assigned (Sent to Staff)]', '2017-11-23 08:46:59', 'admin'),
+(2388, 'New Task Added [ID:75, Name: XXX]', '2017-11-23 08:46:59', 'admin'),
+(2389, 'Email Send To [Email:tuananh@g.com, Template:New Task Assigned (Sent to Staff)]', '2017-11-23 08:47:22', 'admin'),
+(2390, 'Task Updated [ID:75, Name: XXX]', '2017-11-23 08:47:22', 'admin'),
+(2391, 'Email Send To [Email:tuananh@g.com, Template:New Task Assigned (Sent to Staff)]', '2017-11-23 08:47:26', 'admin'),
+(2392, 'Task Updated [ID:75, Name: XXX]', '2017-11-23 08:47:26', 'admin'),
+(2393, 'Send SMS success ID:  by: 1', '2017-11-23 09:23:10', 'admin'),
+(2394, 'Send SMS success ID:  by: 1', '2017-11-23 09:23:10', 'admin');
 
 -- --------------------------------------------------------
 
@@ -6483,7 +6491,9 @@ CREATE TABLE `tbllog_sms_send` (
 --
 
 INSERT INTO `tbllog_sms_send` (`id`, `template_sms_id`, `subject`, `message`, `phone_number`, `date_send`, `campaign`) VALUES
-(1, 0, 'Template SMS 1', 'Ch&agrave;o anh/chi {tblclients.company}{tblclients.title}', '1312313', '2017-11-17 17:17:59', 0);
+(1, 1, 'Template SMS 1', 'Ch&agrave;o anh/chi {tblclients.company}{tblclients.title}', '1312313', '2017-11-17 17:17:59', 0),
+(2, 4, 'SMS 2', 'POUJFMD', '866566793', '2017-11-23 09:21:52', 0),
+(3, 0, '123123', 'xczxc', '866566793', '2017-11-23 09:21:52', 0);
 
 -- --------------------------------------------------------
 
@@ -6793,7 +6803,12 @@ INSERT INTO `tblnotifications` (`id`, `isread`, `date`, `description`, `fromuser
 (309, 0, '2017-11-22 17:16:38', 'not_task_assigned_someone', 1, 0, 'admin', 16, NULL, '#taskid=72', 'a:2:{i:0;s:9:\"Thuy linh\";i:1;s:12:\"giao dich 12\";}'),
 (310, 0, '2017-11-22 17:16:38', 'not_task_assigned_someone', 1, 0, 'admin', 15, NULL, '#taskid=72', 'a:2:{i:0;s:9:\"Thuy linh\";i:1;s:12:\"giao dich 12\";}'),
 (311, 0, '2017-11-22 17:24:48', 'not_task_assigned_to_you', 1, 0, 'admin', 15, NULL, '#taskid=65', 'a:1:{i:0;N;}'),
-(312, 0, '2017-11-22 17:24:52', 'not_task_assigned_someone', 1, 0, 'admin', 16, NULL, '#taskid=65', 'a:2:{i:0;s:8:\"Tuan Anh\";i:1;s:3:\"FFF\";}');
+(312, 0, '2017-11-22 17:24:52', 'not_task_assigned_someone', 1, 0, 'admin', 16, NULL, '#taskid=65', 'a:2:{i:0;s:8:\"Tuan Anh\";i:1;s:3:\"FFF\";}'),
+(313, 0, '2017-11-23 08:46:54', 'not_task_assigned_to_you', 1, 0, 'admin', 15, NULL, '#taskid=75', 'a:1:{i:0;N;}'),
+(314, 0, '2017-11-23 08:47:19', 'not_task_assigned_to_you', 1, 0, 'admin', 15, NULL, '#taskid=75', 'a:1:{i:0;N;}'),
+(315, 0, '2017-11-23 08:47:22', 'not_task_assigned_someone', 1, 0, 'admin', 13, NULL, '#taskid=75', 'a:2:{i:0;s:8:\"Tuan Anh\";i:1;s:3:\"XXX\";}'),
+(316, 0, '2017-11-23 08:47:23', 'not_task_assigned_to_you', 1, 0, 'admin', 15, NULL, '#taskid=75', 'a:1:{i:0;N;}'),
+(317, 0, '2017-11-23 08:47:26', 'not_task_assigned_someone', 1, 0, 'admin', 13, NULL, '#taskid=75', 'a:2:{i:0;s:8:\"Tuan Anh\";i:1;s:3:\"XXX\";}');
 
 -- --------------------------------------------------------
 
@@ -8590,7 +8605,35 @@ INSERT INTO `tblsessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
 ('mifo8vuoedrubr1uoodmnacn3hjnid2v', '192.168.50.150', 1511347200, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313334363136383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
 ('eqa55h05s6q7bf3d4uteqj67ikq3v11a', '192.168.50.189', 1511346488, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313334363238323b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
 ('djtc5bjjrr88i385e8gjud18u6huukhq', '192.168.50.189', 1511346603, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313334363539303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
-('9a6o7scp69sq961m8vgmg91lrt8cs13g', '192.168.50.150', 1511347347, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313334373334373b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b);
+('9a6o7scp69sq961m8vgmg91lrt8cs13g', '192.168.50.150', 1511347347, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313334373334373b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('1btovo2dfask9e7bbg93gov8066b367l', '::1', 1511399865, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313339393836343b7265645f75726c7c733a353a2261646d696e223b),
+('ir97v96unk74a19uiio53ah8c00f5kld', '192.168.50.150', 1511400502, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313339393836353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('i4s2sp4ifc4snphnf2hkm80ki1lv4edt', '192.168.50.150', 1511400906, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430303639303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('4607an3skng6d29sauts3f0ipn23u5ae', '192.168.50.150', 1511401311, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430313138383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('cqdr6p0m2fr2h65qfb2iqshf4cpe1lrj', '192.168.50.150', 1511401660, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430313531303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('sqcvqfjnv4tboqf19hchtsuhjcrrg8o8', '192.168.50.150', 1511402176, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430313837333b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('nc1i9287909b604m86evhhejjsffn7a7', '192.168.50.150', 1511402914, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430323138333b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('rfq20g5d54o2u9328icnafoq00r6428n', '192.168.50.150', 1511403226, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430323933333b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('ij5m3qof3pv8v199a47vh3u59u5dat0f', '192.168.50.150', 1511403448, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430333234313b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('khhb449ihko8834qshvh3rg1re4kr98n', '192.168.50.150', 1511403792, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430333538323b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('up7366e0jq578vdj6k8qkdftev9njnc4', '192.168.50.150', 1511404799, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430343537383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('2l9eqibur1oc3d9d51t515u5qdb17k37', '192.168.50.150', 1511405044, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430343839333b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('tiek3olka4n21o6gckb4fhqo7vrivpbm', '192.168.50.150', 1511405595, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430353536393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('5u4me43hm8tikk0ov6341ulscj4j15o5', '192.168.50.150', 1511407016, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430363637393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('1npjd0qk5pvtf964rltv43ueoptvk30u', '192.168.50.150', 1511407381, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430373039363b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('mq8av041ib9ffn6d18ev16cj2dpaahji', '192.168.50.150', 1511407702, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430373430343b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('f9hutglqqs803gug02o8vlbb44149t22', '192.168.50.150', 1511407896, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430373730363b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('1kr7ct5adpppbp9n2v93m205dj1jlkuf', '192.168.50.150', 1511408491, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430383239383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('61c937p5d1f5u56ktma1ha7532h86gk9', '192.168.50.150', 1511408796, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430383635313b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('8upg3fcse7hmv5tkbj7i4qe124181jie', '192.168.50.150', 1511409552, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313430393532393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('aafnmsl3ncce23h6mt44rsp45jtksb0k', '192.168.50.150', 1511410086, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313431303038353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('83nf6b492k7ktu6l9fnefo26km76iffs', '192.168.50.150', 1511410833, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313431303534323b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('hafhjt0ak2tq6jdtct3o0509t71msm68', '192.168.50.150', 1511411021, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313431313031393b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('2v8o545b7rkeusiepqst2re9ngbimugc', '192.168.50.150', 1511412553, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313431323430373b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('5omi4igrgpsj0obj02c3tl338ntk64k2', '192.168.50.150', 1511413100, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313431323736383b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('bcm22bip3rul5am7cfj40v3m7lmass5q', '192.168.50.150', 1511413121, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313431333130353b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('ni49uc2o30s289ji36aq345a2jdvhqml', '192.168.50.150', 1511413739, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313431333434323b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b),
+('96ek1c63mr1hjmsrfg13bj462mero6h2', '192.168.50.150', 1511413762, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531313431333736303b73746166665f757365725f69647c733a313a2231223b73746166665f6c6f676765645f696e7c623a313b72756c657c733a313a2231223b);
 
 -- --------------------------------------------------------
 
@@ -8636,8 +8679,6 @@ CREATE TABLE `tblsms_templates` (
 
 INSERT INTO `tblsms_templates` (`id`, `name`, `subject`, `content`, `status`) VALUES
 (1, 'Template SMS 1', 'Template SMS 1', 'Ch&agrave;o anh/chi {tblclients.company}{tblclients.title}', 0),
-(2, 'ZZZ', 'ZZZ', 'ZZZZZ', 1),
-(3, 'zzzz', 'ZZZ', 'zzzzz', 1),
 (4, 'Template SMS 2', 'Template SMS 2', 'Template SMS 2Template SMS 2Template SMS 2', 0);
 
 -- --------------------------------------------------------
@@ -8707,7 +8748,7 @@ CREATE TABLE `tblstaff` (
 --
 
 INSERT INTO `tblstaff` (`staffid`, `email`, `staff_code`, `position_id`, `staff_manager`, `fullname`, `firstname`, `lastname`, `gender`, `date_birth`, `place_birth`, `permanent_residence`, `current_address`, `passport_id`, `issued_by`, `issued_on`, `hobbies`, `height`, `weight`, `marial_status`, `emergency_contact`, `education`, `foreign_languge_skills`, `other_certificates`, `facebook`, `linkedin`, `phonenumber`, `skype`, `password`, `datecreated`, `profile_image`, `last_ip`, `last_login`, `last_password_change`, `new_pass_key`, `new_pass_key_requested`, `admin`, `role`, `rule`, `active`, `default_language`, `direction`, `media_path_slug`, `is_not_staff`, `hourly_rate`, `salary`, `email_signature`, `bank_account`, `internal_phone`, `date_work`, `place_work`, `email_marketing`, `password_email_marketing`) VALUES
-(1, 'amin@admin.com', 'NV-ADMIN', 0, '', 'admin', '', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$08$9uFKA7CEZjqLO3zSOQfPBul5FwOw8Xwj6pJs4onV4gHAn9Tlcv762', '2017-03-30 09:24:10', NULL, '192.168.50.189', '2017-11-22 14:59:06', NULL, NULL, NULL, 1, NULL, 1, 1, 'vietnamese', NULL, NULL, 0, '0.00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(1, 'amin@admin.com', 'NV-ADMIN', 0, '', 'admin', '', '', 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$08$9uFKA7CEZjqLO3zSOQfPBul5FwOw8Xwj6pJs4onV4gHAn9Tlcv762', '2017-03-30 09:24:10', NULL, '192.168.50.150', '2017-11-23 08:17:49', NULL, NULL, NULL, 1, NULL, 1, 1, 'vietnamese', NULL, NULL, 0, '0.00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (2, 'tannguyen@gmail.com', '', 0, 'null', 'Tan Nguyen', 'Tân', 'Nguyễn', 1, '0000-00-00', '', '', '', '', '', '0000-00-00', '', 0, 0, 'single', '', NULL, NULL, NULL, 'tannguyen', '', '0909365456', '', '$2a$08$GMPg1TJgHJsyM9Oa1bp4veWqPqkglBTxdmU.OkFTM8lJ9OS8oLwRe', '2017-03-31 00:37:49', NULL, '192.168.50.19', '2017-11-08 13:54:43', NULL, NULL, NULL, 0, 1, 4, 1, 'vietnamese', '', 'tan-nguyễn', 0, '200.00', '0', '', '', '', '0000-00-00', 1, '', ''),
 (3, 'ngocha@gmail.com', '', 0, '', 'Ngoc ha', 'Ngọc', 'Hà', 1, '0000-00-00', '', '', '', '', '', '0000-00-00', '', 0, 0, 'single', '', NULL, NULL, NULL, '', '', '0909321456', '', '$2a$08$9uFKA7CEZjqLO3zSOQfPBul5FwOw8Xwj6pJs4onV4gHAn9Tlcv762', '2017-03-31 00:49:22', 'paul-hinz.jpg', '::1', '2017-07-07 15:48:58', NULL, NULL, NULL, 0, 2, 3, 1, 'vietnamese', '', 'ngọc-ha', 0, '200.00', '0', '', '', '', '0000-00-00', 1, NULL, NULL),
 (4, 'thuylinh@gmail.com', 'NV00004', 0, '', 'Thuy linh', 'Thùy', 'Linh', 1, '2017-06-30', 'HCM', 'HCM', 'HCM', '321348455', 'HCM', '2017-06-30', '', 0, 0, 'single', '12345', NULL, NULL, NULL, '', '', '09123456789', '', '$2a$08$mxYDHk1OwXmcx7QVbtKDTeKprQua5DSEDZTLEhpg65wYscNF2RY86', '2017-03-31 00:50:39', NULL, '::1', '2017-04-03 12:57:20', NULL, NULL, NULL, 0, 3, 4, 1, 'vietnamese', '', 'thuy-linh', 0, '150.00', '100', '', '1234', '5678', '2017-06-30', 1, NULL, NULL),
@@ -9014,7 +9055,8 @@ INSERT INTO `tblstafftaskassignees` (`id`, `staffid`, `taskid`, `assigned_from`)
 (112, 15, 71, 1),
 (116, 4, 72, 1),
 (115, 16, 72, 1),
-(114, 15, 72, 1);
+(114, 15, 72, 1),
+(120, 15, 75, 1);
 
 -- --------------------------------------------------------
 
@@ -9225,7 +9267,8 @@ INSERT INTO `tblstafftasksfollowers` (`id`, `staffid`, `taskid`) VALUES
 (23, 13, 9),
 (24, 14, 9),
 (25, 16, 9),
-(47, 1, 72);
+(47, 1, 72),
+(52, 13, 75);
 
 -- --------------------------------------------------------
 
@@ -22108,7 +22151,7 @@ ALTER TABLE `tblaccount_attributes`
 -- AUTO_INCREMENT cho bảng `tblactivitylog`
 --
 ALTER TABLE `tblactivitylog`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2387;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2395;
 --
 -- AUTO_INCREMENT cho bảng `tblannouncements`
 --
@@ -22448,7 +22491,7 @@ ALTER TABLE `tbllog_email_send`
 -- AUTO_INCREMENT cho bảng `tbllog_sms_send`
 --
 ALTER TABLE `tbllog_sms_send`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT cho bảng `tblmaillistscustomfields`
 --
@@ -22473,7 +22516,7 @@ ALTER TABLE `tblnotes`
 -- AUTO_INCREMENT cho bảng `tblnotifications`
 --
 ALTER TABLE `tblnotifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=313;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=318;
 --
 -- AUTO_INCREMENT cho bảng `tblonus`
 --
@@ -22738,7 +22781,7 @@ ALTER TABLE `tblstaffpermissions`
 -- AUTO_INCREMENT cho bảng `tblstafftaskassignees`
 --
 ALTER TABLE `tblstafftaskassignees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 --
 -- AUTO_INCREMENT cho bảng `tblstafftaskcomments`
 --
@@ -22753,12 +22796,12 @@ ALTER TABLE `tblstafftasks`
 -- AUTO_INCREMENT cho bảng `tblstafftasks1`
 --
 ALTER TABLE `tblstafftasks1`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 --
 -- AUTO_INCREMENT cho bảng `tblstafftasksfollowers`
 --
 ALTER TABLE `tblstafftasksfollowers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 --
 -- AUTO_INCREMENT cho bảng `tblsuppliers`
 --

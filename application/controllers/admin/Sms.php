@@ -16,14 +16,14 @@ class Sms extends Admin_controller
         }
 
         if ($this->input->post()) {
-            if ($id = "") {
+            if ($id == "") {
                 $dataInsert = [
                     'subject' => $this->input->post('subject'),
                     'message' => $this->input->post('message'),
                     'phone_number' => $this->input->post('phonenumber'),
                     'date_send'    => $this->input->post('date_send')
                 ];
-
+                $this->sms_model->insertSendSms($dataInsert);
                 if ($this->sms_model->insertSendSms($dataInsert)) {
                     set_alert('success', _l('Gửi SMS thành công'));
                     redirect(admin_url('sms'));
@@ -50,7 +50,7 @@ class Sms extends Admin_controller
         }else{
             $data['id'] = $id;
             if ($id != "") {
-
+                $data['sms'] = $this->sms_model->getSmsById($id);
             }
         }
 
@@ -179,6 +179,15 @@ class Sms extends Admin_controller
             redirect(admin_url('sms/template_sms'));
         }
 
+    }
+
+    public function been_send_sms(){
+        if ($this->input->is_ajax_request()) {
+            $this->perfex_base->get_table_data('sms');
+        }
+
+        $data['title']  = "SMS đã gửi";
+        $this->load->view('admin/sms/been_send_sms', $data);
     }
 
 }

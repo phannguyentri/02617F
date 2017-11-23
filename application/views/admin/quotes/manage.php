@@ -120,7 +120,6 @@
 
         initDataTable('.table-quotes', window.location.href, [0], [0], filterList,[0, 'DESC']);
         $.each(filterList, (filterIndex, filterItem) => {
-
             $('' + filterItem).on('change', () => {
                 $('.table-quotes').DataTable().ajax.reload();
             });
