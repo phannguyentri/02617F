@@ -10,10 +10,9 @@
               <div class="col-md-12">
                 <h4>DANH SÁCH GIAO DỊCH</h4>
                 <?php
-                // echo "<pre>";
-                // print_r(get_askassignees_by_task_id(59));
-                // echo "</pre>";
-
+                  // echo "<pre>";
+                  // print_r($clients);
+                  // echo "</pre>";
                  ?>
                 <!-- <a href="#" class="btn btn-info pull-left mbot25 mright5" onclick="new_task_from_relation1('.table-rel-tasks1'); return false;">Giao dịch mới</a> -->
                 <a href="#" class="btn btn-info pull-left mbot25 mright5" onclick="add_task(0); return false">Giao dịch mới</a>
@@ -74,15 +73,142 @@
                       'name' => 'Thanh toán',
                   ),
                 );
-               ?>
 
-              <div class="col-md-3">
+                $transaction_type = array(
+                    array(
+                        'id' => 'direct',
+                        'name' => 'Gặp trực tiếp',
+                    ),
+                    array(
+                        'id' => 'phone',
+                        'name' => 'Gọi điện',
+                    ),
+                    array(
+                        'id' => 'email',
+                        'name' => 'Email',
+                    ),
+                    array(
+                        'id' => 'mess',
+                        'name' => 'Chát',
+                    ),
+                );
+
+                $status_type = array(
+                    array(
+                        'id' => '3',
+                        'name' => 'Chưa bắt đầu',
+                    ),
+                    array(
+                        'id' => '4',
+                        'name' => 'Trong tiến trình',
+                    ),
+                    array(
+                        'id' => '5',
+                        'name' => 'Hoàn thành',
+                    )
+                );
+               ?>
+              <div class="col-md-4">
                 <?php
-                  echo render_select('purpose', $purpose_type, array('id', 'name'), 'Loại giao dịch');
+                  echo render_select('task_id', $tasks, array('id', 'name'), 'Giao dịch');
+                 ?>
+              </div>
+              <div class="col-md-4">
+                <?php
+                  echo render_select('client_id', $clients, array('userid', 'company'), 'Khách hàng');
+                 ?>
+              </div>
+              <div class="col-md-4 hidden">
+                <?php
+                  echo render_select('purpose', $purpose_type, array('id', 'name'), 'Mục đích');
                  ?>
               </div>
 
+              <div class="col-md-4">
+                <?php
+                  echo render_select('assigned_from', $staffs, array('staffid', 'fullname'), 'Người giao việc');
+                 ?>
+              </div>
 
+              <div class="col-md-4">
+                <?php
+                  echo render_select('transaction', $transaction_type, array('id', 'name'), 'Loại giao dịch');
+                 ?>
+              </div>
+              <div class="col-md-4">
+                <?php
+                  echo render_select('status', $status_type, array('id', 'name'), 'Trạng thái');
+                 ?>
+              </div>
+              <div class="col-md-4">
+                <?php
+                  echo render_select('staff_task_assignee_id', $staffs, array('staffid', 'fullname'), 'Người phụ trách');
+                 ?>
+              </div>
+              <div class="clearfix"></div>
+              <div class="col-md-4" style="border-right: 1px solid #777;">
+                <div class="col-md-12 text-center"><label style="color: #03a9f4; font-size: 15px;"><i class="fa fa-clock-o"></i> Ngày bắt đầu</label></div>
+                <div class="col-md-6">
+                   <label for="start-from" class="control-label"><?php echo _l('report_sales_from_date'); ?></label>
+                   <div class="input-group date">
+                      <input type="text" class="form-control datepicker" id="start-from" name="start-from">
+                      <div class="input-group-addon">
+                         <i class="fa fa-calendar calendar-icon"></i>
+                      </div>
+                   </div>
+                </div>
+                <div class="col-md-6">
+                   <label for="start-to" class="control-label"><?php echo _l('report_sales_to_date'); ?></label>
+                   <div class="input-group date">
+                      <input type="text" class="form-control datepicker" id="start-to" name="start-to">
+                      <div class="input-group-addon">
+                         <i class="fa fa-calendar calendar-icon"></i>
+                      </div>
+                   </div>
+                </div>
+              </div>
+              <div class="col-md-4" style="border-right: 1px solid #777;">
+                <div class="col-md-12 text-center"><label style="color: #03a9f4; font-size: 15px;"><i class="fa fa-clock-o"></i> Hạn hoàn thành</label></div>
+                <div class="col-md-6">
+                   <label for="duration-date-from" class="control-label"><?php echo _l('report_sales_from_date'); ?></label>
+                   <div class="input-group date">
+                      <input type="text" class="form-control datepicker" id="duration-date-from" name="duration-date-from">
+                      <div class="input-group-addon">
+                         <i class="fa fa-calendar calendar-icon"></i>
+                      </div>
+                   </div>
+                </div>
+                <div class="col-md-6">
+                   <label for="duration-date-to" class="control-label"><?php echo _l('report_sales_to_date'); ?></label>
+                   <div class="input-group date">
+                      <input type="text" class="form-control datepicker" id="duration-date-to" name="duration-date-to">
+                      <div class="input-group-addon">
+                         <i class="fa fa-calendar calendar-icon"></i>
+                      </div>
+                   </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-md-12 text-center"><label style="color: #03a9f4; font-size: 15px;"><i class="fa fa-clock-o"></i> Ngày hoàn thành</label></div>
+                <div class="col-md-6">
+                   <label for="finish-date-from" class="control-label"><?php echo _l('report_sales_from_date'); ?></label>
+                   <div class="input-group date">
+                      <input type="text" class="form-control datepicker" id="finish-date-from" name="finish-date-from">
+                      <div class="input-group-addon">
+                         <i class="fa fa-calendar calendar-icon"></i>
+                      </div>
+                   </div>
+                </div>
+                <div class="col-md-6">
+                   <label for="finish-date-to" class="control-label"><?php echo _l('report_sales_to_date'); ?></label>
+                   <div class="input-group date">
+                      <input type="text" class="form-control datepicker" id="finish-date-to" name="finish-date-to">
+                      <div class="input-group-addon">
+                         <i class="fa fa-calendar calendar-icon"></i>
+                      </div>
+                   </div>
+                </div>
+              </div>
            </div>
          </div>
        </div>
@@ -165,23 +291,31 @@
 </div>
 <?php init_tail(); ?>
 <script>
+  $(function(){
+    var filterList = {
+        "purpose"       : "[name='purpose']",
+        "transaction"   : "[name='transaction']",
+        "status"        : "[name='status']",
+        "client_id"     : "[name='client_id']",
+        "assigned_from" : "[name='assigned_from']",
+        "task_id"       : "[name='task_id']",
+        "start-from"    : "[name='start-from']",
+        "start-to"      : "[name='start-to']",
+        "duration-date-from"      : "[name='duration-date-from']",
+        "duration-date-to"        : "[name='duration-date-to']",
+        "finish-date-from"        : "[name='finish-date-from']",
+        "finish-date-to"          : "[name='finish-date-to']",
+        "staff_task_assignee_id"  : "[name='staff_task_assignee_id']",
+    };
+    initDataTable('.table-tasks1', admin_url+'tasks?bulk_actions=true', [0], [0], filterList,[0, 'DESC']);
+    $.each(filterList, (filterIndex, filterItem) => {
+        $('' + filterItem).on('change', () => {
+          $('.table-tasks1').DataTable().ajax.reload();
+        });
+    });
 
-  var filterList = {
-      'purpose' : '[id="purpose"]',
-      // "client_id" : "[name='quote_client']",
-      // "user_id" : "[name='quote_userc']",
-      // "report-from" : "[name='report-from']",
-      // "report-to" : "[name='report-to']",
-  };
-
-  $.each(filterList, (filterIndex, filterItem) => {
-      $('' + filterItem).on('change', () => {
-
-      });
-  });
-
-  console.log(filterList);
-
+    console.log(filterList);
+  })
 
    taskid = '<?php echo $taskid; ?>';
 
@@ -223,7 +357,7 @@
     //     [not_sortable_sale_orders], [not_sortable_sale_orders],
     //     filterList,
     //     [1,'DESC'],
-    initDataTableFixedHeader(".table-tasks1", admin_url+'tasks?bulk_actions=true' , [0], [0], '', [0, "ASC"]);
+    // initDataTableFixedHeader(".table-tasks1", admin_url+'tasks?bulk_actions=true' , [0], [0], '', [0, "ASC"]);
     tasks_kanban();
   });
 </script>

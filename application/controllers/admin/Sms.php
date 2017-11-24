@@ -12,7 +12,7 @@ class Sms extends Admin_controller
     public function index($id = "")
     {
         if ($this->input->is_ajax_request()) {
-            $this->perfex_base->get_table_data('client_email');
+            $this->perfex_base->get_table_data('client_phone');
         }
 
         if ($this->input->post()) {

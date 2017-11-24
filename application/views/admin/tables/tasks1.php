@@ -43,6 +43,73 @@ if($this->_instance->input->get('bulk_actions')){
 }
 
 $where = array();
+if($this->_instance->input->post()) {
+    $purpose             = $this->_instance->input->post('purpose');
+    $transaction         = $this->_instance->input->post('transaction');
+    $status              = $this->_instance->input->post('status');
+    $client_id           = $this->_instance->input->post('client_id');
+    $assigned_from       = $this->_instance->input->post('assigned_from');
+    $task_id             = $this->_instance->input->post('task_id');
+    $start_from          = $this->_instance->input->post('start-from');
+    $start_to            = $this->_instance->input->post('start-to');
+    $duration_date_from  = $this->_instance->input->post('duration-date-from');
+    $duration_date_to    = $this->_instance->input->post('duration-date-to');
+    $finish_date_from    = $this->_instance->input->post('finish-date-from');
+    $finish_date_to      = $this->_instance->input->post('finish-date-to');
+    $staff_task_assignee_id    = $this->_instance->input->post('staff_task_assignee_id');
+
+    if($purpose){
+        array_push($where, 'AND purpose="'.$purpose.'"');
+    }
+    if($transaction){
+        array_push($where, 'AND transaction="'.$transaction.'"');
+    }
+    if($status){
+        array_push($where, 'AND status="'.$status.'"');
+    }
+    if($client_id){
+        array_push($where, 'AND rel_id="'.$client_id.'"');
+    }
+    if($assigned_from){
+        $arrTaskAssigneesFrom = [];
+        $rsTaskAssigneesFrom  = getTaskAssigneesByFromId($assigned_from);
+        if ($rsTaskAssigneesFrom) {
+            foreach ($rsTaskAssigneesFrom as $val) {
+                $arrTaskAssigneesFrom[] = $val['taskid'];
+            }
+            array_push($where, 'AND id IN('.implode(',', $arrTaskAssigneesFrom).')');
+        }else{
+            array_push($where, 'AND 0=1');
+        }
+
+    }
+    if($task_id){
+        array_push($where, 'AND id="'.$task_id.'"');
+    }
+    if($staff_task_assignee_id){
+        $arrTaskAssignees = [];
+        $rsTaskAssignees  = getTaskAssigneesByStaffId($staff_task_assignee_id);
+        if ($rsTaskAssignees) {
+            foreach ($rsTaskAssignees as $val) {
+                $arrTaskAssignees[] = $val['taskid'];
+            }
+            array_push($where, 'AND id IN('.implode(',', $arrTaskAssignees).')');
+        }else{
+            array_push($where, 'AND 0=1');
+        }
+    }
+    if($start_from && $start_to){
+        array_push($where, 'AND startdate BETWEEN "' . to_sql_date($start_from) . '" and "' . to_sql_date($start_to) . '"');
+    }
+    if($duration_date_from && $duration_date_to){
+        array_push($where, 'AND duration_finish_date BETWEEN "' . to_sql_date($duration_date_from) . '" and "' . to_sql_date($duration_date_to) . '"');
+    }
+    if($finish_date_from && $finish_date_to){
+        array_push($where, 'AND finish_date BETWEEN "' . to_sql_date($finish_date_from) . '" and "' . to_sql_date($finish_date_to) . '"');
+    }
+}
+
+
 include_once(APPPATH . 'views/admin/tables/includes/tasks_filter.php');
 
 $join          = array();

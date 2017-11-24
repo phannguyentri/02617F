@@ -13,9 +13,9 @@
                         <div class="panel-body">
 
                             <?php
-                                echo("<pre>");
-                                print_r($sms);
-                                echo("</pre>");
+                                // echo("<pre>");
+                                // print_r($sms);
+                                // echo("</pre>");
                              ?>
 
                             <div style="text-align: right"><a onclick="full_col()"><i class="fa fa-expand"></i></a></div>
@@ -42,27 +42,7 @@
                                 $tb=_l('used_email_user').': '.$value_email;
                                 $class='success';
                             }?>
-                            <?php
 
-                                if($value_email==""||$value_pass_email=="")
-                                {
-
-                                    $value_email=get_option('smtp_email');
-                                    $value_pass_email=get_option('smtp_password');
-                                    $tb=_l('used_email_setting').' '.$value_email;
-                                    $class='success';
-                                }
-                                if($value_email==""||$value_pass_email=="")
-                                {
-                                    $tb=_l('null_email');
-                                    $class='danger';
-                                }
-                                echo '
-                                    <div class="alert alert-'.$class.'">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>'._l('tb').'</strong>: '.$tb.'
-                                    </div>';
-                            ?>
                             <div class="form-group" style="display: none;">
                                 <label for="user_email">Email của bạn:</label>
                                 <input type="email" class="form-control" id="user_email" name="user_email" value="<?=$value_email?>" placeholder="Nhập email của bạn..." required>
@@ -99,7 +79,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <button type="button" class="btn  btn-lg btn-primary" onclick="excel_file()">
-                                        <i class="glyphicon glyphicon-open-file"></i> Lấy danh sách email từ excel
+                                        <i class="glyphicon glyphicon-open-file"></i> Lấy danh sách SĐT từ excel
                                     </button>
                                 </div>
                                 <div class="form-group">
@@ -110,9 +90,20 @@
                                 </div>
                             </div>
                             <div class="clearfix"></div>
+                            <?php
+                                $hideSelectTemplate = 'none';
+                                $checkedTemplate    = '';
+                                if (isset($sms)) {
+                                    if ($sms->template_sms_id != 0) {
+                                        $hideSelectTemplate = '';
+                                        $checkedTemplate    = 'checked="checked"';
+                                    }
+                                }
+                             ?>
+
                             <div class="form-group">
                                 <div class="checkbox checkbox-success mbot20 no-mtop">
-                                    <input type="checkbox" name="type_email" id="type_email" onchange="kiemtra_type_email(this.value)">
+                                    <input type="checkbox" name="type_email" id="type_email" onchange="kiemtra_type_email(this.value)" <?php echo $checkedTemplate ?>>
                                     <label for="type_email">Sử dụng template</label>
                                 </div>
                             </div>
@@ -125,39 +116,27 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                <h4 class="modal-title">Khách hàng</h4>
+                                                <h4 class="modal-title">Danh sách SĐT khách hàng</h4>
                                             </div>
                                             <div class="modal-body">
+
                                                 <div class="panel_s">
                                                     <div class="panel-body">
                                                         <?php
-                                                        $table_data = array();
                                                         $_table_data = array(
-                                                            _l('customer_code'),
+                                                            '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="clients-phone"><label></label></div>',
+                                                            _l('Mã khách hàng'),
                                                             _l('customer_name'),
-                                                            _l('company_primary_email'),
-                                                            _l('customer_groups'),
+                                                            _l('Số điện thoại'),
                                                         );
-                                                        foreach($_table_data as $_t){
-                                                            array_push($table_data,$_t);
-                                                        }
-                                                        array_unshift($table_data,'<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="clients"><label></label></div>');
 
-                                                        $custom_fields = get_custom_fields('customers',array('show_on_table'=>1));
-                                                        foreach($custom_fields as $field){
-                                                            array_push($table_data,$field['name']);
-                                                        }
-
-                                                        $table_data = do_action('customers_table_columns',$table_data);
-                                                        render_datatable($table_data,'clients');
+                                                        render_datatable($_table_data, 'clients-phone');
                                                         ?>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" id="get_1" class="btn btn-primary" onclick="get_date(1)">lấy danh sách email</button>
-                                                <button type="button" id="get_2" class="btn btn-primary" onclick="get_date(2)">lấy danh sách email gửi CC</button>
-                                                <button type="button" id="get_3" class="btn btn-primary" onclick="get_date(3)">lấy danh sách email gửi BCC</button>
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>
@@ -166,15 +145,8 @@
                                 </div>
                             </div>
                             <div class="clearfix"></div>
-                            <?php
-                                $none = 'none';
-                                if (isset($sms)) {
-                                    if ($sms->template_sms_id != 0) {
-                                        $none = '';
-                                    }
-                                }
-                             ?>
-                            <div class="form-group select_template" style="display:none;">
+
+                            <div class="form-group select_template" style="display:<?php echo $hideSelectTemplate ?>;">
                                 <label for="view_template">Mẫu SMS:</label>
                                 <?php echo render_select('view_template', $email_plate, array('id','name'), '', isset($sms) ? $sms->template_sms_id : '', array('onchange'=>'get_contentemail(this.value)', 'data-width'=>'100%', 'data-none-selected-text'=>_l('chọn mẫu SMS'))); ?>
                             </div>
@@ -307,26 +279,6 @@
 
 <script>
 
-    // $('#test-api').click(function(e) {
-    //     e.preventDefault();
-
-    //     $.ajax({
-    //         url: 'http://113.185.0.35:8888/smsmarketing/api',
-    //         type: 'POST',
-    //         contentType: "application/json; charset=utf-8",
-    //         dataType: 'jsonp',
-
-    //     })
-    //     .done(function(response) {
-    //         console.log(response);
-    //         console.log("success");
-    //     })
-    //     .fail(function(response) {
-    //         console.log(response);
-    //         console.log("error");
-    //     })
-    // });
-
     var excel_email=[];
     var this_email=0;
     function view_template_email()
@@ -452,7 +404,7 @@
     var CustomersServerParams = {};
     var headers_clients = $('.table-clients').find('th');
     var not_sortable_clients = (headers_clients.length - 1);
-    initDataTable('.table-clients', window.location.href, [not_sortable_clients,0], [not_sortable_clients,0], CustomersServerParams,<?php echo do_action('customers_table_default_order',json_encode(array(1,'ASC'))); ?>);
+    initDataTable('.table-clients-phone', window.location.href, [0], [0], CustomersServerParams,<?php echo do_action('customers_table_default_order',json_encode(array(1,'ASC'))); ?>);
 
 </script>
 <script>
@@ -508,33 +460,13 @@
                 data = JSON.parse(data);
                 $.each(data, function(key) {
                     if(type==1){
-                            if(data[key].email!="")
-                            {
-                                $('#email').tagit('createTag',data[key].email);
-                                $('#email_list').modal('hide');
-                            }
-                    }
-                    else
-                    {
-                        if(type==2){
-                            $('.email_CC').show();
-                                if(data[key].email!="")
-                                {
-                                    $('#email_to_cc').tagit('createTag', data[key].email);
-                                    $('#email_list').modal('hide');
-                                }
-                        }
-                        else
+                        if(data[key].email!="")
                         {
-                            $('.email_BC').show();
-                                if(data[key].email!="")
-                                {
-                                    $('#email_to_bc').tagit('createTag',data[key].email);
-                                    $('#email_list').modal('hide');
-                                }
+                            $('#email').tagit('createTag',data[key].email);
+                            $('#email_list').modal('hide');
                         }
-
                     }
+
                 })
 
             }
@@ -679,7 +611,16 @@
         }
     }
 
+    $('body').on('change', '#mass_select_all', function() {
+        var to, rows, checked;
+        to = $(this).data('to-table');
 
+        rows = $('.table-' + to).find('tbody tr');
+        checked = $(this).prop('checked');
+        $.each(rows, function() {
+            var checkbox = $($(this).find('td').eq(0)).find('input').prop('checked', checked);
+        });
+    });
 </script>
 </body>
 </html>

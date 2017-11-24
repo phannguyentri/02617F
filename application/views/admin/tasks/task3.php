@@ -50,11 +50,8 @@
                   <label for="task_visible_to_client"><?php echo _l('task_visible_to_client'); ?></label>
                </div>
                <!-- <hr /> -->
-               <?php
-                  // echo "<pre>";
-                  // print_r($task);
-                  // echo "</pre>";
-               ?>
+
+
 
                <div class="col-md-4">
 
@@ -62,9 +59,9 @@
                      <label for="view_template">Chọn khách hàng:</label>
                      <?php
                         if ($nonClient) {
-                           echo render_select('rel_id', $clients, array('userid', 'code_company'),'', $task->rel_id, array('onchange' => 'changeRelId(this.value)', 'data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
+                          echo render_select('rel_id', $clients, array('userid', 'company','code_company'),'', $task->rel_id, array('onchange' => 'changeRelId(this.value)', 'data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
                         }else{
-                           echo render_select('rel_id', $clients, array('userid', 'code_company'),'', $rel_id, array('disabled' => 'disabled','data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
+                          echo render_select('rel_id', $clients, array('userid', 'company'),'', $rel_id, array('disabled' => 'disabled','data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
                         }
 
                      ?>
@@ -260,7 +257,6 @@
                               'id' => 'mess',
                               'name' => 'Chát',
                           ),
-
                       );
 
                       echo render_select('transaction', $transaction_type, array('id','name'),'Phương thức', (isset($task) ? $task->transaction : 1), array(), array(), '', '', false);
@@ -282,7 +278,6 @@
                               'id' => '4',
                               'name' => _l('task_priority_urgent'),
                           ),
-
                       );
 
                       echo render_select('priority', $priority_level, array('id','name'),'Mức độ ưu tiên', (isset($task) ? $task->priority : 1), array(), array(), '', '', false);
@@ -308,6 +303,8 @@
                       }
 
                       echo render_select('task_followers_id[]', $allStaff, array('staffid', 'fullname'), 'Người theo dõi', $arrSelectedFollowers, array('multiple' => 'multiple'), array(), '', '', false);
+
+                      echo render_input('reminder_day', 'Số ngày nhắc việc', (isset($task) ? $task->reminder_day : 1), 'number');
 
                    ?>
                </div>

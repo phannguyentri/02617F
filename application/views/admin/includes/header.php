@@ -212,7 +212,7 @@ ob_start();
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
-      
+
     </div>
   </div>
 
@@ -234,13 +234,13 @@ ob_end_clean();
 <div id="header">
     <?php if(rtrim(admin_url(), "/") != current_url()){ ?>
       <div class="hide-menu"><i class="fa fa-bars"></i></div>
-       <?php } ?>   
+       <?php } ?>
     <div id="logo">
         <?php get_company_logo('admin') ?>
     </div>
-  
+
     <nav>
-        <div class="small-logo">
+        <div class="small-logo hidden-xs hidden-sm">
             <span class="text-primary">
                 <?php get_company_logo('admin') ?>
             </span>

@@ -1756,3 +1756,27 @@ function get_onus_by_task_id($taskId){
     }
     return false;
 }
+
+function getTaskAssigneesByStaffId($staffId){
+    $CI =& get_instance();
+    $CI->db->select('taskid');
+    $CI->db->where('staffid', $staffId);
+
+    $result = $CI->db->get('tblstafftaskassignees')->result_array();
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}
+
+function getTaskAssigneesByFromId($assignedFromId){
+    $CI =& get_instance();
+    $CI->db->select('taskid');
+    $CI->db->where('assigned_from', $assignedFromId);
+
+    $result = $CI->db->get('tblstafftaskassignees')->result_array();
+    if(!empty($result)){
+        return $result;
+    }
+    return false;
+}

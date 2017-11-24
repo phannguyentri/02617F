@@ -732,7 +732,6 @@ class Tasks_model extends CRM_Model
                 }
             }
 
-
             handle_tags_save($tags,$insert_id,'task');
 
             if (isset($custom_fields)) {
@@ -2133,14 +2132,14 @@ class Tasks_model extends CRM_Model
       return $this->db->get('tblstafftasksfollowers')->result_array();
     }
 
-    // public function get_admins_assigned($clientId){
-    //     $this->db->select('staff_id');
-    //     $this->db->where('customer_id', $clientId);
-    //     $result = $this->db->get('tblcustomeradmins')->result_array();
+    public function getAllTasks(){
+        $this->db->select('id, name');
+        return $this->db->get('tblstafftasks1')->result_array();
+    }
 
-    //     if(!empty($result)){
-    //         return $result;
-    //     }
-    //     return false;
-    // }
+    public function getAllStaffs(){
+        $this->db->select('staffid, fullname');
+        return $this->db->get('tblstaff')->result_array();
+    }
+
 }

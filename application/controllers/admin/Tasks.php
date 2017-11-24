@@ -49,6 +49,9 @@ class Tasks extends Admin_controller
             $data['bodyclass']     = 'tasks_page kan-ban-body';
         }
 
+        $data['clients']     = $this->tasks_model->getClients();
+        $data['tasks']       = $this->tasks_model->getAllTasks();
+        $data['staffs']      = $this->tasks_model->getAllStaffs();
         $data['custom_view'] = $_custom_view;
         $data['title']       = _l('tasks');
         $this->load->view('admin/tasks/manage', $data);
