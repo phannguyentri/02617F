@@ -83,6 +83,12 @@
 
                      }
                    ?>
+
+<!--                 <div class="form-group">
+                    <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo _l('tags'); ?></label>
+                    <input type="text" class="tagsinput" id="tags" name="tags" value="" data-role="tagsinput">
+                </div> -->
+
                   <div class="form-group">
                      <label for="name" class="control-label">Mã KH</label>
                      <input type="text" id="client-code" class="form-control" value="<?php echo $code_company?>" disabled="disabled">
@@ -413,7 +419,28 @@
    var _milestone_selected_data;
    _milestone_selected_data = undefined;
 
+    // var dateToday = new Date();
+    // var dates = $("#startdate, #finish_date").datepicker({
+    //     changeMonth: true,
+    //     minDate: dateToday,
+    //     onSelect: function(selectedDate) {
+    //         var option = this.id == "finish_date" ? "minDate" : "maxDate",
+    //             instance = $(this).data("datepicker"),
+    //             date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+    //         dates.not(this).datepicker("option", option, date);
+    //     }
+    // });
+
+    // $('#startdate').change(function(event) {
+    //   var pickDate = $(this).val();
+    //   $( "#finish_date" ).datepicker({ minDate: pickDate});
+    // });
+
+
    $(function(){
+    console.log(availableTags);
+    console.log(availableTagsIds);
+
     init_editor('.tinymce');
 
     $( "body" ).off( "change", "#rel_id" );
@@ -423,9 +450,12 @@
 
     _validate_form($('#task-form-update'), {
       name: 'required',
+      rel_id : 'required',
       startdate: 'required',
       purpose :'required',
       transaction: 'required',
+      content_detail : 'required',
+      duration_finish_date : 'required',
     },task_form_handler);
 
     $('.rel_id_label').html(_rel_type.find('option:selected').text());

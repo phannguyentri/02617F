@@ -597,16 +597,22 @@ class Tasks_model extends CRM_Model
         $data['dateadded']              = date('Y-m-d H:i:s');
         $data['addedfrom']              = get_staff_user_id();
 
-        // echo("<pre>");
-        // print_r($data);
-        // echo("</pre>");die();
+        if ($data['finish_date']) {
+            if (strtotime($data['finish_date']) >= strtotime(($data['startdate']))) {
+                $data['status'] = 5;
+            }else{
+                $data['status'] = 4;
+            }
 
-
-        if (date('Y-m-d') >= $data['startdate']) {
+        }else{
             $data['status'] = 4;
-        } else {
-            $data['status'] = 1;
         }
+
+        // if (date('Y-m-d') >= $data['startdate']) {
+        //     $data['status'] = 4;
+        // } else {
+        //     $data['status'] = 1;
+        // }
 
 
         if (isset($data['custom_fields'])) {
@@ -1477,7 +1483,7 @@ class Tasks_model extends CRM_Model
     {
         $this->db->where('id', $id);
         $this->db->update('tblstafftasks1', array(
-            'datefinished' => date('Y-m-d H:i:s'),
+            // 'datefinished' => date('Y-m-d H:i:s'),
             'status' => 5
         ));
         if ($this->db->affected_rows() > 0) {
@@ -2142,4 +2148,8 @@ class Tasks_model extends CRM_Model
         return $this->db->get('tblstaff')->result_array();
     }
 
+    public function getTaskById($taskId){
+        $this->db->where('id', $taskId);
+        return $this->db->get('tblstafftasks1')->row();
+    }
 }

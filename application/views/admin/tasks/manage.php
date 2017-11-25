@@ -313,8 +313,6 @@
           $('.table-tasks1').DataTable().ajax.reload();
         });
     });
-
-    console.log(filterList);
   })
 
    taskid = '<?php echo $taskid; ?>';

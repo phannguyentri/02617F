@@ -214,7 +214,7 @@ foreach ($rResult as $aRow) {
             if ($contacts) {
                 $_data = '';
                 foreach ($contacts as $value) {
-                    $_data  .= '<a href="#" onclick="contact('.$aRow['client_id'].','.$value['id'].');return false;"> <img src="'.contact_profile_image_url($value['id']).'" class="staff-profile-image-small mright5" data-toggle="tooltip" data-title="'.$value['fullname'].'"></a>';
+                    $_data  .= '<a href="#" onclick="return false;"><img src="'.contact_profile_image_url($value['id']).'" class="staff-profile-image-small mright5" data-toggle="tooltip" data-title="'.$value['fullname'].'"><span class="text-info">'.$value['fullname'].'</span></a>';
                 }
             }
 
@@ -241,7 +241,8 @@ foreach ($rResult as $aRow) {
         } else if ($aColumns[$i] == 'status') {
             $_data = '<span class="inline-block label label-'.get_status_label($aRow['status']).'" task-status-table="'.$aRow['status'].'">' . format_task_status($aRow['status'],false,true);
             if ($aRow['status'] == 5) {
-                $_data .= '<a href="#" onclick="unmark_complete(' . $aRow['id'] . '); return false;"><i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l('task_unmark_as_complete') . '"></i></a>';
+                // $_data .= '<a href="#" onclick="unmark_complete(' . $aRow['id'] . '); return false;"><i class="fa fa-check task-icon task-finished-icon" data-toggle="tooltip" title="' . _l('task_unmark_as_complete') . '"></i></a>';
+                $_data .= '<a href="#"><i class="fa fa-check task-icon task-finished-icon" onclick="return false;" data-toggle="tooltip"></i></a>';
             } else {
                 $_data .= '<a href="#" onclick="mark_complete(' . $aRow['id'] . '); return false;"><i class="fa fa-check task-icon task-unfinished-icon" data-toggle="tooltip" title="' . _l('task_single_mark_as_complete') . '"></i></a>';
             }

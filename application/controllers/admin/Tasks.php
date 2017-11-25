@@ -655,13 +655,21 @@ class Tasks extends Admin_controller
     {
         $success = $this->tasks_model->mark_complete($id);
         $message = '';
-        if ($success) {
-            $message = _l('task_marked_as_complete');
+
+        $curTask = $this->tasks_model->getTaskById($id);
+
+        if ($curTask->finish_date) {
+            if (strtotime($curTask->finish_date) >= strtotime($curTask->startdate)) {
+                if ($success) {
+                    $message = _l('task_marked_as_complete');
+                }
+                echo json_encode(array(
+                    'success' => $success,
+                    'message' => $message
+                ));
+            }
         }
-        echo json_encode(array(
-            'success' => $success,
-            'message' => $message
-        ));
+
     }
     public function mark_as($status, $id)
     {
