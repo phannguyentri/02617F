@@ -1548,8 +1548,11 @@ function get_tag_by_name($name){
  * Function that will return all tags used in the app
  * @return array
  */
-function get_tags(){
+function get_tags($type = NULL){
     $CI = &get_instance();
+    if ($type) {
+        $CI->db->where('type', $type);
+    }
     $CI->db->order_by('name','ASC');
     return $CI->db->get('tbltags')->result_array();
 }
@@ -1557,9 +1560,9 @@ function get_tags(){
  * Array of available tags without the keys
  * @return array
  */
-function get_tags_clean(){
+function get_tags_clean($type = NULL){
     $tmp_tags = array();
-    $tags = get_tags();
+    $tags = get_tags($type);
     foreach($tags as $tag){
         array_push($tmp_tags,$tag['name']);
     }
@@ -1570,9 +1573,9 @@ function get_tags_clean(){
  * Get all tag ids
  * @return array
  */
-function get_tags_ids(){
+function get_tags_ids($type = NULL){
     $tmp_tags = array();
-    $tags = get_tags();
+    $tags = get_tags($type);
     foreach($tags as $tag){
         array_push($tmp_tags,$tag['id']);
     }

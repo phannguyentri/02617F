@@ -589,7 +589,9 @@ class Tasks_model extends CRM_Model
 
     public function add1($data)
     {
-
+        // echo "<pre>";
+        // print_r($data);
+        // echo "</pre>";die();
         $data['startdate']              = to_sql_date($data['startdate']);
         $data['duration_finish_date']   = to_sql_date($data['duration_finish_date']);
         $data['finish_date']            = to_sql_date($data['finish_date']);

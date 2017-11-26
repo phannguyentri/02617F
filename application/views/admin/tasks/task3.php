@@ -1,3 +1,8 @@
+<script type="text/javascript">
+  // var availableTaskNameTags = <?php //echo json_encode(get_tags_clean('taskname')); ?>;
+  // availableTagsIds      = <?php //echo json_encode(get_tags_ids('taskname')); ?>;
+</script>
+
 <?php
     $formId = '1';
     if(isset($task)){
@@ -5,6 +10,7 @@
       $formId = '-update';
     }
  ?>
+
 <?php echo form_open(admin_url('tasks/task3/'.$id),array('id'=>'task-form'.$formId)); ?>
 <div class="modal fade" id="_task_modal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 <div class="modal-dialog modal-lg" role="document">
@@ -84,10 +90,10 @@
                      }
                    ?>
 
-<!--                 <div class="form-group">
-                    <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo _l('tags'); ?></label>
-                    <input type="text" class="tagsinput" id="tags" name="tags" value="" data-role="tagsinput">
-                </div> -->
+                  <!-- <div class="form-group">
+                      <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo _l('tags'); ?></label>
+                      <input type="text" class="tagsinput-task-name" id="tags" name="tags" data-role="tagsinput">
+                  </div> -->
 
                   <div class="form-group">
                      <label for="name" class="control-label">Mã KH</label>
@@ -446,7 +452,8 @@
     $( "body" ).off( "change", "#rel_id" );
 
     custom_fields_hyperlink();
-    init_tags_inputs();
+    // init_tags_inputs();
+    init_tags_input_task_name();
 
     _validate_form($('#task-form-update'), {
       name: 'required',
