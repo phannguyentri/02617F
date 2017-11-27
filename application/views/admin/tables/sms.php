@@ -3,9 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $aColumns     = array(
   'tbllog_sms_send.subject',
+  'tbllog_sms_send.staff_id',
   'tbllog_sms_send.phone_number',
   'tblsms_templates.name',
-  'tbllog_sms_send.message'
+  'tbllog_sms_send.message',
+  'tbllog_sms_send.date_send',
 );
 $sIndexColumn = "id";
 $sTable       = 'tbllog_sms_send';
@@ -34,49 +36,23 @@ foreach ($rResult as $aRow) {
 
         if ($aColumns[$i] == '1') {
             $_data=$j;
+        } else if($aColumns[$i] == 'tbllog_sms_send.phone_number'){
+            $_data = '';
+            $arrPhones = explode(',', $aRow['tbllog_sms_send.phone_number']);
+            foreach ($arrPhones as $phone) {
+                $_data .= '<i class="span-tag">'.$phone.'</i> ';
+            }
+        } else if($aColumns[$i] == 'tbllog_sms_send.staff_id'){
+            $_data = '<a href="'.admin_url('profile/'.$aRow['tbllog_sms_send.staff_id']).'" data-toggle="tooltip" data-title="'.get_staff_full_name($aRow['tbllog_sms_send.staff_id']).'">'.staff_profile_image($aRow['tbllog_sms_send.staff_id'], array('staff-profile-image-small', 'mright5')).'</a>';
         }
 
         $row[] = $_data;
     }
-    // $_data='';
-    // if ($aRow['create_by'] == get_staff_user_id() || is_admin()) {
-    //     if(isset($aRow['delivery_code']))
-    //     {
-    //         $_data .= icon_btn('deliveries/pdf/' . $aRow['id'].'?pdf=true&type=delivery', 'print', 'btn-default',array('target' => '_blank','data-toggle'=>'tooltip',
-    //         'title'=>_l('print_delivery'),
-    //         'data-placement'=>'top'));
-    //     }
 
-
-    //     if($aRow['delivery_status']!=2)
-    //     {
-    //         $_data .= '<a class="btn btn-info btn-icon" href="javacript:void(0)" onclick="var_status('.$aRow['delivery_status'].','.$aRow['id'].')"><i class="fa fa-check"></i></a>';
-
-    //         $_data .= icon_btn('deliveries/delivery_detail/'. $aRow['id'] , 'edit', 'btn-default',array('data-toggle'=>'tooltip',
-    //         'title'=>_l('edit'),
-    //         'data-placement'=>'top'));
-    //     }
-    //     else
-    //     {
-    //         $_data .= icon_btn('deliveries/delivery_detail/'. $aRow['id'] , 'eye', 'btn-default',array('data-toggle'=>'tooltip',
-    //         'title'=>_l('view'),
-    //         'data-placement'=>'top'));
-    //     }
-    //     $row[] =$_data.icon_btn('deliveries/delete/'. $aRow['id'] , 'remove', 'btn-danger delete-remind',array('data-toggle'=>'tooltip',
-    //         'title'=>_l('delete'),
-    //         'data-placement'=>'top'));
-    // } else {
-    //     $row[] = '';
-    // }
-    //
     $options = '';
-    $options .= icon_btn('#', 'pencil-square-o', 'btn-default', array(
+    $options .= icon_btn('#', 'eye', 'btn-default', array(
         'data-toggle' => 'tooltip',
-        'title'       => _l('Sửa'),
-    ));
-    $options .= icon_btn('#', 'remove', 'btn-danger', array(
-        'data-toggle' => 'tooltip',
-        'title'       => _l('Xóa'),
+        'title'       => _l('Xem'),
     ));
 
     $row[]              = $options;

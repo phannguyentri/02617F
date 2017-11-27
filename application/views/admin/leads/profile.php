@@ -297,11 +297,6 @@
                 <?php $value = (isset($lead) ? $lead->description : ''); ?>
                 <?php echo render_textarea('description','lead_description',$value); ?>
 
-                <?php
-                    // echo "<pre>";
-                    // print_r();
-                    // echo "</pre>";
-                 ?>
                 <div class="form-group">
                     <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo _l('tags'); ?></label>
                     <input type="text" class="tagsinput" id="tags" name="tags" value="<?php echo (isset($lead) ? prep_tags_input(get_tags_in($lead->id,'lead')) : ''); ?>" data-role="tagsinput">

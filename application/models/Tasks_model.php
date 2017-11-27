@@ -598,17 +598,17 @@ class Tasks_model extends CRM_Model
         $data['duedate']                = to_sql_date($data['duedate']);
         $data['dateadded']              = date('Y-m-d H:i:s');
         $data['addedfrom']              = get_staff_user_id();
+        $data['status'] = 4;
 
-        if ($data['finish_date']) {
-            if (strtotime($data['finish_date']) >= strtotime(($data['startdate']))) {
-                $data['status'] = 5;
-            }else{
-                $data['status'] = 4;
-            }
+        // if ($data['finish_date']) {
+            // if (strtotime($data['finish_date']) >= strtotime(($data['startdate']))) {
 
-        }else{
-            $data['status'] = 4;
-        }
+            // }else{
+
+            // }
+        // }else{
+        //     $data['status'] = 4;
+        // }
 
         // if (date('Y-m-d') >= $data['startdate']) {
         //     $data['status'] = 4;
@@ -701,14 +701,14 @@ class Tasks_model extends CRM_Model
         unset($data['task_assignees_id']);
         unset($data['task_followers_id']);
 
-        // echo "<pre>";
-        // print_r($followers_id);
-        // echo "</pre>";
-
         $this->db->insert('tblstafftasks1', $data);
 
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
+
+            if($this->checkNotExistTagName($data['name'], 'taskname')){
+                $this->insertTagName($data['name']);
+            }
 
             // $data_insert_onus = [
             //     'task_id'       => $insert_id,
@@ -965,14 +965,16 @@ class Tasks_model extends CRM_Model
 
         $assignees_id   = $data['task_assignees_id'];
         $followers_id   = $data['task_followers_id'];
-        // echo "<pre>";
-        // print_r($followers_id);
-        // echo "</pre>";die();
+
         unset($data['task_assignees_id']);
         unset($data['task_followers_id']);
 
         $this->db->where('id', $id);
         if ($this->db->update('tblstafftasks1', $data)) {
+
+            if($this->checkNotExistTagName($data['name'], 'taskname')){
+                $this->insertTagName($data['name']);
+            }
 
             $this->delete_task_assignees_by_task_id($id);
             if (!empty($assignees_id)) {
@@ -1003,6 +1005,29 @@ class Tasks_model extends CRM_Model
 
         return false;
     }
+
+    public function insertTagName($name){
+        $dataInsert = [
+            'name'  => $name,
+            'type'  => 'taskname',
+        ];
+        if($this->db->insert('tbltags', $dataInsert)){
+            return true;
+        }
+        return false;
+    }
+
+    public function checkNotExistTagName($name, $type){
+        $this->db->where('name', $name);
+        $this->db->where('type', $type);
+        $rowResult = $this->db->get('tbltags')->row();
+        if (!empty($rowResult)){
+            return false;
+        }
+        return true;
+    }
+
+
 
     public function delete_task_assignees_by_task_id($task_id){
       $this->db->where('taskid', $task_id);

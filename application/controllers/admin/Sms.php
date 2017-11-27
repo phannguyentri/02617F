@@ -18,15 +18,16 @@ class Sms extends Admin_controller
         if ($this->input->post()) {
             if ($id == "") {
                 $dataInsert = [
-                    'subject' => $this->input->post('subject'),
-                    'message' => $this->input->post('message'),
+                    'staff_id'     => get_staff_user_id(),
+                    'subject'      => $this->input->post('subject'),
+                    'message'      => $this->input->post('message'),
                     'phone_number' => $this->input->post('phonenumber'),
                     'date_send'    => $this->input->post('date_send')
                 ];
-                $this->sms_model->insertSendSms($dataInsert);
+
                 if ($this->sms_model->insertSendSms($dataInsert)) {
                     set_alert('success', _l('Gửi SMS thành công'));
-                    redirect(admin_url('sms'));
+                    redirect(admin_url('sms/been_send_sms'));
                 }else{
                     set_alert('danger', _l('Gửi SMS không thành công'));
                     redirect(admin_url('sms'));

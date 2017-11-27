@@ -653,22 +653,33 @@ class Tasks extends Admin_controller
     /* Mark task as complete / ajax*/
     public function mark_complete($id)
     {
-        $success = $this->tasks_model->mark_complete($id);
         $message = '';
 
         $curTask = $this->tasks_model->getTaskById($id);
 
-        if ($curTask->finish_date) {
-            if (strtotime($curTask->finish_date) >= strtotime($curTask->startdate)) {
-                if ($success) {
-                    $message = _l('task_marked_as_complete');
-                }
-                echo json_encode(array(
-                    'success' => $success,
-                    'message' => $message
-                ));
-            }
+        // if ($curTask->finish_date) {
+            // if (strtotime($curTask->finish_date) >= strtotime($curTask->startdate)) {
+                // $success = $this->tasks_model->mark_complete($id);
+
+                // if ($success) {
+                //     $message = _l('task_marked_as_complete');
+                // }
+                // echo json_encode(array(
+                //     'success' => $success,
+                //     'message' => $message
+                // ));
+            // }
+        // }
+        $success = $this->tasks_model->mark_complete($id);
+
+        if ($success) {
+            $message = _l('task_marked_as_complete');
         }
+        echo json_encode(array(
+            'success' => $success,
+            'message' => $message
+        ));
+
 
     }
     public function mark_as($status, $id)

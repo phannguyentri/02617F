@@ -1552,6 +1552,7 @@ function get_tags($type = NULL){
     $CI = &get_instance();
     if ($type) {
         $CI->db->where('type', $type);
+        $CI->db->group_by('name');
     }
     $CI->db->order_by('name','ASC');
     return $CI->db->get('tbltags')->result_array();
@@ -1606,6 +1607,18 @@ function get_tags_in($rel_id,$rel_type){
     }
     return $tag_names;
 }
+
+// function getTagsNameInByType($type = ''){
+//     $CI =& get_instance();
+//     $CI->db->where('type', $type);
+//     $tags = $CI->db->get('tbltags')->result_array();
+//     $tagNames = [];
+//     foreach ($tags as $tag) {
+//         array_push($tagNames, $tag['name']);
+//     }
+//     return $tagNames;
+// }
+
 /**
  * This text is used in WHERE statements for tasks if the staff member dont have permission for tasks VIEW
  * This query will shown only tasks that are created from current user, public tasks or where this user is added is task follower.

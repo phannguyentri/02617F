@@ -318,6 +318,7 @@
    taskid = '<?php echo $taskid; ?>';
 
    $(document).ready(function(){
+
    $('body').on('click', '.task-delete', function() {
         var r = confirm(confirm_action_prompt);
         var table='.table-tasks';

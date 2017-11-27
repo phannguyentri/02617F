@@ -1,6 +1,9 @@
 <script type="text/javascript">
-  // var availableTaskNameTags = <?php //echo json_encode(get_tags_clean('taskname')); ?>;
-  // availableTagsIds      = <?php //echo json_encode(get_tags_ids('taskname')); ?>;
+  var availableTaskNameTags = <?php echo json_encode(get_tags_clean('taskname')); ?>;
+  availableTagsIds      = <?php echo json_encode(get_tags_ids('taskname')); ?>;
+
+  console.log(availableTaskNameTags);
+  console.log(availableTagsIds);
 </script>
 
 <?php
@@ -90,10 +93,6 @@
                      }
                    ?>
 
-                  <!-- <div class="form-group">
-                      <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo _l('tags'); ?></label>
-                      <input type="text" class="tagsinput-task-name" id="tags" name="tags" data-role="tagsinput">
-                  </div> -->
 
                   <div class="form-group">
                      <label for="name" class="control-label">Mã KH</label>
@@ -148,8 +147,13 @@
                ?>
                <div class="col-md-4">
                   <?php $value = (isset($task) ? $task->name : ''); ?>
+                  <div class="form-group">
+                      <label for="name" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> Tên giao dịch</label>
+                      <input type="text" class="tagsinput-task-name" id="tags" name="name" value="<?php echo $value; ?>" data-role="tagsinput">
+                  </div>
+
                   <?php
-                     echo render_input('name','Tên giao dịch',$value);
+                     // echo render_input('name','Tên giao dịch',$value);
                      echo render_textarea('content_detail', 'Nội dung chi tiết', (isset($task->content_detail) ? $task->content_detail : ''), array(), array(), '', 'tinymce');
                   ?>
 
@@ -203,14 +207,13 @@
 
                </div>
                <div class="col-md-4">
-                  <?php if(isset($task)){
-                     $value = _d($task->startdate);
-                     } else if(isset($start_date)){
-                     $value = $start_date;
-                     } else {
-                     $value = _d(date('Y-m-d'));
-                     }
-                     ?>
+                  <?php
+                    if(isset($task)){
+                      $value = _d($task->startdate);
+                    } else {
+                      $value = _d(date('Y-m-d'));
+                    }
+                  ?>
                   <?php echo render_date_input('startdate','task_add_edit_start_date', $value); ?>
                   <?php echo render_date_input('duration_finish_date','Hạn hoàn thành', (isset($task->duration_finish_date) ? _d($task->duration_finish_date) : _d(date('Y-m-d')))); ?>
                   <?php echo render_date_input('finish_date','Ngày hoàn thành', (isset($task->finish_date) ? _d($task->finish_date) : '')); ?>
@@ -437,15 +440,48 @@
     //     }
     // });
 
-    // $('#startdate').change(function(event) {
-    //   var pickDate = $(this).val();
-    //   $( "#finish_date" ).datepicker({ minDate: pickDate});
-    // });
-
+    function convertDate(date){
+      day   = date.slice(0, 2);
+      month = date.slice(3, 5);
+      year  = date.slice(6, 10);
+      return new Date(month+'/'+day+'/'+year);
+    }
 
    $(function(){
-    console.log(availableTags);
-    console.log(availableTagsIds);
+
+    $(document).ready(function(){
+
+      var startdate = '<?php if($task){if($task->startdate){echo _d($task->startdate);}else{echo _d(date('Y-m-d'));}}else{echo _d(date('Y-m-d'));} ?>';
+      console.log('startdate', startdate);
+
+      $('#duration_finish_date').datetimepicker({
+          format: date_format,
+          timepicker: !1,
+          minDate : convertDate(startdate),
+      })
+
+      $('#finish_date').datetimepicker({
+          format: date_format,
+          timepicker: !1,
+          minDate : convertDate(startdate),
+      })
+
+      $('#startdate').change(function(event) {
+        var pickDate = $(this).val();
+
+        $('#duration_finish_date').datetimepicker({
+            format: date_format,
+            timepicker: !1,
+            minDate : convertDate(pickDate),
+        })
+
+        $('#finish_date').datetimepicker({
+            format: date_format,
+            timepicker: !1,
+            minDate : convertDate(pickDate),
+        })
+      });
+    })
 
     init_editor('.tinymce');
 

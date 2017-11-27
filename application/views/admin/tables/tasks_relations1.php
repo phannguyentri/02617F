@@ -33,7 +33,7 @@ $aColumns = array(
 $where = array();
 include_once(APPPATH.'views/admin/tables/includes/tasks_filter.php');
 
-array_push($where, 'AND rel_id="' . $rel_id . '" AND rel_type="' . $rel_type . '"');
+array_push($where, 'AND rel_id="' . $rel_id . '"');
 $join          = array();
 $custom_fields = get_custom_fields('tasks', array(
     'show_on_table' => 1

@@ -1,4 +1,18 @@
 <?php init_head(); ?>
+
+<style type="text/css">
+  .span-tag{
+    padding: 2px 5px 2px 5px;
+    background: #fff;
+    color: #e47724;
+    border: 1px solid #e47724;
+    line-height : 2;
+    font-weight: 400;
+    font-size: 13px;
+    border-radius: 3px;
+  }
+</style>
+
 <div id="wrapper">
     <div class="content">
       <div class="row">
@@ -24,9 +38,11 @@
                           <?php
                             $table_data = array(
                               _l('Chủ đề'),
+                              _l('Người gửi'),
                               _l('SĐT người nhận'),
                               _l('Template SMS'),
                               _l('Nội dung'),
+                              _l('Thời gian'),
                               _l('Thuộc tính')
                             );
 

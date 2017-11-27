@@ -51,10 +51,15 @@
                                 <label for="user_password">Password:</label>
                                 <input type="password" class="form-control" id="user_password" name="user_password" value="<?=$value_pass_email?>" placeholder="Nhập mật khẩu của bạn..." required>
                             </div>
-                            <div class="form-group">
+<!--                             <div class="form-group">
                                 <label for="">SĐT người nhận:</label>
                                 <input type="text" id="email" name="phonenumber" class="tagemail form-control" value="<?php echo isset($sms) ? $sms->phone_number : '' ?>" placeholder="SĐT người nhận"  data-role="tagsinput">
+                            </div> -->
+                            <div class="form-group">
+                                <label for="name" class="control-label"> SĐT người nhận</label>
+                                <input type="text" class="tagsinput-phone-sms" id="phonenumber" name="phonenumber" value="<?php echo isset($sms) ? $sms->phone_number : '' ?>" data-role="tagsinput">
                             </div>
+
                             <div class="form-group email_CC" style="display: none">
                                 <label for="">Email người nhận CC:</label>
                                 <input type="text" id="email_to_cc" name="email_to_cc" class="tagemail form-control" placeholder="Email người nhận CC" value="" data-role="tagsinput" onchange="review_null(2)">
@@ -66,7 +71,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <button type="button" class="btn  btn-lg btn-primary" data-toggle="modal" data-target="#email_list"><i class="glyphicon glyphicon-duplicate"></i> Khách hàng</button>
+                                    <button type="button" class="btn  btn-lg btn-primary" data-toggle="modal" data-target="#phonenumber_list"><i class="glyphicon glyphicon-duplicate"></i> Khách hàng</button>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="form-group" style="display: none;">
@@ -109,7 +114,7 @@
                             </div>
                             <div class="form-group">
 
-                                <div id="email_list" class="modal fade" role="dialog">
+                                <div id="phonenumber_list" class="modal fade" role="dialog">
                                     <div class="modal-dialog modal-lg">
 
                                         <!-- Modal content-->
@@ -136,7 +141,7 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" id="get_1" class="btn btn-primary" onclick="get_date(1)">lấy danh sách email</button>
+                                                <button type="button" id="get_1" class="btn btn-primary" onclick="getPhoneNumber()">Lấy danh sách SĐT</button>
                                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>
@@ -180,7 +185,7 @@
                             </div>
 
                     </form>
-                            <div class="form-group file_dropzone"></div>
+<!--                             <div class="form-group file_dropzone"></div>
                         <div class="clearfix"></div>
                             <div class="form-group">
                                 <?php echo form_open_multipart(admin_url('email_marketing/upload_file'),array('class'=>'dropzone','id'=>'email-upload','onchane'=>'get_delete(this)')); ?>
@@ -194,8 +199,9 @@
                                 <?php echo form_open_multipart(admin_url('email_marketing/get_email_to_excel'),array('id'=>'read-upload','onchane'=>'reading_upload(this)')); ?>
                                 <input type="file" name="file_excel" style="display: none;" />
                                 <?php echo form_close(); ?>
-                            </div>
+                            </div> -->
                             <div class="clearfix"></div>
+                            <hr>
                             <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-envelope"></i> Gửi</button>
 <!--                            <button type="button" class="btn btn-success" onclick="not_send_next()" data-toggle="collapse" data-target="#send_next">Gửi sau</button>-->
                             <button type="button" class="btn btn-info" onclick="view_template_email()"  data-toggle="modal" data-target="#view_email"><i class="glyphicon glyphicon-eye-open"></i> Xem trước</button>
@@ -278,6 +284,7 @@
 <?php init_tail(); ?>
 
 <script>
+    init_tags_input_config('', '-phone-sms');
 
     var excel_email=[];
     var this_email=0;
@@ -611,6 +618,17 @@
         }
     }
 
+    function getPhoneNumber(){
+        listPhoneNumber = [];
+        listChecked = $('.table-clients-phone').find('tbody tr').find('input:checked');
+
+        $.each(listChecked, function(index, val) {
+            $('#phonenumber').tagit('createTag', $(val).parents('td').next().next().next().text());
+        });
+
+        $('#phonenumber_list').modal('hide');
+    }
+
     $('body').on('change', '#mass_select_all', function() {
         var to, rows, checked;
         to = $(this).data('to-table');
@@ -621,6 +639,8 @@
             var checkbox = $($(this).find('td').eq(0)).find('input').prop('checked', checked);
         });
     });
+
+
 </script>
 </body>
 </html>
