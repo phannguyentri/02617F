@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 $aColumns     = array(
+  '1',
   'tbllog_sms_send.subject',
   'tbllog_sms_send.staff_id',
   'tbllog_sms_send.phone_number',
@@ -9,7 +10,7 @@ $aColumns     = array(
   'tbllog_sms_send.message',
   'tbllog_sms_send.date_send',
 );
-$sIndexColumn = "id";
+$sIndexColumn = 'id';
 $sTable       = 'tbllog_sms_send';
 $where        = array();
 $join         = array(
@@ -28,7 +29,7 @@ foreach ($rResult as $aRow) {
     $row = array();
     $j++;
     for ($i = 0; $i < count($aColumns); $i++) {
-       if (strpos($aColumns[$i], 'as') !== false && !isset($aRow[$aColumns[$i]])) {
+        if (strpos($aColumns[$i], 'as') !== false && !isset($aRow[$aColumns[$i]])) {
             $_data = $aRow[strafter($aColumns[$i], 'as ')];
         } else {
             $_data = $aRow[$aColumns[$i]];
@@ -36,6 +37,8 @@ foreach ($rResult as $aRow) {
 
         if ($aColumns[$i] == '1') {
             $_data=$j;
+        } else if($aColumns[$i] == 'tbllog_sms_send.subject'){
+            $_data = '<a href="#" onclick="loadDetailSmsModel('.$aRow['id'].'); return false;">'.$aRow['tbllog_sms_send.subject'].'</a>';
         } else if($aColumns[$i] == 'tbllog_sms_send.phone_number'){
             $_data = '';
             $arrPhones = explode(',', $aRow['tbllog_sms_send.phone_number']);
@@ -53,9 +56,9 @@ foreach ($rResult as $aRow) {
     $options .= icon_btn('#', 'eye', 'btn-default', array(
         'data-toggle' => 'tooltip',
         'title'       => _l('Xem'),
+        'onclick'     => 'loadDetailSmsModel('.$aRow['id'].'); return false;',
     ));
 
     $row[]              = $options;
     $output['aaData'][] = $row;
 }
-

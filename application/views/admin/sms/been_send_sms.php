@@ -13,6 +13,8 @@
   }
 </style>
 
+<div id="detail-sms"></div>
+
 <div id="wrapper">
     <div class="content">
       <div class="row">
@@ -37,6 +39,7 @@
                         <div class="col-md-12">
                           <?php
                             $table_data = array(
+                              '#',
                               _l('Chủ đề'),
                               _l('Người gửi'),
                               _l('SĐT người nhận'),
@@ -62,5 +65,9 @@
 
 <script type="text/javascript">
   initDataTable('.table-sms', window.location.href, [1], [1]);
+
+  function loadDetailSmsModel(id){
+
+  }
 
 </script>
