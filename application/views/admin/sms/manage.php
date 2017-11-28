@@ -60,15 +60,6 @@
                                 <input type="text" class="tagsinput-phone-sms" id="phonenumber" name="phonenumber" value="<?php echo isset($sms) ? $sms->phone_number : '' ?>" data-role="tagsinput">
                             </div>
 
-                            <div class="form-group email_CC" style="display: none">
-                                <label for="">Email người nhận CC:</label>
-                                <input type="text" id="email_to_cc" name="email_to_cc" class="tagemail form-control" placeholder="Email người nhận CC" value="" data-role="tagsinput" onchange="review_null(2)">
-                            </div>
-                            <div class="form-group email_BC" style="display: none">
-                                <label for="">Email người nhận BCC:</label>
-                                <input type="text" id="email_to_bc" name="email_to_bc" class="tagemail form-control" placeholder="Email người nhận BCC" value="" data-role="tagsinput" onchange="review_null(3)">
-                            </div>
-
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <button type="button" class="btn  btn-lg btn-primary" data-toggle="modal" data-target="#phonenumber_list"><i class="glyphicon glyphicon-duplicate"></i> Khách hàng</button>
@@ -171,11 +162,11 @@
                                         <?php echo render_textarea('file_send','','',array('data-task-ae-editor'=>true),array(),'',''); ?>
                                 </div>
                             <?php }?>
-                            <div class="checkbox checkbox-primary">
+                            <div class="checkbox checkbox-primary" style="display: none">
                                 <input type="radio" name="type_send" onclick="not_send_next()" id="type_send_true" value="1" checked>
                                 <label for="type_send_true">Gửi ngay</label>
                             </div>
-                            <div class="checkbox checkbox-primary">
+                            <div class="checkbox checkbox-primary" style="display: none">
                                 <input type="radio" name="type_send" onclick="not_send_next()" value="0" id="type_send_false">
                                 <label for="type_send_false">Gửi sau</label>
                             </div>
@@ -421,7 +412,6 @@
         tinymce.activeEditor.execCommand('mceInsertContent', false, $(this).text());
     });
     $( document ).ready(function() {
-        $('.ui-autocomplete-input').prop('placeholder','Email người nhận');
         $('.email_CC .ui-autocomplete-input').prop('placeholder','Email người nhận CC');
         $('.email_BC .ui-autocomplete-input').prop('placeholder','Email người nhận BCC');
         $('#file_send').val('');

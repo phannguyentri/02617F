@@ -1,9 +1,6 @@
 <script type="text/javascript">
   var availableTaskNameTags = <?php echo json_encode(get_tags_clean('taskname')); ?>;
   availableTagsIds      = <?php echo json_encode(get_tags_ids('taskname')); ?>;
-
-  console.log(availableTaskNameTags);
-  console.log(availableTagsIds);
 </script>
 
 <?php
@@ -65,7 +62,7 @@
                <div class="col-md-4">
 
                   <div class="form-group select_template">
-                     <label for="view_template">Chọn khách hàng:</label>
+                     <label for="rel_id">Chọn khách hàng:</label>
                      <?php
                         if ($nonClient) {
                           echo render_select('rel_id', $clients, array('userid', 'company','code_company'),'', $task->rel_id, array('onchange' => 'changeRelId(this.value)', 'data-width'=>'100%','data-none-selected-text'=>_l('Chon khách hàng')));
@@ -95,31 +92,31 @@
 
 
                   <div class="form-group">
-                     <label for="name" class="control-label">Mã KH</label>
+                     <label class="control-label">Mã KH</label>
                      <input type="text" id="client-code" class="form-control" value="<?php echo $code_company?>" disabled="disabled">
                   </div>
                   <div class="form-group">
-                     <label for="name" class="control-label">Tên KH</label>
+                     <label class="control-label">Tên KH</label>
                      <input type="text" id="client-name" class="form-control" value="<?php echo $company?>" disabled="disabled">
                   </div>
                   <div class="form-group">
-                     <label for="name" class="control-label">Địa chỉ văn phòng</label>
+                     <label class="control-label">Địa chỉ văn phòng</label>
                      <input type="text" id="client-address" class="form-control" value="<?php echo $address?>" disabled="disabled">
                   </div>
                   <div class="form-group">
-                     <label for="name" class="control-label">Điện thoại</label>
+                     <label class="control-label">Điện thoại</label>
                      <input type="text" id="client-phone" class="form-control" value="<?php echo $phonenumber?>" disabled="disabled">
                   </div>
                   <div class="form-group">
-                     <label for="name" class="control-label">Email</label>
+                     <label class="control-label">Email</label>
                      <input type="text" id="client-email" class="form-control" value="<?php echo $email?>" disabled="disabled">
                   </div>
                   <div class="form-group">
-                     <label for="name" class="control-label">Mã số thuế</label>
+                     <label class="control-label">Mã số thuế</label>
                      <input type="text" id="client-code-vat" class="form-control" value="<?php echo $code_vat?>" disabled="disabled">
                   </div>
                   <div class="form-group">
-                     <label for="name" class="control-label">Liên hệ</label>
+                     <label class="control-label">Liên hệ</label>
                      <input type="text" id="client-contact" class="form-control" value="<?php echo $name_contact?>" disabled="disabled">
                   </div>
                </div>
@@ -396,9 +393,12 @@
 </div>
 
 <style type="text/css">
-   .modal-dialog{
+    .modal-dialog{
       width: 1200px;
-   }
+    }
+    ul.tagit.ui-widget.ui-widget-content.ui-corner-all li{display: none!important;}
+    ul.tagit.ui-widget.ui-widget-content.ui-corner-all>li:first-child{display: block!important;margin-left: 3px;}
+
 </style>
 
 <?php echo form_close(); ?>

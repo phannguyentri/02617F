@@ -17,7 +17,7 @@ $join         = array(
   'LEFT JOIN tblsms_templates ON tblsms_templates.id=tbllog_sms_send.template_sms_id'
 );
 $result       = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, array(
-
+    'tbllog_sms_send.id',
 ));
 $output       = $result['output'];
 $rResult      = $result['rResult'];
@@ -43,7 +43,7 @@ foreach ($rResult as $aRow) {
             $_data = '';
             $arrPhones = explode(',', $aRow['tbllog_sms_send.phone_number']);
             foreach ($arrPhones as $phone) {
-                $_data .= '<i class="span-tag">'.$phone.'</i> ';
+                $_data .= '<i class="span-tag"><strong>'.$phone.'</strong></i> ';
             }
         } else if($aColumns[$i] == 'tbllog_sms_send.staff_id'){
             $_data = '<a href="'.admin_url('profile/'.$aRow['tbllog_sms_send.staff_id']).'" data-toggle="tooltip" data-title="'.get_staff_full_name($aRow['tbllog_sms_send.staff_id']).'">'.staff_profile_image($aRow['tbllog_sms_send.staff_id'], array('staff-profile-image-small', 'mright5')).'</a>';

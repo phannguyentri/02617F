@@ -589,23 +589,25 @@ class Tasks_model extends CRM_Model
 
     public function add1($data)
     {
+
         $data['startdate']              = to_sql_date($data['startdate']);
         $data['duration_finish_date']   = to_sql_date($data['duration_finish_date']);
         $data['finish_date']            = to_sql_date($data['finish_date']);
         $data['duedate']                = to_sql_date($data['duedate']);
         $data['dateadded']              = date('Y-m-d H:i:s');
         $data['addedfrom']              = get_staff_user_id();
-        $data['status'] = 4;
+        // $data['status'] = 4;
 
-        // if ($data['finish_date']) {
+        if ($data['finish_date']) {
+            $data['status'] = 5;
             // if (strtotime($data['finish_date']) >= strtotime(($data['startdate']))) {
 
             // }else{
 
             // }
-        // }else{
-        //     $data['status'] = 4;
-        // }
+        }else{
+            $data['status'] = 4;
+        }
 
         // if (date('Y-m-d') >= $data['startdate']) {
         //     $data['status'] = 4;

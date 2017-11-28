@@ -67,7 +67,9 @@
   initDataTable('.table-sms', window.location.href, [1], [1]);
 
   function loadDetailSmsModel(id){
-
+    $.get(admin_url + "sms/detail/"+id, function(a) {
+      $("#detail-sms").html(a), $("#smsDetailModal").modal("show")
+    })
   }
 
 </script>

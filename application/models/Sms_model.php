@@ -141,4 +141,12 @@ class Sms_model extends CRM_Model
         return $this->db->get('tbllog_sms_send')->row();
     }
 
+    public function getSmsByIdJoinTemplate($smsId){
+        $this->db->select('staff_id, tbllog_sms_send.subject, tbllog_sms_send.message, phone_number, date_send, tblsms_templates.name');
+        $this->db->where('tbllog_sms_send.id', $smsId);
+        $this->db->join('tblsms_templates', 'tblsms_templates.id = tbllog_sms_send.template_sms_id', 'left');
+
+        return $this->db->get('tbllog_sms_send')->row();
+    }
+
 }

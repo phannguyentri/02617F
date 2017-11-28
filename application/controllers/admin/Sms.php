@@ -17,12 +17,14 @@ class Sms extends Admin_controller
 
         if ($this->input->post()) {
             if ($id == "") {
+
                 $dataInsert = [
                     'staff_id'     => get_staff_user_id(),
                     'subject'      => $this->input->post('subject'),
                     'message'      => $this->input->post('message'),
                     'phone_number' => $this->input->post('phonenumber'),
-                    'date_send'    => $this->input->post('date_send')
+                    'date_send'    => $this->input->post('date_send'),
+                    'template_sms_id' => $this->input->post('view_template'),
                 ];
 
                 if ($this->sms_model->insertSendSms($dataInsert)) {
@@ -191,4 +193,9 @@ class Sms extends Admin_controller
         $this->load->view('admin/sms/been_send_sms', $data);
     }
 
+    public function detail($id){
+        $data['sms'] = $this->sms_model->getSmsByIdJoinTemplate($id);
+
+        $this->load->view('admin/sms/detail', $data);
+    }
 }
